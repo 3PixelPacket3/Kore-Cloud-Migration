@@ -1,180 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kore | Workspace</title>
-    <style>
-        /* Light theme, professional UI accents */
-        :root {
-            --primary-accent: #005A9E; /* Professional Microsoft-style blue */
-            --bg-light: #F3F2F1;
-            --surface-white: #FFFFFF;
-            --text-dark: #323130;
-            --text-muted: #605E5C;
-            --border-light: #EDEBE9;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .navbar {
-            width: 100%;
-            background-color: var(--surface-white);
-            border-bottom: 1px solid var(--border-light);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-
-        .navbar h1 {
-            margin: 0;
-            font-size: 20px;
-            color: var(--primary-accent);
-        }
-
-        .user-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        #user-greeting {
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .btn {
-            background-color: var(--primary-accent);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #004578;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary-accent);
-            border: 1px solid var(--primary-accent);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--bg-light);
-        }
-
-        .main-container {
-            max-width: 1200px;
-            width: 100%;
-            padding: 40px 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            box-sizing: border-box;
-        }
-
-        .tool-card {
-            background: var(--surface-white);
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .tool-card h2 {
-            margin-top: 0;
-            font-size: 18px;
-            border-bottom: 2px solid var(--bg-light);
-            padding-bottom: 10px;
-        }
-
-        .tool-card p {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Kore Launcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .launcher-card {
+      max-width: 480px;
+      padding: 1.5rem 1.75rem;
+      border-radius: 16px;
+      border: 1px solid #334155;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.9);
+      text-align: center;
+    }
+    .launcher-card h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .launcher-card p {
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+      color: #9ca3af;
+    }
+    .launcher-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.4rem;
+      border-radius: 999px;
+      border: 1px solid #60a5fa;
+      background: #0b1120;
+      color: #e5e7eb;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      margin: 5px; /* Added minor spacing so the new buttons do not touch */
+    }
+    .launcher-card a:hover {
+      background: #1d2438;
+      border-color: #93c5fd;
+    }
+  </style>
 </head>
 <body>
+  <div class="launcher-card">
+    <h1>Launching Kore…</h1>
+    <p>If your browser does not automatically open Kore, use the button below.</p>
+    <a href="Kore/index.html">Open Kore</a>
+    
+    <br><br>
+    <a href="/.auth/login/aad">Work Log In</a>
+    <a href="/.auth/logout">Sign Out</a>
+    <br><br>
+    <span id="user-greeting" style="color: #60a5fa; font-size: 0.9rem;"></span>
+  </div>
 
-    <nav class="navbar">
-        <h1>Kore Workspace</h1>
-        <div class="user-controls">
-            <span id="user-greeting">Loading user...</span>
-            <a href="/.auth/logout" class="btn btn-outline">Sign Out</a>
-        </div>
-    </nav>
-
-    <main class="main-container">
-        <div class="tool-card">
-            <h2>Work Tasks</h2>
-            <p>Manage and log daily operations and tickets.</p>
-            <a href="work.html" class="btn">Open Work Tool</a>
-        </div>
-
-        <div class="tool-card">
-            <h2>Documentation</h2>
-            <p>Access and update internal guides and procedures.</p>
-            <a href="docs.html" class="btn">Open Docs</a>
-        </div>
-
-        <div class="tool-card">
-            <h2>Settings & Tools</h2>
-            <p>Admin utilities, layout validation, and converters.</p>
-            <a href="settings.html" class="btn">Open Settings</a>
-        </div>
-    </main>
-
-    <script>
-        // Fetch the logged-in Microsoft User's data from Azure
-        async function fetchUserData() {
-            try {
-                const response = await fetch('/.auth/me');
-                const payload = await response.json();
-                
-                if (payload.clientPrincipal) {
-                    // Update the UI with the user's name
-                    document.getElementById('user-greeting').innerText = `Hello, ${payload.clientPrincipal.userDetails}`;
-                    
-                    // We will store the user ID temporarily in session memory to use for Python database calls later
-                    sessionStorage.setItem('kore_user_id', payload.clientPrincipal.userId);
-                } else {
-                    document.getElementById('user-greeting').innerText = "Not logged in";
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-                document.getElementById('user-greeting').innerText = "System Offline";
-            }
+  <script>
+    async function fetchUserData() {
+      try {
+        const response = await fetch('/.auth/me');
+        const payload = await response.json();
+        
+        if (payload.clientPrincipal) {
+          const greetingElement = document.getElementById('user-greeting');
+          if (greetingElement) {
+            greetingElement.innerText = "Authenticated as: " + payload.clientPrincipal.userDetails;
+          }
+          // Save ID for Python database calls later
+          sessionStorage.setItem('kore_user_id', payload.clientPrincipal.userId);
+          
+          // Auto-redirect to the main app AFTER successfully grabbing the identity
+          setTimeout(() => {
+            window.location.href = "Kore/index.html";
+          }, 800);
         }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+      }
+    }
 
-        // Run on page load
-        document.addEventListener('DOMContentLoaded', fetchUserData);
-    </script>
+    document.addEventListener('DOMContentLoaded', fetchUserData);
+  </script>
 </body>
 </html>

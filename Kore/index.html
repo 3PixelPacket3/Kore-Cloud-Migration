@@ -1,127 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Kore</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kore | Workspace</title>
+    <style>
+        /* Light theme, professional UI accents */
+        :root {
+            --primary-accent: #005A9E; /* Professional Microsoft-style blue */
+            --bg-light: #F3F2F1;
+            --surface-white: #FFFFFF;
+            --text-dark: #323130;
+            --text-muted: #605E5C;
+            --border-light: #EDEBE9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: var(--surface-white);
+            border-bottom: 1px solid var(--border-light);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 20px;
+            color: var(--primary-accent);
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #user-greeting {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .btn {
+            background-color: var(--primary-accent);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #004578;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-accent);
+            border: 1px solid var(--primary-accent);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--bg-light);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            box-sizing: border-box;
+        }
+
+        .tool-card {
+            background: var(--surface-white);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .tool-card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 10px;
+        }
+
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
-
 <body>
-  <!-- Top Navigation -->
-  <header>
-    <nav class="top-nav">
-      <div class="nav-center">
-      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
-        <a class="nav-btn" href="index.html">Home</a>
-        <div class="nav-dropdown">
-          <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
-          <div class="nav-dropdown-menu">
-          <a href="apps.html" class="nav-dropdown-item">Apps</a>
-          <a href="work.html" class="nav-dropdown-item">Work</a>
-<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
-                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
-                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
-          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
-          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
 
-    </div>
+    <nav class="navbar">
+        <h1>Kore Workspace</h1>
+        <div class="user-controls">
+            <span id="user-greeting">Loading user...</span>
+            <a href="/.auth/logout" class="btn btn-outline">Sign Out</a>
         </div>
-        <div class="nav-dropdown">
-          <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
-          <div class="nav-dropdown-menu" id="infoHubMenu">
-            <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
-            <div class="nav-dropdown-divider"></div>
-            <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
-          </div>
-        </div>
-        <a class="nav-btn" href="about.html">About</a>
-      </div>
-      <div class="nav-right">
-        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
-        <a href="settings.html" class="profile-pill">
-          <div class="profile-avatar">
-            <img id="navProfileAvatar" alt="Profile avatar" />
-          </div>
-          <span id="navCurrentProfileName">User</span>
-          <span class="profile-pill-sep">&bull;</span>
-          <span class="profile-pill-action">Settings</span>
-        </a>
-      </div>
     </nav>
-  </header>
 
-  <!-- Centered Home Content -->
-  <main class="centered">
-    <section class="card">
-      <h1>Kore</h1>
-
-      <!-- Home Shortcuts & Search -->
-      <div class="home-actions">
-        <div class="home-actions-row">
-          <button type="button" id="homeSearchBtn" class="home-action-btn primary-action">Search the Web</button>
-          <button type="button" id="homeEmailBtn" class="home-action-btn">Email</button>
-          <button type="button" id="homeAppsBtn" class="home-action-btn">Apps &amp; Tools</button>
-          <button type="button" id="homeWorkBtn" class="home-action-btn">Work Queue</button>
-          <button type="button" id="homeDocsBtn" class="home-action-btn">Docs Library</button>
+    <main class="main-container">
+        <div class="tool-card">
+            <h2>Work Tasks</h2>
+            <p>Manage and log daily operations and tickets.</p>
+            <a href="work.html" class="btn">Open Work Tool</a>
         </div>
-        <div id="homeSearchPanel" class="home-search-panel" style="display:none;">
-          <input type="text" id="homeSearchInput" placeholder="Search Google..." />
-          <button type="button" id="homeSearchGoBtn" class="primary-btn">Go</button>
+
+        <div class="tool-card">
+            <h2>Documentation</h2>
+            <p>Access and update internal guides and procedures.</p>
+            <a href="docs.html" class="btn">Open Docs</a>
         </div>
-      </div>
 
-      <!-- Hero Image & Upload -->
-      <img id="heroImage" src="images/HomePage.png" alt="Home Page Visual" class="home-image">
-      <input type="file" id="imageUpload" accept="image/png,image/jpeg,image/jpg" style="display:none;">
+        <div class="tool-card">
+            <h2>Settings & Tools</h2>
+            <p>Admin utilities, layout validation, and converters.</p>
+            <a href="settings.html" class="btn">Open Settings</a>
+        </div>
+    </main>
 
-      <!-- Clock & Date -->
-      <div id="clock" class="clock"></div>
-      <div id="date" class="date"></div>
+    <script>
+        // Fetch the logged-in Microsoft User's data from Azure
+        async function fetchUserData() {
+            try {
+                const response = await fetch('/.auth/me');
+                const payload = await response.json();
+                
+                if (payload.clientPrincipal) {
+                    // Update the UI with the user's name
+                    document.getElementById('user-greeting').innerText = `Hello, ${payload.clientPrincipal.userDetails}`;
+                    
+                    // We will store the user ID temporarily in session memory to use for Python database calls later
+                    sessionStorage.setItem('kore_user_id', payload.clientPrincipal.userId);
+                } else {
+                    document.getElementById('user-greeting').innerText = "Not logged in";
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                document.getElementById('user-greeting').innerText = "System Offline";
+            }
+        }
 
-      <div id="homeMessage" class="home-message">
-        <p><strong>KORE</strong> – Knowledge Organization &amp; Retrieval Engine. Your personal work and knowledge system.</p>
-      </div>
-
-      
-
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
-    <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
-  </footer>
-
-  <link rel="stylesheet" href="css/ai.css">
-  <script src="js/version.js"></script>
-  <script src="js/profiles.js"></script>
-  <script src="js/backup.js"></script>
-  <script src="js/main.js"></script>
-  <script src="data/kore_kb.js"></script>
-  <script src="js/info-hub.js"></script>
-  <script src="js/ai.js"></script>
-
-  <!-- Ask Kore Widget -->
-  <div id="ai-widget">
-    <button id="chat-btn">Ask Kore</button>
-    <div id="chat-box" style="display:none;">
-      <div class="ai-header">
-        <span class="ai-header-title">Ask Kore</span>
-        <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
-      </div>
-      <div class="ai-controls">
-        <label for="askScope" class="ai-scope-label">Scope:</label>
-        <select id="askScope" class="ai-scope-select">
-          <option value="all" selected>Everything</option>
-          <option value="kb">Help &amp; Core Pages</option>
-          <option value="info">Info Hub Guides</option>
-        </select>
-      </div>
-      <div id="chat-output"></div>
-      <input type="text" id="chat-input" placeholder="Ask Kore..."/>
-    </div>
-  </div>
-
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', fetchUserData);
+    </script>
 </body>
 </html>

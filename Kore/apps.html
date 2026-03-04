@@ -20,7 +20,6 @@
             --radius-sm: 8px;
         }
 
-        /* PC-Only Constraint Enforced */
         body {
             margin: 0;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -29,33 +28,24 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            min-width: 1024px; /* Prevents mobile shrinking */
+            min-width: 1024px;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Global Header (Standardized) --- */
+        /* --- Global Header --- */
         .global-header {
-            background-color: var(--bg-surface);
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            height: 64px;
-            box-shadow: var(--shadow-sm);
-            flex-shrink: 0;
+            background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0;
         }
-
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         
         .nav-menu { display: flex; gap: 8px; height: 100%; }
         .nav-item {
-            text-decoration: none; color: var(--text-secondary); padding: 0 16px;
-            display: flex; align-items: center; height: 100%; font-weight: 500;
-            font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease;
-            cursor: pointer; position: relative;
+            text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500;
+            font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease; cursor: pointer; position: relative;
         }
         .nav-item:hover { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
         
@@ -65,56 +55,58 @@
             border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101;
         }
         .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content a {
-            color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500;
-        }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
 
         .search-container { display: flex; align-items: center; }
         .search-bar {
-            padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px;
-            width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease;
+            padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
             background-repeat: no-repeat; background-position: 12px center;
         }
         .search-bar:focus { width: 320px; border-color: var(--accent-primary); background-color: var(--bg-surface); }
 
-        /* --- Main Content (Apps Layout) --- */
+        /* --- Main Content --- */
         .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
-        
         .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px; margin-bottom: 30px; }
         .page-title { margin: 0; font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         
-        .btn-add {
-            background-color: var(--accent-primary); color: white; border: none; padding: 10px 20px;
-            border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: background 0.2s;
-            display: flex; align-items: center; gap: 8px;
-        }
+        .btn-add { background-color: var(--accent-primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
         .btn-add:hover { background-color: var(--accent-hover); }
 
-        /* Application Grid */
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 24px;
-        }
+        /* Application Grid & Cards */
+        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
         
         .app-card {
             background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
-            padding: 24px; text-align: center; text-decoration: none; color: var(--text-main);
-            box-shadow: var(--shadow-sm); transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center;
+            padding: 24px; text-align: center; color: var(--text-main); box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center;
+            position: relative; cursor: pointer;
         }
         .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); }
-        .app-icon { width: 48px; height: 48px; background-color: #f0f9ff; color: var(--accent-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; font-weight: bold; }
+        
+        /* Action Buttons (Hover Reveal) */
+        .app-actions {
+            position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s ease;
+        }
+        .app-card:hover .app-actions { opacity: 1; }
+        .action-btn {
+            background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: 6px;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.8rem; color: var(--text-secondary); transition: all 0.2s;
+        }
+        .action-btn:hover { background: var(--bg-surface); color: var(--accent-primary); border-color: var(--accent-primary); }
+        .action-btn.delete:hover { color: #ef4444; border-color: #ef4444; }
+
+        .app-icon-container { width: 56px; height: 56px; margin-bottom: 16px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f0f9ff; }
+        .app-icon-img { width: 100%; height: 100%; object-fit: cover; }
+        .app-icon-text { font-size: 1.8rem; font-weight: bold; color: var(--accent-primary); }
+        
         .app-name { margin: 0; font-weight: 600; font-size: 1.05rem; }
         .app-url { margin: 8px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
         /* --- Global Footer --- */
-        .global-footer {
-            background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle);
-            padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;
-            flex-shrink: 0; font-weight: 500;
-        }
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -124,113 +116,149 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-                
-                <div class="nav-item">
-                    Operations ▼
-                    <div class="dropdown-content">
-                        <a href="apps.html">Apps</a>
-                        <a href="work.html">Work Tracker</a>
-                        <a href="passwords.html">Password Generator</a>
-                        <a href="product-html.html">Product Long Description HTML Converter</a>
-                        <a href="nebula.html">Nebula HTML Forge</a>
-                        <a href="lod.html">LOD Validation Tool</a>
-                    </div>
-                </div>
-                
-                <div class="nav-item">
-                    Resources ▼
-                    <div class="dropdown-content">
-                        <a href="info-hub.html">Info Hub</a>
-                        <a href="reports.html">Data/Reports</a>
-                    </div>
-                </div>
-                
+                <div class="nav-item">Operations ▼<div class="dropdown-content"><a href="apps.html">Apps</a><a href="work.html">Work Tracker</a><a href="passwords.html">Password Generator</a><a href="product-html.html">Product Long Description HTML Converter</a><a href="nebula.html">Nebula HTML Forge</a><a href="lod.html">LOD Validation Tool</a></div></div>
+                <div class="nav-item">Resources ▼<div class="dropdown-content"><a href="info-hub.html">Info Hub</a><a href="reports.html">Data/Reports</a></div></div>
                 <a href="about.html" class="nav-item">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Search operations, guides...">
-        </div>
+        <div class="search-container"><input type="text" class="search-bar" placeholder="Search operations, guides..."></div>
     </header>
 
     <main class="main-container">
         <div class="page-header">
             <h2 class="page-title">Application Directory</h2>
-            <button class="btn-add" onclick="document.getElementById('add-app-modal').style.display='flex'">+ Add Application</button>
+            <button class="btn-add" onclick="openModal()">+ Add Application</button>
         </div>
-
-        <div class="apps-grid" id="apps-container">
-            </div>
+        <div class="apps-grid" id="apps-container"></div>
     </main>
 
-    <footer class="global-footer">
-        &copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.
-    </footer>
+    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
 
-    <div id="add-app-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(2px);"><div style="background:#fff; padding:32px; border-radius:12px; width:400px; display:flex; flex-direction:column; gap:20px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);"><h3 style="margin:0; font-size:1.4rem; color:#0f172a;">New Shortcut</h3><input type="text" id="newAppName" placeholder="Application Name" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><input type="url" id="newAppUrl" placeholder="URL (e.g., https://example.com)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px;"><button onclick="document.getElementById('add-app-modal').style.display='none'" style="padding:10px 20px; background:transparent; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight:600; color:#475569;">Cancel</button><button onclick="saveApp()" style="padding:10px 20px; background:#0ea5e9; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Save Link</button></div></div></div>
+    <div id="app-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(2px);"><div style="background:#fff; padding:32px; border-radius:12px; width:400px; display:flex; flex-direction:column; gap:16px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);"><h3 id="modal-title" style="margin:0; font-size:1.4rem; color:#0f172a;">New Shortcut</h3><input type="hidden" id="editAppId"><input type="text" id="appName" placeholder="Application Name (Required)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><input type="url" id="appUrl" placeholder="Link URL (Required)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><input type="url" id="appIconUrl" placeholder="Image/Icon URL (Optional)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px;"><button onclick="closeModal()" style="padding:10px 20px; background:transparent; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight:600; color:#475569;">Cancel</button><button onclick="saveApp()" style="padding:10px 20px; background:#0ea5e9; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Save App</button></div></div></div>
 
     <script>
-        // 1. Initial/Default Company Apps
-        const defaultApps = [
-            { name: "BradyPLUS Portal", url: "https://www.bradyplus.com" },
-            { name: "iSeries Login", url: "#" },
-            { name: "SharePoint Core", url: "https://starkindustries.sharepoint.com" }
-        ];
-
-        // 2. Load Routine
-        function loadApps() {
-            // Check local storage for custom apps; if none, use defaults
-            let savedApps = JSON.parse(localStorage.getItem('kore_custom_apps'));
-            if (!savedApps) {
-                savedApps = defaultApps;
-                localStorage.setItem('kore_custom_apps', JSON.stringify(savedApps));
+        // Data Structure logic
+        function getApps() {
+            let apps = JSON.parse(localStorage.getItem('kore_custom_apps'));
+            if (!apps || apps.length === 0) {
+                // Seed default data if completely empty
+                apps = [
+                    { id: 'app_1', name: "BradyPLUS Portal", url: "https://www.bradyplus.com", iconUrl: "" },
+                    { id: 'app_2', name: "SharePoint Core", url: "https://starkindustries.sharepoint.com", iconUrl: "" }
+                ];
+                localStorage.setItem('kore_custom_apps', JSON.stringify(apps));
             }
+            return apps;
+        }
 
+        // Render Apps to Grid
+        function loadApps() {
+            const apps = getApps();
             const container = document.getElementById('apps-container');
-            container.innerHTML = ''; // Clear existing
+            container.innerHTML = ''; 
 
-            savedApps.forEach(app => {
-                // Generate a quick initial for the icon
-                const initial = app.name.charAt(0).toUpperCase();
-                
+            apps.forEach(app => {
+                // Determine icon representation (Image vs Initial)
+                let iconHtml = app.iconUrl 
+                    ? `<img src="${app.iconUrl}" class="app-icon-img" alt="${app.name} icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"> <span class="app-icon-text" style="display:none;">${app.name.charAt(0).toUpperCase()}</span>` 
+                    : `<span class="app-icon-text">${app.name.charAt(0).toUpperCase()}</span>`;
+
                 container.innerHTML += `
-                    <a href="${app.url}" class="app-card" target="_blank">
-                        <div class="app-icon">${initial}</div>
+                    <div class="app-card" onclick="launchApp(event, '${app.url}')">
+                        <div class="app-actions">
+                            <button class="action-btn" onclick="openModal('${app.id}'); event.stopPropagation();" title="Edit">✏️</button>
+                            <button class="action-btn delete" onclick="deleteApp('${app.id}'); event.stopPropagation();" title="Delete">🗑️</button>
+                        </div>
+                        <div class="app-icon-container">${iconHtml}</div>
                         <h4 class="app-name">${app.name}</h4>
                         <p class="app-url">${app.url.replace(/^https?:\/\//, '')}</p>
-                    </a>
+                    </div>
                 `;
             });
         }
 
-        // 3. Save New App Routine
+        // Action: Launch App (Ensures clicking the card opens the link, but clicking a button doesn't)
+        function launchApp(event, url) {
+            window.open(url, '_blank');
+        }
+
+        // UI: Open Modal for Add OR Edit
+        function openModal(editId = null) {
+            const modal = document.getElementById('app-modal');
+            const title = document.getElementById('modal-title');
+            
+            if (editId) {
+                // Edit Mode
+                const app = getApps().find(a => a.id === editId);
+                title.innerText = "Edit Shortcut";
+                document.getElementById('editAppId').value = app.id;
+                document.getElementById('appName').value = app.name;
+                document.getElementById('appUrl').value = app.url;
+                document.getElementById('appIconUrl').value = app.iconUrl || "";
+            } else {
+                // Add Mode
+                title.innerText = "New Shortcut";
+                document.getElementById('editAppId').value = "";
+                document.getElementById('appName').value = "";
+                document.getElementById('appUrl').value = "";
+                document.getElementById('appIconUrl').value = "";
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('app-modal').style.display = 'none';
+        }
+
+        // Action: Save or Update App
         function saveApp() {
-            const nameInput = document.getElementById('newAppName').value.trim();
-            let urlInput = document.getElementById('newAppUrl').value.trim();
+            const idInput = document.getElementById('editAppId').value;
+            const nameInput = document.getElementById('appName').value.trim();
+            let urlInput = document.getElementById('appUrl').value.trim();
+            const iconInput = document.getElementById('appIconUrl').value.trim();
 
-            if (!nameInput || !urlInput) return alert('Please enter both a name and a URL.');
-
-            // Ensure valid URL prefix
+            if (!nameInput || !urlInput) return alert('Name and URL are required.');
             if (!urlInput.startsWith('http://') && !urlInput.startsWith('https://')) {
                 urlInput = 'https://' + urlInput;
             }
 
-            const currentApps = JSON.parse(localStorage.getItem('kore_custom_apps')) || [];
-            currentApps.push({ name: nameInput, url: urlInput });
-            
-            // Save locally (Will route to Azure DB later)
-            localStorage.setItem('kore_custom_apps', JSON.stringify(currentApps));
+            let apps = getApps();
 
-            // Reset UI
-            document.getElementById('newAppName').value = '';
-            document.getElementById('newAppUrl').value = '';
-            document.getElementById('add-app-modal').style.display = 'none';
-            
+            if (idInput) {
+                // Update existing
+                const index = apps.findIndex(a => a.id === idInput);
+                if (index !== -1) {
+                    apps[index].name = nameInput;
+                    apps[index].url = urlInput;
+                    apps[index].iconUrl = iconInput;
+                }
+            } else {
+                // Create new
+                const newApp = {
+                    id: 'app_' + Date.now(),
+                    name: nameInput,
+                    url: urlInput,
+                    iconUrl: iconInput
+                };
+                apps.push(newApp);
+            }
+
+            localStorage.setItem('kore_custom_apps', JSON.stringify(apps));
+            closeModal();
             loadApps();
         }
 
-        // Initialize on load
+        // Action: Delete App
+        function deleteApp(id) {
+            if(confirm("Are you sure you want to remove this application shortcut?")) {
+                let apps = getApps();
+                apps = apps.filter(a => a.id !== id);
+                localStorage.setItem('kore_custom_apps', JSON.stringify(apps));
+                loadApps();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', loadApps);
     </script>
 </body>

@@ -7,20 +7,21 @@
     <style>
         /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9; /* Vibrant Sky Blue */
+            --accent-primary: #0ea5e9;
             --accent-hover: #0284c7;
-            --bg-app: #f8fafc; /* Very subtle cool off-white */
+            --bg-app: #f8fafc;
             --bg-surface: #ffffff;
-            --text-main: #0f172a; /* Deep Slate */
+            --text-main: #0f172a;
             --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
-            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
             --radius-md: 12px;
             --radius-sm: 8px;
         }
 
+        /* PC-Only Constraint Enforced */
         body {
             margin: 0;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -29,6 +30,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-width: 1024px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -42,6 +44,7 @@
             padding: 0 32px;
             height: 64px;
             box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -63,14 +66,14 @@
         
         .dropdown-content {
             display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface);
-            min-width: 220px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle);
+            min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle);
             border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101;
         }
         .nav-item:hover .dropdown-content { display: block; animation: fadeIn 0.2s ease; }
         .dropdown-content a {
-            color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; transition: background 0.15s; font-weight: 500;
+            color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500;
         }
-        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -85,11 +88,11 @@
         .search-bar:focus { width: 320px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
 
         /* --- Main Layout --- */
-        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr; /* Left: Content, Right: Widgets */
+            grid-template-columns: 2fr 1fr;
             gap: 32px;
             align-items: start;
         }
@@ -157,6 +160,13 @@
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
         .message-label { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin: 0; }
         #global-message-text { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); margin: 0; background: #f0f9ff; padding: 16px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-primary); }
+        
+        /* --- Global Footer --- */
+        .global-footer {
+            background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle);
+            padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;
+            flex-shrink: 0; font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -170,8 +180,12 @@
                 <div class="nav-item">
                     Operations ▼
                     <div class="dropdown-content">
-                        <a href="work.html">Work Queue</a>
-                        <a href="#">Ticket Log</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product Long Description HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
                     </div>
                 </div>
                 
@@ -179,8 +193,7 @@
                     Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
-                        <a href="macros.html">Macro Library</a>
-                        <a href="docs.html">Documentation</a>
+                        <a href="reports.html">Data/Reports</a>
                     </div>
                 </div>
                 
@@ -232,13 +245,16 @@
         </div>
     </main>
 
+    <footer class="global-footer">
+        &copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.
+    </footer>
+
     <script>
         // --- 1. Precision Clock Engine ---
         function updateClock() {
             const now = new Date();
             
             const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
-            // Optional: You can change the locale 'en-US' to pull from settings later
             document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
 
             const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -248,26 +264,22 @@
         updateClock(); 
 
         // --- 2. Dynamic Data Payload ---
-        // (This will be intercepted and overwritten by the Python backend in Phase 2)
         const dashboardData = {
             systemMessage: "Welcome to the upgraded Kore cloud environment. Please ensure all tickets are logged in the new Work Queue before end of day.",
-            // 6 Buttons for a perfectly balanced 3x2 grid
             quickLinks: [
-                { title: "Work Queue", icon: "📋", url: "work.html", external: false },
+                { title: "Apps", icon: "🔗", url: "apps.html", external: false },
+                { title: "Work Tracker", icon: "📋", url: "work.html", external: false },
                 { title: "Info Hub", icon: "📚", url: "info-hub.html", external: false },
-                { title: "Macro Library", icon: "⚡", url: "macros.html", external: false },
-                { title: "Email (Web)", icon: "✉️", url: "https://outlook.office.com", external: true },
+                { title: "LOD Validation", icon: "✅", url: "lod.html", external: false },
                 { title: "SharePoint", icon: "☁️", url: "https://starkindustries.sharepoint.com", external: true },
-                { title: "Help Desk", icon: "🛠️", url: "#", external: false } // The 6th Button
+                { title: "Password Gen", icon: "🔑", url: "passwords.html", external: false } 
             ]
         };
 
         // --- 3. Render Engine ---
         function initializeDashboard() {
-            // Render Bulletin
             document.getElementById('global-message-text').textContent = dashboardData.systemMessage;
 
-            // Render Quick Links
             const qaContainer = document.getElementById('qa-container');
             dashboardData.quickLinks.forEach(link => {
                 const target = link.external ? '_blank' : '_self';

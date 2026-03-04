@@ -1,98 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Kore Launcher</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      padding: 2rem;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      box-sizing: border-box;
-    }
-    .launcher-card {
-      max-width: 480px;
-      padding: 1.5rem 1.75rem;
-      border-radius: 16px;
-      border: 1px solid #334155;
-      background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
-      box-shadow: 0 18px 45px rgba(15,23,42,0.9);
-      text-align: center;
-    }
-    .launcher-card h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .launcher-card p {
-      font-size: 0.95rem;
-      margin-bottom: 1.25rem;
-      color: #9ca3af;
-    }
-    .launcher-card a {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.6rem 1.4rem;
-      border-radius: 999px;
-      border: 1px solid #60a5fa;
-      background: #0b1120;
-      color: #e5e7eb;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      margin: 5px; /* Added minor spacing so the new buttons do not touch */
-    }
-    .launcher-card a:hover {
-      background: #1d2438;
-      border-color: #93c5fd;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kore | Global Dashboard</title>
+    <style>
+        /* Professional Light Theme & Variables */
+        :root {
+            --primary-blue: #005A9E;
+            --primary-hover: #004578;
+            --bg-body: #F3F2F1;
+            --bg-surface: #FFFFFF;
+            --text-dark: #201F1E;
+            --text-muted: #605E5C;
+            --border-light: #EDEBE9;
+            --accent-light: #EFF6FC;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Header */
+        .global-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 60px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 30px; }
+        .kore-logo { font-size: 1.4rem; font-weight: bold; color: var(--primary-blue); letter-spacing: 0.5px; margin: 0; }
+        
+        /* Navigation Links & Dropdowns */
+        .nav-menu { display: flex; gap: 5px; height: 100%; }
+        .nav-item {
+            text-decoration: none; color: var(--text-dark); padding: 0 15px;
+            display: flex; align-items: center; height: 60px; font-weight: 500;
+            font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s;
+            cursor: pointer; position: relative;
+        }
+        .nav-item:hover { background-color: var(--accent-light); border-bottom: 3px solid var(--primary-blue); color: var(--primary-blue); }
+        
+        .dropdown-content {
+            display: none; position: absolute; top: 60px; left: 0; background-color: var(--bg-surface);
+            min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border: 1px solid var(--border-light);
+            border-radius: 0 0 6px 6px; overflow: hidden;
+            z-index: 101;
+        }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a {
+            color: var(--text-dark); padding: 12px 16px; text-decoration: none; display: block; transition: background 0.2s;
+        }
+        .dropdown-content a:hover { background-color: var(--accent-light); color: var(--primary-blue); }
+
+        /* Global Search */
+        .search-container { display: flex; align-items: center; }
+        .search-bar {
+            padding: 8px 12px 8px 12px; border: 1px solid var(--border-light); border-radius: 20px;
+            width: 250px; background-color: var(--bg-body); font-size: 0.9rem; outline: none; transition: all 0.3s;
+        }
+        .search-bar:focus { width: 300px; border-color: var(--primary-blue); background-color: var(--bg-surface); box-shadow: 0 0 0 2px var(--accent-light); }
+
+        /* Main Content Layout */
+        .main-container { padding: 30px 24px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+
+        /* Dashboard Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr; /* 60% Hero, 40% Actions */
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Hero Section (Image & Time) */
+        .hero-card {
+            background: var(--bg-surface); border-radius: 12px; overflow: hidden;
+            border: 1px solid var(--border-light); box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            text-align: center;
+        }
+        .hero-image-container { width: 100%; height: 350px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+        /* Ensure your image is named HomePage.png and is in the root folder */
+        .hero-image-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        
+        .time-container { padding: 24px; }
+        #live-time { font-size: 3rem; font-weight: 300; color: var(--primary-blue); margin: 0; line-height: 1; }
+        #live-date { font-size: 1.1rem; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
+
+        /* Action Section (Quick Access & Message) */
+        .action-column { display: flex; flex-direction: column; gap: 24px; }
+
+        /* Quick Access Buttons */
+        .qa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        .qa-btn {
+            background: var(--bg-surface); border: 1px solid var(--border-light); padding: 16px;
+            border-radius: 8px; text-align: center; text-decoration: none; color: var(--text-dark);
+            font-weight: 600; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80px;
+        }
+        .qa-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); background: var(--accent-light); }
+
+        /* Global Message Panel */
+        .message-panel {
+            background: var(--accent-light); border-left: 4px solid var(--primary-blue);
+            padding: 20px; border-radius: 8px; position: relative;
+        }
+        .message-label { font-size: 0.85rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        #global-message-text { font-size: 1rem; line-height: 1.5; color: var(--text-dark); margin: 0; }
+    </style>
 </head>
 <body>
-  <div class="launcher-card">
-    <h1>Launching Kore…</h1>
-    <p>If your browser does not automatically open Kore, use the button below.</p>
-    <a href="Kore/index.html">Open Kore</a>
-    
-    <br><br>
-    <a href="/.auth/login/aad">Work Log In</a>
-    <a href="/.auth/logout">Sign Out</a>
-    <br><br>
-    <span id="user-greeting" style="color: #60a5fa; font-size: 0.9rem;"></span>
-  </div>
 
-  <script>
-    async function fetchUserData() {
-      try {
-        const response = await fetch('/.auth/me');
-        const payload = await response.json();
-        
-        if (payload.clientPrincipal) {
-          const greetingElement = document.getElementById('user-greeting');
-          if (greetingElement) {
-            greetingElement.innerText = "Authenticated as: " + payload.clientPrincipal.userDetails;
-          }
-          // Save ID for Python database calls later
-          sessionStorage.setItem('kore_user_id', payload.clientPrincipal.userId);
-          
-          // Auto-redirect to the main app AFTER successfully grabbing the identity
-          setTimeout(() => {
-            window.location.href = "Kore/index.html";
-          }, 800);
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore</h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Home</a>
+                
+                <div class="nav-item">
+                    Tools ▼
+                    <div class="dropdown-content">
+                        <a href="work.html">Work Queue</a>
+                        </div>
+                </div>
+                
+                <div class="nav-item">
+                    Info Hub ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">My Guides</a>
+                        </div>
+                </div>
+                
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Global Search...">
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="dashboard-grid">
+            
+            <section class="hero-card">
+                <div class="hero-image-container">
+                    <img src="HomePage.png" alt="Kore Workspace">
+                </div>
+                <div class="time-container">
+                    <div id="live-time">Loading time...</div>
+                    <div id="live-date">Loading date...</div>
+                </div>
+            </section>
+
+            <section class="action-column">
+                
+                 <div>
+                    <h3 style="margin-top: 0; color: var(--text-muted); font-weight: 400;">Quick Access</h3>
+                    <div class="qa-grid" id="qa-container">
+                        </div>
+                </div>
+
+                <div class="message-panel">
+                    <div class="message-label">System Message</div>
+                    <p id="global-message-text">Loading system message...</p>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. Live Clock & Date Functionality ---
+        function updateClock() {
+            const now = new Date();
+            
+            // Time Options (Defaulting to local system time for now)
+            const timeOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('live-time').textContent = now.toLocaleTimeString([], timeOptions);
+
+            // Date Options
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('live-date').textContent = now.toLocaleDateString([], dateOptions);
         }
-      } catch (error) {
-        console.error("Auth check failed:", error);
-      }
-    }
+        setInterval(updateClock, 1000); // Update every second
+        updateClock(); // Initial call immediately
 
-    document.addEventListener('DOMContentLoaded', fetchUserData);
-  </script>
+        // --- 2. Placeholder Data for Quick Access & Message ---
+        // This data will eventually be fetched from Azure Python Backend based on Settings
+        const placeholderConfig = {
+            globalMessage: "Welcome to the new Kore cloud workspace. Please review the updated documentation in the Info Hub.",
+            quickAccessLinks: [
+                { title: "Work Queue", url: "work.html" },
+                { title: "Email", url: "https://outlook.office.com/mail/", external: true },
+                { title: "SharePoint", url: "https://starkindustries.sharepoint.com", external: true },
+                { title: "Co-Pilot", url: "#", external: false }, // Placeholder
+                { title: "My Metrics", url: "#", external: false } // Placeholder
+            ]
+        };
+
+        // --- 3. Inject Placeholder Data into UI ---
+        function loadDynamicContent() {
+            // Load Message
+            document.getElementById('global-message-text').textContent = placeholderConfig.globalMessage;
+
+            // Load 5 Quick Access Buttons
+            const qaContainer = document.getElementById('qa-container');
+            placeholderConfig.quickAccessLinks.forEach(link => {
+                const target = link.external ? '_blank' : '_self';
+                qaContainer.innerHTML += `
+                    <a href="${link.url}" class="qa-btn" target="${target}">
+                        ${link.title}
+                    </a>
+                `;
+            });
+        }
+        document.addEventListener('DOMContentLoaded', loadDynamicContent);
+    </script>
 </body>
 </html>

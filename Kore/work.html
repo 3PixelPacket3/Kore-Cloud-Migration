@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Work Tracker</title>
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            
+            /* Status Colors */
+            --status-open: #3b82f6;
+            --status-progress: #f59e0b;
+            --status-hold: #ef4444;
+            --status-completed: #10b981;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app); color: var(--text-main);
+            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+        }
+
+        /* --- Global Header --- */
+        .global-header {
+            background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0;
+        }
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+
+        /* --- Main Content --- */
+        .main-container { padding: 40px 32px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+
+        /* Banner System */
+        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 200px; position: relative; margin-bottom: 24px; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 30px; box-sizing: border-box; color: white; }
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+
+        /* Buttons & Inputs */
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
+        .btn-primary:hover { background-color: var(--accent-hover); border: none; }
+        
+        select, input[type="text"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; }
+        select:focus, input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+
+        /* --- View 1: Dashboard (List) --- */
+        .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
+        .filters-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+        .filter-item { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .actions-group { display: flex; gap: 12px; }
+
+        /* Data Table */
+        .table-container { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: var(--bg-app); padding: 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-subtle); cursor: pointer; }
+        th:hover { color: var(--accent-primary); }
+        td { padding: 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; vertical-align: middle; }
+        tr:hover td { background-color: #f8fafc; cursor: pointer; }
+        
+        .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+
+        /* --- View 2: Editor (Form) --- */
+        #view-form { display: none; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full-width { grid-column: span 3; }
+        .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        
+        /* Rich Text Editor */
+        .editor-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
+        .editor-toolbar { background: var(--bg-app); border-bottom: 1px solid var(--border-subtle); padding: 8px; display: flex; gap: 8px; }
+        .editor-btn { background: transparent; border: 1px solid transparent; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; color: var(--text-secondary); transition: all 0.2s; }
+        .editor-btn:hover { background: #e2e8f0; color: var(--text-main); }
+        .editor-content { min-height: 250px; padding: 16px; background: var(--bg-surface); outline: none; font-size: 0.95rem; line-height: 1.6; }
+
+        .form-actions { display: flex; justify-content: flex-end; gap: 16px; }
+
+        /* --- Global Footer --- */
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item active">Operations ▼<div class="dropdown-content"><a href="apps.html">Apps</a><a href="work.html">Work Tracker</a><a href="passwords.html">Password Generator</a><a href="product-html.html">Product Long HTML Converter</a><a href="nebula.html">Nebula HTML Forge</a><a href="lod.html">LOD Validation Tool</a></div></div>
+                <div class="nav-item">Resources ▼<div class="dropdown-content"><a href="info-hub.html">Info Hub</a><a href="reports.html">Data/Reports</a></div></div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div id="view-dashboard">
+            <section class="hero-banner">
+                <img src="images/WorkTrackerBanner.jpg" alt="Work Tracker" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+                <div class="hero-overlay"><h2 class="hero-title">Work Tracker</h2></div>
+            </section>
+
+            <div class="toolbar">
+                <div class="filters-group">
+                    <div class="filter-item">
+                        <label>Status</label>
+                        <select id="filterStatus" onchange="renderTable()">
+                            <option value="All">All Statuses</option>
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>Priority</label>
+                        <select id="filterPriority" onchange="renderTable()">
+                            <option value="All">All Priorities</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>Request Type</label>
+                        <select id="filterType" onchange="renderTable()"><option value="All">All Types</option></select>
+                    </div>
+                    <div class="filter-item">
+                        <label>Account</label>
+                        <select id="filterAccount" onchange="renderTable()"><option value="All">All Accounts</option></select>
+                    </div>
+                </div>
+                <div class="actions-group">
+                    <button class="btn" onclick="exportCSV()">⬇️ Export CSV</button>
+                    <button class="btn btn-primary" onclick="openForm()">➕ Add Request</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Account</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tracker-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-form">
+            <section class="hero-banner">
+                <img src="images/WorkNewRequest.svg" alt="New Request" onerror="this.src=''; this.style.backgroundColor='#0f172a';">
+                <div class="hero-overlay"><h2 class="hero-title" id="form-title">New Request</h2></div>
+            </section>
+
+            <input type="hidden" id="ticketId">
+            <input type="hidden" id="createdDate">
+
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="reqTitle" placeholder="Brief description of the request...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Requestor</label>
+                    <input type="text" id="reqUser" placeholder="Name/Email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" id="reqDue">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="reqStatus">
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select id="reqPriority">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Account</label>
+                    <select id="reqAccount"></select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Request Type</label>
+                    <select id="reqType"></select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Notes & Details</label>
+                    <div class="editor-container">
+                        <div class="editor-toolbar">
+                            <button class="editor-btn" type="button" onclick="formatDoc('bold')" title="Bold">B</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('italic')" style="font-style:italic;" title="Italic">I</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('underline')" style="text-decoration:underline;" title="Underline">U</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
+                            <button class="editor-btn" type="button" onclick="addHtmlTemplate()" title="Insert Layout Template">&lt;/&gt; Insert HTML</button>
+                        </div>
+                        <div id="reqNotes" class="editor-content" contenteditable="true" placeholder="Enter request details, HTML, or standard text here..."></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn" onclick="closeForm()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveRequest()">Save Request</button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+
+    <script>
+        // --- 1. Settings & Configurations ---
+        // These will eventually pull from Settings/Azure DB
+        const configSettings = {
+            types: JSON.parse(localStorage.getItem('kore_set_types')) || ["Feature Update", "Bug Fix", "Content Load", "Maintenance", "Security Patch"],
+            accounts: JSON.parse(localStorage.getItem('kore_set_accounts')) || ["Internal Base", "Client Alpha", "Client Omega", "Stark Industries"]
+        };
+
+        // Initialize Dropdowns
+        function populateDropdowns() {
+            const typeFilter = document.getElementById('filterType');
+            const typeReq = document.getElementById('reqType');
+            const accFilter = document.getElementById('filterAccount');
+            const accReq = document.getElementById('reqAccount');
+
+            configSettings.types.forEach(t => {
+                typeFilter.add(new Option(t, t));
+                typeReq.add(new Option(t, t));
+            });
+            configSettings.accounts.forEach(a => {
+                accFilter.add(new Option(a, a));
+                accReq.add(new Option(a, a));
+            });
+        }
+
+        // --- 2. Database (Local Storage for Phase 1) ---
+        function getWorkItems() {
+            return JSON.parse(localStorage.getItem('kore_work_items')) || [];
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Open': return 'background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe;';
+                case 'In Progress': return 'background:#fffbeb; color:#d97706; border:1px solid #fde68a;';
+                case 'On Hold': return 'background:#fef2f2; color:#ef4444; border:1px solid #fecaca;';
+                case 'Completed': return 'background:#ecfdf5; color:#10b981; border:1px solid #a7f3d0;';
+                default: return 'background:#f1f5f9; color:#64748b;';
+            }
+        }
+
+        // --- 3. View Management (SPA Logic) ---
+        function renderTable() {
+            const items = getWorkItems();
+            const tbody = document.getElementById('tracker-body');
+            tbody.innerHTML = '';
+
+            // Get Filters
+            const fStatus = document.getElementById('filterStatus').value;
+            const fPriority = document.getElementById('filterPriority').value;
+            const fType = document.getElementById('filterType').value;
+            const fAccount = document.getElementById('filterAccount').value;
+
+            // Apply Filters
+            const filtered = items.filter(item => {
+                return (fStatus === 'All' || item.status === fStatus) &&
+                       (fPriority === 'All' || item.priority === fPriority) &&
+                       (fType === 'All' || item.type === fType) &&
+                       (fAccount === 'All' || item.account === fAccount);
+            });
+
+            // Sort by Date (Newest first)
+            filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:#94a3b8;">No requests match your current filters.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                tbody.innerHTML += `
+                    <tr onclick="openForm('${item.id}')">
+                        <td style="font-family:monospace; color:#64748b;">${item.id}</td>
+                        <td style="font-weight:600; color:#0f172a;">${item.title}</td>
+                        <td>${item.type}</td>
+                        <td>${item.account}</td>
+                        <td style="font-weight:600;">${item.priority}</td>
+                        <td><span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span></td>
+                        <td>${item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'N/A'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openForm(id = null) {
+            document.getElementById('view-dashboard').style.display = 'none';
+            document.getElementById('view-form').style.display = 'block';
+
+            if (id) {
+                // Edit Mode
+                document.getElementById('form-title').innerText = "Edit Request: " + id;
+                const items = getWorkItems();
+                const item = items.find(i => i.id === id);
+                
+                document.getElementById('ticketId').value = item.id;
+                document.getElementById('createdDate').value = item.created;
+                document.getElementById('reqTitle').value = item.title;
+                document.getElementById('reqUser').value = item.requestor;
+                document.getElementById('reqDue').value = item.dueDate;
+                document.getElementById('reqStatus').value = item.status;
+                document.getElementById('reqPriority').value = item.priority;
+                document.getElementById('reqAccount').value = item.account;
+                document.getElementById('reqType').value = item.type;
+                document.getElementById('reqNotes').innerHTML = item.notes;
+            } else {
+                // New Mode
+                document.getElementById('form-title').innerText = "New Request";
+                document.getElementById('ticketId').value = "";
+                document.getElementById('createdDate').value = new Date().toISOString();
+                document.getElementById('reqTitle').value = "";
+                
+                // Pre-fill requestor with Logged-in Azure User if available
+                const user = sessionStorage.getItem('kore_user_id') || "";
+                document.getElementById('reqUser').value = user;
+                
+                document.getElementById('reqDue').value = "";
+                document.getElementById('reqStatus').value = "Open";
+                document.getElementById('reqPriority').value = "Medium";
+                document.getElementById('reqNotes').innerHTML = "";
+            }
+        }
+
+        function closeForm() {
+            document.getElementById('view-form').style.display = 'none';
+            document.getElementById('view-dashboard').style.display = 'block';
+            renderTable();
+        }
+
+        // --- 4. Data Processing ---
+        function saveRequest() {
+            const title = document.getElementById('reqTitle').value.trim();
+            if (!title) return alert('Title is required to save the request.');
+
+            let items = getWorkItems();
+            const idInput = document.getElementById('ticketId').value;
+            
+            const payload = {
+                title: title,
+                requestor: document.getElementById('reqUser').value,
+                dueDate: document.getElementById('reqDue').value,
+                status: document.getElementById('reqStatus').value,
+                priority: document.getElementById('reqPriority').value,
+                account: document.getElementById('reqAccount').value,
+                type: document.getElementById('reqType').value,
+                notes: document.getElementById('reqNotes').innerHTML, // Saves HTML markup natively
+            };
+
+            if (idInput) {
+                // Update
+                const idx = items.findIndex(i => i.id === idInput);
+                payload.id = idInput;
+                payload.created = document.getElementById('createdDate').value;
+                items[idx] = payload;
+            } else {
+                // Create New
+                // Generates an ID like TKT-4921
+                payload.id = "TKT-" + Math.floor(1000 + Math.random() * 9000);
+                payload.created = document.getElementById('createdDate').value;
+                items.push(payload);
+            }
+
+            localStorage.setItem('kore_work_items', JSON.stringify(items));
+            closeForm();
+        }
+
+        function exportCSV() {
+            const items = getWorkItems();
+            if (items.length === 0) return alert('No items to export.');
+
+            const headers = ['ID', 'Title', 'Type', 'Account', 'Priority', 'Status', 'Due Date', 'Requestor'];
+            const rows = items.map(i => [
+                i.id, `"${i.title}"`, i.type, i.account, i.priority, i.status, i.dueDate, i.requestor
+            ]);
+
+            let csvContent = "data:text/csv;charset=utf-8," 
+                + headers.join(",") + "\n" 
+                + rows.map(e => e.join(",")).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Kore_Work_Export_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- 5. Rich Text Editor Logic ---
+        function formatDoc(cmd, value=null) {
+            document.execCommand(cmd, false, value);
+            document.getElementById('reqNotes').focus();
+        }
+
+        function addHtmlTemplate() {
+            // Inserts a clean, pre-styled HTML block into the notes for organized data entry
+            const template = `
+                <div style="background:#f8fafc; padding:10px; border-left:3px solid #0ea5e9; margin-bottom:10px;">
+                    <strong>Update:</strong><br>
+                    <em>Enter details here...</em>
+                </div><br>
+            `;
+            formatDoc('insertHTML', template);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            populateDropdowns();
+            renderTable();
+        });
+    </script>
+</body>
+</html>

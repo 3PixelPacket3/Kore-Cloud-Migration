@@ -17,12 +17,6 @@
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --radius-md: 12px;
             --radius-sm: 8px;
-            
-            /* Status Colors */
-            --status-open: #3b82f6;
-            --status-progress: #f59e0b;
-            --status-hold: #ef4444;
-            --status-completed: #10b981;
         }
 
         body {
@@ -32,11 +26,7 @@
         }
 
         /* --- Global Header --- */
-        .global-header {
-            background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0;
-        }
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
@@ -66,7 +56,7 @@
         select, input[type="text"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; }
         select:focus, input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
 
-        /* --- View 1: Dashboard (List) --- */
+        /* --- View 1: Dashboard --- */
         .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
         .filters-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
         .filter-item { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
@@ -76,26 +66,22 @@
         .table-container { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { background: var(--bg-app); padding: 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-subtle); cursor: pointer; }
-        th:hover { color: var(--accent-primary); }
         td { padding: 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; vertical-align: middle; }
         tr:hover td { background-color: #f8fafc; cursor: pointer; }
-        
         .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
 
-        /* --- View 2: Editor (Form) --- */
+        /* --- View 2: Form --- */
         #view-form { display: none; }
         .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group.full-width { grid-column: span 3; }
         .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
         
-        /* Rich Text Editor */
         .editor-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
         .editor-toolbar { background: var(--bg-app); border-bottom: 1px solid var(--border-subtle); padding: 8px; display: flex; gap: 8px; }
         .editor-btn { background: transparent; border: 1px solid transparent; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; color: var(--text-secondary); transition: all 0.2s; }
         .editor-btn:hover { background: #e2e8f0; color: var(--text-main); }
         .editor-content { min-height: 250px; padding: 16px; background: var(--bg-surface); outline: none; font-size: 0.95rem; line-height: 1.6; }
-
         .form-actions { display: flex; justify-content: flex-end; gap: 16px; }
 
         /* --- Global Footer --- */
@@ -128,8 +114,9 @@
             <div class="toolbar">
                 <div class="filters-group">
                     <div class="filter-item">
-                        <label>Status</label>
+                        <label>Status Filter</label>
                         <select id="filterStatus" onchange="renderTable()">
+                            <option value="Active" selected>Active Tasks (Open/Progress)</option>
                             <option value="All">All Statuses</option>
                             <option value="Open">Open</option>
                             <option value="In Progress">In Progress</option>
@@ -263,33 +250,23 @@
 
     <script>
         // --- 1. Settings & Configurations ---
-        // These will eventually pull from Settings/Azure DB
         const configSettings = {
             types: JSON.parse(localStorage.getItem('kore_set_types')) || ["Feature Update", "Bug Fix", "Content Load", "Maintenance", "Security Patch"],
             accounts: JSON.parse(localStorage.getItem('kore_set_accounts')) || ["Internal Base", "Client Alpha", "Client Omega", "Stark Industries"]
         };
 
-        // Initialize Dropdowns
         function populateDropdowns() {
             const typeFilter = document.getElementById('filterType');
             const typeReq = document.getElementById('reqType');
             const accFilter = document.getElementById('filterAccount');
             const accReq = document.getElementById('reqAccount');
 
-            configSettings.types.forEach(t => {
-                typeFilter.add(new Option(t, t));
-                typeReq.add(new Option(t, t));
-            });
-            configSettings.accounts.forEach(a => {
-                accFilter.add(new Option(a, a));
-                accReq.add(new Option(a, a));
-            });
+            configSettings.types.forEach(t => { typeFilter.add(new Option(t, t)); typeReq.add(new Option(t, t)); });
+            configSettings.accounts.forEach(a => { accFilter.add(new Option(a, a)); accReq.add(new Option(a, a)); });
         }
 
-        // --- 2. Database (Local Storage for Phase 1) ---
-        function getWorkItems() {
-            return JSON.parse(localStorage.getItem('kore_work_items')) || [];
-        }
+        // --- 2. Database ---
+        function getWorkItems() { return JSON.parse(localStorage.getItem('kore_work_items')) || []; }
 
         function getStatusColor(status) {
             switch(status) {
@@ -301,13 +278,23 @@
             }
         }
 
-        // --- 3. View Management (SPA Logic) ---
+        // Guarantees absolute uniqueness for new IDs
+        function generateUniqueTicketId(items) {
+            let newId;
+            let exists = true;
+            while(exists) {
+                newId = "TKT-" + Math.floor(10000 + Math.random() * 90000); // 5 digit unique
+                exists = items.some(i => i.id === newId);
+            }
+            return newId;
+        }
+
+        // --- 3. View Management ---
         function renderTable() {
             const items = getWorkItems();
             const tbody = document.getElementById('tracker-body');
             tbody.innerHTML = '';
 
-            // Get Filters
             const fStatus = document.getElementById('filterStatus').value;
             const fPriority = document.getElementById('filterPriority').value;
             const fType = document.getElementById('filterType').value;
@@ -315,7 +302,12 @@
 
             // Apply Filters
             const filtered = items.filter(item => {
-                return (fStatus === 'All' || item.status === fStatus) &&
+                let statusMatch = false;
+                if (fStatus === 'All') statusMatch = true;
+                else if (fStatus === 'Active') statusMatch = (item.status === 'Open' || item.status === 'In Progress');
+                else statusMatch = (item.status === fStatus);
+
+                return statusMatch &&
                        (fPriority === 'All' || item.priority === fPriority) &&
                        (fType === 'All' || item.type === fType) &&
                        (fAccount === 'All' || item.account === fAccount);
@@ -325,20 +317,20 @@
             filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
 
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:#94a3b8;">No requests match your current filters.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:#94a3b8; font-weight:500;">No tasks match your current filters.</td></tr>`;
                 return;
             }
 
             filtered.forEach(item => {
                 tbody.innerHTML += `
                     <tr onclick="openForm('${item.id}')">
-                        <td style="font-family:monospace; color:#64748b;">${item.id}</td>
+                        <td style="font-family:monospace; color:#64748b; font-weight:600;">${item.id}</td>
                         <td style="font-weight:600; color:#0f172a;">${item.title}</td>
                         <td>${item.type}</td>
                         <td>${item.account}</td>
                         <td style="font-weight:600;">${item.priority}</td>
                         <td><span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span></td>
-                        <td>${item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'N/A'}</td>
+                        <td>${item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '--'}</td>
                     </tr>
                 `;
             });
@@ -349,11 +341,9 @@
             document.getElementById('view-form').style.display = 'block';
 
             if (id) {
-                // Edit Mode
-                document.getElementById('form-title').innerText = "Edit Request: " + id;
                 const items = getWorkItems();
                 const item = items.find(i => i.id === id);
-                
+                document.getElementById('form-title').innerText = "Edit Request: " + id;
                 document.getElementById('ticketId').value = item.id;
                 document.getElementById('createdDate').value = item.created;
                 document.getElementById('reqTitle').value = item.title;
@@ -365,16 +355,11 @@
                 document.getElementById('reqType').value = item.type;
                 document.getElementById('reqNotes').innerHTML = item.notes;
             } else {
-                // New Mode
                 document.getElementById('form-title').innerText = "New Request";
                 document.getElementById('ticketId').value = "";
                 document.getElementById('createdDate').value = new Date().toISOString();
                 document.getElementById('reqTitle').value = "";
-                
-                // Pre-fill requestor with Logged-in Azure User if available
-                const user = sessionStorage.getItem('kore_user_id') || "";
-                document.getElementById('reqUser').value = user;
-                
+                document.getElementById('reqUser').value = sessionStorage.getItem('kore_user_id') || "";
                 document.getElementById('reqDue').value = "";
                 document.getElementById('reqStatus').value = "Open";
                 document.getElementById('reqPriority').value = "Medium";
@@ -404,19 +389,16 @@
                 priority: document.getElementById('reqPriority').value,
                 account: document.getElementById('reqAccount').value,
                 type: document.getElementById('reqType').value,
-                notes: document.getElementById('reqNotes').innerHTML, // Saves HTML markup natively
+                notes: document.getElementById('reqNotes').innerHTML,
             };
 
             if (idInput) {
-                // Update
                 const idx = items.findIndex(i => i.id === idInput);
                 payload.id = idInput;
                 payload.created = document.getElementById('createdDate').value;
                 items[idx] = payload;
             } else {
-                // Create New
-                // Generates an ID like TKT-4921
-                payload.id = "TKT-" + Math.floor(1000 + Math.random() * 9000);
+                payload.id = generateUniqueTicketId(items);
                 payload.created = document.getElementById('createdDate').value;
                 items.push(payload);
             }
@@ -430,41 +412,28 @@
             if (items.length === 0) return alert('No items to export.');
 
             const headers = ['ID', 'Title', 'Type', 'Account', 'Priority', 'Status', 'Due Date', 'Requestor'];
-            const rows = items.map(i => [
-                i.id, `"${i.title}"`, i.type, i.account, i.priority, i.status, i.dueDate, i.requestor
-            ]);
+            const rows = items.map(i => [ i.id, `"${i.title}"`, i.type, i.account, i.priority, i.status, i.dueDate, i.requestor ]);
 
-            let csvContent = "data:text/csv;charset=utf-8," 
-                + headers.join(",") + "\n" 
-                + rows.map(e => e.join(",")).join("\n");
-
-            const encodedUri = encodeURI(csvContent);
+            let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
+            link.setAttribute("href", encodeURI(csvContent));
             link.setAttribute("download", `Kore_Work_Export_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // --- 5. Rich Text Editor Logic ---
+        // --- 5. Editor ---
         function formatDoc(cmd, value=null) {
             document.execCommand(cmd, false, value);
             document.getElementById('reqNotes').focus();
         }
 
         function addHtmlTemplate() {
-            // Inserts a clean, pre-styled HTML block into the notes for organized data entry
-            const template = `
-                <div style="background:#f8fafc; padding:10px; border-left:3px solid #0ea5e9; margin-bottom:10px;">
-                    <strong>Update:</strong><br>
-                    <em>Enter details here...</em>
-                </div><br>
-            `;
+            const template = `<div style="background:#f8fafc; padding:10px; border-left:3px solid #0ea5e9; margin-bottom:10px;"><strong>Update:</strong><br><em>Enter details here...</em></div><br>`;
             formatDoc('insertHTML', template);
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             populateDropdowns();
             renderTable();

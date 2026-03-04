@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Application Directory</title>
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        /* PC-Only Constraint Enforced */
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-width: 1024px; /* Prevents mobile shrinking */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Global Header (Standardized) --- */
+        .global-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item {
+            text-decoration: none; color: var(--text-secondary); padding: 0 16px;
+            display: flex; align-items: center; height: 100%; font-weight: 500;
+            font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease;
+            cursor: pointer; position: relative;
+        }
+        .nav-item:hover { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        
+        .dropdown-content {
+            display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface);
+            min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle);
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101;
+        }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a {
+            color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500;
+        }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+
+        .search-container { display: flex; align-items: center; }
+        .search-bar {
+            padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px;
+            width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+            background-repeat: no-repeat; background-position: 12px center;
+        }
+        .search-bar:focus { width: 320px; border-color: var(--accent-primary); background-color: var(--bg-surface); }
+
+        /* --- Main Content (Apps Layout) --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px; margin-bottom: 30px; }
+        .page-title { margin: 0; font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+        
+        .btn-add {
+            background-color: var(--accent-primary); color: white; border: none; padding: 10px 20px;
+            border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: background 0.2s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-add:hover { background-color: var(--accent-hover); }
+
+        /* Application Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+        }
+        
+        .app-card {
+            background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            padding: 24px; text-align: center; text-decoration: none; color: var(--text-main);
+            box-shadow: var(--shadow-sm); transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center;
+        }
+        .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); }
+        .app-icon { width: 48px; height: 48px; background-color: #f0f9ff; color: var(--accent-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; font-weight: bold; }
+        .app-name { margin: 0; font-weight: 600; font-size: 1.05rem; }
+        .app-url { margin: 8px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+        /* --- Global Footer --- */
+        .global-footer {
+            background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle);
+            padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;
+            flex-shrink: 0; font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                
+                <div class="nav-item">
+                    Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product Long Description HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search operations, guides...">
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="page-header">
+            <h2 class="page-title">Application Directory</h2>
+            <button class="btn-add" onclick="document.getElementById('add-app-modal').style.display='flex'">+ Add Application</button>
+        </div>
+
+        <div class="apps-grid" id="apps-container">
+            </div>
+    </main>
+
+    <footer class="global-footer">
+        &copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.
+    </footer>
+
+    <div id="add-app-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(2px);"><div style="background:#fff; padding:32px; border-radius:12px; width:400px; display:flex; flex-direction:column; gap:20px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);"><h3 style="margin:0; font-size:1.4rem; color:#0f172a;">New Shortcut</h3><input type="text" id="newAppName" placeholder="Application Name" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><input type="url" id="newAppUrl" placeholder="URL (e.g., https://example.com)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px;"><button onclick="document.getElementById('add-app-modal').style.display='none'" style="padding:10px 20px; background:transparent; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight:600; color:#475569;">Cancel</button><button onclick="saveApp()" style="padding:10px 20px; background:#0ea5e9; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Save Link</button></div></div></div>
+
+    <script>
+        // 1. Initial/Default Company Apps
+        const defaultApps = [
+            { name: "BradyPLUS Portal", url: "https://www.bradyplus.com" },
+            { name: "iSeries Login", url: "#" },
+            { name: "SharePoint Core", url: "https://starkindustries.sharepoint.com" }
+        ];
+
+        // 2. Load Routine
+        function loadApps() {
+            // Check local storage for custom apps; if none, use defaults
+            let savedApps = JSON.parse(localStorage.getItem('kore_custom_apps'));
+            if (!savedApps) {
+                savedApps = defaultApps;
+                localStorage.setItem('kore_custom_apps', JSON.stringify(savedApps));
+            }
+
+            const container = document.getElementById('apps-container');
+            container.innerHTML = ''; // Clear existing
+
+            savedApps.forEach(app => {
+                // Generate a quick initial for the icon
+                const initial = app.name.charAt(0).toUpperCase();
+                
+                container.innerHTML += `
+                    <a href="${app.url}" class="app-card" target="_blank">
+                        <div class="app-icon">${initial}</div>
+                        <h4 class="app-name">${app.name}</h4>
+                        <p class="app-url">${app.url.replace(/^https?:\/\//, '')}</p>
+                    </a>
+                `;
+            });
+        }
+
+        // 3. Save New App Routine
+        function saveApp() {
+            const nameInput = document.getElementById('newAppName').value.trim();
+            let urlInput = document.getElementById('newAppUrl').value.trim();
+
+            if (!nameInput || !urlInput) return alert('Please enter both a name and a URL.');
+
+            // Ensure valid URL prefix
+            if (!urlInput.startsWith('http://') && !urlInput.startsWith('https://')) {
+                urlInput = 'https://' + urlInput;
+            }
+
+            const currentApps = JSON.parse(localStorage.getItem('kore_custom_apps')) || [];
+            currentApps.push({ name: nameInput, url: urlInput });
+            
+            // Save locally (Will route to Azure DB later)
+            localStorage.setItem('kore_custom_apps', JSON.stringify(currentApps));
+
+            // Reset UI
+            document.getElementById('newAppName').value = '';
+            document.getElementById('newAppUrl').value = '';
+            document.getElementById('add-app-modal').style.display = 'none';
+            
+            loadApps();
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', loadApps);
+    </script>
+</body>
+</html>

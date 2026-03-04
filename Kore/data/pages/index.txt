@@ -1,0 +1,22 @@
+## Kore – Complete Platform Overview
+
+Kore is an offline‑first, browser‑based personal productivity and knowledge system.
+It is designed to act as a **single control center** for daily work, reference material,
+documentation, and lightweight reporting — without requiring a server or account system.
+
+### Core Design Principles
+- **Offline-first**: Everything runs locally in your browser.
+- **Portable**: The entire platform can be zipped, moved, and run anywhere.
+- **Structured but flexible**: Data is organized, but never locked in.
+- **Human-scaled**: Built for one person or a small team, not an enterprise stack.
+
+### Core Modules
+- Home & Navigation
+- Work Tracker
+- Info Hub
+- Documents Library
+- Apps & Tools Hub
+- Reports
+- Ask Kore (AI assistant)
+
+Each module is intentionally simple on its own, but powerful when used together.

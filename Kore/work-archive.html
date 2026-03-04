@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <nav class="top-nav">
+    <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+      <a class="nav-btn" href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="work.html" class="nav-dropdown-item">Work Tracker</a>
+          <a href="docs.html" class="nav-dropdown-item">Docs Library</a>
+          <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="apps.html" class="nav-dropdown-item">Apps &amp; Tools</a>
+          <a href="reports.html" class="nav-dropdown-item">Data &amp; Reports</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+        <div class="nav-dropdown-menu" id="infoHubMenu">
+          <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+          <div class="nav-dropdown-divider"></div>
+        </div>
+      </div>
+      <a href="about.html" class="nav-btn">About</a>
+    </div>
+
+    <div class="nav-right">
+      <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+      <a href="settings.html" class="profile-pill">
+        <div class="profile-avatar">
+          <img id="navProfileAvatar" alt="Profile avatar" />
+        </div>
+        <span id="navCurrentProfileName">User</span>
+        <span class="profile-pill-sep">&bull;</span>
+        <span class="profile-pill-action">Settings</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<main class="centered">
+  <section class="card work-card">
+    <header class="work-header">
+      <div class="work-header-text">
+        <h1>Work Tracker Archive</h1>
+        <p class="work-subtitle">
+          View, restore, or permanently delete archived Work Tracker requests. Archived items are hidden from the main queue
+          but kept for history, Ask Kore context, and backups until you hard delete them here.
+        </p>
+      </div>
+    </header>
+
+    <div class="work-hero">
+      <div id="workArchiveHeroImage" class="work-hero-image"></div>
+    </div>
+
+    <div class="work-filters" style="margin-top:1.5rem;">
+      <div class="work-filters-row">
+        <p class="settings-hint">
+          Select one or more archived requests below, then choose Restore or Delete. Restore returns the item to the main
+          Work Tracker queue. Delete removes it permanently.
+        </p>
+      </div>
+    </div>
+
+    <div class="work-list-wrapper">
+      <div id="workArchiveList" class="work-list"></div>
+      <div id="workArchiveEmpty" class="work-empty" style="display:none;">
+        No archived Work requests yet. Archive a request from the Work Tracker to see it here.
+      </div>
+    </div>
+
+    <div class="kore-modal-footer" style="margin-top:1.5rem; padding:0;">
+      <div class="kore-modal-footer-left">
+        <button type="button" id="refreshWorkArchiveBtn" class="secondary-btn">Refresh</button>
+      </div>
+      <div class="kore-modal-footer-right">
+        <button type="button" id="restoreWorkArchiveBtn" class="secondary-btn">Restore Selected</button>
+        <button type="button" id="deleteWorkArchiveBtn" class="danger-btn">Delete Selected</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<link rel="stylesheet" href="css/ai.css">
+<script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/work-archive.js"></script>
+<script src="js/ai.js"></script>
+
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+<script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+      KoreHero.loadHeroImage("workArchiveHeroImage", "WorkTrackerBanner");
+    }
+  })();
+</script>
+</body>
+</html>

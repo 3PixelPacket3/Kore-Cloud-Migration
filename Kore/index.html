@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Top Navigation -->
+  <header>
+    <nav class="top-nav">
+      <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+        <a class="nav-btn" href="index.html">Home</a>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+          <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+    </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+          <div class="nav-dropdown-menu" id="infoHubMenu">
+            <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+            <div class="nav-dropdown-divider"></div>
+            <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
+          </div>
+        </div>
+        <a class="nav-btn" href="about.html">About</a>
+      </div>
+      <div class="nav-right">
+        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+        <a href="settings.html" class="profile-pill">
+          <div class="profile-avatar">
+            <img id="navProfileAvatar" alt="Profile avatar" />
+          </div>
+          <span id="navCurrentProfileName">User</span>
+          <span class="profile-pill-sep">&bull;</span>
+          <span class="profile-pill-action">Settings</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Centered Home Content -->
+  <main class="centered">
+    <section class="card">
+      <h1>Kore</h1>
+
+      <!-- Home Shortcuts & Search -->
+      <div class="home-actions">
+        <div class="home-actions-row">
+          <button type="button" id="homeSearchBtn" class="home-action-btn primary-action">Search the Web</button>
+          <button type="button" id="homeEmailBtn" class="home-action-btn">Email</button>
+          <button type="button" id="homeAppsBtn" class="home-action-btn">Apps &amp; Tools</button>
+          <button type="button" id="homeWorkBtn" class="home-action-btn">Work Queue</button>
+          <button type="button" id="homeDocsBtn" class="home-action-btn">Docs Library</button>
+        </div>
+        <div id="homeSearchPanel" class="home-search-panel" style="display:none;">
+          <input type="text" id="homeSearchInput" placeholder="Search Google..." />
+          <button type="button" id="homeSearchGoBtn" class="primary-btn">Go</button>
+        </div>
+      </div>
+
+      <!-- Hero Image & Upload -->
+      <img id="heroImage" src="images/HomePage.png" alt="Home Page Visual" class="home-image">
+      <input type="file" id="imageUpload" accept="image/png,image/jpeg,image/jpg" style="display:none;">
+
+      <!-- Clock & Date -->
+      <div id="clock" class="clock"></div>
+      <div id="date" class="date"></div>
+
+      <div id="homeMessage" class="home-message">
+        <p><strong>KORE</strong> – Knowledge Organization &amp; Retrieval Engine. Your personal work and knowledge system.</p>
+      </div>
+
+      
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+    <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+  </footer>
+
+  <link rel="stylesheet" href="css/ai.css">
+  <script src="js/version.js"></script>
+  <script src="js/profiles.js"></script>
+  <script src="js/backup.js"></script>
+  <script src="js/main.js"></script>
+  <script src="data/kore_kb.js"></script>
+  <script src="js/info-hub.js"></script>
+  <script src="js/ai.js"></script>
+
+  <!-- Ask Kore Widget -->
+  <div id="ai-widget">
+    <button id="chat-btn">Ask Kore</button>
+    <div id="chat-box" style="display:none;">
+      <div class="ai-header">
+        <span class="ai-header-title">Ask Kore</span>
+        <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+      </div>
+      <div class="ai-controls">
+        <label for="askScope" class="ai-scope-label">Scope:</label>
+        <select id="askScope" class="ai-scope-select">
+          <option value="all" selected>Everything</option>
+          <option value="kb">Help &amp; Core Pages</option>
+          <option value="info">Info Hub Guides</option>
+        </select>
+      </div>
+      <div id="chat-output"></div>
+      <input type="text" id="chat-input" placeholder="Ask Kore..."/>
+    </div>
+  </div>
+
+</body>
+</html>

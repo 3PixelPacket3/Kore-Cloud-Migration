@@ -1,0 +1,213 @@
+GroupCode,Customer#,ItemNumber,Quantity,CustomerPO,Name,ShiptoAddress1,ShiptoAddress2,ShiptoAddress3,City,State,ZIP,Country,Contactname,Contact,OrderType,ServiceLevelofShipment,AllocationRule,CustomerInHandsDate,OnorBeforeIndicator(OorB),MustShipDate,AddressOver-Ride,Carrier,ShipFromWarehouse,GL-Code,ConfirmationEmail,ShipConfirmationEmail,Site
+FRRA,99501793,JF1503,1,FRYYRACE26-01,Fry's,Fry's,3100 N Glassford Rd,,Prescott Valley,AZ,86314,US,,9284453010,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-01,Fry's,Fry's,3100 N Glassford Rd,,Prescott Valley,AZ,86314,US,,9284453010,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-01,Fry's,Fry's,3100 N Glassford Rd,,Prescott Valley,AZ,86314,US,,9284453010,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-02,Fry's,Fry's,26300 Norterra Pkwy,,Phoenix,AZ,85326,US,,9282517070,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-02,Fry's,Fry's,26300 Norterra Pkwy,,Phoenix,AZ,85326,US,,9282517070,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-02,Fry's,Fry's,26300 Norterra Pkwy,,Phoenix,AZ,85326,US,,9282517070,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-03,Fry's,Fry's,4724 N 20Th St,,Phoenix,AZ,85016,US,,6022630766,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-03,Fry's,Fry's,4724 N 20Th St,,Phoenix,AZ,85016,US,,6022630766,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-03,Fry's,Fry's,4724 N 20Th St,,Phoenix,AZ,85016,US,,6022630766,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-04,Fry's,Fry's,1455 N Higley Rd,,Gilbert,AZ,85234,US,,4808922202,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-04,Fry's,Fry's,1455 N Higley Rd,,Gilbert,AZ,85234,US,,4808922202,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-04,Fry's,Fry's,1455 N Higley Rd,,Gilbert,AZ,85234,US,,4808922202,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-05,Fry's,Fry's,2727 W Bell Rd,,Phoenix,AZ,85023,US,,6028962500,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-05,Fry's,Fry's,2727 W Bell Rd,,Phoenix,AZ,85023,US,,6028962500,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-05,Fry's,Fry's,2727 W Bell Rd,,Phoenix,AZ,85023,US,,6028962500,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-06,Fry's,Fry's,3246 E Bell Rd,,Phoenix,AZ,85032,US,,6027654600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-06,Fry's,Fry's,3246 E Bell Rd,,Phoenix,AZ,85032,US,,6027654600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-06,Fry's,Fry's,3246 E Bell Rd,,Phoenix,AZ,85032,US,,6027654600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-07,Fry's,Fry's,1935 N Stapley Dr,,Mesa,AZ,85203,US,,4806104140,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-07,Fry's,Fry's,1935 N Stapley Dr,,Mesa,AZ,85203,US,,4806104140,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-07,Fry's,Fry's,1935 N Stapley Dr,,Mesa,AZ,85203,US,,4806104140,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-08,Fry's,Fry's,1845 E Baseline Road,,Gilbert,AZ,85234,US,,4805393700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-08,Fry's,Fry's,1845 E Baseline Road,,Gilbert,AZ,85234,US,,4805393700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-08,Fry's,Fry's,1845 E Baseline Road,,Gilbert,AZ,85234,US,,4805393700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-09,Fry's,Fry's,6611 W Bell Rd,,Glendale,AZ,85308,US,,6233342940,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-09,Fry's,Fry's,6611 W Bell Rd,,Glendale,AZ,85308,US,,6233342940,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-09,Fry's,Fry's,6611 W Bell Rd,,Glendale,AZ,85308,US,,6233342940,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-10,Fry's,Fry's,22265 E Queen Creek Road,,Queen Creek,AZ,85367,US,,6024574315,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-10,Fry's,Fry's,22265 E Queen Creek Road,,Queen Creek,AZ,85367,US,,6024574315,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-10,Fry's,Fry's,22265 E Queen Creek Road,,Queen Creek,AZ,85367,US,,6024574315,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-100,Fry's,Fry's,20427 N Hayden Rd,,Scottsdale,AZ,85255,US,,4804192240,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-101,Fry's,Fry's,11701 W Lone Mountain Pkwy,,Peoria,AZ,85383,US,,4803722050,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-11,Fry's,Fry's,25401 N LakePleasant Pkwy,,Peoria,AZ,85383,US,,6232352350,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-11,Fry's,Fry's,25401 N LakePleasant Pkwy,,Peoria,AZ,85383,US,,6232352350,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-11,Fry's,Fry's,25401 N LakePleasant Pkwy,,Peoria,AZ,85383,US,,6232352350,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-12,Fry's,Fry's,4075 E Williams Field Rd,,Gilbert,AZ,85295,US,,4803479812,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-12,Fry's,Fry's,4075 E Williams Field Rd,,Gilbert,AZ,85295,US,,4803479812,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-12,Fry's,Fry's,4075 E Williams Field Rd,,Gilbert,AZ,85295,US,,4803479812,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-13,Fry's,Fry's,150 East Old West HWY,,Apache Junction,AZ,85119,US,,4802882140,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-13,Fry's,Fry's,150 East Old West HWY,,Apache Junction,AZ,85119,US,,4802882140,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-13,Fry's,Fry's,150 East Old West HWY,,Apache Junction,AZ,85119,US,,4802882140,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-14,Fry's,Fry's,13730 W Camelback Rd,,Litchfield Park,AZ,85340,US,,6233347735,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-14,Fry's,Fry's,13730 W Camelback Rd,,Litchfield Park,AZ,85340,US,,6233347735,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-14,Fry's,Fry's,13730 W Camelback Rd,,Litchfield Park,AZ,85340,US,,6233347735,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-15,Fry's,Fry's,2858 N Pinal Ave,,Casa Grande,AZ,85222,US,,5204264700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-15,Fry's,Fry's,2858 N Pinal Ave,,Casa Grande,AZ,85222,US,,5204264700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-15,Fry's,Fry's,2858 N Pinal Ave,,Casa Grande,AZ,85222,US,,5204264700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-16,Fry's,Fry's,20797 N John Wayne Parkway,,Maricopa,AZ,85239,US,,5205686200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-16,Fry's,Fry's,20797 N John Wayne Parkway,,Maricopa,AZ,85239,US,,5205686200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1950,1,FRYYRACE26-16,Fry's,Fry's,20797 N John Wayne Parkway,,Maricopa,AZ,85239,US,,5205686200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-17,Fry's,Fry's,13982 West Waddell St,,Surprise,AZ,85379,US,,6235379630,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-17,Fry's,Fry's,13982 West Waddell St,,Surprise,AZ,85379,US,,6235379630,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-17,Fry's,Fry's,13982 West Waddell St,,Surprise,AZ,85379,US,,6235379630,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-18,Fry's,Fry's,11350 W Tangerine Rd,,Marana,AZ ,85653,US,,5206356800,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1937,1,FRYYRACE26-18,Fry's,Fry's,11350 W Tangerine Rd,,Marana,AZ ,85653,US,,5206356800,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-18,Fry's,Fry's,11350 W Tangerine Rd,,Marana,AZ ,85653,US,,5206356800,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1408,1,FRYYRACE26-19,Fry's,Fry's,16400 W Pat Tillman Blvd,,Suprise,AZ,85326,US,,4808635615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-19,Fry's,Fry's,16400 W Pat Tillman Blvd,,Suprise,AZ,85326,US,,4808635615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-19,Fry's,Fry's,16400 W Pat Tillman Blvd,,Suprise,AZ,85326,US,,4808635615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1408,1,FRYYRACE26-20,Fry's,Fry's,15950 S Rancho Sahuarita,,Sahuarita,AZ,85629,US,,5206487700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-20,Fry's,Fry's,15950 S Rancho Sahuarita,,Sahuarita,AZ,85629,US,,5206487700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-20,Fry's,Fry's,15950 S Rancho Sahuarita,,Sahuarita,AZ,85629,US,,5206487700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1408,1,FRYYRACE26-21,Fry's,Fry's,15215  N Cotton Lane,,Surprise,AZ,85388,US,,6234557900,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-21,Fry's,Fry's,15215  N Cotton Lane,,Surprise,AZ,85388,US,,6234557900,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-21,Fry's,Fry's,15215  N Cotton Lane,,Surprise,AZ,85388,US,,6234557900,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1408,1,FRYYRACE26-22,Fry's,Fry's,2929 E Ocotillo Rd,,Chandler,AZ,85249,US,,4805668875,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-22,Fry's,Fry's,2929 E Ocotillo Rd,,Chandler,AZ,85249,US,,4805668875,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-22,Fry's,Fry's,2929 E Ocotillo Rd,,Chandler,AZ,85249,US,,4805668875,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-23,Fry's,Fry's,2727 S Signal Butte Rd,,Mesa,AZ,85209,US,,4804817200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-23,Fry's,Fry's,2727 S Signal Butte Rd,,Mesa,AZ,85209,US,,4804817200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-23,Fry's,Fry's,2727 S Signal Butte Rd,,Mesa,AZ,85209,US,,4804817200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-24,Fry's,Fry's,12100 N Thornydale Rd,,Marana,AZ,85653,US,,5205726040,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-24,Fry's,Fry's,12100 N Thornydale Rd,,Marana,AZ,85653,US,,5205726040,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-24,Fry's,Fry's,12100 N Thornydale Rd,,Marana,AZ,85653,US,,5205726040,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-25,Fry's,Fry's,19600 W Indian School Rd,,Buckeye,AZ,85396,US,,6232657200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-25,Fry's,Fry's,19600 W Indian School Rd,,Buckeye,AZ,85396,US,,6232657200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-25,Fry's,Fry's,19600 W Indian School Rd,,Buckeye,AZ,85396,US,,6232657200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-26,Fry's,Fry's,25105 S Ellsworth Rd,,Queen Creek,AZ,85142,US,,4804287615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-26,Fry's,Fry's,25105 S Ellsworth Rd,,Queen Creek,AZ,85142,US,,4804287615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-26,Fry's,Fry's,25105 S Ellsworth Rd,,Queen Creek,AZ,85142,US,,4804287615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-27,Fry's,Fry's,2800 W Dove Valley Rd,,Phoenix,AZ,85085,US,,4809946230,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-27,Fry's,Fry's,2800 W Dove Valley Rd,,Phoenix,AZ,85085,US,,4809946230,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-27,Fry's,Fry's,2800 W Dove Valley Rd,,Phoenix,AZ,85085,US,,4809946230,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-28,Fry's,Fry's,1311 E Bell Rd,,Phoenix,AZ,85022,US,,6025945030,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-28,Fry's,Fry's,1311 E Bell Rd,,Phoenix,AZ,85022,US,,6025945030,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-28,Fry's,Fry's,1311 E Bell Rd,,Phoenix,AZ,85022,US,,6025945030,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-29,Fry's,Fry's,39508 N Daisy Mountain Drive,,Phoenix,AZ,85086,US,,6235517220,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-29,Fry's,Fry's,39508 N Daisy Mountain Drive,,Phoenix,AZ,85086,US,,6235517220,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-29,Fry's,Fry's,39508 N Daisy Mountain Drive,,Phoenix,AZ,85086,US,,6235517220,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-30,Fry's,Fry's,11425 W Buckeye Rd,,Avondale,AZ,85323,US,,6239076160,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-30,Fry's,Fry's,11425 W Buckeye Rd,,Avondale,AZ,85323,US,,6239076160,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-30,Fry's,Fry's,11425 W Buckeye Rd,,Avondale,AZ,85323,US,,6239076160,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-31,Fry's,Fry's,8080 S HOUGHTON RD,,Tucson,AZ,85747,US,,5206631960,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-31,Fry's,Fry's,8080 S HOUGHTON RD,,Tucson,AZ,85747,US,,5206631960,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-31,Fry's,Fry's,8080 S HOUGHTON RD,,Tucson,AZ,85747,US,,5206631960,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-32,Fry's,Fry's,4025 E Thunderbird,,Phoenix,AZ,85032,US,,6029531615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-32,Fry's,Fry's,4025 E Thunderbird,,Phoenix,AZ,85032,US,,6029531615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-32,Fry's,Fry's,4025 E Thunderbird,,Phoenix,AZ,85032,US,,6029531615,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-33,Fry's,Fry's,3255 S Rural Rd,,Tempe,AZ,85282,US,,4808297799,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-33,Fry's,Fry's,3255 S Rural Rd,,Tempe,AZ,85282,US,,4808297799,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-33,Fry's,Fry's,3255 S Rural Rd,,Tempe,AZ,85282,US,,4808297799,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-34,Fry's,Fry's,10450 N 90Th St,,Scottsdale,AZ,85258,US,,4806610001,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-34,Fry's,Fry's,10450 N 90Th St,,Scottsdale,AZ,85258,US,,4806610001,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-34,Fry's,Fry's,10450 N 90Th St,,Scottsdale,AZ,85258,US,,4806610001,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-35,Fry's,Fry's,4204 W Cactus,,Phoenix,AZ,85029,US,,6024399034,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-35,Fry's,Fry's,4204 W Cactus,,Phoenix,AZ,85029,US,,6024399034,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-35,Fry's,Fry's,4204 W Cactus,,Phoenix,AZ,85029,US,,6024399034,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-36,Fry's,Fry's,4707 E Shea Blvd,,Phoenix,AZ,85028,US,,4803673940,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-36,Fry's,Fry's,4707 E Shea Blvd,,Phoenix,AZ,85028,US,,4803673940,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1951,1,FRYYRACE26-36,Fry's,Fry's,4707 E Shea Blvd,,Phoenix,AZ,85028,US,,4803673940,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-37,Fry's,Fry's,9900 S Rural Rd,,Tempe,AZ,85284,US,,4807836200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-37,Fry's,Fry's,9900 S Rural Rd,,Tempe,AZ,85284,US,,4807836200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-37,Fry's,Fry's,9900 S Rural Rd,,Tempe,AZ,85284,US,,4807836200,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-38,Fry's,Fry's,4625 S Miller Rd,,Buckeye,AZ,85326,US,,4803517440,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-38,Fry's,Fry's,4625 S Miller Rd,,Buckeye,AZ,85326,US,,4803517440,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1951,1,FRYYRACE26-38,Fry's,Fry's,4625 S Miller Rd,,Buckeye,AZ,85326,US,,4803517440,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-39,Fry's,Fry's,16371 W Cactus Rd,,Surprise,AZ,85388,US,,4803970160,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-39,Fry's,Fry's,16371 W Cactus Rd,,Surprise,AZ,85388,US,,4803970160,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1951,1,FRYYRACE26-39,Fry's,Fry's,16371 W Cactus Rd,,Surprise,AZ,85388,US,,4803970160,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-40,Fry's,Fry's,1300 Watson Rd,,Buckeye,AZ,85326,US,,6236916600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-40,Fry's,Fry's,1300 Watson Rd,,Buckeye,AZ,85326,US,,6236916600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1951,1,FRYYRACE26-40,Fry's,Fry's,1300 Watson Rd,,Buckeye,AZ,85326,US,,6236916600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-41,Fry's,Fry's,16380 W Yuma Road,,Goodyear,AZ,85338,US,,6239254440,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-41,Fry's,Fry's,16380 W Yuma Road,,Goodyear,AZ,85338,US,,6239254440,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1951,1,FRYYRACE26-41,Fry's,Fry's,16380 W Yuma Road,,Goodyear,AZ,85338,US,,6239254440,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-42,Fry's,Fry's,155 W Combs Rd,,Queen Creek,AZ,85242,US,,4804746600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-42,Fry's,Fry's,155 W Combs Rd,,Queen Creek,AZ,85242,US,,4804746600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1951,1,FRYYRACE26-42,Fry's,Fry's,155 W Combs Rd,,Queen Creek,AZ,85242,US,,4804746600,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,2,FRYYRACE26-43,Fry's,Fry's,11203 E So Frontage Rd,,Yuma,AZ,85367,US,,9283051922,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,2,FRYYRACE26-43,Fry's,Fry's,11203 E So Frontage Rd,,Yuma,AZ,85367,US,,9283051922,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1949,1,FRYYRACE26-43,Fry's,Fry's,11203 E So Frontage Rd,,Yuma,AZ,85367,US,,9283051922,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-44,Fry's,Fry's,7770 E Mcdowell,,Scottsdale,AZ,85257,US,,4809414088,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-44,Fry's,Fry's,7770 E Mcdowell,,Scottsdale,AZ,85257,US,,4809414088,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-45,Fry's,Fry's,18420 N 19Th Ave,,Phoenix,AZ,85023,US,,6029935960,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-45,Fry's,Fry's,18420 N 19Th Ave,,Phoenix,AZ,85023,US,,6029935960,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-46,Fry's,Fry's,4150 E 22Nd St,,Tucson,AZ,85711,US,,5207451553,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-46,Fry's,Fry's,4150 E 22Nd St,,Tucson,AZ,85711,US,,5207451553,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-47,Fry's,Fry's,10661 N Oracle Rd,,Oro Valley,AZ,85737,US,,5207426663,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-47,Fry's,Fry's,10661 N Oracle Rd,,Oro Valley,AZ,85737,US,,5207426663,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-48,Fry's,Fry's,1835 E Guadalupe,,Tempe,AZ,85283,US,,4808387023,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-48,Fry's,Fry's,1835 E Guadalupe,,Tempe,AZ,85283,US,,4808387023,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-49,Fry's,Fry's,5941 E Mckellips,,Mesa,AZ,85215,US,,4808308949,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-49,Fry's,Fry's,5941 E Mckellips,,Mesa,AZ,85215,US,,4808308949,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-50,Fry's,Fry's,3616 E Ray Rd,,Phoenix,AZ,85044,US,,4807060601,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-50,Fry's,Fry's,3616 E Ray Rd,,Phoenix,AZ,85044,US,,4807060601,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-51,Fry's,Fry's,3770 W Ina Rd,,Tucson,AZ,85741,US,,5207442472,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-51,Fry's,Fry's,3770 W Ina Rd,,Tucson,AZ,85741,US,,5207442472,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-52,Fry's,Fry's,9401 E 22Nd St,,Tucson,AZ,85710,US,,5207218575,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-52,Fry's,Fry's,9401 E 22Nd St,,Tucson,AZ,85710,US,,5207218575,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-53,Fry's,Fry's,7455 W Cactus Rd,,Peoria,AZ,85345,US,,6234860120,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-53,Fry's,Fry's,7455 W Cactus Rd,,Peoria,AZ,85345,US,,6234860120,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-54,Fry's,Fry's,1385 E Florence Blvd,,Casa Grande,AZ,85222,US,,5208361701,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-54,Fry's,Fry's,1385 E Florence Blvd,,Casa Grande,AZ,85222,US,,5208361701,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-55,Fry's,Fry's,1950 W Ray Rd,,Chandler,AZ,85224,US,,4808147732,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-55,Fry's,Fry's,1950 W Ray Rd,,Chandler,AZ,85224,US,,4808147732,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-56,Fry's,Fry's,855 W Warner Rd,,Gilbert,AZ,85233,US,,4808137388,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-56,Fry's,Fry's,855 W Warner Rd,,Gilbert,AZ,85233,US,,4808137388,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-57,Fry's,Fry's,4842 E Bell Rd,,Scottsdale,AZ,85254,US,,6028670353,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-57,Fry's,Fry's,4842 E Bell Rd,,Scottsdale,AZ,85254,US,,6028670353,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-58,Fry's,Fry's,4351 E Hwy 90,,Sierra Vista,AZ,85635,US,,5204580989,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-58,Fry's,Fry's,4351 E Hwy 90,,Sierra Vista,AZ,85635,US,,5204580989,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-59,Fry's,Fry's,20220 N 59Th Ave,,Glendale,AZ,85308,US,,6238253111,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-59,Fry's,Fry's,20220 N 59Th Ave,,Glendale,AZ,85308,US,,6238253111,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-60,Fry's,Fry's,15510 W Bell Rd,,Surprise,AZ,85374,US,,6235442985,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-60,Fry's,Fry's,15510 W Bell Rd,,Surprise,AZ,85374,US,,6235442985,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-61,Fry's,Fry's,554 W Baseline,,Mesa,AZ,85210,US,,4809699299,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-61,Fry's,Fry's,554 W Baseline,,Mesa,AZ,85210,US,,4809699299,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-62,Fry's,Fry's,714 S Val Vista,,Gilbert,AZ,85296,US,,4806546968,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-62,Fry's,Fry's,714 S Val Vista,,Gilbert,AZ,85296,US,,4806546968,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-63,Fry's,Fry's,4815 E Carefree Hwy,,Phoenix,AZ,85085,US,,4805750693,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-63,Fry's,Fry's,4815 E Carefree Hwy,,Phoenix,AZ,85085,US,,4805750693,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-64,Fry's,Fry's,2010 S Alma School,,Chandler,AZ,85248,US,,4809177596,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-64,Fry's,Fry's,2010 S Alma School,,Chandler,AZ,85248,US,,4809177596,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-65,Fry's,Fry's,6625 W Happy Valley Rd,,Glendale,AZ,85310,US,,6235618905,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-65,Fry's,Fry's,6625 W Happy Valley Rd,,Glendale,AZ,85310,US,,6235618905,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-66,Fry's,Fry's,8375 West Deer Valley Drive,,Peoria,AZ,85382,US,,6235615504,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-66,Fry's,Fry's,8375 West Deer Valley Drive,,Peoria,AZ,85382,US,,6235615504,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-67,Fry's,Fry's,3261 East Pecos Rd,,Gilbert,AZ,85297,US,,4809886300,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-67,Fry's,Fry's,3261 East Pecos Rd,,Gilbert,AZ,85297,US,,4809886300,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1503,1,FRYYRACE26-68,Fry's,Fry's,3198 Willow Creek Road,,Prescott,AZ,86305,US,,9287783717,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-68,Fry's,Fry's,3198 Willow Creek Road,,Prescott,AZ,86305,US,,9287783717,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-69,Fry's,Fry's,1795 W Valencia Rd,,Tucson,AZ,85746,US,,5203487125,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-70,Fry's,Fry's,542 E Hunt Hwy,,Queen Creek,AZ,85142,US,,4808881778,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-71,Fry's,Fry's,1100 S State Route 260,,Cottonwood,AZ,86326,US,,9286349611,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-72,Fry's,Fry's,2115 Hwy 60 #200,,Miami,AZ,85539,US,,9284253276,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-73,Fry's,Fry's,950 W Fair St,,Prescott,AZ,86301,US,,9287786494,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-74,Fry's,Fry's,6321 E Greenway,,Scottsdale,AZ,85254,US,,4803688930,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-75,Fry's,Fry's,2480 N Swan Rd,,Tucson,AZ,85712,US,,5203254802,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-76,Fry's,Fry's,7050 E 22Nd St,,Tucson,AZ,85710,US,,5207905845,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-77,Fry's,Fry's,29411 N Cave Creek Rd,,Cave Creek,AZ,85331,US,,4805387130,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-78,Fry's,Fry's,3949 E Chandler Blvd,,Phoenix,AZ,85044,US,,4807067340,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-79,Fry's,Fry's,6470 S Higley Road,,Gilbert,AZ,85298,US,,4808409560,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-80,Fry's,Fry's,3640 S 16Th Ave,,Tucson,AZ,85713,US,,5206246934,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-81,Fry's,Fry's,4315 W Bell Rd,,Glendale,AZ,85308,US,,6029782590,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-82,Fry's,Fry's,7812 Speedway Blvd,,Tucson,AZ,85710,US,,5208853547,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-83,Fry's,Fry's,981 W Elliot Rd,,Chandler,AZ,85224,US,,4808212296,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-84,Fry's,Fry's,7870 N Silverbell Rd,,Tucson,AZ,85743,US,,5207447866,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-85,Fry's,Fry's,2001 E Irvington Rd,,Tucson,AZ,85714,US,,5202947191,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-86,Fry's,Fry's,14845 East Shea Blvd,,Fountain Hills,AZ,85268,US,,4808367311,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-87,Fry's,Fry's,87 E Williams Field Rd,,Chandler,AZ,85225,US,,4807263720,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-88,Fry's,Fry's,3232 S Mill Ave,,Tempe,AZ,85282,US,,4808589096,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-89,Fry's,Fry's,500 W 24Th St,,Yuma,AZ,85364,US,,9283291055,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-90,Fry's,Fry's,9245 W Union Hills,,Peoria,AZ,85382,US,,6239727902,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-91,Fry's,Fry's,435 S Ellsworth,,Mesa,AZ,85208,US,,4803801005,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-92,Fry's,Fry's,10450 N La Canada Dr,,Oro Valley,AZ,85737,US,,5208779207,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-93,Fry's,Fry's,10660 Grand Ave,,Sun City,AZ,85351,US,,6238768222,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-94,Fry's,Fry's,2727 E Broadway Rd,,Mesa,AZ,85210,US,,4804645705,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-95,Fry's,Fry's,5100 S Mcclintock Dr,,Tempe,AZ,85282,US,,4807529700,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-96,Fry's,Fry's,4440 E Main,,Mesa,AZ,85205,US,,4802188540,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-97,Fry's,Fry's,8900 E Via Linda,,Scottsdale,AZ,85258,US,,4806576400,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-98,Fry's,Fry's,3490 S Power Rd,,Gilbert,AZ,85234,US,,4805467370,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906
+FRRA,99501793,JF1933,1,FRYYRACE26-99,Fry's,Fry's,985 E Riggs Rd,,Chandler,AZ,85249,US,,4808836500,GO,GND,O,02.10.2026,B,,Y,,,,,farrah.trussoni@ferrara.com,2906

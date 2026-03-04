@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <nav class="top-nav">
+    <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+      <a class="nav-btn" href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+    </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+        <div class="nav-dropdown-menu" id="infoHubMenu">
+          <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+          <div class="nav-dropdown-divider"></div>
+          <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
+        </div>
+      </div>
+      <a class="nav-btn" href="about.html">About</a>
+    </div>
+    <div class="nav-right">
+        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+        <a href="settings.html" class="profile-pill">
+          <div class="profile-avatar">
+            <img id="navProfileAvatar" alt="Profile avatar" />
+          </div>
+          <span id="navCurrentProfileName">User</span>
+          <span class="profile-pill-sep">&bull;</span>
+          <span class="profile-pill-action">Settings</span>
+        </a>
+      </div>
+    </nav>
+</header>
+
+<main class="centered">
+  <section class="card settings-card">
+    <h2>Settings</h2>
+    <p class="settings-hint">These settings are stored only in this browser.</p>
+
+    
+
+<div class="settings-grid">
+
+      <div class="settings-column">
+        <!-- Profile -->
+        <div class="settings-section">
+          <h3>Profile</h3>
+          <div class="settings-subcard">
+            <h4>Current Profile</h4>
+            <p id="settingsProfileInfo">Owner (Owner)</p>
+            <button type="button" id="renameProfileBtn" class="primary-btn">Rename Profile</button>
+          </div>
+        </div>
+
+        <!-- Profile Picture -->
+        <div class="settings-section">
+          <h3>Profile Picture</h3>
+          <div class="settings-subcard settings-profile-photo">
+            <p class="settings-hint">
+              Optional. Stored only in this browser and used for the avatar in the top navigation.
+            </p>
+            <div class="settings-profile-photo-row">
+              <div class="settings-profile-photo-preview">
+                <div class="profile-avatar profile-avatar-large">
+                  <img id="settingsProfileAvatar" alt="Profile avatar preview" />
+                </div>
+              </div>
+              <div class="settings-profile-photo-actions">
+                <label for="profilePhotoInput" class="secondary-btn">Upload Picture</label>
+                <input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/jpg" style="display:none;" />
+                <button type="button" id="clearProfilePhotoBtn" class="link-btn">Remove Picture</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Home Shortcuts -->
+        <div class="settings-section">
+          <h3>Home Shortcuts</h3>
+          <div class="settings-subcard">
+            <h4>Buttons under the Kore title</h4>
+            <p class="settings-hint">
+              Configure where the <strong>Apps &amp; Tools</strong>, <strong>Work Queue</strong>, and
+              <strong>Docs Library</strong> buttons on the Home page point to, and how they are labeled.
+            </p>
+            <div class="settings-home-shortcuts">
+              <div class="settings-home-shortcut">
+                <h5>Apps button</h5>
+                <label for="homeAppsLabel"><strong>Label</strong></label>
+                <input id="homeAppsLabel" type="text" placeholder="Apps &amp; Tools" />
+                <label for="homeAppsHref"><strong>Target</strong> (URL or Kore page)</label>
+                <input id="homeAppsHref" type="text" placeholder="apps.html" />
+              </div>
+              <div class="settings-home-shortcut">
+                <h5>Work Queue button</h5>
+                <label for="homeWorkLabel"><strong>Label</strong></label>
+                <input id="homeWorkLabel" type="text" placeholder="Work Queue" />
+                <label for="homeWorkHref"><strong>Target</strong> (URL or Kore page)</label>
+                <input id="homeWorkHref" type="text" placeholder="work.html" />
+              </div>
+              <div class="settings-home-shortcut">
+                <h5>Docs button</h5>
+                <label for="homeDocsLabel"><strong>Label</strong></label>
+                <input id="homeDocsLabel" type="text" placeholder="Docs Library" />
+                <label for="homeDocsHref"><strong>Target</strong> (URL or Kore page)</label>
+                <input id="homeDocsHref" type="text" placeholder="docs.html" />
+              </div>
+            </div>
+            <button type="button" id="saveHomeShortcutsBtn" class="primary-btn" style="margin-top:0.75rem;">
+              Save Home Shortcuts
+            </button>
+          </div>
+        </div>
+
+        <!-- Work Tracker Options -->
+        <div class="settings-section">
+          <h3>Work Tracker Options</h3>
+          <div class="settings-subcard">
+            <p class="settings-hint">
+              Manage the dropdown options used by the Work Tracker for <strong>Request Type</strong> and
+              <strong>Account</strong>. These lists are stored locally and included in Kore backups.
+            </p>
+            <div class="settings-work-options">
+              <div class="settings-work-options-column">
+                <label for="workTypeOptions"><strong>Request Types</strong> (one per line)</label>
+                <textarea id="workTypeOptions" placeholder="Content Change&#10;New Page&#10;Bug Fix&#10;Access Issue&#10;General IT"></textarea>
+              </div>
+              <div class="settings-work-options-column">
+                <label for="workAccountOptions"><strong>Accounts</strong> (one per line)</label>
+                <textarea id="workAccountOptions" placeholder="General&#10;Internal&#10;External"></textarea>
+              </div>
+            </div>
+            <button type="button" id="saveWorkOptionsBtn" class="primary-btn" style="margin-top:0.75rem;">
+              Save Work Tracker Options
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-column">
+        <!-- Appearance -->
+        <div class="settings-section">
+          <h3>Appearance</h3>
+          <div class="settings-subcard">
+            <h4>Theme</h4>
+            <p class="settings-hint">
+              Choose a Kore layout and color style. This changes backgrounds, cards, buttons, and overall visual style only.
+            </p>
+            <div class="settings-theme-row">
+              <label for="uiThemeSelect"><strong>Default UI Theme</strong></label>
+              <select id="uiThemeSelect">
+                <option value="dark">Kore Night (Dark Classic)</option>
+                <option value="light">Kore Day (Soft Light)</option>
+                <option value="slate">Kore Neon (Dramatic)</option>
+                <option value="terminal">Kore Terminal (Console)</option>
+                <option value="aurora">Kore Aurora (Gradient)</option>
+              </select>
+              <button type="button" id="applyThemeBtn" class="primary-btn">Apply</button>
+            </div>
+            <p id="currentThemeLabel" class="settings-hint" style="margin-top:0.5rem;">
+              <strong>Current:</strong> Kore Night
+            </p>
+          </div>
+        </div>
+
+        <!-- Time & Locale -->
+        <div class="settings-section">
+          <h3>Time &amp; Locale</h3>
+          <div class="settings-subcard">
+            <h4>Time Zone</h4>
+            <p class="settings-hint">
+              Controls the clock and date display on the Home page. U.S. time zones only.
+            </p>
+            <label for="timeZoneSelect"><strong>Home Time Zone</strong></label>
+            <select id="timeZoneSelect">
+              <option value="America/New_York">Eastern (US)</option>
+              <option value="America/Chicago">Central (US)</option>
+              <option value="America/Denver">Mountain (US)</option>
+              <option value="America/Los_Angeles">Pacific (US)</option>
+              <option value="America/Anchorage">Alaska</option>
+              <option value="Pacific/Honolulu">Hawaii</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Owner Tools -->
+        <div class="settings-section" id="owner-tools">
+          <h3>Owner Tools</h3>
+
+          <div class="settings-subcard">
+            <h4>Homepage Message</h4>
+            <p class="settings-hint">
+              This message appears on the home page under the Kore hero image. HTML is allowed.
+            </p>
+            <textarea id="homeMessageInput" placeholder="&lt;p&gt;Welcome to Kore.&lt;/p&gt;"></textarea>
+            <button type="button" id="saveHomeMessageBtn" class="primary-btn">Save Homepage Message</button>
+          </div>
+
+          <div class="settings-subcard">
+            <h4>Backup &amp; Restore</h4>
+            <p class="settings-hint">
+              Export your Kore data to a JSON file, or restore from a previous backup.
+            </p>
+
+            <div class="settings-backup-row">
+              <button type="button" id="downloadBackupBtn" class="secondary-btn">Download Backup</button>
+              <label class="file-input-label">
+                Restore from File
+                <input type="file" id="restoreBackupInput" accept="application/json">
+              </label>
+            </div>
+
+            <div class="settings-restore-options">
+              <div class="settings-restore-mode">
+                <label for="restoreModeSelect"><strong>Restore mode</strong></label>
+                <select id="restoreModeSelect">
+                  <option value="merge" selected>Merge with current data (keep &amp; add)</option>
+                  <option value="replace">Replace current data with backup</option>
+                </select>
+              </div>
+              <div class="settings-restore-tools">
+                <label>
+                  <input type="checkbox" id="restoreIncludeTools" checked>
+                  Include Tools data (Apps, Work, Docs, Tasks)
+                </label>
+                <p class="settings-hint" style="margin-top:0.25rem;">
+                  Uncheck if you want to keep your current Tools tab content and only restore Info Hub pages and core settings.
+                </p>
+              </div>
+            </div>
+
+            <button type="button" id="factoryResetBtn" class="link-btn" style="margin-top:0.75rem;">
+              Reset to Factory Content
+            </button>
+            <p class="settings-hint">
+              Clears Apps, Work items, Docs, and tasks created in this browser while keeping your profile and appearance settings.
+            </p>
+          </div>
+        </div>
+          <div class="settings-subcard">
+            <h4>Work Tracker Archive</h4>
+            <p class="settings-hint">
+              Open a dedicated archive view to restore or permanently delete archived Work requests.
+            </p>
+            <a href="work-archive.html" class="secondary-btn">Open Work Tracker Archive</a>
+          </div>
+
+          <div class="settings-subcard">
+            <h4>Info Hub Archive</h4>
+            <p class="settings-hint">
+              Open a dedicated archive view to restore or permanently delete archived Info Hub guides.
+            </p>
+            <a href="info-archive.html" class="secondary-btn">Open Info Hub Archive</a>
+          </div>
+
+      </div>
+
+    </div>
+<div id="settingsStatus" class="settings-status"></div>
+          </section>
+        </main>
+
+            </div>
+      </div>
+    </div>
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<link rel="stylesheet" href="css/ai.css">
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/work-options.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/ai.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-header-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+</body>
+</html>

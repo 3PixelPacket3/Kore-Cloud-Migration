@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header>
+    <nav class="top-nav">
+      <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+        <a class="nav-btn" href="index.html">Home</a>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+          <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+    </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+          <div class="nav-dropdown-menu" id="infoHubMenu">
+            <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+            <div class="nav-dropdown-divider"></div>
+            <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
+          </div>
+        </div>
+        <a class="nav-btn" href="about.html">About</a>
+      </div>
+      <div class="nav-right">
+        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+        <a href="settings.html" class="profile-pill">
+          <div class="profile-avatar">
+            <img id="navProfileAvatar" alt="Profile avatar" />
+          </div>
+          <span id="navCurrentProfileName">User</span>
+          <span class="profile-pill-sep">&bull;</span>
+          <span class="profile-pill-action">Settings</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="centered">
+    <section class="card infohub-builder">
+      <div class="infohub-hero-wrapper">
+      <img id="infoHubBuilderHeroImage"
+           alt="InfoHubBanner"
+           class="infohub-hero-image"
+           style="display:none;" />
+    </div>
+      <div class="infohub-builder-header">
+        <div class="infohub-builder-title">
+          <label for="infoTitle">Page Title (HTML allowed)</label>
+          <input type="text" id="infoTitle" placeholder="Enter page title" required>
+        </div>
+        <div class="infohub-builder-status">
+          <span id="statusDisplay" class="status-badge">Draft</span>
+          <div class="infohub-builder-meta">
+            <span>Created: <span id="createdAt">–</span></span>
+            <span>Last Updated: <span id="updatedAt">–</span></span>
+            <span id="autosaveStatus" class="autosave-indicator"></span>
+          </div>
+        </div>
+      </div>
+
+      <form id="pageBuilderForm" onsubmit="return false;">
+        <div class="infohub-layout">
+          <div class="infohub-main">
+            <label for="infoSummary">Short Description / Summary (HTML allowed)</label>
+            <textarea id="infoSummary" rows="3" placeholder="Briefly describe what this page covers."></textarea>
+
+            <details class="infohub-tips">
+              <summary>How-to guide tips (optional)</summary>
+              <div class="infohub-tips-body">
+                <p><strong>Recommended how-to format:</strong> Overview → Prerequisites → Steps → Verification → Troubleshooting.</p>
+                <p><strong>Write for future-you:</strong> assume you forgot the context. Include exact names (buttons, menus, file paths), and the “why” behind a step.</p>
+                <p><strong>Searchability tips:</strong> add relevant keywords in <em>Title</em>, <em>Summary</em>, and <em>Tags</em> so Ask Kore can find it fast.</p>
+                <p><strong>HTML helpers:</strong> <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>.</p>
+                <div class="infohub-tip-actions">
+                  <button type="button" id="insertTemplateBtn" class="secondary-btn">Insert How-To Template</button>
+                  <button type="button" id="insertGuideTemplateBtn" class="secondary-btn">Insert Visual Guide Template</button>
+                </div>
+              </div>
+            </details>
+
+            <label for="infoContent">Main Content</label>
+            <div class="editor-toolbar" aria-label="Editor toolbar">
+              <button type="button" data-cmd="bold"><strong>B</strong></button>
+              <button type="button" data-cmd="italic"><em>I</em></button>
+              <button type="button" data-cmd="underline"><u>U</u></button>
+              <button type="button" data-cmd="formatBlock" data-value="H2">H2</button>
+              <button type="button" data-cmd="formatBlock" data-value="H3">H3</button>
+              <button type="button" data-cmd="insertUnorderedList">• List</button>
+              <button type="button" data-cmd="insertOrderedList">1. List</button>
+              <button type="button" data-action="link">Link</button>
+              <button type="button" id="htmlModeBtn" class="toolbar-html">HTML</button>
+              <span class="toolbar-spacer"></span>
+              <button type="button" data-cmd="removeFormat">Clear</button>
+            </div>
+            <div id="infoContent" class="rich-editor" contenteditable="true" aria-label="Main content editor">
+              <p><strong>Write your how-to guide here.</strong> Recommended sections: <em>Overview</em>, <em>Prerequisites</em>, <em>Steps</em>, <em>Verification</em>, <em>Troubleshooting</em>.</p>
+              <p>You can format with the toolbar, or switch to <strong>HTML</strong> mode for full control.</p>
+            </div>
+            <textarea id="infoContentHtml" class="html-source" rows="14" spellcheck="false" style="display:none;" aria-label="HTML content editor"></textarea>
+          </div>
+
+          <aside class="infohub-side">
+            <div class="infohub-section">
+              <h3>Author &amp; Tags</h3>
+              <label for="authorInput">Author</label>
+              <input type="text" id="authorInput" placeholder="Your name">
+
+              <label for="tagsInput">Tags / Categories</label>
+              <input type="text" id="tagsInput" placeholder="e.g. work, docs, onboarding">
+              <small>Separate tags with commas.</small>
+            </div>
+
+            <div class="infohub-section">
+              <h3>Supporting Images</h3>
+              <button type="button" id="addImageBtn" class="secondary-btn">Add Image</button>
+              <div id="imagesContainer" class="infohub-image-list"></div>
+            </div>
+
+            <div class="infohub-section">
+              <h3>Supporting Links</h3>
+              <button type="button" id="addLinkBtn" class="secondary-btn">Add Link</button>
+              <div id="linksContainer" class="infohub-link-list"></div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="infohub-actions">
+          <button type="button" id="saveDraftBtn" class="secondary-btn">Save as Draft</button>
+          <button type="button" id="publishBtn" class="primary-btn">Publish / Confirm</button>
+          <button type="button" id="previewBtn" class="secondary-btn">Preview</button>
+          <button type="button" id="deletePageBtn" class="danger-btn">Delete</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+    <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+  </footer>
+
+  <link rel="stylesheet" href="css/ai.css">
+    <script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+  <script src="js/profiles.js"></script>
+  <script src="js/backup.js"></script>
+  <script src="data/kore_kb.js"></script>
+  <script src="js/info-hub.js"></script>
+  <script src="js/ai.js"></script>
+
+  <!-- Ask Kore Widget -->
+  <div id="ai-widget">
+    <button id="chat-btn">Ask Kore</button>
+    <div id="chat-box" style="display:none;">
+      <div class="ai-header">
+        <span class="ai-header-title">Ask Kore</span>
+        <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+      </div>
+      <div class="ai-controls">
+        <label for="askScope" class="ai-scope-label">Scope:</label>
+        <select id="askScope" class="ai-scope-select">
+          <option value="all" selected>Everything</option>
+          <option value="kb">Help &amp; Core Pages</option>
+          <option value="info">Info Hub Guides</option>
+        </select>
+      </div>
+      <div id="chat-output"></div>
+      <input type="text" id="chat-input" placeholder="Ask Kore..."/>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+        KoreHero.loadHeroImage("infoHubBuilderHeroImage", "InfoHubBanner");
+    }
+  })();
+  </script>
+</body>
+</html>

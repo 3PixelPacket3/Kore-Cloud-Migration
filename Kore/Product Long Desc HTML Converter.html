@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore - Product HTML Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+
+  :root{
+   --brand:#1456A8;
+   --brand-dark:#0d3b73;
+   --accent:#00B894;
+   --bg1:#050816;
+   --bg2:#0b1220;
+   --card:#0f172a;
+   --card-soft:#111827;
+   --border:#1f2937;
+   --muted:#9ca3af;
+  }
+  *{ box-sizing:border-box; }
+  body{
+   font-family: Arial, Helvetica, sans-serif;
+   margin:0; padding:0;
+   color:#e5e7eb;
+   background: radial-gradient(circle at top, #0b2b5a 0, var(--bg1) 42%, var(--bg2) 100%);
+   min-height:100vh;
+  }
+  .wrap{ max-width:1150px; margin:0 auto; padding:16px; }
+
+  .topbar{
+   background: linear-gradient(135deg, var(--card) 0%, var(--card-soft) 100%);
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   padding: 12px 14px;
+   display:flex;
+   align-items:center;
+   justify-content:space-between;
+   gap: 12px;
+   box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+   position: sticky;
+   top: 10px;
+   z-index: 10;
+   backdrop-filter: blur(10px);
+  }
+
+  .left-head{
+   display:flex;
+   align-items:flex-start;
+   gap:12px;
+   flex-wrap:wrap;
+  }
+
+  .title-block{ line-height:1.2; }
+  .title-block .h1{ font-size:1.05rem; font-weight:900; margin:0; }
+  .title-block .sub{ font-size:0.85rem; color:var(--muted); margin-top:2px; }
+
+  .template-box{
+   display:flex;
+   flex-direction:column;
+   gap:4px;
+   min-width: 320px;
+   max-width: 100%;
+  }
+  .template-box label{
+   font-size:0.78rem;
+   color: var(--muted);
+   font-weight:800;
+   letter-spacing:0.02em;
+  }
+
+  .controls{
+   display:flex;
+   gap:10px;
+   align-items:center;
+   flex-wrap:wrap;
+   justify-content:flex-end;
+  }
+
+  /* Topbar template select only */
+  .template-select{
+   width: 320px;
+   max-width: 100%;
+   padding: 9px 12px;
+   border-radius: 999px;
+   border: 1px solid #374151;
+   font-size: 0.9rem;
+   background:#020617;
+   color:#e5e7eb;
+   font-weight:800;
+   letter-spacing:0.02em;
+  }
+  .template-select:focus{ outline:none; border-color: var(--brand); box-shadow: 0 0 0 1px rgba(37,99,235,0.5); }
+
+  button{
+   cursor:pointer;
+   border-radius: 999px;
+   border:none;
+   padding: 9px 16px;
+   font-size: 0.9rem;
+   font-weight: 800;
+   transition: background 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+   display:inline-flex;
+   align-items:center;
+   gap:6px;
+   letter-spacing:0.03em;
+  }
+  .btn-primary{
+   background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+   color:#f9fafb;
+   box-shadow: 0 4px 14px rgba(15,118,220,0.5);
+  }
+  .btn-primary:hover{
+   background: linear-gradient(135deg, var(--brand-dark) 0%, #059669 100%);
+   transform: translateY(-1px);
+   box-shadow: 0 6px 20px rgba(15,118,220,0.7);
+  }
+  .btn-secondary{
+   background: #111827;
+   color: #e5e7eb;
+   border: 1px solid #1f2937;
+  }
+  .btn-secondary:hover{
+   background:#1f2937;
+   border-color:#374151;
+   transform: translateY(-1px);
+   box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+  }
+  .btn-ghost{
+   background: transparent;
+   color: var(--muted);
+   border: 1px solid #374151;
+   padding: 9px 13px;
+  }
+  .btn-ghost:hover{
+   color:#e5e7eb;
+   border-color: var(--brand);
+   background: rgba(15,23,42,0.8);
+   transform: translateY(-1px);
+   box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  }
+
+  .section{ margin-top:16px; }
+  .card{
+   background: linear-gradient(135deg, #020617 0%, #020a16 40%, #020617 100%);
+   border-radius: 12px;
+   padding: 18px 20px;
+   border: 1px solid #1f2937;
+   box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+  }
+  .card h2{ margin:0 0 10px 0; color:#e5e7eb; font-size:1.15rem; }
+  .note{ font-size:0.85rem; color:var(--muted); line-height:1.5; margin-top:6px; }
+
+  .layout{
+   display:grid;
+   grid-template-columns: 1.1fr 1.1fr;
+   gap: 16px;
+   align-items: flex-start;
+   margin-top: 14px;
+  }
+
+  
+    /* Compact accordions (more obvious "click to expand") */
+  details.accordion{
+   border: 1px solid #1f2937;
+   border-radius: 12px;
+   padding: 10px 12px;
+   background: rgba(2,6,23,0.55);
+   margin-bottom: 10px;
+  }
+  details.accordion[open]{ background: rgba(2,6,23,0.78); }
+
+  details.accordion summary{
+   cursor:pointer;
+   list-style:none;
+   user-select:none;
+   display:flex;
+   align-items:center;
+   gap:10px;
+   font-weight:900;
+   color:#e5e7eb;
+   letter-spacing:0.02em;
+   padding: 10px 12px;
+   border-radius: 10px;
+   border: 1px solid #374151;
+   background: rgba(15,23,42,0.88);
+  }
+  details.accordion summary:hover{
+   border-color: var(--brand);
+   box-shadow: 0 0 0 2px rgba(20,86,168,0.20), 0 8px 18px rgba(0,0,0,0.35);
+   transform: translateY(-1px);
+  }
+  details.accordion summary:active{
+   transform: translateY(0px);
+  }
+  details.accordion summary::-webkit-details-marker{ display:none; }
+
+  /* Header hint under the title */
+  .accordion-hint{
+   font-size:0.8rem;
+   color: var(--muted);
+   font-weight:700;
+   margin-left: 8px;
+  }
+
+  /* Right-side "Click to expand/collapse" indicator */
+  details.accordion summary::after{
+   content: "Click to expand ▾";
+   margin-left: auto;
+   font-size: 0.78rem;
+   font-weight: 900;
+   color: #d1d5db;
+   letter-spacing: 0.06em;
+   text-transform: uppercase;
+   opacity: 0.9;
+   padding-left: 10px;
+   white-space: nowrap;
+  }
+  details.accordion[open] summary::after{
+   content: "Click to collapse ▴";
+  }
+/* Keep the preview visible without forcing constant scrolling */
+  .sticky-preview{
+   position: sticky;
+   top: 92px;
+  }
+
+  /* Mobile: show quick toggles so you can reach preview fast */
+  .mobile-toggles{
+   display:none;
+   gap:10px;
+   margin-top:12px;
+  }
+  @media (max-width: 950px){
+   .mobile-toggles{ display:flex; }
+   .sticky-preview{ position: static; }
+  }
+
+.form-row{ margin-bottom: 10px; }
+  .form-row label{
+   font-weight: 800;
+   display:inline-block;
+   margin-bottom: 4px;
+   color:#e5e7eb;
+  }
+  .form-row small{
+   display:block;
+   font-size: 0.8rem;
+   color: var(--muted);
+   margin-top: 3px;
+  }
+
+  .input, .textarea, .form-select{
+   width: 100%;
+   box-sizing: border-box;
+   border-radius: 8px;
+   border: 1px solid #374151;
+   font-size: 0.95rem;
+   background:#020617;
+   color:#e5e7eb;
+  }
+  .input, .form-select{ padding: 8px 10px; height: 40px; }
+  .textarea{ padding: 8px 10px; min-height: 78px; resize: vertical; height:auto; }
+
+  .input:focus, .textarea:focus, .form-select:focus{
+   outline:none;
+   border-color: var(--brand);
+   box-shadow: 0 0 0 1px rgba(37,99,235,0.5);
+  }
+
+  .form-row input[type="file"]{ color:#e5e7eb; font-size:0.9rem; }
+
+  .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+
+  .field-inline{
+   display:flex;
+   align-items:center;
+   gap: 8px;
+   margin-bottom: 4px;
+  }
+  .field-inline input[type="checkbox"]{ transform: scale(1.12); }
+  .field-inline label{ font-weight:700; margin:0; }
+
+  .btn-row{
+   margin-top: 12px;
+   display:flex;
+   gap: 10px;
+   flex-wrap: wrap;
+  }
+
+  #bulkStatus{ font-size:0.85rem; margin-top:6px; color:var(--muted); }
+
+  .preview-box-title{
+   font-size: 0.9rem;
+   font-weight: 900;
+   color: #d1d5db;
+   margin-bottom: 8px;
+  }
+
+  #preview{
+   min-height: 120px;
+   background: #020617;
+   padding: 12px;
+   border-radius: 10px;
+   border: 1px dashed #374151;
+   overflow:auto;
+  }
+
+  .code-label{
+   font-size: 0.9rem;
+   font-weight: 900;
+   color: #d1d5db;
+   margin-top: 14px;
+   margin-bottom: 6px;
+  }
+
+  #output{
+   width: 100%;
+   min-height: 210px;
+   resize: vertical;
+   font-family: Consolas, "Courier New", monospace;
+   font-size: 0.85rem;
+   padding: 10px;
+   border-radius: 10px;
+   border: 1px solid #374151;
+   box-sizing: border-box;
+   background: #020617;
+   color: #e5e7eb;
+   line-height: 1.4;
+   white-space: pre;
+  }
+
+  /* Template 1 preview CSS (kept identical for output when enabled) */
+  .product-description {
+   font-family: Arial, Helvetica, sans-serif;
+   background: #f7f9fc;
+   padding: 20px;
+   border-radius: 8px;
+   line-height: 1.6;
+   border: 1px solid #d7dce3;
+   margin-top: 20px;
+   color:#111827;
+  }
+  .prod-summary { font-size: 1rem; color: #333; }
+  .prod-details h3 { margin-bottom: 8px; color: #1b3a63; }
+  .prod-details ul { margin: 0; padding-left: 18px; }
+  .prod-details li { margin-bottom: 4px; }
+
+  @media (max-width: 950px){
+   .layout{ grid-template-columns: 1fr; }
+   .topbar{ flex-direction:column; align-items:flex-start; }
+   .controls{ width:100%; justify-content:flex-start; }
+   .grid-2{ grid-template-columns:1fr; }
+   .template-box{ width:100%; min-width: unset; }
+   .template-select{ width: 100%; }
+  }
+ 
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="top-nav">
+    <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+      <a class="nav-btn" href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+    </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+        <div class="nav-dropdown-menu" id="infoHubMenu">
+          <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+          <div class="nav-dropdown-divider"></div>
+          <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
+        </div>
+      </div>
+      <a class="nav-btn" href="about.html">About</a>
+    </div>
+    <div class="nav-right">
+        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+        <a href="settings.html" class="profile-pill">
+          <div class="profile-avatar">
+            <img id="navProfileAvatar" alt="Profile avatar" />
+          </div>
+          <span id="navCurrentProfileName">User</span>
+          <span class="profile-pill-sep">&bull;</span>
+          <span class="profile-pill-action">Settings</span>
+        </a>
+      </div>
+    </nav>
+</header>
+
+<main>
+<div class="wrap">
+    <div class="topbar">
+   <div class="left-head">
+    <div class="title-block">
+     <div class="h1">Product Description HTML Generator</div>
+     <div class="sub">Single + Bulk (CSV) • 5 drastically different templates • Images • Downloads • Flag thumbnail</div>
+    </div>
+
+    <div class="controls">
+     <button class="btn-secondary" type="button" onclick="scrollToSection('singleSection')">Single Item</button>
+     <button class="btn-primary" type="button" onclick="scrollToSection('bulkSection')">Bulk Mode</button>
+     <button class="btn-ghost" type="button" onclick="downloadTemplate()">Download CSV Template</button>
+     <button class="btn-ghost" type="button" onclick="scrollToSection('previewCard')">Preview</button>
+    </div>
+   </div>
+
+   <div class="template-box">
+    <label for="templateSelect">HTML Template</label>
+    <select id="templateSelect" class="template-select" onchange="generateSingleHtml()">
+     <option value="1">Template 1 — Classic Card (CURRENT / exact core)</option>
+     <option value="2">Template 2 — Labeled Grid Panels (left rail)</option>
+     <option value="3">Template 3 — Spec Sidebar (right rail)</option>
+     <option value="4">Template 4 — Datasheet Blocks (stacked sections)</option>
+     <option value="5">Template 5 — Banner + Callouts (3 boxes)</option>
+    </select>
+   </div>
+  </div>
+
+  <div id="bulkSection" class="section">
+   <div class="card">
+    <h2>Bulk Mode – Excel / CSV</h2>
+    <div class="note">
+     Download the template, fill one row per item, save as CSV, upload, then generate.
+     Output downloads as a new CSV with a <strong>GeneratedHtml</strong> column.
+    </div>
+
+    <div class="btn-row">
+     <button class="btn-secondary" type="button" onclick="downloadTemplate()">Download Template CSV</button>
+    </div>
+
+    <div class="form-row" style="margin-top:12px;">
+     <label for="bulkFile">Upload completed CSV from Excel</label>
+     <input type="file" id="bulkFile" accept=".csv" onchange="handleBulkFileChange(event)">
+     <div id="bulkStatus">No file loaded.</div>
+    </div>
+
+    <div class="btn-row">
+     <button class="btn-primary" type="button" onclick="generateBulkFromExcel()">Generate HTML from Excel</button>
+    </div>
+
+    <div class="note">
+     
+    </div>
+   </div>
+  </div>
+
+  <div id="singleSection" class="section">
+   <div class="layout">
+
+        <div class="card">
+     <h2>Single Item – Inputs</h2>
+     <div class="note">
+      Use the accordions to keep things compact. Only enabled sections render into the HTML.
+     </div>
+
+     <div class="mobile-toggles">
+      <button class="btn-secondary" type="button" onclick="scrollToSection('singleSection')">Inputs</button>
+      <button class="btn-ghost" type="button" onclick="scrollToSection('previewCard')">Preview</button>
+     </div>
+
+     <details class="accordion" open>
+      <summary>
+       <span>Core</span>
+       <span class="accordion-hint">Summary + Product Information</span>
+      </summary>
+
+      <div class="form-row" style="margin-top:10px;">
+       <label for="summary">Top Text / Summary</label>
+       <textarea id="summary" class="textarea" placeholder="Short paragraph describing the product..."></textarea>
+       <small>Tip: 2–5 sentences. What it is, what it does, and the main differentiator.</small>
+      </div>
+
+      <div class="form-row">
+       <label for="supersedes">Supersedes</label>
+       <input id="supersedes" class="input" type="text" placeholder="e.g. T-F-TMBRDRV23-R">
+      </div>
+
+      <hr style="border:0;border-top:1px solid #1f2937;margin:14px 0;">
+
+      <div class="grid-2">
+       <div class="form-row">
+        <div class="field-inline">
+         <input type="checkbox" id="includeProductType" checked>
+         <label for="includeProductType">Product Type</label>
+        </div>
+        <input id="productType" class="input" type="text" placeholder="e.g. Flier">
+       </div>
+
+       <div class="form-row">
+        <div class="field-inline">
+         <input type="checkbox" id="includeRegion" checked>
+         <label for="includeRegion">Region</label>
+        </div>
+        <input id="region" class="input" type="text" placeholder="e.g. US | Canada">
+       </div>
+
+       <div class="form-row">
+        <div class="field-inline">
+         <input type="checkbox" id="includeLanguage" checked>
+         <label for="includeLanguage">Language</label>
+        </div>
+        <input id="language" class="input" type="text" placeholder="e.g. English">
+       </div>
+
+       <div class="form-row">
+        <div class="field-inline">
+         <input type="checkbox" id="includeProductLine" checked>
+         <label for="includeProductLine">Product Line</label>
+        </div>
+        <input id="productLine" class="input" type="text" placeholder="e.g. Fastening Systems – Fasteners">
+       </div>
+
+       <div class="form-row">
+        <div class="field-inline">
+         <input type="checkbox" id="includeUse" checked>
+         <label for="includeUse">Use</label>
+        </div>
+        <input id="use" class="input" type="text" placeholder="e.g. General Use">
+       </div>
+
+       <div class="form-row">
+        <div class="field-inline">
+         <input type="checkbox" id="includeSegment" checked>
+         <label for="includeSegment">Market Segment</label>
+        </div>
+        <input id="segment" class="input" type="text" placeholder="e.g. Commercial Construction, OEM">
+       </div>
+      </div>
+     </details>
+
+     <details class="accordion">
+      <summary>
+       <span>Features, Specs & Details</span>
+       <span class="accordion-hint">Badges • Highlights • Specs • Included • Compliance</span>
+      </summary>
+
+      <div class="form-row" style="margin-top:10px;">
+       <div class="field-inline">
+        <input type="checkbox" id="includeBadges">
+        <label for="includeBadges">Badges (comma-separated)</label>
+       </div>
+       <input id="badges" class="input" type="text" placeholder="e.g., New, Free Shipping, Limited Time">
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeHighlights">
+        <label for="includeHighlights">Highlights / Key Features (one per line)</label>
+       </div>
+       <textarea id="highlights" class="textarea" placeholder="Example:
+Durable steel construction
+Corrosion-resistant coating
+Easy installation"></textarea>
+
+       <label class="field-inline" style="margin:8px 0 0 0;">
+        <input type="checkbox" id="useRedChecks" checked>
+        <span style="font-weight:700;color:#e5e7eb;">Use red check marks</span>
+       </label>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeSpecs">
+        <label for="includeSpecs">Specifications (Key: Value per line)</label>
+       </div>
+       <textarea id="specs" class="textarea" placeholder="Example:
+Weight: 2.4 lb
+Length: 8 in
+Material: Stainless steel"></textarea>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeWhatsIncluded">
+        <label for="includeWhatsIncluded">What’s Included (one per line)</label>
+       </div>
+       <textarea id="whatsIncluded" class="textarea" placeholder="Example:
+1x mounting bracket
+2x screws
+Quick-start guide"></textarea>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeCompatibility">
+        <label for="includeCompatibility">Compatibility / Works With (one per line)</label>
+       </div>
+       <textarea id="compatibility" class="textarea" placeholder="Example:
+Works with Model X
+Compatible with stainless steel surfaces"></textarea>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeCerts">
+        <label for="includeCerts">Certifications / Compliance (one per line)</label>
+       </div>
+       <textarea id="certs" class="textarea" placeholder="Example:
+UL Listed
+RoHS compliant
+NSF certified"></textarea>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeWarnings">
+        <label for="includeWarnings">Warnings / Safety Notes</label>
+       </div>
+       <textarea id="warnings" class="textarea" placeholder="Example: Wear eye protection during installation."></textarea>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeCare">
+        <label for="includeCare">Care / Maintenance</label>
+       </div>
+       <textarea id="care" class="textarea" placeholder="Example: Wipe clean with mild detergent. Avoid harsh solvents."></textarea>
+      </div>
+     </details>
+
+     <details class="accordion">
+      <summary>
+       <span>Policies & Links</span>
+       <span class="accordion-hint">Shipping • Warranty • CTA • Download (PDF)</span>
+      </summary>
+
+      <div class="form-row" style="margin-top:10px;">
+       <div class="field-inline">
+        <input type="checkbox" id="includeShippingReturns">
+        <label for="includeShippingReturns">Shipping / Returns Note</label>
+       </div>
+       <textarea id="shippingReturns" class="textarea" placeholder="Example: Ships in 2–3 business days. Returns accepted within 30 days."></textarea>
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeWarranty">
+        <label for="includeWarranty">Warranty</label>
+       </div>
+       <input id="warranty" class="input" type="text" placeholder="e.g., 1-year limited warranty">
+      </div>
+
+      <div class="form-row">
+       <div class="field-inline">
+        <input type="checkbox" id="includeCTA">
+        <label for="includeCTA">CTA Button (text + URL)</label>
+       </div>
+       <div class="grid-2">
+        <input id="ctaText" class="input" type="text" placeholder="e.g., View Product Page">
+        <input id="ctaUrl" class="input" type="url" placeholder="https://...">
+       </div>
+      </div>
+
+      <div class="form-row" style="margin-top:10px;">
+       <div class="field-inline">
+        <input type="checkbox" id="includeDownload">
+        <label for="includeDownload">Download Link (PDF / Spec Sheet) (URL or File)</label>
+       </div>
+       <div class="grid-2">
+        <input id="downloadLabel" class="input" type="text" placeholder="e.g., View Spec Sheet (PDF)">
+        <input id="downloadUrl" class="input" type="url" placeholder="https://...pdf" oninput="clearDownloadFileIfTyping()">
+       </div>
+       <div class="grid-2" style="margin-top:10px;">
+        <div class="form-row" style="margin:0;">
+         <label for="downloadPlacement">Download placement</label>
+         <select id="downloadPlacement" class="form-select">
+          <option value="top">Top</option>
+          <option value="middle">Middle</option>
+          <option value="bottom">Bottom</option>
+          <option value="all">All (top + middle + bottom)</option>
+         </select>
+        </div>
+        <div class="form-row" style="margin:0;">
+         <label for="downloadFile">Or upload a PDF</label>
+         <input id="downloadFile" type="file" accept="application/pdf" onchange="handleDownloadFile(event)" style="margin-top:6px;">
+        </div>
+       </div>
+       <small>Bulk supports URL per row. Single supports URL or PDF upload (embedded link).</small>
+      </div>
+     </details>
+
+     <details class="accordion">
+      <summary>
+       <span>Images</span>
+       <span class="accordion-hint">Product image placement + flag thumbnail</span>
+      </summary>
+
+      <div class="form-row" style="margin-top:10px;">
+       <div class="field-inline">
+        <input type="checkbox" id="includeProductImage">
+        <label for="includeProductImage">Product Image (URL or File)</label>
+       </div>
+       <div class="grid-2">
+        <input id="productImageUrl" class="input" type="url" placeholder="Image URL (recommended)" oninput="clearProductImageFileIfTyping()">
+        <input id="productImageFile" type="file" accept="image/*" onchange="handleProductImageFile(event)" style="margin-top:6px;">
+       </div>
+      </div>
+
+      <div class="grid-2">
+       <div class="form-row" style="margin:0;">
+        <label for="productImageAlt">Product image alt text</label>
+        <input id="productImageAlt" class="input" type="text" placeholder="e.g., Product photo">
+       </div>
+
+       <div class="form-row" style="margin:0;">
+        <label for="productImagePlacement">Product image placement</label>
+        <select id="productImagePlacement" class="form-select">
+         <option value="top">Top</option>
+         <option value="middle">Middle</option>
+         <option value="bottom">Bottom</option>
+         <option value="all">All (top + middle + bottom)</option>
+        </select>
+       </div>
+      </div>
+
+      <div class="form-row" style="margin-top:12px;">
+       <div class="field-inline">
+        <input type="checkbox" id="includeFlag">
+        <label for="includeFlag">Country Flag Thumbnail (bottom-left)</label>
+       </div>
+       <div class="grid-2">
+        <input id="flagUrl" class="input" type="url" placeholder="Flag image URL (recommended)" oninput="clearFlagFileIfTyping()">
+        <input id="flagFile" type="file" accept="image/*" onchange="handleFlagFile(event)" style="margin-top:6px;">
+       </div>
+       <div class="grid-2" style="margin-top:10px;">
+        <div class="form-row" style="margin:0;">
+         <label for="flagAlt">Flag alt text</label>
+         <input id="flagAlt" class="input" type="text" placeholder="e.g., Made in Canada">
+        </div>
+        <div class="form-row" style="margin:0;">
+         <label for="flagSize">Flag size</label>
+         <input id="flagSize" class="input" type="text" placeholder="e.g., 34 (px)" value="34">
+        </div>
+       </div>
+      </div>
+     </details>
+
+     <div class="btn-row" style="margin-top:12px;">
+      <button type="button" class="btn-primary" onclick="generateSingleHtml()">Generate HTML</button>
+      <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
+     </div>
+
+     <div class="note">
+      Preview updates immediately on Generate. Bulk output remains inline/table-based for platform sanitizers.
+     </div>
+    </div>
+
+    <div class="card sticky-preview" id="previewCard">
+     <h2>Preview & Code (Single Item)</h2>
+
+     <div class="preview-box-title">Live Preview</div>
+     <div id="preview"></div>
+
+     <div class="code-label">Generated HTML (copy from here)</div>
+     <textarea id="output" readonly></textarea>
+
+     <div class="btn-row">
+      <button type="button" class="btn-secondary" onclick="copyCode()">Copy HTML to Clipboard</button>
+     </div>
+
+     <div class="note">
+      If a platform strips styles, prefer the Bulk output format (table + inline styles).
+     </div>
+    </div>
+
+   </div>
+  </div>
+ </div>
+
+ <script>
+  let bulkRows = [];
+  let bulkRecordMap = {};
+
+  // Single-mode embedded assets (Data URIs)
+  let singleProductImageDataUri = "";
+  let singleFlagDataUri = "";
+  let singleDownloadDataUri = "";
+
+  function scrollToSection(id){
+   const el = document.getElementById(id);
+   if (!el) return;
+   el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  
+  // --- Input scrubbing: prevents literal "\n" and "\uXXXX" artifacts from showing up in output ---
+  function decodeEscapes(str){
+   if (str === null || str === undefined) return "";
+   let s = String(str);
+
+   // Convert literal backslash sequences to real characters
+   s = s.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n").replace(/\\t/g, "\t");
+
+   // Decode literal \uXXXX sequences
+   s = s.replace(/\\u([0-9A-Fa-f]{4})/g, (m, hex) => {
+    try { return String.fromCharCode(parseInt(hex, 16)); } catch(e){ return m; }
+   });
+
+   // Normalize line endings
+   s = s.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+   return s;
+  }
+
+  function scrubInput(str){
+   // Expand escapes + trim only outer whitespace (do NOT destroy intentional spacing)
+   return decodeEscapes(str).trim();
+  }
+
+  function readVal(id){ return scrubInput((document.getElementById(id)?.value) || ""); }
+
+function escapeHtml(str) {
+   if (!str) return "";
+   const escaped = String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+   return toAsciiEntities(escaped);
+  }
+
+  function toAsciiEntities(s) {
+   let out = "";
+   for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code > 127) out += "&#" + code + ";";
+    else out += s[i];
+   }
+   return out;
+  }
+
+  function linesToList(text){
+   if (!text) return [];
+   return String(text)
+    .split(/\r?\n/)
+    .map(s => s.trim())
+    .filter(Boolean);
+  }
+
+  function parseKeyValueLines(text){
+   const rows = [];
+   const lines = linesToList(text);
+   for (const line of lines){
+    const idx = line.indexOf(":");
+    if (idx === -1) continue;
+    const k = line.slice(0, idx).trim();
+    const v = line.slice(idx+1).trim();
+    if (!k || !v) continue;
+    rows.push([k, v]);
+   }
+   return rows;
+  }
+
+  function normalizePlacement(p){
+   const v = (p || "").toLowerCase().trim();
+   if (v === "top" || v === "middle" || v === "bottom" || v === "all") return v;
+   return "top";
+  }
+
+  function scrubArtifacts(s){
+   // If anything accidentally includes literal \n or \uXXXX, convert it.
+   if (!s) return s;
+   let out = String(s);
+   out = out.replace(/\\n/g, "\n");
+   out = out.replace(/\\r/g, "\r");
+   out = out.replace(/\\u([0-9a-fA-F]{4})/g, (m, hex) => {
+    try { return String.fromCharCode(parseInt(hex, 16)); } catch(e){ return m; }
+   });
+   return out;
+  }
+
+  function buildBadgesHtml(badges){
+   const items = Array.isArray(badges) ? badges : String(badges || "").split(",").map(s => s.trim()).filter(Boolean);
+   if (!items.length) return "";
+   const badgeStyle = "display:inline-block;border:1px solid #d1d5db;border-radius:999px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;line-height:1.2;background:#eef2ff;color:#111827;";
+   return `<div style="margin:0 0 10px 0;">${items.map(b => `<span style="${badgeStyle}">${escapeHtml(b)}</span>`).join("")}</div>`;
+  }
+
+  function buildImageHtml(src, alt){
+   if (!src) return "";
+   const safeAlt = escapeHtml(alt || "Product image");
+   const style = "width:100%;max-width:640px;height:auto;border-radius:10px;border:1px solid #d7dce3;display:block;";
+   return `<img src="${src}" alt="${safeAlt}" style="${style}">`;
+  }
+
+  function buildFlagHtml(src, alt, sizePx){
+   if (!src) return "";
+   const safeAlt = escapeHtml(alt || "Country flag");
+   const size = parseInt(sizePx || "34", 10);
+   const px = (isFinite(size) && size > 10 && size < 120) ? size : 34;
+   const style = `width:${px}px;height:auto;border:1px solid #d7dce3;border-radius:6px;display:block;`;
+   return `<div style="margin-top:12px;text-align:left;"><img src="${src}" alt="${safeAlt}" style="${style}"></div>`;
+  }
+
+  function buildDownloadHtml(label, url){
+   if (!label || !url) return "";
+   const safeLabel = escapeHtml(label);
+   const safeUrl = escapeHtml(url);
+   const aStyle = "display:inline-block;margin-top:10px;background:#0b2b5a;color:#ffffff;text-decoration:none;padding:10px 14px;border-radius:999px;font-weight:900;";
+   return `<div style="margin-top:10px;"><a href="${safeUrl}" style="${aStyle}" target="_blank" rel="noopener">${safeLabel}</a></div>`;
+  }
+
+  function buildHighlightsHtml(highlights, useRedChecks){
+   const items = Array.isArray(highlights) ? highlights : linesToList(highlights);
+   if (!items.length) return "";
+   const check = useRedChecks
+    ? `<span style="color:#dc2626;font-weight:900;margin-right:8px;">&#10003;</span>`
+    : `<span style="color:#16a34a;font-weight:900;margin-right:8px;">&#10003;</span>`;
+   const liStyle = "margin:0 0 6px 0;list-style:none;";
+   return `
+    <div style="margin:10px 0 0 0;">
+     <div style="font-weight:900;color:#111827;margin:0 0 6px 0;">Highlights</div>
+     <ul style="margin:0;padding:0;">
+      ${items.map(t => `<li style="${liStyle}">${check}${escapeHtml(t)}</li>`).join("")}
+     </ul>
+    </div>
+   `.trim();
+  }
+
+  function buildSpecsHtml(specPairs){
+   const pairs = Array.isArray(specPairs) ? specPairs : parseKeyValueLines(specPairs);
+   if (!pairs.length) return "";
+   const rowStyle = "border-top:1px solid #e5e7eb;";
+   const keyStyle = "padding:8px 10px;font-weight:800;color:#111827;width:42%;vertical-align:top;background:#f8fafc;";
+   const valStyle = "padding:8px 10px;color:#111827;vertical-align:top;";
+   return `
+    <div style="margin:12px 0 0 0;">
+     <div style="font-weight:900;color:#111827;margin:0 0 6px 0;">Specifications</div>
+     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #e5e7eb;border-radius:10px;border-collapse:separate;border-spacing:0;background:#ffffff;">
+      ${pairs.map(([k,v], i) => `
+       <tr style="${i===0 ? "" : rowStyle}">
+        <td style="${keyStyle}">${escapeHtml(k)}</td>
+        <td style="${valStyle}">${escapeHtml(v)}</td>
+       </tr>
+      `).join("")}
+     </table>
+    </div>
+   `.trim();
+  }
+
+  function buildBulletsSection(title, bullets){
+   const items = Array.isArray(bullets) ? bullets : linesToList(bullets);
+   if (!items.length) return "";
+   const liStyle = "margin:0 0 6px 0;";
+   return `
+    <div style="margin:12px 0 0 0;">
+     <div style="font-weight:900;color:#111827;margin:0 0 6px 0;">${escapeHtml(title)}</div>
+     <ul style="margin:0;padding-left:18px;">
+      ${items.map(t => `<li style="${liStyle}">${escapeHtml(t)}</li>`).join("")}
+     </ul>
+    </div>
+   `.trim();
+  }
+
+  function buildTextSection(title, text){
+   if (!text) return "";
+   const safe = escapeHtml(text).replace(/\r?\n/g, "<br>");
+   return `
+    <div style="margin:12px 0 0 0;">
+     <div style="font-weight:900;color:#111827;margin:0 0 6px 0;">${escapeHtml(title)}</div>
+     <div style="color:#111827;">${safe}</div>
+    </div>
+   `.trim();
+  }
+
+  function buildInfoPairsFromOriginalFields(includeFlags, values){
+   const pairs = [];
+   if (includeFlags.includeProductType && values.productType) pairs.push(["Product Type", values.productType]);
+   if (includeFlags.includeRegion && values.region) pairs.push(["Region", values.region]);
+   if (includeFlags.includeLanguage && values.language) pairs.push(["Language", values.language]);
+   if (includeFlags.includeProductLine && values.productLine) pairs.push(["Product Line", values.productLine]);
+   if (includeFlags.includeUse && values.use) pairs.push(["Use", values.use]);
+   if (includeFlags.includeSegment && values.segment) pairs.push(["Market Segment", values.segment]);
+   return pairs;
+  }
+
+  function getSingleImageSrc(){
+   if (!document.getElementById("includeProductImage").checked) return "";
+   const url = readVal("productImageUrl");
+   if (url) return escapeHtml(url);
+   if (singleProductImageDataUri) return singleProductImageDataUri;
+   return "";
+  }
+
+  function getSingleFlagSrc(){
+   if (!document.getElementById("includeFlag").checked) return "";
+   const url = readVal("flagUrl");
+   if (url) return escapeHtml(url);
+   if (singleFlagDataUri) return singleFlagDataUri;
+   return "";
+  }
+
+  function getSingleDownloadUrl(){
+   if (!document.getElementById("includeDownload").checked) return "";
+   const url = readVal("downloadUrl");
+   if (url) return escapeHtml(url);
+   if (singleDownloadDataUri) return singleDownloadDataUri;
+   return "";
+  }
+
+  function buildPlacedBlockHtml(blockHtml, placement, slot){
+   // slot = 'top'|'middle'|'bottom'
+   if (!blockHtml) return "";
+   const p = normalizePlacement(placement);
+   if (p === "all" || p === slot) return blockHtml;
+   return "";
+  }
+
+  /***********************
+   * TEMPLATE 1 (Classic Card) - exact core layout when optional sections are off
+   ***********************/
+  function buildTemplate1Classic(cfg, mode){
+   const {
+    summary, supersedes,
+    productType, region, language, productLine, use, segment,
+    includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment,
+    includeStyle,
+    imageSrc, imageAlt, imagePlacement,
+    badgesHtml, highlightsHtml, specsHtml, includedHtml,
+    compatibilityHtml, certsHtml, warningsHtml, careHtml,
+    shippingReturns, warranty, ctaHtml,
+    downloadHtml, downloadPlacement,
+    flagHtml
+   } = cfg;
+
+   const listItems = [];
+   if (includeProductType && productType) listItems.push(`<li><strong>Product Type:</strong> ${escapeHtml(productType)}</li>`);
+   if (includeRegion && region) listItems.push(`<li><strong>Region:</strong> ${escapeHtml(region)}</li>`);
+   if (includeLanguage && language) listItems.push(`<li><strong>Language:</strong> ${escapeHtml(language)}</li>`);
+   if (includeProductLine && productLine) listItems.push(`<li><strong>Product Line:</strong> ${escapeHtml(productLine)}</li>`);
+   if (includeUse && use) listItems.push(`<li><strong>Use:</strong> ${escapeHtml(use)}</li>`);
+   if (includeSegment && segment) listItems.push(`<li><strong>Market Segment:</strong> ${escapeHtml(segment)}</li>`);
+
+   const img = buildImageHtml(imageSrc, imageAlt);
+   const place = normalizePlacement(imagePlacement);
+
+   let html = (mode === "bulk")
+    ? `<div style="height:20px;"></div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;border-spacing:0;border:1px solid #d7dce3;border-radius:8px;background:#f7f9fc;"><tr><td style="font-family: Arial, Helvetica, sans-serif; line-height:1.6; color:#111827; padding:20px;">`
+    : `<div class="product-description">
+
+`;
+
+   if (img && (place === "top" || place === "all")) html += (mode==="bulk" ? `${img}<div style="height:12px;"></div>` : ` ${img}
+
+`);
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+
+   if (badgesHtml) html += (mode==="bulk" ? badgesHtml : ` ${badgesHtml}
+`);
+
+   html += ` <p class="prod-summary">
+`;
+   html += summary ? `  ${escapeHtml(summary).replace(/\r?\n/g, "<br>")}
+` : `  <!-- Add summary text here -->
+`;
+   if (supersedes) html += `  <br><br>
+  <em>Supersedes: ${escapeHtml(supersedes)}</em>
+`;
+   html += ` </p>
+
+`;
+
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
+
+   if (img && (place === "middle" || place === "all")) html += (mode==="bulk" ? `<div style="height:12px;"></div>${img}<div style="height:12px;"></div>` : ` ${img}
+
+`);
+
+   if (highlightsHtml) html += `${highlightsHtml}
+`;
+   if (specsHtml) html += `${specsHtml}
+`;
+   if (includedHtml) html += `${includedHtml}
+`;
+
+   if (compatibilityHtml) html += `${compatibilityHtml}
+`;
+   if (certsHtml) html += `${certsHtml}
+`;
+   if (warningsHtml) html += `${warningsHtml}
+`;
+   if (careHtml) html += `${careHtml}
+`;
+
+   if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>
+`;
+   if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>
+`;
+   if (ctaHtml) html += `${ctaHtml}
+`;
+
+   if (listItems.length > 0) {
+    html += ` <hr>
+
+`;
+    html += ` <div class="prod-details">
+`;
+    html += `  <h3 style="margin:0 0 8px 0;color:#1b3a63;">Product Information</h3>
+`;
+    html += `  <ul style="margin:0;padding-left:18px;">
+`;
+    html += `   ${listItems.join("\n   ")}`;
+    html += `  </ul>
+`;
+    html += ` </div>
+
+`;
+   }
+
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
+
+   if (img && (place === "bottom" || place === "all")) html += (mode==="bulk" ? `<div style="height:12px;"></div>${img}` : ` ${img}
+
+`);
+
+   if (flagHtml) html += flagHtml;
+
+   html += (mode === "bulk") ? `</td></tr></table></td></tr></table>` : `</div>
+
+`;
+
+   if (includeStyle && mode !== "bulk") {
+    html += `<style>
+`;
+    html += ` .product-description {
+`;
+    html += `  font-family: Arial, Helvetica, sans-serif;
+`;
+    html += `  background: #f7f9fc;
+`;
+    html += `  padding: 20px;
+`;
+    html += `  border-radius: 8px;
+`;
+    html += `  line-height: 1.6;
+`;
+    html += `  border: 1px solid #d7dce3;
+`;
+    html += `  margin-top: 20px;
+`;
+    html += ` }
+`;
+    html += ` .prod-summary { font-size: 1rem; color: #333; }
+`;
+    html += ` .prod-details h3 { margin-bottom: 8px; color: #1b3a63; }
+`;
+    html += ` .prod-details ul { margin: 0; padding-left: 18px; }
+`;
+    html += ` .prod-details li { margin-bottom: 4px; }
+`;
+    html += `</style>
+`;
+   }
+
+   return html;
+  }
+
+  /***********************
+   * TEMPLATE 2 - Labeled Grid Panels
+   ***********************/
+  function buildTemplate2LabeledPanels(cfg, mode){
+   const {
+    summary, supersedes,
+    imageSrc, imageAlt, imagePlacement,
+    badgesHtml, highlightsHtml, specsHtml, includedHtml,
+    compatibilityHtml, certsHtml, warningsHtml, careHtml,
+    shippingReturns, warranty, ctaHtml,
+    downloadHtml, downloadPlacement,
+    infoPairs,
+    flagHtml
+   } = cfg;
+
+   const place = normalizePlacement(imagePlacement);
+   const img = buildImageHtml(imageSrc, imageAlt);
+
+   const outer = `<div style="height:16px;"></div>`;
+   const shellStyle = "border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;overflow:hidden;";
+   const railStyle = "width:120px;background:#0b2b5a;color:#ffffff;font-weight:900;font-family:Arial,Helvetica,sans-serif;padding:14px 12px;vertical-align:top;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;";
+   const cellStyle = "padding:14px 14px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;vertical-align:top;";
+
+   let html = outer;
+   html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${shellStyle}border-collapse:separate;border-spacing:0;">`;
+
+   html += `<tr>`;
+   html += `<td style="${railStyle}">Overview</td>`;
+   html += `<td style="${cellStyle}">`;
+   if (badgesHtml) html += badgesHtml;
+
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+   if (img && (place === "top" || place === "all")) html += `${img}<div style="height:10px;"></div>`;
+
+   if (summary) html += `<div style="font-size:14px;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
+   if (supersedes) html += `<div style="margin-top:8px;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+   html += `</td>`;
+   html += `</tr>`;
+
+   if (highlightsHtml){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Features</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${highlightsHtml}</td></tr>`;
+   }
+
+   if (downloadHtml) {
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Download</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle") || downloadHtml}</td></tr>`;
+   }
+
+   if (img && (place === "middle" || place === "all")){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Image</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${img}</td></tr>`;
+   }
+
+   if (specsHtml){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Specs</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${specsHtml}</td></tr>`;
+   }
+
+   if (includedHtml){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">In Box</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${includedHtml}</td></tr>`;
+   }
+
+   if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Notes</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">`;
+    if (compatibilityHtml) html += compatibilityHtml;
+    if (certsHtml) html += certsHtml;
+    if (warningsHtml) html += warningsHtml;
+    if (careHtml) html += careHtml;
+    html += `</td></tr>`;
+   }
+
+   if (infoPairs && infoPairs.length){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Info</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">`;
+    html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">`;
+    infoPairs.forEach(([k,v])=>{
+     html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;width:34%;vertical-align:top;">${escapeHtml(k)}:</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`;
+    });
+    html += `</table></td></tr>`;
+   }
+
+   if (shippingReturns || warranty || ctaHtml){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Policy</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">`;
+    if (shippingReturns) html += `<div><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+    if (warranty) html += `<div style="margin-top:6px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+    if (ctaHtml) html += ctaHtml;
+    html += `</td></tr>`;
+   }
+
+   if (downloadHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;"> </td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom") || ""}</td></tr>`;
+
+   if (img && (place === "bottom" || place === "all")){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">More</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${img}</td></tr>`;
+   }
+
+   if (flagHtml){
+    html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;"> </td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${flagHtml}</td></tr>`;
+   }
+
+   html += `</table>`;
+   return html;
+  }
+
+  /***********************
+   * TEMPLATE 3 - Spec Sidebar
+   ***********************/
+  function buildTemplate3SpecSidebar(cfg, mode){
+   const {
+    summary, supersedes,
+    imageSrc, imageAlt, imagePlacement,
+    badgesHtml, highlightsHtml, specsHtml,
+    includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml,
+    shippingReturns, warranty, ctaHtml,
+    downloadHtml, downloadPlacement,
+    infoPairs, flagHtml
+   } = cfg;
+
+   const place = normalizePlacement(imagePlacement);
+   const img = buildImageHtml(imageSrc, imageAlt);
+
+   const outer = `<div style="height:16px;"></div>`;
+   const shellStyle = "border:1px solid #e5e7eb;border-radius:14px;background:#ffffff;overflow:hidden;";
+   const leftStyle = "padding:16px 16px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;vertical-align:top;";
+   const rightStyle = "padding:16px 14px;background:#f8fafc;border-left:1px solid #e5e7eb;vertical-align:top;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.5;";
+
+   let html = outer;
+   html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${shellStyle}border-collapse:separate;border-spacing:0;">`;
+   html += `<tr>`;
+
+   html += `<td style="${leftStyle}">`;
+   if (badgesHtml) html += badgesHtml;
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+   if (img && (place === "top" || place === "all")) html += `${img}<div style="height:10px;"></div>`;
+   if (summary) html += `<div style="font-size:14px;margin:0 0 10px 0;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
+   if (supersedes) html += `<div style="margin:0 0 10px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+   if (highlightsHtml) html += highlightsHtml;
+   if (includedHtml) html += includedHtml;
+   if (compatibilityHtml) html += compatibilityHtml;
+   if (certsHtml) html += certsHtml;
+   if (warningsHtml) html += warningsHtml;
+   if (careHtml) html += careHtml;
+   if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+   if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+   if (ctaHtml) html += ctaHtml;
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
+   if (img && (place === "middle" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
+   if (img && (place === "bottom" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
+   if (flagHtml) html += flagHtml;
+   html += `</td>`;
+
+   html += `<td style="${rightStyle}width:38%;">`;
+   html += `<div style="font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;color:#0b2b5a;">Quick Specs</div>`;
+   if (specsHtml) html += `<div style="margin-top:10px;">${specsHtml}</div>`;
+   if (infoPairs && infoPairs.length){
+    html += `<div style="margin-top:12px;font-weight:900;color:#0b2b5a;">Product Information</div>`;
+    html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:6px;">`;
+    infoPairs.forEach(([k,v])=>{
+     html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;vertical-align:top;width:45%;">${escapeHtml(k)}</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`;
+    });
+    html += `</table>`;
+   }
+   html += `</td>`;
+
+   html += `</tr></table>`;
+   return html;
+  }
+
+  /***********************
+   * TEMPLATE 4 - Datasheet Blocks
+   ***********************/
+  function buildTemplate4Datasheet(cfg, mode){
+   const {
+    summary, supersedes,
+    imageSrc, imageAlt, imagePlacement,
+    badgesHtml, highlightsHtml, specsHtml, includedHtml,
+    compatibilityHtml, certsHtml, warningsHtml, careHtml,
+    shippingReturns, warranty, ctaHtml,
+    downloadHtml, downloadPlacement,
+    infoPairs, flagHtml
+   } = cfg;
+
+   const place = normalizePlacement(imagePlacement);
+   const img = buildImageHtml(imageSrc, imageAlt);
+
+   const outer = `<div style="height:16px;"></div>`;
+   const shellStyle = "border:1px solid #d7dce3;border-radius:10px;background:#ffffff;overflow:hidden;";
+   const headStyle = "background:#0b2b5a;color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:12px 14px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;";
+   const bodyStyle = "padding:12px 14px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
+
+   let html = outer;
+   html += `<div style="${shellStyle}">`;
+
+   html += `<div style="${headStyle}">Product Details</div>`;
+   html += `<div style="${bodyStyle}">`;
+   if (badgesHtml) html += badgesHtml;
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+   if (summary) html += `<div style="margin:0 0 10px 0;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
+   if (supersedes) html += `<div style="margin:0 0 10px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+   html += `</div>`;
+
+   if (img && (place === "top" || place === "all")){
+    html += `<div style="${headStyle}">Image</div>`;
+    html += `<div style="${bodyStyle}">${img}</div>`;
+   }
+
+   if (downloadHtml) {
+    html += `<div style="${headStyle}">Download</div>`;
+    html += `<div style="${bodyStyle}">${buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle") || downloadHtml}</div>`;
+   }
+
+   if (highlightsHtml){
+    html += `<div style="${headStyle}">Highlights</div>`;
+    html += `<div style="${bodyStyle}">${highlightsHtml}</div>`;
+   }
+
+   if (specsHtml){
+    html += `<div style="${headStyle}">Specifications</div>`;
+    html += `<div style="${bodyStyle}">${specsHtml}</div>`;
+   }
+
+   if (includedHtml){
+    html += `<div style="${headStyle}">What’s Included</div>`;
+    html += `<div style="${bodyStyle}">${includedHtml}</div>`;
+   }
+
+   if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
+    html += `<div style="${headStyle}">Additional Notes</div>`;
+    html += `<div style="${bodyStyle}">`;
+    if (compatibilityHtml) html += compatibilityHtml;
+    if (certsHtml) html += certsHtml;
+    if (warningsHtml) html += warningsHtml;
+    if (careHtml) html += careHtml;
+    html += `</div>`;
+   }
+
+   if (infoPairs && infoPairs.length){
+    html += `<div style="${headStyle}">Product Information</div>`;
+    html += `<div style="${bodyStyle}">`;
+    html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">`;
+    infoPairs.forEach(([k,v])=>{
+     html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;vertical-align:top;width:40%;">${escapeHtml(k)}</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`;
+    });
+    html += `</table></div>`;
+   }
+
+   if (shippingReturns || warranty || ctaHtml){
+    html += `<div style="${headStyle}">Shipping / Warranty</div>`;
+    html += `<div style="${bodyStyle}">`;
+    if (shippingReturns) html += `<div><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+    if (warranty) html += `<div style="margin-top:6px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+    if (ctaHtml) html += ctaHtml;
+    html += `</div>`;
+   }
+
+   if (downloadHtml) {
+    const b = buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
+    if (b) {
+     html += `<div style="${bodyStyle}">${b}</div>`;
+    }
+   }
+
+   if (img && (place === "middle" || place === "all")){
+    html += `<div style="${headStyle}">Additional Image</div>`;
+    html += `<div style="${bodyStyle}">${img}</div>`;
+   }
+   if (img && (place === "bottom" || place === "all")){
+    html += `<div style="${headStyle}">More</div>`;
+    html += `<div style="${bodyStyle}">${img}</div>`;
+   }
+
+   if (flagHtml){
+    html += `<div style="${bodyStyle}">${flagHtml}</div>`;
+   }
+
+   html += `</div>`;
+   return html;
+  }
+
+  /***********************
+   * TEMPLATE 5 - Banner + Callouts
+   ***********************/
+  function buildTemplate5BannerCallouts(cfg, mode){
+   const {
+    summary, supersedes,
+    imageSrc, imageAlt, imagePlacement,
+    badgesHtml, highlightsHtml, specsHtml, includedHtml,
+    compatibilityHtml, certsHtml, warningsHtml, careHtml,
+    shippingReturns, warranty, ctaHtml,
+    downloadHtml, downloadPlacement,
+    infoPairs, flagHtml
+   } = cfg;
+
+   const place = normalizePlacement(imagePlacement);
+   const img = buildImageHtml(imageSrc, imageAlt);
+
+   const outer = `<div style="height:16px;"></div>`;
+   const shellStyle = "border:1px solid #e5e7eb;border-radius:16px;background:#ffffff;overflow:hidden;";
+   const bannerStyle = "background:linear-gradient(90deg,#0b2b5a 0,#1456A8 50%,#00B894 100%);color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:14px 16px;";
+   const bodyStyle = "padding:14px 16px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
+   const boxStyle = "border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;padding:10px 12px;";
+
+   let html = outer;
+   html += `<div style="${shellStyle}">`;
+
+   html += `<div style="${bannerStyle}">`;
+   html += `<div style="font-weight:900;font-size:14px;letter-spacing:0.05em;text-transform:uppercase;">Product Overview</div>`;
+   if (badgesHtml) html += `<div style="margin-top:8px;">${badgesHtml}</div>`;
+   html += `</div>`;
+
+   html += `<div style="${bodyStyle}">`;
+
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+   if (img && (place === "top" || place === "all")) html += `${img}<div style="height:12px;"></div>`;
+
+   if (summary) html += `<div style="margin:0 0 10px 0;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
+   if (supersedes) html += `<div style="margin:0 0 10px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+
+   const hasA = !!highlightsHtml;
+   const hasB = !!specsHtml;
+   const hasC = !!includedHtml;
+   if (hasA || hasB || hasC){
+    html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;border-spacing:10px 0;margin-top:10px;">`;
+    html += `<tr>`;
+    html += `<td style="width:33.33%;vertical-align:top;">${hasA ? `<div style="${boxStyle}"><div style="font-weight:900;color:#0b2b5a;margin-bottom:6px;">Highlights</div>${highlightsHtml}</div>` : ""}</td>`;
+    html += `<td style="width:33.33%;vertical-align:top;">${hasB ? `<div style="${boxStyle}"><div style="font-weight:900;color:#0b2b5a;margin-bottom:6px;">Specifications</div>${specsHtml}</div>` : ""}</td>`;
+    html += `<td style="width:33.33%;vertical-align:top;">${hasC ? `<div style="${boxStyle}"><div style="font-weight:900;color:#0b2b5a;margin-bottom:6px;">What’s Included</div>${includedHtml}</div>` : ""}</td>`;
+    html += `</tr></table>`;
+   }
+
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
+   if (img && (place === "middle" || place === "all")) html += `<div style="height:12px;"></div>${img}<div style="height:12px;"></div>`;
+
+   if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
+    html += `<div style="margin-top:12px;font-weight:900;color:#0b2b5a;">Additional Notes</div>`;
+    if (compatibilityHtml) html += compatibilityHtml;
+    if (certsHtml) html += certsHtml;
+    if (warningsHtml) html += warningsHtml;
+    if (careHtml) html += careHtml;
+   }
+
+   if (infoPairs && infoPairs.length){
+    html += `<div style="margin-top:12px;font-weight:900;color:#0b2b5a;">Product Information</div>`;
+    html += `<ul style="margin:6px 0 0 0;padding-left:18px;">${infoPairs.map(([k,v]) => `<li><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`;
+   }
+
+   if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+   if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+   if (ctaHtml) html += ctaHtml;
+
+   if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
+   if (img && (place === "bottom" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
+
+   if (flagHtml) html += flagHtml;
+
+   html += `</div></div>`;
+   return html;
+  }
+
+  function buildHtml(cfg, mode){
+   const t = parseInt(cfg.templateId || 1, 10);
+   let html = "";
+   if (t === 1) html = buildTemplate1Classic(cfg, mode);
+   else if (t === 2) html = buildTemplate2LabeledPanels(cfg, mode);
+   else if (t === 3) html = buildTemplate3SpecSidebar(cfg, mode);
+   else if (t === 4) html = buildTemplate4Datasheet(cfg, mode);
+   else html = buildTemplate5BannerCallouts(cfg, mode);
+
+   return scrubArtifacts(html);
+  }
+
+  function generateSingleHtml() {
+   const templateId = document.getElementById("templateSelect").value;
+
+   const summary = readVal("summary");
+   const supersedes = readVal("supersedes");
+
+   const includeProductType = document.getElementById("includeProductType").checked;
+   const productType = readVal("productType");
+
+   const includeRegion = document.getElementById("includeRegion").checked;
+   const region = readVal("region");
+
+   const includeLanguage = document.getElementById("includeLanguage").checked;
+   const language = readVal("language");
+
+   const includeProductLine = document.getElementById("includeProductLine").checked;
+   const productLine = readVal("productLine");
+
+   const includeUse = document.getElementById("includeUse").checked;
+   const use = readVal("use");
+
+   const includeSegment = document.getElementById("includeSegment").checked;
+   const segment = readVal("segment");
+
+   const includeBadges = document.getElementById("includeBadges").checked;
+   const badges = readVal("badges");
+   const badgesHtml = includeBadges ? buildBadgesHtml(badges) : "";
+
+   const includeHighlights = document.getElementById("includeHighlights").checked;
+   const highlights = document.getElementById("highlights").value || "";
+   const useRedChecks = document.getElementById("useRedChecks").checked;
+   const highlightsHtml = includeHighlights ? buildHighlightsHtml(highlights, useRedChecks) : "";
+
+   const includeSpecs = document.getElementById("includeSpecs").checked;
+   const specs = document.getElementById("specs").value || "";
+   const specsHtml = includeSpecs ? buildSpecsHtml(specs) : "";
+
+   const includeWhatsIncluded = document.getElementById("includeWhatsIncluded").checked;
+   const whatsIncluded = document.getElementById("whatsIncluded").value || "";
+   const includedHtml = includeWhatsIncluded ? buildBulletsSection("What’s Included", whatsIncluded) : "";
+
+   const includeCompatibility = document.getElementById("includeCompatibility").checked;
+   const compatibility = document.getElementById("compatibility").value || "";
+   const compatibilityHtml = includeCompatibility ? buildTextSection("Compatibility / Works With", compatibility) : "";
+
+   const includeCerts = document.getElementById("includeCerts").checked;
+   const certs = document.getElementById("certs").value || "";
+   const certsHtml = includeCerts ? buildBulletsSection("Certifications / Compliance", certs) : "";
+
+   const includeWarnings = document.getElementById("includeWarnings").checked;
+   const warnings = document.getElementById("warnings").value || "";
+   const warningsHtml = includeWarnings ? buildTextSection("Warnings / Safety", warnings) : "";
+
+   const includeCare = document.getElementById("includeCare").checked;
+   const care = document.getElementById("care").value || "";
+   const careHtml = includeCare ? buildTextSection("Care / Maintenance", care) : "";
+
+   const includeShippingReturns = document.getElementById("includeShippingReturns").checked;
+   const shippingReturns = includeShippingReturns ? readVal("shippingReturns") : "";
+
+   const includeWarranty = document.getElementById("includeWarranty").checked;
+   const warranty = includeWarranty ? readVal("warranty") : "";
+
+   const includeCTA = document.getElementById("includeCTA").checked;
+   const ctaText = includeCTA ? readVal("ctaText") : "";
+   const ctaUrl = includeCTA ? readVal("ctaUrl") : "";
+   const ctaHtml = includeCTA ? buildDownloadHtml(ctaText, ctaUrl) : "";
+
+   // Product image
+   const imageSrc = getSingleImageSrc();
+   const imageAlt = readVal("productImageAlt");
+   const imagePlacement = document.getElementById("productImagePlacement").value;
+
+   // Download
+   const includeDownload = document.getElementById("includeDownload").checked;
+   const downloadLabel = includeDownload ? readVal("downloadLabel") : "";
+   const downloadUrl = includeDownload ? getSingleDownloadUrl() : "";
+   const downloadPlacement = includeDownload ? document.getElementById("downloadPlacement").value : "top";
+   const downloadHtml = (includeDownload && downloadLabel && downloadUrl) ? buildDownloadHtml(downloadLabel, downloadUrl) : "";
+
+   // Flag
+   const flagSrc = getSingleFlagSrc();
+   const flagAlt = readVal("flagAlt");
+   const flagSize = readVal("flagSize");
+   const flagHtml = flagSrc ? buildFlagHtml(flagSrc, flagAlt, flagSize) : "";
+
+   // Template 1 only: include style in single mode (matches original)
+   const includeStyle = (parseInt(templateId, 10) === 1);
+
+   const infoPairs = buildInfoPairsFromOriginalFields(
+    {includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment},
+    {productType, region, language, productLine, use, segment}
+   );
+
+   const cfg = {
+    templateId,
+    summary, supersedes,
+    productType, region, language, productLine, use, segment,
+    includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment,
+    includeStyle,
+    imageSrc, imageAlt, imagePlacement,
+    badgesHtml, highlightsHtml, specsHtml, includedHtml,
+    compatibilityHtml, certsHtml, warningsHtml, careHtml,
+    shippingReturns, warranty, ctaHtml,
+    downloadHtml, downloadPlacement,
+    infoPairs,
+    flagHtml
+   };
+
+   const html = buildHtml(cfg, "css");
+   document.getElementById("output").value = html;
+   document.getElementById("preview").innerHTML = html;
+  }
+
+  function resetForm() {
+   const ids = [
+    "summary","supersedes","productType","region","language","productLine","use","segment",
+    "badges","highlights","specs","whatsIncluded","compatibility","certs","warnings","care",
+    "shippingReturns","warranty","ctaText","ctaUrl",
+    "productImageUrl","productImageAlt","flagUrl","flagAlt","flagSize",
+    "downloadLabel","downloadUrl"
+   ];
+   ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+
+   const checks = [
+    ["includeProductType", true],["includeRegion", true],["includeLanguage", true],["includeProductLine", true],["includeUse", true],["includeSegment", true],
+    ["includeBadges", false],["includeHighlights", false],["includeSpecs", false],["includeWhatsIncluded", false],
+    ["includeCompatibility", false],["includeCerts", false],["includeWarnings", false],["includeCare", false],
+    ["includeShippingReturns", false],["includeWarranty", false],["includeCTA", false],
+    ["includeProductImage", false],["includeFlag", false],["includeDownload", false],
+    ["useRedChecks", true]
+   ];
+   checks.forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.checked = val; });
+
+   document.getElementById("productImageFile").value = "";
+   document.getElementById("flagFile").value = "";
+   document.getElementById("downloadFile").value = "";
+
+   document.getElementById("productImagePlacement").value = "top";
+   document.getElementById("downloadPlacement").value = "top";
+   document.getElementById("flagSize").value = "34";
+
+   singleProductImageDataUri = "";
+   singleFlagDataUri = "";
+   singleDownloadDataUri = "";
+
+   document.getElementById("output").value = "";
+   document.getElementById("preview").innerHTML = "";
+  }
+
+  function copyCode() {
+   const output = document.getElementById("output");
+   output.select();
+   output.setSelectionRange(0, 99999);
+   document.execCommand("copy");
+   alert("HTML code copied to clipboard.");
+  }
+
+  /***********************
+   * CSV template
+   ***********************/
+  function downloadTemplate() {
+   const header = [
+    "Item Number",
+    "Summary",
+    "Supersedes",
+    "ProductType",
+    "Region",
+    "Language",
+    "ProductLine",
+    "Use",
+    "Segment",
+    "TemplateId",
+    "Badges",
+    "Highlights",
+    "UseRedChecks",
+    "Specs",
+    "WhatsIncluded",
+    "Compatibility",
+    "Certifications",
+    "Warnings",
+    "Care",
+    "ShippingReturns",
+    "Warranty",
+    "CTA_Text",
+    "CTA_Url",
+    "ImageUrl",
+    "ImagePlacement",
+    "ImageAlt",
+    "DownloadLabel",
+    "DownloadUrl",
+    "DownloadPlacement",
+    "FlagUrl",
+    "FlagAlt",
+    "FlagSize"
+   ].join(",");
+
+   const example = [
+    "F-F-TIMBRDRV26",
+    "This six-page flier highlights the Timber Drive™ structural screw fastening system, featuring product specifications, installation guidance, application details, and ordering information.",
+    "T-F-TMBRDRV23-R",
+    "Flier",
+    "US | Canada",
+    "English",
+    "Fastening Systems – Fasteners",
+    "General Use",
+    "Commercial Construction, Component Manufacturer, OEM",
+    "5",
+    "New, Limited Time",
+    "Durable steel construction\nCorrosion-resistant coating\nEasy installation",
+    "TRUE",
+    "Weight: 2.4 lb\nLength: 8 in\nMaterial: Stainless steel",
+    "1x bracket\n2x screws\nQuick-start guide",
+    "Compatible with 1/4\" and 5/16\" anchors\nIndoor/outdoor on wood and metal",
+    "RoHS compliant\nUL listed",
+    "Wear eye protection during installation.",
+    "Wipe clean with a damp cloth. Avoid harsh solvents.",
+    "Ships in 2–3 business days. Returns within 30 days.",
+    "1-year limited warranty",
+    "View Product Page",
+    "https://example.com/product",
+    "https://example.com/product.jpg",
+    "top",
+    "Product image",
+    "View Spec Sheet (PDF)",
+    "https://example.com/specs.pdf",
+    "middle",
+    "https://example.com/flags/ca.png",
+    "Made in Canada",
+    "34"
+   ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
+
+   const csvContent = header + "\n" + example + "\n";
+   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+   const link = document.createElement("a");
+   const url = URL.createObjectURL(blob);
+   link.href = url;
+   link.download = "product_descriptions_template.csv";
+   document.body.appendChild(link);
+   link.click();
+   document.body.removeChild(link);
+   URL.revokeObjectURL(url);
+  }
+
+  /***********************
+   * CSV parsing
+   ***********************/
+  function parseCsv(text) {
+   const rows = [];
+   let current = [];
+   let field = "";
+   let inQuotes = false;
+
+   for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i + 1];
+
+    if (inQuotes) {
+     if (c === '"' && next === '"') { field += '"'; i++; }
+     else if (c === '"') inQuotes = false;
+     else field += c;
+    } else {
+     if (c === '"') inQuotes = true;
+     else if (c === ",") { current.push(field); field = ""; }
+     else if (c === "\r") {}
+     else if (c === "\n") {
+      current.push(field);
+      rows.push(current);
+      current = [];
+      field = "";
+     } else field += c;
+    }
+   }
+   if (field.length > 0 || current.length > 0) { current.push(field); rows.push(current); }
+   return rows;
+  }
+
+  function handleBulkFileChange(event) {
+   const file = event.target.files[0];
+   const status = document.getElementById("bulkStatus");
+   bulkRows = [];
+   bulkRecordMap = {};
+
+   if (!file) { status.textContent = "No file selected."; return; }
+
+   const reader = new FileReader();
+   reader.onload = function(e) {
+    const rows = parseCsv(e.target.result);
+
+    if (!rows || rows.length < 2) {
+     status.textContent = "File appears to be empty or missing data rows.";
+     return;
+    }
+
+    const header = rows[0].map(h => (h || "").trim());
+    const dataRows = rows.slice(1).filter(r => r && r.some(cell => cell && cell.trim() !== ""));
+
+    const keyCandidates = ["Item Number", "ItemNumber", "ItemLabel"];
+
+    dataRows.forEach((r, rowIndex) => {
+     const rawRowObj = {};
+     header.forEach((h, i) => {
+      const colName = (h || "").trim();
+      const cellValue = (r[i] || "").trim();
+      rawRowObj[colName] = cellValue;
+     });
+
+     let key = null;
+     for (const candidate of keyCandidates) {
+      if (rawRowObj[candidate] && rawRowObj[candidate].trim() !== "") {
+       key = rawRowObj[candidate].trim();
+       break;
+      }
+     }
+     if (!key) {
+      key = `Item_${rowIndex + 1}`;
+      rawRowObj["Item Number"] = rawRowObj["Item Number"] || key;
+     }
+
+     const existing = bulkRecordMap[key] || {};
+     const merged = { ...existing };
+
+     // Empty cell = remove/reset field
+     header.forEach((h, i) => {
+      const colName = (h || "").trim();
+      const raw = (r[i] || "").trim();
+      if (raw === "") delete merged[colName];
+      else merged[colName] = raw;
+     });
+
+     bulkRecordMap[key] = merged;
+    });
+
+    bulkRows = Object.keys(bulkRecordMap).map(k => bulkRecordMap[k]);
+    status.textContent = `Loaded ${bulkRows.length} item(s) from file.`;
+   };
+   reader.onerror = function() { status.textContent = "Error reading file."; };
+   reader.readAsText(file);
+  }
+
+  function truthyCsv(v){
+   const s = String(v || "").trim().toLowerCase();
+   return (s === "true" || s === "1" || s === "yes" || s === "y");
+  }
+
+  function getBulkTemplateId(row){
+   const fromRow = row["TemplateId"] || row["Template"] || "";
+   if (String(fromRow).trim() !== "") return parseInt(fromRow, 10) || 1;
+   return parseInt(document.getElementById("templateSelect").value, 10) || 1;
+  }
+
+  function getBulkImage(row){
+   const url = (row["ImageUrl"] || row["ImageURL"] || "").trim();
+   const placement = normalizePlacement(row["ImagePlacement"] || "top");
+   const alt = scrubInput(row["ImageAlt"] || "");
+   return { url, placement, alt };
+  }
+
+  function getBulkFlag(row){
+   const url = (row["FlagUrl"] || row["FlagURL"] || "").trim();
+   const alt = scrubInput(row["FlagAlt"] || "");
+   const size = (row["FlagSize"] || "34").trim();
+   return { url, alt, size };
+  }
+
+  function getBulkDownload(row){
+   const label = scrubInput(row["DownloadLabel"] || "");
+   const url = scrubInput(row["DownloadUrl"] || "");
+   const placement = normalizePlacement(row["DownloadPlacement"] || "top");
+   return { label, url, placement };
+  }
+
+  function generateBulkFromExcel() {
+   const status = document.getElementById("bulkStatus");
+   if (!bulkRows || bulkRows.length === 0) {
+    status.textContent = "No data loaded. Please upload the CSV from Excel first.";
+    return;
+   }
+
+   const header = ["Item Number", "GeneratedHtml"];
+   const lines = [header.join(",")];
+
+   bulkRows.forEach((row, index) => {
+    const itemNumber = row["Item Number"] || row["ItemNumber"] || row["ItemLabel"] || `Item_${index + 1}`;
+
+    const summary = row["Summary"] || "";
+    const supersedes = row["Supersedes"] || "";
+    const productType = row["ProductType"] || "";
+    const region = row["Region"] || "";
+    const language = row["Language"] || "";
+    const productLine = row["ProductLine"] || "";
+    const use = row["Use"] || "";
+    const segment = row["Segment"] || "";
+
+    const templateId = getBulkTemplateId(row);
+
+    const badges = row["Badges"] || "";
+    const highlights = row["Highlights"] || "";
+    const useRedChecks = (row["UseRedChecks"] === undefined || row["UseRedChecks"] === "") ? true : truthyCsv(row["UseRedChecks"]);
+    const specs = row["Specs"] || "";
+    const whatsIncluded = row["WhatsIncluded"] || row["What's Included"] || "";
+
+    const compatibility = row["Compatibility"] || "";
+    const certs = row["Certifications"] || "";
+    const warnings = row["Warnings"] || "";
+    const care = row["Care"] || "";
+
+    const shippingReturns = row["ShippingReturns"] || "";
+    const warranty = row["Warranty"] || "";
+    const ctaText = row["CTA_Text"] || "";
+    const ctaUrl = row["CTA_Url"] || "";
+
+    const badgesHtml = badges ? buildBadgesHtml(badges) : "";
+    const highlightsHtml = highlights ? buildHighlightsHtml(highlights, useRedChecks) : "";
+    const specsHtml = specs ? buildSpecsHtml(specs) : "";
+    const includedHtml = whatsIncluded ? buildBulletsSection("What’s Included", whatsIncluded) : "";
+    const compatibilityHtml = compatibility ? buildTextSection("Compatibility / Works With", compatibility) : "";
+    const certsHtml = certs ? buildBulletsSection("Certifications / Compliance", certs) : "";
+    const warningsHtml = warnings ? buildTextSection("Warnings / Safety", warnings) : "";
+    const careHtml = care ? buildTextSection("Care / Maintenance", care) : "";
+
+    const ctaHtml = (ctaText && ctaUrl) ? buildDownloadHtml(ctaText, ctaUrl) : "";
+
+    // Media (URL only in bulk)
+    const img = getBulkImage(row);
+    const flag = getBulkFlag(row);
+    const dl = getBulkDownload(row);
+
+    const downloadHtml = (dl.label && dl.url) ? buildDownloadHtml(dl.label, escapeHtml(dl.url)) : "";
+    const downloadPlacement = dl.placement;
+
+    const infoPairs = buildInfoPairsFromOriginalFields(
+     {
+      includeProductType: !!productType,
+      includeRegion: !!region,
+      includeLanguage: !!language,
+      includeProductLine: !!productLine,
+      includeUse: !!use,
+      includeSegment: !!segment
+     },
+     {productType, region, language, productLine, use, segment}
+    );
+
+    const flagHtml = (flag.url) ? buildFlagHtml(escapeHtml(flag.url), flag.alt, flag.size) : "";
+
+    const cfg = {
+     templateId,
+     summary, supersedes,
+     productType, region, language, productLine, use, segment,
+     includeProductType: !!productType,
+     includeRegion: !!region,
+     includeLanguage: !!language,
+     includeProductLine: !!productLine,
+     includeUse: !!use,
+     includeSegment: !!segment,
+     includeStyle: false,
+     imageSrc: img.url ? escapeHtml(img.url) : "",
+     imageAlt: img.alt,
+     imagePlacement: img.placement,
+     badgesHtml, highlightsHtml, specsHtml, includedHtml,
+     compatibilityHtml, certsHtml, warningsHtml, careHtml,
+     shippingReturns, warranty, ctaHtml,
+     downloadHtml, downloadPlacement,
+     infoPairs,
+     flagHtml
+    };
+
+    let htmlPretty = buildHtml(cfg, "bulk");
+    // Convert any literal \n within cell-provided text to real newlines, then collapse
+    htmlPretty = scrubArtifacts(htmlPretty);
+
+    const html = htmlPretty.replace(/\s+/g, " ").trim();
+
+    const safeItem = `"${String(itemNumber).replace(/"/g,'""')}"`;
+    const safeHtml = `"${html.replace(/"/g,'""')}"`;
+    lines.push(safeItem + "," + safeHtml);
+   });
+
+   const csvContent = lines.join("\n");
+   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+   const link = document.createElement("a");
+   const ts = new Date().toISOString().slice(0,19).replace(/[:T]/g,"-");
+   const filename = `bulk_product_descriptions_${ts}.csv`;
+   const url = URL.createObjectURL(blob);
+   link.href = url;
+   link.download = filename;
+   document.body.appendChild(link);
+   link.click();
+   document.body.removeChild(link);
+   URL.revokeObjectURL(url);
+
+   status.textContent = `Bulk HTML generated for ${bulkRows.length} item(s). Downloaded: ${filename}`;
+  }
+
+  /***********************
+   * Single image/pdf file helpers
+   ***********************/
+  function handleProductImageFile(event){
+   const file = event.target.files[0];
+   if (!file) { singleProductImageDataUri = ""; return; }
+   const reader = new FileReader();
+   reader.onload = function(e){
+    singleProductImageDataUri = e.target.result;
+    document.getElementById("productImageUrl").value = "";
+   };
+   reader.readAsDataURL(file);
+  }
+  function clearProductImageFileIfTyping(){
+   const url = readVal("productImageUrl");
+   if (url) {
+    document.getElementById("productImageFile").value = "";
+    singleProductImageDataUri = "";
+   }
+  }
+
+  function handleFlagFile(event){
+   const file = event.target.files[0];
+   if (!file) { singleFlagDataUri = ""; return; }
+   const reader = new FileReader();
+   reader.onload = function(e){
+    singleFlagDataUri = e.target.result;
+    document.getElementById("flagUrl").value = "";
+   };
+   reader.readAsDataURL(file);
+  }
+  function clearFlagFileIfTyping(){
+   const url = readVal("flagUrl");
+   if (url) {
+    document.getElementById("flagFile").value = "";
+    singleFlagDataUri = "";
+   }
+  }
+
+  function handleDownloadFile(event){
+   const file = event.target.files[0];
+   if (!file) { singleDownloadDataUri = ""; return; }
+   const reader = new FileReader();
+   reader.onload = function(e){
+    singleDownloadDataUri = e.target.result;
+    document.getElementById("downloadUrl").value = "";
+   };
+   reader.readAsDataURL(file);
+  }
+  function clearDownloadFileIfTyping(){
+   const url = readVal("downloadUrl");
+   if (url) {
+    document.getElementById("downloadFile").value = "";
+    singleDownloadDataUri = "";
+   }
+  }
+
+  window.onload = function () {
+   // Seed demo data
+   document.getElementById("summary").value =
+    "This six-page flier highlights the Timber Drive™ structural screw fastening system, featuring product specifications, installation guidance, application details, and ordering information.";
+   document.getElementById("supersedes").value = "T-F-TMBRDRV23-R";
+   document.getElementById("productType").value = "Flier";
+   document.getElementById("region").value = "US | Canada";
+   document.getElementById("language").value = "English";
+   document.getElementById("productLine").value = "Fastening Systems – Fasteners";
+   document.getElementById("use").value = "General Use";
+   document.getElementById("segment").value = "Commercial Construction, Component Manufacturer, OEM";
+   generateSingleHtml();
+  };
+ </script>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<link rel="stylesheet" href="css/ai.css">
+  <script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/docs.js"></script>
+<script src="js/ai.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-header-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+
+  <script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+        KoreHero.loadHeroImage("docsHeroImage", "DocsLibraryBanner");
+    }
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/ai.css">
+</head>
+
+<body>
+<header class="tool-header-simple">
+  <a class="nav-btn" href="index.html">Home</a>
+</header>
+
+
+<main class="centered">
+  <section class="card reports-card">
+    <header class="reports-header">
+      <div class="reports-header-text">
+        <h1>Data / Reports</h1>
+        <p class="reports-subtitle">
+          Visualize your Work Tracker data and export it for deeper analysis. Basic overview on top, advanced breakdowns below.
+        </p>
+      </div>
+            <div class="reports-header-actions">
+        <button type="button" class="secondary-btn" id="refreshReportsBtn">Refresh</button>
+        <span class="reports-updated">Updated: <span id="reportsUpdatedAt">—</span></span>
+        <button type="button" class="secondary-btn" id="exportSummaryCsvBtn">Export Summary CSV</button>
+        <button type="button" class="primary-btn" id="exportWorkCsvBtn">Export Work Items CSV</button>
+        <button type="button" class="secondary-btn" onclick="window.location.href='index.html';">← Home</button>
+      </div>
+    </header>
+
+    <div class="reports-hero-wrapper">
+      <img id="reportsHeroImage"
+           alt="ReportsBanner"
+           class="reports-hero-image"
+           style="display:none;" />
+    </div>
+
+    
+
+    <section class="reports-section">
+      <h2>Overview (Basics)</h2>
+      <div class="reports-summary-grid">
+        <div class="reports-summary-card">
+          <h3>Total Requests</h3>
+          <p id="repTotalRequests" class="reports-summary-value">0</p>
+          <p class="reports-summary-caption">All items currently in the Work Tracker.</p>
+        </div>
+        <div class="reports-summary-card">
+          <h3>Open</h3>
+          <p id="repOpenRequests" class="reports-summary-value">0</p>
+          <p class="reports-summary-caption">New, In Progress, or On Hold.</p>
+        </div>
+        <div class="reports-summary-card">
+          <h3>Completed</h3>
+          <p id="repCompletedRequests" class="reports-summary-value">0</p>
+          <p class="reports-summary-caption">Marked as Completed.</p>
+        </div>
+        <div class="reports-summary-card">
+          <h3>Overdue</h3>
+          <p id="repOverdueRequests" class="reports-summary-value">0</p>
+          <p class="reports-summary-caption">Due date in the past and not Completed.</p>
+        </div>
+      </div>
+    </section>
+    <section class="reports-section">
+      <h2>Workload &amp; Aging (Open Items)</h2>
+      <p class="reports-subtitle">
+        See how long open requests have been sitting in the queue and how they group into age buckets.
+      </p>
+      <div class="reports-summary-grid">
+        <div class="reports-summary-card">
+          <h3>Average Age (Open)</h3>
+          <p id="repAvgAgeOpen" class="reports-summary-value">0</p>
+          <p class="reports-summary-caption">Days since creation for open items.</p>
+        </div>
+        <div class="reports-summary-card">
+          <h3>Oldest Open Item</h3>
+          <p id="repMaxAgeOpen" class="reports-summary-value">0</p>
+          <p class="reports-summary-caption">Maximum age in days across open items.</p>
+        </div>
+      </div>
+
+      <div class="reports-advanced-table">
+        <h3>Open Items by Age Bucket</h3>
+        <p class="reports-subtitle" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span>Visual snapshot of how long open work items have been waiting.</span>
+          <span aria-hidden="true">⏳📊</span>
+        </p>
+        <div class="reports-charts-grid" style="margin-bottom: 1rem;">
+          <div class="reports-chart-card" style="flex: 1 1 320px; min-width:280px;">
+            <h4 class="reports-chart-title">Open Items by Age (Bar)</h4>
+            <canvas id="agingChart" width="400" height="220" class="kore-chart"></canvas>
+          </div>
+          <div class="reports-chart-card" style="flex: 1 1 260px; min-width:240px;">
+            <h4 class="reports-chart-title">Quick Breakdown</h4>
+            <table class="kore-table compact-table">
+              <thead>
+                <tr>
+                  <th>Age Bucket</th>
+                  <th>Open Items</th>
+                </tr>
+              </thead>
+              <tbody id="repAgingBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="reports-chart-caption">
+          Buckets are based on days since creation: 0–2, 3–7, 8–14, and 15+ days.
+        </p>
+      </div>
+    </section>
+
+
+    <section class="reports-section">
+      <h2>Status &amp; Priority (Charts)</h2>
+      <div class="reports-charts-grid">
+        <div class="reports-chart-card">
+          <h3>Requests by Status</h3>
+          <canvas id="statusChart" width="400" height="260"></canvas>
+          <p class="reports-chart-caption">Distribution across New, In Progress, On Hold, Completed.</p>
+        </div>
+        <div class="reports-chart-card">
+          <h3>Requests by Priority</h3>
+          <canvas id="priorityChart" width="400" height="260"></canvas>
+          <p class="reports-chart-caption">Low, Medium, High, Urgent.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reports-section">
+      <h2>Advanced Breakdown (Request Type &amp; Account)</h2>
+      <div class="reports-advanced">
+        <div class="reports-advanced-table">
+          <h3>By Request Type</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Request Type</th>
+                <th>Total</th>
+                <th>Open</th>
+                <th>Completed</th>
+              </tr>
+            </thead>
+            <tbody id="repByTypeBody"></tbody>
+          </table>
+          <canvas id="typePieChart" width="260" height="260" class="reports-pie-canvas"></canvas>
+          <div id="typePieLegend" class="reports-pie-legend"></div>
+          <p class="reports-chart-caption">Share of total requests by type.</p>
+        </div>
+        <div class="reports-advanced-table">
+          <h3>By Account</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Total</th>
+                <th>Open</th>
+                <th>Completed</th>
+              </tr>
+            </thead>
+            <tbody id="repByAccountBody"></tbody>
+          </table>
+          <canvas id="accountPieChart" width="260" height="260" class="reports-pie-canvas"></canvas>
+          <div id="accountPieLegend" class="reports-pie-legend"></div>
+          <p class="reports-chart-caption">Share of total requests by account.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+
+  <script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/ai.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+  <script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+        KoreHero.loadHeroImage("reportsHeroImage", "ReportsBanner");
+    }
+  })();
+  </script>
+</body>
+</html>

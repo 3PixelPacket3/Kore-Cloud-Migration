@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <nav class="top-nav">
+    <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+      <a class="nav-btn" href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+    </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+        <div class="nav-dropdown-menu" id="infoHubMenu">
+          <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+          <div class="nav-dropdown-divider"></div>
+          <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
+        </div>
+      </div>
+      <a class="nav-btn" href="about.html">About</a>
+    </div>
+    <div class="nav-right">
+        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+        <a href="settings.html" class="profile-pill">
+          <div class="profile-avatar">
+            <img id="navProfileAvatar" alt="Profile avatar" />
+          </div>
+          <span id="navCurrentProfileName">User</span>
+          <span class="profile-pill-sep">&bull;</span>
+          <span class="profile-pill-action">Settings</span>
+        </a>
+      </div>
+    </nav>
+</header>
+
+<main class="centered">
+  <section class="card global-search-card">
+    <div class="global-search-hero">
+      <img src="images/GlobalSearch.png" alt="Kore Global Search" class="global-search-image" />
+    </div>
+
+    <h1 class="global-search-title">Global Search</h1>
+    <p class="global-search-subtitle">
+      Search across your Work Tracker, Info Hub, and Documents Library from one place.
+    </p>
+
+    <div class="global-search-form">
+      <label for="globalSearchInput" class="global-search-label">Search query</label>
+      <input type="search" id="globalSearchInput" placeholder="Search titles, notes, content, and descriptions..." />
+
+      <label for="globalSearchTag" class="global-search-label">Tag filter (optional)</label>
+      <input type="text" id="globalSearchTag" placeholder="#urgent, #client-a, training" />
+
+      <fieldset class="global-search-types">
+        <legend>Search in</legend>
+        <label><input type="checkbox" name="globalType" value="work" checked> Work Tracker</label>
+        <label><input type="checkbox" name="globalType" value="info" checked> Info Hub</label>
+        <label><input type="checkbox" name="globalType" value="docs" checked> Documents</label>
+      </fieldset>
+
+      <button type="button" id="globalSearchBtn" class="primary-btn">Run Search</button>
+      <p class="global-search-hint">
+        Tip: tags are shared across Kore. Use tags like <code>#urgent</code>, <code>#client-a</code>,
+        <code>#training</code>, or <code>#automation</code> on Work items, Info pages, and Docs.
+      </p>
+    </div>
+
+    <div class="global-search-results" id="globalSearchResults">
+      <p class="global-search-empty">Run a search to see results grouped by Work, Info Pages, and Documents.</p>
+    </div>
+  </section>
+</main>
+
+
+
+<link rel="stylesheet" href="css/ai.css">
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/main.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/search.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-header-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+  <script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+        KoreHero.loadHeroImage("workHeroImage", "WorkTrackerBanner");
+    }
+  })();
+  </script>
+</body>
+</html>

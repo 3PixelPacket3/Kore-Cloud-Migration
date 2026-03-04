@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nebula Layout Forge – Plain Text → HTML Layout Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/nebula.css" />
+</head>
+<body id="top">
+  <div id="app" class="app theme-dark palette-purple density-relaxed">
+    <header class="app-header">
+      <div class="brand" id="brandHome">
+        <div class="brand-mark">NF</div>
+        <div class="brand-text">
+          <h1>Nebula Layout Forge</h1>
+          <p class="tagline">Plain Text → HTML Layout Builder</p>
+        </div>
+      </div>
+      <div class="header-actions">
+  <a href="index.html" class="btn ghost" title="Back to Kore Home">
+    ← Kore Home
+  </a>
+</div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-graphic">
+        <div class="hero-blob"></div>
+        <div class="hero-card">
+          <div class="hero-pill">Nebula Layout Forge</div>
+          <div class="hero-lines">
+            <span>&lt;section class="box box-callout"&gt;</span>
+            <span>&lt;table class="kpi-table"&gt;</span>
+            <span>&lt;div class="timeline"&gt;</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-copy">
+        <h2>From plain text to production-ready HTML.</h2>
+        <p>
+          Compose, style, and structure content with a visual layout studio.
+          Snap in KPI boards, timelines, callouts, comparison tables and more.
+          Export JSON backups and reuse your favorite templates — fully offline.
+        </p>
+        <div class="hero-meta">
+          <span class="pill">Offline-first</span>
+          <span class="pill">JSON backups</span>
+          <span class="pill">Preset layouts</span>
+          <span class="pill">Custom templates</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="primary-nav" aria-label="Main">
+      <button class="nav-tab active" data-tab="editor">Editor &amp; Preview</button>
+      <button class="nav-tab" data-tab="templates">Templates</button>
+      <button class="nav-tab" data-tab="html">HTML Output</button>
+      <button class="nav-tab" data-tab="help">Help &amp; Guide</button>
+    </nav>
+
+    <main class="workspace">
+      <section id="editorTab" class="tab-panel active" aria-labelledby="Editor & Preview">
+        <div class="workspace-grid workspace-grid-enhanced">
+          <aside class="editor-side rail">
+            <div class="rail-section">
+              <h3 class="rail-title">Quick Presets</h3>
+              <p class="rail-subtitle">Load a layout without leaving the editor.</p>
+              <ul class="rail-preset-list" id="railPresetList"></ul>
+            </div>
+            <div class="rail-section">
+              <h3 class="rail-title">Layout Snippets</h3>
+              <p class="rail-subtitle">Drop in advanced sections.</p>
+              <div class="rail-snippets">
+                <button class="rail-snippet" data-snippet="section-accent">Accent Section</button>
+                <button class="rail-snippet" data-snippet="two-column">Two Column</button>
+                <button class="rail-snippet" data-snippet="timeline">Timeline</button>
+                <button class="rail-snippet" data-snippet="feature-grid">Feature Grid</button>
+                <button class="rail-snippet" data-snippet="cta-strip">CTA Strip</button>
+                <button class="rail-snippet" data-snippet="preformatted">Preformatted Block</button>
+              </div>
+            </div>
+          </aside>
+
+          <div class="editor-pane">
+            <div class="pane-header pane-header-editor">
+              <div class="pane-header-main">
+                <h3>Layout Studio</h3>
+                <span class="pill subtle">Editable content</span>
+              </div>
+              <div class="pane-header-actions">
+                <button id="copyHtmlFromEditorBtn" class="btn ghost btn-xs" title="Copy HTML">
+                  Copy HTML
+                </button>
+
+                <span id="copyStatusEditor" class="status-text status-inline" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="toolbar" aria-label="Formatting toolbar">
+              <div class="toolbar-row">
+                <button class="tool-btn" data-cmd="bold" title="Bold">
+                  <span class="key">B</span>
+                </button>
+                <button class="tool-btn" data-cmd="italic" title="Italic">
+                  <span class="key">I</span>
+                </button>
+                <button class="tool-btn" data-cmd="underline" title="Underline">
+                  <span class="key">U</span>
+                </button>
+                <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough">
+                  <span class="key">S</span>
+                </button>
+                <button class="tool-btn" data-custom="inlineCode" title="Inline code / monospace">
+                  &lt;/&gt;
+                </button>
+                <button class="tool-btn" data-custom="codeBlock" title="Code block">
+                  <span class="icon">⌘</span>
+                </button>
+                <button class="tool-btn" data-cmd="superscript" title="Superscript">x⁺</button>
+                <button class="tool-btn" data-cmd="subscript" title="Subscript">x₋</button>
+                <button class="tool-btn" data-custom="undo" title="Undo last change">↺</button>
+                <button class="tool-btn" data-custom="clear" title="Clear editor">🧹</button>
+              </div>
+
+              <div class="toolbar-row">
+                <button class="tool-btn" data-block="h1" title="Heading 1">H1</button>
+                <button class="tool-btn" data-block="h2" title="Heading 2">H2</button>
+                <button class="tool-btn" data-block="h3" title="Heading 3">H3</button>
+                <button class="tool-btn" data-block="h4" title="Heading 4">H4</button>
+                <button class="tool-btn" data-block="p" title="Paragraph">P</button>
+                <button class="tool-btn" data-block="blockquote" title="Blockquote">❝</button>
+                <button class="tool-btn" data-cmd="insertHorizontalRule" title="Horizontal rule">
+                  ─
+                </button>
+                <button class="tool-btn" data-snippet="divider-label" title="Labeled divider">
+                  ══
+                </button>
+              </div>
+
+              <div class="toolbar-row">
+                <button class="tool-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+                <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+                <button class="tool-btn" data-custom="checklist" title="Checklist / task list">☑ List</button>
+                <button class="tool-btn" data-cmd="justifyLeft" title="Align left">⟸</button>
+                <button class="tool-btn" data-cmd="justifyCenter" title="Align center">⇔</button>
+                <button class="tool-btn" data-cmd="justifyRight" title="Align right">⟹</button>
+                <button class="tool-btn" data-cmd="outdent" title="Outdent">«</button>
+                <button class="tool-btn" data-cmd="indent" title="Indent">»</button>
+              </div>
+
+              <div class="toolbar-row toolbar-row-wide">
+                <label class="tool-label">
+                  Text
+                  <select id="textColorSelect">
+                    <option value="">Color</option>
+                    <option value="#e5e7eb">Light</option>
+                    <option value="#1D4ED8">Blue</option>
+                    <option value="#047857">Green</option>
+                    <option value="#B91C1C">Red</option>
+                    <option value="#92400E">Amber</option>
+                    <option value="#6B21A8">Purple</option>
+                  </select>
+                </label>
+                <label class="tool-label">
+                  Highlight
+                  <select id="bgColorSelect">
+                    <option value="">Background</option>
+                    <option value="#FEF3C7">Soft Amber</option>
+                    <option value="#DBEAFE">Soft Blue</option>
+                    <option value="#DCFCE7">Soft Green</option>
+                    <option value="#FFE4E6">Soft Rose</option>
+                  </select>
+                </label>
+                <label class="tool-label">
+                  Line spacing
+                  <select id="lineHeightSelect">
+                    <option value="">Default</option>
+                    <option value="compact">Compact</option>
+                    <option value="relaxed">Relaxed</option>
+                  </select>
+                </label>
+                <label class="tool-label">
+                  Font
+                  <select id="fontSelect">
+                    <option value="">Default</option>
+                    <option value="sans">Sans</option>
+                    <option value="serif">Serif</option>
+                    <option value="mono">Mono</option>
+                    <option value="display">Display</option>
+                  </select>
+                </label>
+
+                <label class="tool-label">
+                  Background
+                  <select id="backgroundSelect">
+                    <option value="none">No background</option>
+                    <option value="light-card">Light card</option>
+                    <option value="soft-panel">Soft panel</option>
+                    <option value="dark-card">Dark card</option>
+                  </select>
+                </label>
+                <button class="tool-btn" data-custom="fontSmaller" title="Smaller text">A−</button>
+                <button class="tool-btn" data-custom="fontLarger" title="Larger text">A+</button>
+              </div>
+
+              <div class="toolbar-row">
+                <button class="tool-btn" data-snippet="spacer-sm" title="Small vertical spacer">Spacer S</button>
+                <button class="tool-btn" data-snippet="spacer-md" title="Medium vertical spacer">Spacer M</button>
+                <button class="tool-btn" data-snippet="spacer-lg" title="Large vertical spacer">Spacer L</button>
+                <button class="tool-btn" data-snippet="box-info" title="Info box">Info Box</button>
+                <button class="tool-btn" data-snippet="box-warn" title="Warning box">Warning</button>
+                <button class="tool-btn" data-snippet="box-success" title="Success box">Success</button>
+                <button class="tool-btn" data-snippet="box-callout" title="Callout panel">Callout</button>
+              </div>
+
+              <div class="toolbar-row">
+                <button class="tool-btn" data-snippet="badge" title="Inline badge/label">Badge</button>
+                <button class="tool-btn" data-snippet="tag" title="Monospace tag">Tag</button>
+                <button class="tool-btn" data-snippet="note" title="Highlighted note/tip">Note</button>
+                <button class="tool-btn" data-snippet="section-left-border" title="Left-border section">L-border</button>
+                <button class="tool-btn" data-snippet="section-top-border" title="Top-border section">T-border</button>
+                <button class="tool-btn" data-snippet="section-card" title="Card section">Card</button>
+              </div>
+
+              <div class="toolbar-row">
+                <button class="tool-btn" data-snippet="table-standard" title="Standard table">Table</button>
+                <button class="tool-btn" data-snippet="table-compact" title="Compact table">Compact</button>
+                <button class="tool-btn" data-snippet="table-kpi" title="Status/KPI table">KPI Board</button>
+                <button class="tool-btn" data-snippet="table-chart" title="Chart-like table">Chart Table</button>
+                <button class="tool-btn" data-snippet="table-matrix" title="Feature matrix table">Matrix</button>
+              </div>
+
+              <div class="toolbar-row emoji-row">
+                <span class="tool-label">Emoji:</span>
+                <button class="tool-btn emoji-btn" data-emoji="✅" title="Success">✅</button>
+                <button class="tool-btn emoji-btn" data-emoji="⚠️" title="Warning">⚠️</button>
+                <button class="tool-btn emoji-btn" data-emoji="ℹ️" title="Info">ℹ️</button>
+                <button class="tool-btn emoji-btn" data-emoji="⭐" title="Star">⭐</button>
+                <button class="tool-btn emoji-btn" data-emoji="➡️" title="Arrow right">➡️</button>
+                <button class="tool-btn emoji-btn" data-emoji="⏱️" title="Timer">⏱️</button>
+                <button class="tool-btn emoji-btn" data-emoji="🧪" title="Experiment">🧪</button>
+                <button class="tool-btn emoji-btn" data-emoji="📝" title="Note">📝</button>
+                <button class="tool-btn emoji-btn" data-emoji="🚀" title="Launch">🚀</button>
+                <button class="tool-btn emoji-btn" data-emoji="💡" title="Idea">💡</button>
+                <button class="tool-btn emoji-btn" data-emoji="📌" title="Pin">📌</button>
+                <button class="tool-btn emoji-btn" data-emoji="🔧" title="Tool">🔧</button>
+                <button class="tool-btn emoji-btn" data-emoji="🧹" title="Clean up">🧹</button>
+                <button class="tool-btn emoji-btn" data-emoji="❓" title="Question">❓</button>
+                <button class="tool-btn emoji-btn" data-emoji="🗂" title="Organize">🗂</button>
+              </div>
+            </div>
+
+            <div class="editor-wrapper">
+              <div id="editor" class="editor" contenteditable="true" aria-label="Content editor">
+                <h1>Welcome to Nebula Layout Forge</h1>
+                <p>
+                  Start typing here, then use the toolbar and side rail to apply headings,
+                  boxes, badges, timelines, KPI tables, and more. Switch to the HTML tab
+                  to copy the generated markup, or use the Copy HTML button here.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-pane device-desktop">
+            <div class="pane-header">
+              <div class="pane-header-main">
+                <h3>Live Preview</h3>
+                <span class="pill subtle">Rendered HTML</span>
+              </div>
+              <div class="device-toggle">
+                <button class="chip device-btn active" data-device="desktop" title="Desktop layout">
+                  Desktop
+                </button>
+                <button class="chip device-btn" data-device="tablet" title="Tablet layout">
+                  Tablet
+                </button>
+                <button class="chip device-btn" data-device="mobile" title="Mobile layout">
+                  Mobile
+                </button>
+              </div>
+            </div>
+            <div id="preview" class="preview-area">
+              <!-- live preview content injected here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="templatesTab" class="tab-panel" aria-labelledby="Templates">
+        <div class="templates-layout">
+          <div class="templates-presets card">
+            <div class="card-header">
+              <h3>Preset Layouts</h3>
+              <p>Load a starting layout with example content.</p>
+            </div>
+            <ul id="presetList" class="item-list">
+              <!-- populated via JS -->
+            </ul>
+          </div>
+
+          <div class="templates-custom card">
+            <div class="card-header">
+              <h3>My Templates</h3>
+              <p>
+                Save up to five custom layouts. Templates include both content
+                and styling.
+              </p>
+            </div>
+            <div class="template-actions">
+              <label class="field">
+                <span>Template name</span>
+                <input type="text" id="templateNameInput" placeholder="e.g. Project Update Layout" />
+              </label>
+              <button id="saveTemplateBtn" class="btn primary">Save Current as Template</button>
+              <p class="hint">
+                You can store up to <strong>5</strong> templates. Rename or delete
+                them from the list below.
+              </p>
+            </div>
+            <ul id="customTemplateList" class="item-list">
+              <!-- populated via JS -->
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="htmlTab" class="tab-panel" aria-labelledby="HTML Output">
+        <div class="html-layout card">
+          <div class="card-header">
+            <h3>Generated HTML</h3>
+            <p>
+              Choose whether you want content-only HTML (to paste into an existing site)
+              or a standalone HTML file with styling included.
+            </p>
+          </div>
+          <div class="html-actions">
+            <button id="copyHtmlBtn" class="btn primary">Copy Content HTML</button>
+            <button id="copyStandaloneHtmlBtn" class="btn ghost">Copy Standalone HTML Page</button>
+            <span id="copyStatus" class="status-text" aria-live="polite"></span>
+          </div>
+          <textarea id="htmlOutput" class="html-output" readonly></textarea>
+        </div>
+      </section>
+
+      
+
+      <section id="helpTab" class="tab-panel" aria-labelledby="Help & Guide">
+        <div class="help-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>How to Use</h3>
+            </div>
+            <div class="card-body guide-content">
+              <h4>Overview</h4>
+              <p>
+                Nebula Layout Forge is a fully offline editor for
+                creating structured, styled HTML content. It is ideal for
+                documentation, FAQs, changelogs, landing sections,
+                and more.
+              </p>
+
+              <h4>Basic Workflow</h4>
+              <ol>
+                <li>
+                  Go to the <strong>Editor &amp; Preview</strong> tab and type your content
+                  in the main editor area.
+                </li>
+                <li>
+                  Use the toolbar and left rail to apply styles: headings, lists, boxes,
+                  badges, tables, timelines, and spacers.
+                </li>
+                <li>
+                  Use the preview device controls (Desktop / Tablet / Mobile) to see how your
+                  layout behaves at different widths.
+                </li>
+                <li>
+                  Switch to the <strong>HTML Output</strong> tab or use the
+                  <strong>Copy HTML</strong> button in the editor header to copy the
+                  generated HTML.
+                </li>
+              </ol>
+
+              <h4>Presets &amp; Templates</h4>
+              <ul>
+                <li>
+                  Use <strong>Quick Presets</strong> from the editor side rail or the
+                  full <strong>Templates</strong> tab to load starter layouts. When a
+                  preset or template is loaded, you are returned to the editor view.
+                </li>
+                <li>
+                  Save your favorite configurations as <strong>My Templates</strong>
+                  (up to five), then reload them whenever you need.
+                </li>
+              </ul>
+
+              <h4>Backups</h4>
+              <ul>
+                <li>
+                  The app autosaves your work to localStorage as you type.
+                </li>
+                <li>
+                  Use <strong>Backup &amp; Restore</strong> to export a JSON file
+                  containing the full app state (content, settings, templates) or
+                  to restore from a previous backup.
+                </li>
+              </ul>
+
+              <h4>Using the Generated HTML</h4>
+              <p>
+                The generated HTML is designed to be portable. You can paste it
+                into:
+              </p>
+              <ul>
+                <li>Static websites or partials.</li>
+                <li>CMS editors that support raw HTML.</li>
+                <li>Documentation systems or internal tools.</li>
+              </ul>
+              <p>
+                Copy the relevant CSS utilities for boxes, tables, timelines and
+                badges into your project’s stylesheet to preserve the look and
+                feel.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Advanced Controls &amp; Tips</h3>
+            </div>
+            <div class="card-body guide-content">
+              <h4>Layout Components</h4>
+              <ul>
+                <li>
+                  Use <strong>Accent Sections</strong> to frame important groups of
+                  content with colored backgrounds and borders.
+                </li>
+                <li>
+                  <strong>Two Column</strong> snippets are ideal for side-by-side
+                  comparisons or features.
+                </li>
+                <li>
+                  <strong>Timeline</strong> snippets visualize sequences such as
+                  roadmaps or incident reviews.
+                </li>
+              </ul>
+
+              <h4>Tables &amp; KPIs</h4>
+              <ul>
+                <li>
+                  The <strong>KPI Board</strong> preset table is perfect for
+                  status dashboards and quick health checks across projects.
+                </li>
+                <li>
+                  The <strong>Chart-like</strong> table style emphasizes header
+                  rows and key columns for a pseudo-visual look without actual
+                  charts.
+                </li>
+                <li>
+                  The <strong>Matrix</strong> table is tuned for feature vs plan
+                  comparisons.
+                </li>
+              </ul>
+
+              <h4>Typography &amp; Spacing</h4>
+              <ul>
+                <li>
+                  Use <strong>A− / A+</strong> to make specific text smaller or
+                  larger relative to the base size.
+                </li>
+                <li>
+                  The line-spacing control in the toolbar lets you apply
+                  compact/relaxed styles to selected text blocks.
+                </li>
+                <li>
+                  The font selector in the toolbar can apply a Sans, Serif,
+                  Mono, or Display font to a specific selection.
+                </li>
+              </ul>
+
+              <h4>Inline Help</h4>
+              <p>
+                Most toolbar buttons include titles that show brief descriptions
+                on hover. For complex components like KPI tables, timelines, and
+                grids, start by inserting the component, then overwrite the
+                placeholder content.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span>Nebula Layout Forge · Plain Text → HTML Layout Builder</span>
+      <span>Created by Joshua Smolak · Built with AI assistance · © <span id="footerYear"></span></span>
+    </footer>
+  </div>
+
+  <script src="js/nebula-app.js"></script>
+
+<div class="kore-footer-nav" style="margin: 2rem 0; text-align: center;">
+  <button type="button" class="btn ghost" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
+    ↑ Back to Top
+  </button>
+  <a href="index.html" class="btn primary" style="margin-left: 1rem;">
+    Return to Kore Home
+  </a>
+</div>
+
+</body>
+</html>

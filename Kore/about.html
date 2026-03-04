@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <nav class="top-nav">
+    <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+      <a class="nav-btn" href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+    </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+        <div class="nav-dropdown-menu" id="infoHubMenu">
+          <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+          <div class="nav-dropdown-divider"></div>
+          <a href="info-hub.html" class="nav-dropdown-item">Info Hub Index</a>
+        </div>
+      </div>
+      <a class="nav-btn" href="about.html">About</a>
+    </div>
+    <div class="nav-right">
+        <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+        <a href="settings.html" class="profile-pill">
+          <div class="profile-avatar">
+            <img id="navProfileAvatar" alt="Profile avatar" />
+          </div>
+          <span id="navCurrentProfileName">User</span>
+          <span class="profile-pill-sep">&bull;</span>
+          <span class="profile-pill-action">Settings</span>
+        </a>
+      </div>
+    </nav>
+</header>
+
+<main class="centered">
+  <section class="card about-card">
+    <h1>About Kore</h1>
+
+    <p class="about-intro">
+      <strong>Kore</strong> is a local-first personal work and knowledge system. The name stands for
+      <strong>KORE – Knowledge Organization &amp; Retrieval Engine</strong>. It runs as an offline website
+      inside a folder on your machine and opens in any modern browser.
+    </p>
+
+    <div class="about-hero-wrap">
+      <img class="about-hero" src="images/AboutPage.png" alt="Kore About" onerror="this.onerror=null;this.src='images/AboutPage.jpg';" />
+    </div>
+
+    <div class="about-actions">
+      <a class="about-action" href="index.html">
+        <div class="about-action-title">Home</div>
+        <div class="about-action-desc">Clock, time zone, hero image, homepage message.</div>
+      </a>
+      <a class="about-action" href="info-hub.html">
+        <div class="about-action-title">Info Hub Index</div>
+        <div class="about-action-desc">Browse and search your how-to and knowledge pages.</div>
+      </a>
+      <a class="about-action" href="create-page.html">
+        <div class="about-action-title">Create a Page</div>
+        <div class="about-action-desc">Turn repeatable tasks into guides with images, links, and tags.</div>
+      </a>
+      <a class="about-action" href="settings.html">
+        <div class="about-action-title">Settings</div>
+        <div class="about-action-desc">Profile name, homepage HTML, backup and restore controls.</div>
+      </a>
+    </div>
+
+    <div class="about-toc">
+      <h2>Table of Contents</h2>
+      <ol>
+        <li><a href="#about-kore">What Kore Is</a></li>
+        <li><a href="#about-data">Where Your Data Lives</a></li>
+        <li><a href="#about-structure">Core Areas of Kore</a></li>
+        <li><a href="#setup">First-Time Setup</a></li>
+        <li><a href="#guides">Building Guides in the Info Hub</a></li>
+        <li><a href="#askkore">Using Ask Kore</a></li>
+        <li><a href="#backups">Backups, Restore &amp; Moving Between Machines</a></li>
+        <li><a href="#shortcuts">Launching Kore Quickly (Shortcuts)</a></li>
+        <li><a href="#credits">Credits &amp; Version</a></li>
+      </ol>
+    </div>
+
+    <section id="about-kore" class="about-section">
+      <h2>1. What Kore Is</h2>
+      <p>
+        Kore is a <strong>local website</strong>: you open it by double-clicking <code>index.html</code> in the
+        extracted Kore folder. There is no server or sign-in. Everything is designed to work completely offline.
+      </p>
+      <p>
+        The goal is to give you a single hub for:
+      </p>
+      <ul>
+        <li><strong>Capturing</strong> how you do things (procedures, checklists, troubleshooting steps).</li>
+        <li><strong>Standardizing</strong> those processes into clean, repeatable guides.</li>
+        <li><strong>Retrieving</strong> them quickly using the Info Hub and Ask Kore.</li>
+      </ul>
+      <p>
+        Think of Kore as your personal operations manual that lives entirely on your machine.
+      </p>
+    </section>
+
+    <section id="about-data" class="about-section">
+      <h2>2. Where Your Data Lives</h2>
+      <div class="about-callout">
+        <strong>Important:</strong> Kore’s content is stored in your browser’s <strong>localStorage</strong>.
+        Clearing browser data or changing browsers will remove that content unless you have a backup.
+      </div>
+      <ul>
+        <li><strong>Kore files (the app):</strong> the folder where you extracted the zip (HTML, CSS, JS, images).</li>
+        <li><strong>Your content:</strong> pages, apps, docs, work items, and settings stored in the browser.</li>
+        <li><strong>Your backups:</strong> JSON files you download using the backup tools in Kore.</li>
+      </ul>
+    </section>
+
+    <section id="about-structure" class="about-section">
+      <h2>3. Core Areas of Kore</h2>
+      <p>Kore is organized into a few core areas:</p>
+      <ul>
+        <li><strong>Home:</strong> clock, date, time zone, hero image, and homepage message.</li>
+        <li><strong>Info Hub:</strong> your knowledge layer – how-to guides and reference pages.</li>
+        <li><strong>Ask Kore:</strong> an offline assistant that points you to the right page or control.</li>
+        <li><strong>Settings:</strong> profile name, theme, homepage HTML, backup/restore tools.</li>
+        <li><strong>Tools (Apps, Work, Docs):</strong>
+          <ul>
+            <li><strong>Apps:</strong> an external Apps &amp; Tools Hub of tiles for the sites and utilities you use most.</li>
+            <li><strong>Work:</strong> a request-style Work Tracker queue with type, priority, status, and notes for each ticket.</li>
+            <li><strong>Docs:</strong> a multi-file Documents Library for PDFs, Office files, CSVs, text, images, and cloud links.</li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        Detailed “how-to” instructions for tools like Apps, Work, and Docs are best kept as Info Hub pages so you can
+        version and refine them over time.
+      </p>
+    </section>
+
+    <section id="setup" class="about-section">
+      <h2>4. First-Time Setup</h2>
+      <div class="about-grid">
+        <div class="about-panel">
+          <h3>Initial configuration</h3>
+          <ol>
+            <li>Open <a href="index.html">Home</a> and confirm your <strong>time zone</strong>.</li>
+            <li>Go to <a href="settings.html">Settings</a> and rename the profile from <em>User</em> to your name or role.</li>
+            <li>Still in Settings, update the <strong>Homepage Message</strong> with your own HTML if desired.</li>
+          </ol>
+        </div>
+        <div class="about-panel">
+          <h3>Sanity check</h3>
+          <ol>
+            <li>From Home, verify the clock and date show correctly for your time zone.</li>
+            <li>Click <strong>Save Backup</strong> in the top-right to download your first backup file.</li>
+            <li>Optionally, add a simple test page in the Info Hub to confirm saving works in this browser.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="guides" class="about-section">
+      <h2>5. Building Guides in the Info Hub</h2>
+      <p>
+        The Info Hub is where your knowledge lives. Each page is a guide, checklist, or reference topic you want to be
+        able to find again quickly.
+      </p>
+      <div class="about-grid">
+        <div class="about-panel">
+          <h3>Create a new guide</h3>
+          <ol>
+            <li>Open <a href="create-page.html">Create a Page</a>.</li>
+            <li>Enter a clear <strong>Title</strong> and a short <strong>Summary</strong> (both support HTML).</li>
+            <li>Use the main editor for your steps. You can switch between visual and HTML mode.</li>
+            <li>Add <strong>tags</strong> (comma-separated) so pages can be filtered and found by Ask Kore.</li>
+            <li>Attach supporting <strong>images</strong> and <strong>links</strong> as needed.</li>
+            <li><strong>Save as Draft</strong> while editing, and <strong>Publish</strong> when it is ready.</li>
+          </ol>
+        </div>
+        <div class="about-panel">
+          <h3>Recommended structure</h3>
+          <ul>
+            <li><strong>Overview:</strong> what this guide covers and why it exists.</li>
+            <li><strong>Prerequisites:</strong> access, tools, or files required.</li>
+            <li><strong>Step-by-step:</strong> numbered steps with exact button/field names.</li>
+            <li><strong>Verification:</strong> how to confirm it worked.</li>
+            <li><strong>Troubleshooting:</strong> common failure modes and fixes.</li>
+            <li><strong>Keywords:</strong> optional line with search terms to help Ask Kore match queries.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="askkore" class="about-section">
+      <h2>6. Using Ask Kore</h2>
+      <p>
+        Ask Kore is an <strong>offline assistant</strong>. It does not use ChatGPT or any external model. Instead, it
+        matches your question against:
+      </p>
+      <ul>
+        <li>Kore’s built-in help content (this About page, Settings, Home, etc.).</li>
+        <li>Your Info Hub guides (titles, summaries, content, and tags).</li>
+        <li>Tool metadata (Apps, Work items, Docs names) when you search “Everything”.</li>
+      </ul>
+      <p>
+        To get the best results:
+      </p>
+      <ul>
+        <li>Use the same wording that appears in your guides (system names, task names, key nouns and verbs).</li>
+        <li>Use the <strong>Scope</strong> selector to narrow searches to Core Pages or Info Hub only.</li>
+        <li>When you create a new guide, repeat important phrases in the body and tags so Ask Kore can match them.</li>
+      </ul>
+    </section>
+
+    <section id="backups" class="about-section">
+      <h2>7. Backups, Restore &amp; Moving Between Machines</h2>
+      <p>
+        Backups are how you protect your Kore content and move it between devices. This is also the practical way to
+        "sync" a newer version of Kore (for example, a fresh zip with UI changes) with your existing work.
+      </p>
+      <div class="about-grid">
+        <div class="about-panel">
+          <h3>Create a backup</h3>
+          <ol>
+            <li>Click <strong>Save Backup</strong> in the top-right navigation on any page, or</li>
+            <li>Open <a href="settings.html">Settings</a> and select <strong>Download Backup</strong>.</li>
+            <li>Store the backup <code>.json</code> file in a safe folder (for example, a <em>Kore Backups</em> directory).</li>
+          </ol>
+        </div>
+        <div class="about-panel">
+          <h3>Restore on another machine</h3>
+          <ol>
+            <li>Copy the latest Kore folder (from the new zip) to the target machine.</li>
+            <li>Open <code>index.html</code> to launch Kore, then go to <a href="settings.html">Settings</a>.</li>
+            <li>In <strong>Backup &amp; Restore</strong>, choose a <strong>Restore mode</strong> and Tools option:</li>
+          </ol>
+          <ul>
+            <li><strong>Merge with current data:</strong> keep existing content and add everything from the backup.</li>
+            <li><strong>Replace current data:</strong> overwrite current content with the backup's content.</li>
+            <li><strong>Include Tools data (Apps, Work, Docs, Tasks):</strong> check this if you want those areas restored
+              from the backup as well; uncheck to keep the current Tools content and only bring in Info Hub and core
+              settings.</li>
+          </ul>
+          <p>Finally, use <strong>Restore from File</strong> to select your backup.</p>
+        </div>
+      </div>
+      <p>
+        For a "JanSan-style" master backup, keep a clean backup that contains your baseline guides and references. You
+        can merge that into a fresh Kore folder on another machine so they receive the latest guides while keeping their
+        own Tools data intact (by unchecking the Tools option).
+      </p>
+    </section>
+
+    <section id="shortcuts" class="about-section">
+      <h2>8. Launching Kore Quickly (Shortcuts)</h2>
+      <p>
+        You can make Kore feel more like an "app" by creating shortcuts to <code>index.html</code>.
+      </p>
+      <div class="about-grid">
+        <div class="about-panel">
+          <h3>Desktop shortcut (Windows)</h3>
+          <ol>
+            <li>Open File Explorer and navigate to the folder that contains <code>index.html</code>.</li>
+            <li>Right-click <code>index.html</code> and choose <strong>Send to → Desktop (create shortcut)</strong>.</li>
+            <li>Rename the shortcut to something like <strong>Kore</strong>.</li>
+            <li>Double-click that shortcut anytime to open Kore in your default browser.</li>
+          </ol>
+        </div>
+        <div class="about-panel">
+          <h3>Browser favorites</h3>
+          <ol>
+            <li>Open <code>index.html</code> in your browser.</li>
+            <li>Add it to your bookmarks or favorites bar.</li>
+            <li>Optionally, pin the tab so Kore is one click away whenever the browser opens.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="credits" class="about-section">
+      <h2>9. Credits &amp; Version</h2>
+      <p>
+        Kore is designed and curated by <strong>Joshua M. Smolak</strong>, with code and structure supported by
+        AI-assisted tooling. It is intentionally kept offline and file-based so you stay in control of your data.
+      </p>
+      <p>
+        Current Kore version: <strong>v<span class="kore-version"></span></strong>.
+      </p>
+      <p>
+        When you update to a new Kore zip, treat it like a new "engine" folder: extract it, open <code>index.html</code>,
+        then restore from your latest backup so your Pages, Tools content, and settings carry forward.
+      </p>
+    </section>
+
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<link rel="stylesheet" href="css/ai.css">
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/ai.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-header-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+[
+  {
+    "title": "Home",
+    "page": "index.html",
+    "tags": [
+      "dashboard",
+      "overview"
+    ],
+    "content": "data/pages/index.txt",
+    "published": true,
+    "draft": false,
+    "status": "published"
+  },
+  {
+    "title": "About",
+    "page": "about.html",
+    "tags": [
+      "info",
+      "team"
+    ],
+    "content": "data/pages/about.txt",
+    "published": true,
+    "draft": false,
+    "status": "published"
+  },
+  {
+    "title": "Apps",
+    "page": "apps.html",
+    "tags": [
+      "tools",
+      "utilities"
+    ],
+    "content": "data/pages/apps.txt",
+    "published": true,
+    "draft": false,
+    "status": "published"
+  },
+  {
+    "title": "Documents",
+    "page": "docs.html",
+    "tags": [
+      "notes",
+      "resources"
+    ],
+    "content": "data/pages/docs.txt",
+    "published": true
+  },
+  {
+    "title": "Work Tracker",
+    "page": "work.html",
+    "tags": [
+      "tasks",
+      "projects"
+    ],
+    "content": "data/pages/work.txt",
+    "published": true
+  },
+  {
+    "title": "Settings",
+    "page": "settings.html",
+    "tags": [
+      "preferences",
+      "options"
+    ],
+    "content": "data/pages/settings.txt",
+    "published": true,
+    "draft": false,
+    "status": "published"
+  }
+]

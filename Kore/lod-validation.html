@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<header class="tool-header-simple">
+  <a class="nav-btn" href="index.html">Home</a>
+</header>
+
+<main class="centered">
+  <section class="card lod-card">
+    <header class="lod-header">
+      <div class="lod-header-text">
+        <h1>LOD Validation Tool</h1>
+        <p class="lod-subtitle">
+          Validate LOD and PALOD CSV files before loading them into NVISION. Drop a file in, review issues, and export a highlighted report for quick fixes.
+        </p>
+      </div>
+      <div class="lod-header-actions">
+        <a href="index.html" class="secondary-btn">← Home</a>
+      </div>
+    </header>
+
+    <div class="lod-hero-wrapper">
+      <img id="lodHeroImage"
+           alt="LOD Validation Banner"
+           class="lod-hero-image"
+           style="display:none;" />
+    </div>
+
+    <div class="lod-layout">
+      <section class="lod-config">
+        <h2>1. Choose Validation Type &amp; Upload</h2>
+
+        <div class="lod-input-group">
+          <label for="lodMode">Validation Type</label>
+          <select id="lodMode">
+            <option value="lod">LOD (standard)</option>
+            <option value="palod">PALOD (all POs must start with 1NAPR)</option>
+          </select>
+        </div>
+
+        <div class="lod-input-group">
+          <label for="lodFileInput">LOD / PALOD CSV File</label>
+          <input type="file" id="lodFileInput" accept=".csv">
+          <p class="lod-file-hint">
+            Use the standard LOD layout. The first row must contain column headers in the standard order.
+          </p>
+        </div>
+
+        <div class="lod-input-group">
+          <label>Validation Options</label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="lodStopOnFatal" checked>
+            Stop completely if the column layout does not match the template
+          </label>
+        </div>
+
+        <div class="lod-input-group">
+          <h3 class="lod-subheading">Reference Files</h3>
+          <p class="lod-file-hint">
+            These are offline reference files bundled with Kore for quick checks.
+          </p>
+          <div class="lod-reference-links">
+            <a href="data/lod/LOD-Blank-Template.csv" class="secondary-btn" download>Blank LOD Template (CSV)</a>
+            <a href="data/lod/LOD-Rules.docx" class="secondary-btn" download>LOD Rules (DOCX)</a>
+            <a href="data/lod/Example-LOD-Ferrara-Frys.csv" class="secondary-btn" download>Example LOD</a>
+            <button type="button" id="lodValidateBtn" class="primary-btn lod-inline-validate-btn">Run Validation</button>
+          </div>
+        </div>
+
+        <p id="lodStatus" class="lod-status-text"></p>
+      </section>
+
+      <section class="lod-results">
+        <h2>2. Validation Results</h2>
+
+        <div class="lod-metrics">
+          <div class="lod-metric">
+            <span class="lod-metric-label">Total data rows</span>
+            <span class="lod-metric-value" id="lodTotalRows">0</span>
+          </div>
+          <div class="lod-metric">
+            <span class="lod-metric-label">Rows with issues</span>
+            <span class="lod-metric-value" id="lodErrorRowCount">0</span>
+          </div>
+          <div class="lod-metric">
+            <span class="lod-metric-label">Total issues</span>
+            <span class="lod-metric-value" id="lodTotalIssues">0</span>
+          </div>
+        </div>
+
+        <div id="lodNoErrorsMessage" class="lod-no-errors" style="display:none;">
+          <p class="success-pill">No issues found. Your file passed validation.</p>
+        </div>
+
+        <div id="lodErrorsContainer" style="display:none;">
+          <table class="lod-errors-table">
+            <thead>
+              <tr>
+                <th>Row</th>
+                <th>Column</th>
+                <th>Value</th>
+                <th>Issue</th>
+              </tr>
+            </thead>
+            <tbody id="lodErrorsTableBody"></tbody>
+          </table>
+
+          <div class="lod-downloads">
+            <button type="button" id="lodDownloadErrorCsvBtn" class="secondary-btn">
+              Download Error Report (CSV)
+            </button>
+            <button type="button" id="lodDownloadHtmlReportBtn" class="secondary-btn">
+              Download Highlighted HTML Report
+            </button>
+            <button type="button" id="lodCopyResultsBtn" class="secondary-btn">
+              Copy Validation Results
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+      <section class="lod-rules">
+        <h2>3. LOD &amp; PALOD Field Rules (Quick View)</h2>
+        <p class="lod-rules-intro">
+          These are the key checks this tool enforces. Use them as a quick visual guide when reviewing a file by eye,
+          or to explain to others why a row failed validation.
+        </p>
+
+        <div class="lod-rules-grid">
+          <article class="lod-rule-group">
+            <h3>Core Identifiers &amp; Order Basics</h3>
+            <ul>
+              <li><strong>Group Code</strong> – All caps (for example, <code>SAMS</code>).</li>
+              <li><strong>Customer Number</strong> – Must be a valid ship-to; cannot end in <code>00</code>.</li>
+              <li><strong>Item Number</strong> – Required, no extra restrictions in this tool.</li>
+              <li><strong>Quantity</strong> – Required and numeric; must be greater than zero.</li>
+              <li><strong>Order Type</strong> – In caps and limited to <code>GO</code>, <code>GR</code>, <code>PA</code>, or <code>DO</code>.</li>
+              <li><strong>Allocation Rule</strong> – All LODs must be entered as <code>O</code>.</li>
+            </ul>
+          </article>
+
+          <article class="lod-rule-group">
+            <h3>Customer PO &amp; PALOD Logic</h3>
+            <ul>
+              <li><strong>Customer PO (LOD)</strong> – Required, max 20 characters and unique per address.</li>
+              <li><strong>Address uniqueness</strong> – If the same PO appears with a different address block, it is flagged.</li>
+              <li><strong>PA-routed LOD rows</strong> – When <strong>Order Type</strong> is <code>PA</code>,
+                  the <strong>Customer PO</strong> must start with <code>1NAPR</code>.</li>
+              <li><strong>Customer PO (PALOD)</strong> – Every row must have a <strong>Customer PO</strong>
+                  starting with <code>1NAPR</code>.</li>
+            </ul>
+          </article>
+
+          <article class="lod-rule-group">
+            <h3>Address &amp; Contact Details</h3>
+            <ul>
+              <li><strong>Name</strong> – Customer name / ship-to name.</li>
+              <li><strong>Ship-to Address 1</strong> – Contact name / title / company; not the street line. Max 35 characters.</li>
+              <li><strong>Ship-to Address 2</strong> – Street address or PO Box. Do not combine multiple addresses on one line.</li>
+              <li><strong>Ship-to Address 3</strong> – Suite / building numbers or phone numbers longer than 10 digits.</li>
+              <li><strong>City</strong> – Required.</li>
+              <li><strong>State</strong> – Two-character U.S. state code in caps (for example, <code>NY</code>).</li>
+              <li><strong>Zip</strong> – Preserve leading zeros. Five or nine digits total once hyphens are removed.</li>
+              <li><strong>Country</strong> – Two-character code in caps (for example, <code>US</code>, not <code>USA</code>).</li>
+              <li><strong>Contact</strong> – 10-digit phone number with no spaces or dashes.</li>
+            </ul>
+          </article>
+
+          <article class="lod-rule-group">
+            <h3>Dates, Shipping &amp; Emails</h3>
+            <ul>
+              <li><strong>Customer In Hands Date</strong> – Required; format <code>MM.DD.YYYY</code> (for example, <code>04.12.2013</code>).</li>
+              <li><strong>On or Before Indicator</strong> – Must be <code>O</code> (on) or <code>B</code> (before).</li>
+              <li><strong>Must Ship Date</strong> – Optional; only used with specific DC instructions, format <code>MM.DD.YYYY</code>.</li>
+              <li><strong>Address Over-Ride</strong> – <code>Y</code> or <code>N</code>; typically <code>Y</code> because addresses are pre-verified.</li>
+              <li><strong>Service Level of Shipment</strong> – In caps (for example, <code>BEST</code>, <code>NEXT</code>, <code>2DAY</code>, <code>3DAY</code>, <code>MAIL</code>).</li>
+              <li><strong>Carrier</strong> – Only use when requesting a specific carrier; typically left blank.</li>
+              <li><strong>Ship From Warehouse</strong> – Should be blank for standard LOD processing.</li>
+              <li><strong>Confirmation Email</strong> – Multiple addresses separated with <code>;</code>.
+                  Watch for hidden spaces and <code>,com</code> typos.</li>
+              <li><strong>Ship Confirmation Email</strong> – Same rules as Confirmation Email.</li>
+              <li><strong>Site</strong> – Required when using confirmation emails; determines the model site for the order.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="lod-rules-note">
+          <p>
+            <strong>Tip:</strong> Use this section as a “pre-flight checklist.” If a file constantly fails on the same column,
+            you can quickly scan here, fix the pattern in Excel, then re-run validation until the metrics show <em>zero issues</em>.
+          </p>
+        </div>
+      </section>
+
+    <div class="lod-footer-nav">
+      <a href="index.html" class="secondary-btn">← Back to Home</a>
+      <button type="button" class="secondary-btn" id="lodBackToTopBtn">Back to Top ↑</button>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<link rel="stylesheet" href="css/ai.css">
+<script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/lod-validation.js"></script>
+<script src="js/ai.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-header-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+<script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+      KoreHero.loadHeroImage("lodHeroImage", "LOD Validation Image");
+    }
+
+    function scrollTopSmooth() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    var backToTopBtn = document.getElementById('lodBackToTopBtn');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', scrollTopSmooth);
+    }
+  })();
+</script>
+</body>
+</html>

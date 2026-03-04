@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header>
+  <nav class="top-nav">
+    <div class="nav-center">
+      <a class="nav-btn nav-global-search" href="search.html">Global Search</a>
+      <a class="nav-btn" href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-btn nav-dropdown-toggle" onclick="return false;">Tools ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="apps.html" class="nav-dropdown-item">Apps</a>
+          <a href="work.html" class="nav-dropdown-item">Work</a>
+<a href="passwords.html" class="nav-dropdown-item">Password Tools</a>
+                    <a href="Product Long Desc HTML Converter.html" class="nav-dropdown-item">Product HTML Converter</a>
+                <a href="nebula.html" class="nav-dropdown-item">Nebula Layout Forge</a>
+          <a href="reports.html" class="nav-dropdown-item">Data / Reports</a>
+          <a href="lod-validation.html" class="nav-dropdown-item">LOD Validation Tool</a>
+
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="info-hub.html" class="nav-btn nav-dropdown-toggle">Info Hub ▾</a>
+        <div class="nav-dropdown-menu" id="infoHubMenu">
+          <a href="create-page.html" class="nav-dropdown-item">Create a Page</a>
+          <div class="nav-dropdown-divider"></div>
+        </div>
+      </div>
+      <a href="about.html" class="nav-btn">About</a>
+    </div>
+
+    <div class="nav-right">
+      <button type="button" id="navBackupBtn" class="nav-backup-btn" title="Download a Kore backup file">Save Backup</button>
+      <a href="settings.html" class="profile-pill">
+        <div class="profile-avatar">
+          <img id="navProfileAvatar" alt="Profile avatar" />
+        </div>
+        <span id="navCurrentProfileName">User</span>
+        <span class="profile-pill-sep">&bull;</span>
+        <span class="profile-pill-action">Settings</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<main class="centered">
+  <section class="card work-card">
+    <header class="work-header">
+      <div class="work-header-text">
+        <h1 class="page-title">New Work Request</h1>
+        <p class="work-subtitle">
+          Create a new item in your Work Tracker queue. Once saved, you&rsquo;ll return to the main Work Tracker page.
+        </p>
+      </div>
+    </header>
+
+    <div class="work-hero-wrapper">
+      <img id="workNewHeroImage"
+           alt="WorkNewRequest"
+           class="work-hero-image"
+           style="display:none;" />
+    </div>
+
+    <form id="workNewForm" class="work-new-form">
+      <div class="work-new-layout">
+        <section class="work-new-section">
+          <h3 class="work-new-section-title">Request details</h3>
+          <p class="work-new-section-hint">Give the request a clear title and classification so it is easy to track later.</p>
+
+          <div class="work-new-grid">
+            <div class="work-modal-field work-field-full">
+              <label for="newTitle">Title / Request</label>
+              <input id="newTitle" type="text" placeholder="Short summary of the request" required />
+            </div>
+
+            <div class="work-field-row">
+              <div class="work-modal-field">
+                <label for="newType">Request Type</label>
+                <select id="newType"></select>
+              </div>
+
+              <div class="work-modal-field">
+                <label for="newAccount">Account</label>
+                <select id="newAccount"></select>
+              </div>
+            </div>
+
+            <div class="work-field-row">
+              <div class="work-modal-field">
+                <label for="newPriority">Priority</label>
+                <select id="newPriority">
+                  <option value="Low">Low</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="High">High</option>
+                  <option value="Urgent">Urgent</option>
+                </select>
+              </div>
+
+              <div class="work-modal-field">
+                <label for="newStatus">Status</label>
+                <select id="newStatus">
+                  <option value="New" selected>New</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="On Hold">On Hold</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="work-modal-field">
+              <label for="newRequestor">Requestor</label>
+              <input id="newRequestor" type="text" placeholder="Who requested this?" />
+            </div>
+          </div>
+        </section>
+
+        <section class="work-new-section">
+          <h3 class="work-new-section-title">Dates</h3>
+          <p class="work-new-section-hint">Created is set automatically; adjust only when you need to backfill a request.</p>
+
+          <div class="work-new-grid">
+            <div class="work-modal-field">
+              <label for="newCreated">Created</label>
+              <input id="newCreated" type="text" disabled />
+            </div>
+
+            <div class="work-modal-field">
+              <label for="newDue">Due Date</label>
+              <input id="newDue" type="date" />
+            </div>
+          </div>
+        </section>
+
+        <section class="work-new-section">
+          <h3 class="work-new-section-title">Notes</h3>
+          <p class="work-new-section-hint">Capture context, links, steps taken, and follow‑ups so you can reconstruct the work later.</p>
+
+          <div class="work-modal-field">
+            <label for="newNotes">Notes / Description</label>
+            <div class="editor-toolbar work-notes-toolbar" aria-label="Notes editor toolbar">
+              <button type="button" data-cmd="bold"><strong>B</strong></button>
+              <button type="button" data-cmd="italic"><em>I</em></button>
+              <button type="button" data-cmd="underline"><u>U</u></button>
+              <button type="button" data-cmd="formatBlock" data-value="H2">H2</button>
+              <button type="button" data-cmd="formatBlock" data-value="H3">H3</button>
+              <button type="button" data-cmd="insertUnorderedList">• List</button>
+              <button type="button" data-cmd="insertOrderedList">1. List</button>
+              <button type="button" data-action="link">Link</button>
+              <span class="toolbar-spacer"></span>
+              <button type="button" id="workNotesHtmlModeBtn" class="toolbar-html">HTML</button>
+            </div>
+            <div id="workNotesEditor" class="rich-editor work-notes-editor" contenteditable="true" aria-label="Notes rich text editor">
+              <p>Add context, steps, links, and follow-ups...</p>
+            </div>
+            <textarea id="newNotes" class="html-source work-notes-html" rows="7" style="display:none;" placeholder="Add context, steps, links, and follow-ups..."></textarea>
+          </div>
+        </section>
+
+        <div class="work-new-actions">
+          <a href="work.html" id="cancelNewWorkBtn" class="secondary-btn">Cancel</a>
+          <button type="button" id="archiveWorkBtn" class="danger-btn">Archive Request</button>
+          <button type="submit" class="primary-btn">Save Request</button>
+        </div>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<link rel="stylesheet" href="css/ai.css" />
+  <script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/work-form.js"></script>
+<script src="js/ai.js"></script>
+
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+
+  <script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+        KoreHero.loadHeroImage("workNewHeroImage", "WorkNewRequest");
+    }
+  })();
+  </script>
+</body>
+</html>

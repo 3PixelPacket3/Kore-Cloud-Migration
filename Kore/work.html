@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="tool-header-simple">
+  <a class="nav-btn" href="index.html">Home</a>
+</header>
+
+
+<main class="centered">
+  <section class="card work-card">
+    <header class="work-header">
+      <div class="work-header-text">
+        <h1>Work Tracker</h1>
+        <p class="work-subtitle">
+          A lightweight request queue for Web Content / first-level IT work: capture, prioritize, and track each
+          request from intake to completion.
+        </p>
+      </div>
+      <div class="work-header-actions">
+        <button type="button" class="primary-btn" id="addWorkItemBtn" onclick="window.location.href='work-new.html';">Add Request</button>
+        <button type="button" class="secondary-btn" id="exportCsvBtn" onclick="koreInlineExportCsv();">Export CSV</button>
+      </div>
+    </header>
+
+    <div class="work-hero-wrapper">
+      <img id="workHeroImage"
+           alt="WorkTrackerBanner"
+           class="work-hero-image"
+           style="display:none;" />
+    </div>
+
+    <div class="work-filters">
+      <div class="work-filter-group" style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+        <label class="work-filter-label work-filter--hide-completed">
+          <input type="checkbox" id="workHideCompleted">
+          Hide Completed
+        </label>
+        <label class="work-filter-label work-filter--hide-onhold">
+          <input type="checkbox" id="workHideOnHold">
+          Hide On Hold
+        </label>
+      </div>
+
+      <div class="work-filter">
+        <label for="workStatusFilter">Status</label>
+        <select id="workStatusFilter">
+          <option value="all">All statuses</option>
+          <option value="New">New</option>
+          <option value="In Progress">In Progress</option>
+          <option value="On Hold">On Hold</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+      <div class="work-filter">
+        <label for="workPriorityFilter">Priority</label>
+        <select id="workPriorityFilter">
+          <option value="all">All priorities</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+          <option value="Urgent">Urgent</option>
+        </select>
+      </div>
+      <div class="work-filter">
+        <label for="workTypeFilter">Request Type</label>
+        <select id="workTypeFilter">
+          <option value="all">All types</option>
+        </select>
+      </div>
+      <div class="work-filter">
+        <label for="workAccountFilter">Account</label>
+        <select id="workAccountFilter">
+          <option value="all">All accounts</option>
+        </select>
+      </div>
+      <div class="work-filter">
+        <label for="workSort">Sort by</label>
+        <select id="workSort">
+          <option value="created_desc">Created (Newest)</option>
+          <option value="created_asc">Created (Oldest)</option>
+          <option value="priority">Priority</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="work-list-wrapper">
+      <div id="workList" class="work-list"></div>
+      <div id="workEmptyState" class="work-empty" style="display:none;">
+        No work items yet. Use <strong>Add Request</strong> to create the first ticket in your queue.
+      </div>
+    </div>
+
+    <p class="work-hint">
+      Work Tracker entries are stored locally in your browser and included in Kore backups. Use this as your personal
+      queue; document the detailed how-to steps for each type of request separately in the Info Hub.
+    </p>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Kore <span class="footer-version">v3.14.8</span></p>
+  <p class="footer-meta">Created by Joshua M. Smolak with AI-assisted tooling.</p>
+</footer>
+
+<!-- Work Details Modal -->
+<div id="workModal" class="kore-modal" style="display:none;" aria-hidden="true">
+  <div class="kore-modal-backdrop" data-close="true"></div>
+  <div class="kore-modal-panel" role="dialog" aria-modal="true" aria-labelledby="workModalTitle">
+    <div class="kore-modal-header">
+      <div class="kore-modal-header-text">
+        <h2 id="workModalTitle">Work Request</h2>
+        <p id="workModalSubtitle" class="kore-modal-subtitle">View and edit details for this request.</p>
+      </div>
+      <button type="button" class="kore-modal-close" id="workModalClose" aria-label="Close">×</button>
+    </div>
+
+    <div class="kore-modal-body">
+      <div class="work-modal-grid">
+        <div class="work-modal-field">
+          <label for="wmTitle">Title / Request</label>
+          <input id="wmTitle" type="text" placeholder="Short summary of the request" />
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmType">Request Type</label>
+          <select id="wmType"></select>
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmAccount">Account</label>
+          <select id="wmAccount"></select>
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmPriority">Priority</label>
+          <select id="wmPriority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmStatus">Status</label>
+          <select id="wmStatus">
+            <option value="New">New</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmRequestor">Requestor</label>
+          <input id="wmRequestor" type="text" placeholder="Who requested this?" />
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmCreated">Created</label>
+          <input id="wmCreated" type="text" disabled />
+        </div>
+
+        <div class="work-modal-field">
+          <label for="wmDue">Due Date</label>
+          <input id="wmDue" type="date" />
+        </div>
+      </div>
+
+      <div class="work-modal-row">
+        <div class="work-modal-field">
+          <label for="wmEstEffort">Estimated Effort</label>
+          <select id="wmEstEffort">
+            <option value="">Not set</option>
+            <option value="15m">15m</option>
+            <option value="30m">30m</option>
+            <option value="1h">1h</option>
+            <option value="2h+">2h+</option>
+          </select>
+        </div>
+        <div class="work-modal-field">
+          <label for="wmActEffort">Actual Effort</label>
+          <select id="wmActEffort">
+            <option value="">Not set</option>
+            <option value="15m">15m</option>
+            <option value="30m">30m</option>
+            <option value="1h">1h</option>
+            <option value="2h+">2h+</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="work-modal-field">
+        <label for="wmTags">Tags</label>
+        <input id="wmTags" type="text" placeholder="#urgent, #client-a, training" />
+        <p class="field-hint">Use commas or spaces; "#" is optional. Shared across Work, Info Hub, and Docs.</p>
+      </div>
+
+      <div class="work-modal-field" style="margin-top: 0.75rem;">
+        <label for="wmNotes">Notes / Description</label>
+        <textarea id="wmNotes" rows="7" placeholder="Add context, steps, links, and follow-ups..."></textarea>
+      </div>
+
+      <div id="workModalMeta" class="work-modal-meta"></div>
+    </div>
+
+    <div class="kore-modal-footer">
+      <div class="kore-modal-footer-left">
+        <button type="button" class="danger-btn" id="wmDelete">Archive</button>
+      </div>
+      <div class="kore-modal-footer-right">
+        <button type="button" class="secondary-btn" id="wmCancel">Close</button>
+        <button type="button" class="primary-btn" id="wmSave">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="css/ai.css">
+  <script src="js/hero-images.js"></script>
+<script src="js/version.js"></script>
+<script src="js/main.js"></script>
+<script src="js/profiles.js"></script>
+<script src="js/backup.js"></script>
+<script src="data/kore_kb.js"></script>
+<script src="js/info-hub.js"></script>
+<script src="js/work.js"></script>
+
+<script>
+  // Work items can be stored as plain JSON or (when storage is tight) as a compressed payload:
+  //   "LZ:" + <utf16-compressed-json>
+  // main.js exposes a shared helper (window.KoreStore). Use it when available, otherwise fall back.
+  function koreGetWorkItemsSafe() {
+    try {
+      if (window.KoreStore && typeof window.KoreStore.readArray === 'function') {
+        return window.KoreStore.readArray('work');
+      }
+
+      var raw = localStorage.getItem('work');
+      if (!raw) return [];
+
+      // Manual compatibility in case main.js isn't loaded for some reason.
+      if (typeof raw === 'string' && raw.indexOf('LZ:') === 0 && window.LZString && typeof window.LZString.decompressFromUTF16 === 'function') {
+        var json = window.LZString.decompressFromUTF16(raw.slice(3)) || '';
+        return json ? (JSON.parse(json) || []) : [];
+      }
+
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function koreInlineExportCsv() {
+    try {
+      const items = koreGetWorkItemsSafe();
+      if (!Array.isArray(items) || !items.length) {
+        alert('No work items to export.');
+        return;
+      }
+
+      const header = ['Title','Type','Account','Priority','Status','Requestor','Created','Due','Notes'];
+      const rows = [header.join(',')];
+
+      const safe = (v) => {
+        if (v == null) return '';
+        const s = String(v).replace(/"/g, '""');
+        return '"' + s + '"';
+      };
+
+      items.forEach((item) => {
+        rows.push([
+          safe(item.title || ''),
+          safe(item.type || ''),
+          safe(item.account || ''),
+          safe(item.priority || ''),
+          safe(item.status || ''),
+          safe(item.requestor || ''),
+          safe(item.createdAt || item.created || ''),
+          safe(item.dueDate || ''),
+          safe(item.notes || '')
+        ].join(','));
+      });
+
+      const csv = rows.join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'kore-work-export.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error(e);
+      alert('There was an error exporting CSV. Check console for details.');
+    }
+  }
+</script>
+
+<script src="js/ai.js"></script>
+
+<!-- Ask Kore Widget -->
+<div id="ai-widget">
+  <button id="chat-btn">Ask Kore</button>
+  <div id="chat-box" style="display:none;">
+    <div class="ai-header">
+      <span class="ai-header-title">Ask Kore</span>
+      <button type="button" id="chat-close" class="ai-close" aria-label="Close">×</button>
+    </div>
+    <div class="ai-controls">
+      <label for="askScope" class="ai-scope-label">Scope:</label>
+      <select id="askScope" class="ai-scope-select">
+        <option value="all" selected>Everything</option>
+        <option value="kb">Help &amp; Core Pages</option>
+        <option value="info">Info Hub Guides</option>
+      </select>
+    </div>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Ask Kore..." />
+  </div>
+</div>
+
+
+  <script>
+  (function () {
+    if (window.KoreHero && typeof KoreHero.loadHeroImage === 'function') {
+        KoreHero.loadHeroImage("workHeroImage", "WorkTrackerBanner");
+    }
+  })();
+  </script>
+
+<script id="koreInlineWorkListFallback">
+  (function () {
+    function loadWorkConfig() {
+      var DEFAULT_TYPES = ["Content Change", "New Page", "Bug Fix", "Access Issue", "General IT"];
+      var DEFAULT_ACCOUNTS = ["General", "Internal", "External"];
+
+      // Prefer simple config written by work-options.js (Settings → Work Tracker options)
+      try {
+        var simpleRaw = localStorage.getItem("workConfigSimple");
+        if (simpleRaw) {
+          var simple = JSON.parse(simpleRaw);
+          var types = Array.isArray(simple.types) ? simple.types : [];
+          var accounts = Array.isArray(simple.accounts) ? simple.accounts : [];
+          if (types.length || accounts.length) {
+            return {
+              types: types.length ? types : DEFAULT_TYPES.slice(),
+              accounts: accounts.length ? accounts : DEFAULT_ACCOUNTS.slice(),
+            };
+          }
+        }
+      } catch (e) {
+        // fall through
+      }
+
+      // Fallback to older keys koreWorkTypes / koreWorkAccounts
+      try {
+        var tRaw = localStorage.getItem("koreWorkTypes");
+        var aRaw = localStorage.getItem("koreWorkAccounts");
+        var types2 = tRaw ? JSON.parse(tRaw) : [];
+        var accounts2 = aRaw ? JSON.parse(aRaw) : [];
+        if (Array.isArray(types2) && Array.isArray(accounts2) && (types2.length || accounts2.length)) {
+          return {
+            types: types2.length ? types2 : DEFAULT_TYPES.slice(),
+            accounts: accounts2.length ? accounts2 : DEFAULT_ACCOUNTS.slice(),
+          };
+        }
+      } catch (e) {
+        // fall through
+      }
+
+      // Lastly, fall back to legacy workConfig shape if present
+      try {
+        var raw = localStorage.getItem("workConfig");
+        if (!raw) {
+          return { types: DEFAULT_TYPES.slice(), accounts: DEFAULT_ACCOUNTS.slice() };
+        }
+        var parsed = JSON.parse(raw);
+        var rawTypes = Array.isArray(parsed.types) ? parsed.types : [];
+        var rawAccounts = Array.isArray(parsed.accounts) ? parsed.accounts : [];
+        var types3 = [];
+        var accounts3 = [];
+        rawTypes.forEach(function (t) {
+          String(t || "").split(/[\r\n,]+/).forEach(function (s) {
+            s = s.trim();
+            if (s.length) types3.push(s);
+          });
+        });
+        rawAccounts.forEach(function (t) {
+          String(t || "").split(/[\r\n,]+/).forEach(function (s) {
+            s = s.trim();
+            if (s.length) accounts3.push(s);
+          });
+        });
+        return {
+          types: types3.length ? types3 : DEFAULT_TYPES.slice(),
+          accounts: accounts3.length ? accounts3 : DEFAULT_ACCOUNTS.slice(),
+        };
+      } catch (e) {
+        return { types: DEFAULT_TYPES.slice(), accounts: DEFAULT_ACCOUNTS.slice() };
+      }
+    }
+
+    function uniqueSorted(values) {
+      var seen = {};
+      var out = [];
+      values.forEach(function (v) {
+        if (!v) return;
+        if (!seen[v]) {
+          seen[v] = true;
+          out.push(v);
+        }
+      });
+      out.sort(function (a, b) { return a.localeCompare(b); });
+      return out;
+    }
+
+    function readAllItems() {
+	      try {
+	        var items = koreGetWorkItemsSafe();
+	        if (!Array.isArray(items)) items = [];
+	        return items.filter(function (i) { return i; });
+	      } catch (e) {
+	        console.error('Failed to read work items', e);
+	        return [];
+	      }
+    }
+
+    function applyFilters(items, filters) {
+      var status = filters.status;
+      var priority = filters.priority;
+      var type = filters.type;
+      var account = filters.account;
+      var sort = filters.sort;
+      var hideCompleted = filters.hideCompleted;
+      var hideOnHold = filters.hideOnHold;
+
+      var out = items.slice();
+
+      // Hide archived items from main Work Tracker view
+      out = out.filter(function (i) { return !i.archived; });
+
+      if (status !== 'all') {
+        out = out.filter(function (i) { return i.status === status; });
+      }
+      if (priority !== 'all') {
+        out = out.filter(function (i) { return i.priority === priority; });
+      }
+      if (type !== 'all') {
+        out = out.filter(function (i) { return i.type === type; });
+      }
+      if (account !== 'all') {
+        out = out.filter(function (i) { return (i.account || '') === account; });
+      }
+      if (hideCompleted) {
+        out = out.filter(function (i) { return i.status !== 'Completed'; });
+      }
+      if (hideOnHold) {
+        out = out.filter(function (i) { return i.status !== 'On Hold'; });
+      }
+
+      out.sort(function (a, b) {
+        if (sort === 'created_asc') {
+          return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+        }
+        if (sort === 'priority') {
+          var order = { Urgent: 0, High: 1, Medium: 2, Low: 3 };
+          var aw = (order[a.priority] !== undefined ? order[a.priority] : 99);
+          var bw = (order[b.priority] !== undefined ? order[b.priority] : 99);
+          return aw - bw;
+        }
+        if (sort === 'status') {
+          var sOrder = { New: 0, 'In Progress': 1, 'On Hold': 2, Completed: 3 };
+          var asw = (sOrder[a.status] !== undefined ? sOrder[a.status] : 99);
+          var bsw = (sOrder[b.status] !== undefined ? sOrder[b.status] : 99);
+          return asw - bsw;
+        }
+        // default created_desc
+        return String(b.createdAt || '').localeCompare(String(a.createdAt || ''));
+      });
+
+      return out;
+    }
+
+    function populateFilters(config, items) {
+      var typeSelect = document.getElementById('workTypeFilter');
+      var accountSelect = document.getElementById('workAccountFilter');
+
+      var typeValues = uniqueSorted([].concat(config.types || [], items.map(function (i) { return i.type; })));
+      var accountValues = uniqueSorted([].concat(config.accounts || [], items.map(function (i) { return i.account; })));
+
+      function populate(select, values, allLabel) {
+        if (!select) return;
+        var current = select.value || 'all';
+        select.innerHTML = '';
+        var allOpt = document.createElement('option');
+        allOpt.value = 'all';
+        allOpt.textContent = allLabel;
+        select.appendChild(allOpt);
+        values.forEach(function (v) {
+          var opt = document.createElement('option');
+          opt.value = v;
+          opt.textContent = v;
+          select.appendChild(opt);
+        });
+        if (current !== 'all') {
+          for (var i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === current) {
+              select.value = current;
+              break;
+            }
+          }
+        }
+      }
+
+      populate(typeSelect, typeValues, 'All types');
+      populate(accountSelect, accountValues, 'All accounts');
+    }
+
+    function renderList(items) {
+      var list = document.getElementById('workList');
+      var empty = document.getElementById('workEmptyState');
+      if (!list || !empty) return;
+
+      if (!items.length) {
+        empty.style.display = 'block';
+        list.innerHTML = '';
+        return;
+      }
+
+      empty.style.display = 'none';
+      list.innerHTML = '';
+
+      items.forEach(function (item) {
+        if (!item) return;
+        var card = document.createElement('div');
+        card.className = 'work-item-card work-item-card--fallback';
+        card.setAttribute('data-id', item.id || '');
+
+        var title = item.title || 'Untitled request';
+        var type = item.type || 'General IT';
+        var account = item.account || '';
+        var priority = item.priority || 'Medium';
+        var status = item.status || 'New';
+        var created = item.createdAt || '';
+        var due = item.dueDate ? ('Due ' + item.dueDate) : '';
+        var notes = (item.notes || '').toString().replace(/<[^>]+>/g, ' ').trim();
+
+        if (!notes) {
+          notes = 'No notes yet. Click into this request to add details from the Info Hub or Docs.';
+        }
+
+        card.innerHTML =
+          '<div class="work-item-header-row">' +
+            '<div class="work-item-title-block">' +
+              '<h3>' + title + '</h3>' +
+              '<div class="work-item-meta">' + (account || type) + '</div>' +
+            '</div>' +
+            '<div class="work-badges">' +
+              '<span class="kore-badge">' + priority + '</span>' +
+              '<span class="kore-badge">' + status + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="work-item-snippet">' + notes + '</div>' +
+          '<div class="work-item-footer">' +
+            '<span>' + (created ? ('Created ' + created) : '') + '</span>' +
+            '<span>' + due + '</span>' +
+          '</div>';
+
+        card.addEventListener('click', function () {
+          if (typeof window.openKoreWorkItemById === 'function' && item.id) {
+            window.openKoreWorkItemById(item.id);
+          } else if (item.id) {
+            window.location.href = 'work-new.html?id=' + encodeURIComponent(item.id);
+          }
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+    function getFilters() {
+      var statusSelect = document.getElementById('workStatusFilter');
+      var prioritySelect = document.getElementById('workPriorityFilter');
+      var typeSelect = document.getElementById('workTypeFilter');
+      var accountSelect = document.getElementById('workAccountFilter');
+      var sortSelect = document.getElementById('workSort');
+      var hideCompletedCheckbox = document.getElementById('workHideCompleted');
+      var hideOnHoldCheckbox = document.getElementById('workHideOnHold');
+
+      return {
+        status: (statusSelect && statusSelect.value) || 'all',
+        priority: (prioritySelect && prioritySelect.value) || 'all',
+        type: (typeSelect && typeSelect.value) || 'all',
+        account: (accountSelect && accountSelect.value) || 'all',
+        sort: (sortSelect && sortSelect.value) || 'created_desc',
+        hideCompleted: !!(hideCompletedCheckbox && hideCompletedCheckbox.checked),
+        hideOnHold: !!(hideOnHoldCheckbox && hideOnHoldCheckbox.checked)
+      };
+    }
+
+    function bindFilterEvents(allItems, config) {
+      var controls = [
+        'workStatusFilter',
+        'workPriorityFilter',
+        'workTypeFilter',
+        'workAccountFilter',
+        'workSort',
+        'workHideCompleted',
+        'workHideOnHold'
+      ];
+
+      function onChange() {
+        var filters = getFilters();
+        // Persist filter preferences (aligns with js/work.js)
+        try {
+          localStorage.setItem('workFilterPrefs_v1', JSON.stringify(filters));
+        } catch (e) {
+          // ignore persistence errors
+        }
+        var filtered = applyFilters(allItems, filters);
+        renderList(filtered);
+      }
+
+      controls.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var eventName = (id === 'workHideCompleted' ? 'change' : 'change');
+        el.addEventListener(eventName, onChange);
+      });
+    }
+
+    function loadFilterPrefs() {
+      try {
+        var raw = localStorage.getItem('workFilterPrefs_v1');
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function applyFilterPrefsToControls(prefs) {
+      if (!prefs) return;
+      var statusSelect = document.getElementById('workStatusFilter');
+      var prioritySelect = document.getElementById('workPriorityFilter');
+      var typeSelect = document.getElementById('workTypeFilter');
+      var accountSelect = document.getElementById('workAccountFilter');
+      var sortSelect = document.getElementById('workSort');
+      var hideCompletedCheckbox = document.getElementById('workHideCompleted');
+      var hideOnHoldCheckbox = document.getElementById('workHideOnHold');
+
+      if (statusSelect && prefs.status) statusSelect.value = prefs.status;
+      if (prioritySelect && prefs.priority) prioritySelect.value = prefs.priority;
+      if (typeSelect && prefs.type) typeSelect.value = prefs.type;
+      if (accountSelect && prefs.account) accountSelect.value = prefs.account;
+      if (sortSelect && prefs.sort) sortSelect.value = prefs.sort;
+      if (hideCompletedCheckbox) hideCompletedCheckbox.checked = !!prefs.hideCompleted;
+      if (hideOnHoldCheckbox) hideOnHoldCheckbox.checked = !!prefs.hideOnHold;
+    }
+
+    function initWorkFallback() {
+      var items = readAllItems();
+      var config = loadWorkConfig();
+      populateFilters(config, items);
+
+      var prefs = loadFilterPrefs();
+      if (prefs) {
+        applyFilterPrefsToControls(prefs);
+      }
+
+      var filters = getFilters();
+      var filtered = applyFilters(items, filters);
+      renderList(filtered);
+      bindFilterEvents(items, config);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initWorkFallback);
+    } else {
+      initWorkFallback();
+    }
+  })();
+</script>
+
+
+<script>
+  // Resilient Work card click handler: navigates to work-new.html for the clicked item.
+  (function () {
+    function bindWorkCardClicks() {
+      var list = document.getElementById('workList');
+      if (!list) return;
+
+      list.addEventListener('click', function (e) {
+        var target = e.target;
+        if (!target) return;
+        var card = target.closest ? target.closest('.work-item-card') : null;
+        if (!card) return;
+        var id = card.getAttribute('data-id');
+        if (!id) return;
+        try {
+          // Prefer letting dedicated helper open modal if available
+          if (typeof window.openKoreWorkItemById === 'function') {
+            window.openKoreWorkItemById(id);
+          } else {
+            // Fallback: navigate to the edit screen
+            window.location.href = 'work-new.html?id=' + encodeURIComponent(id);
+          }
+        } catch (err) {
+          console.error('Work card click handler failed', err);
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindWorkCardClicks);
+    } else {
+      bindWorkCardClicks();
+    }
+  })();
+</script>
+
+</body>
+</html>

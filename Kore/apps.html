@@ -54,31 +54,31 @@
         /* Application Grid & Cards */
         .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
         
+        /* The Master Wrapper decouples the buttons from the link */
+        .app-wrapper { position: relative; display: block; }
+        
         .app-card {
             background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
             padding: 24px 24px 16px 24px; text-align: center; box-shadow: var(--shadow-sm);
             transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center;
-            position: relative;
+            text-decoration: none; color: var(--text-main); height: 100%; box-sizing: border-box;
         }
-        .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); }
         
-        /* The clickable area for the link */
-        .app-link-wrapper {
-            text-decoration: none; color: var(--text-main); display: flex; flex-direction: column; align-items: center; width: 100%;
-        }
-
-        /* Action Buttons (Hover Reveal) - Positioned so they don't overlap the link accidentally */
+        .app-wrapper:hover .app-card { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); }
+        
+        /* Action Buttons (Hover Reveal) */
         .app-actions {
-            position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s ease; z-index: 10;
+            position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s ease; z-index: 10; pointer-events: none;
         }
-        .app-card:hover .app-actions { opacity: 1; }
+        .app-wrapper:hover .app-actions { opacity: 1; pointer-events: auto; transform: translateY(-4px); }
+        
         .action-btn {
-            background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: 6px;
-            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 0.8rem; color: var(--text-secondary); transition: all 0.2s;
+            background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px;
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); transition: all 0.2s; box-shadow: var(--shadow-sm);
         }
-        .action-btn:hover { background: var(--bg-surface); color: var(--accent-primary); border-color: var(--accent-primary); }
-        .action-btn.delete:hover { color: #ef4444; border-color: #ef4444; }
+        .action-btn:hover { background: var(--bg-app); color: var(--accent-primary); border-color: var(--accent-primary); }
+        .action-btn.delete:hover { color: #ef4444; border-color: #ef4444; background: #fef2f2; }
 
         .app-icon-container { width: 56px; height: 56px; margin-bottom: 16px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f0f9ff; }
         .app-icon-img { width: 100%; height: 100%; object-fit: cover; }
@@ -119,11 +119,9 @@
     <div id="app-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(2px);"><div style="background:#fff; padding:32px; border-radius:12px; width:400px; display:flex; flex-direction:column; gap:16px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);"><h3 id="modal-title" style="margin:0; font-size:1.4rem; color:#0f172a;">New Shortcut</h3><input type="hidden" id="editAppId"><input type="text" id="appName" placeholder="Application Name (Required)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><input type="url" id="appUrl" placeholder="Link URL (Required)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><input type="url" id="appIconUrl" placeholder="Image/Icon URL (.png, .jpg, etc. - Optional)" style="padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px;"><button onclick="closeModal()" style="padding:10px 20px; background:transparent; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight:600; color:#475569;">Cancel</button><button onclick="saveApp()" style="padding:10px 20px; background:#0ea5e9; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Save App</button></div></div></div>
 
     <script>
-        // Data Structure logic
         function getApps() {
             let apps = JSON.parse(localStorage.getItem('kore_custom_apps'));
             if (!apps || apps.length === 0) {
-                // Seed default data if empty
                 apps = [
                     { id: 'app_1', name: "BradyPLUS Portal", url: "https://www.bradyplus.com", iconUrl: "" },
                     { id: 'app_2', name: "SharePoint Core", url: "https://starkindustries.sharepoint.com", iconUrl: "" }
@@ -133,7 +131,6 @@
             return apps;
         }
 
-        // Render Apps to Grid
         function loadApps() {
             const apps = getApps();
             const container = document.getElementById('apps-container');
@@ -144,13 +141,14 @@
                     ? `<img src="${app.iconUrl}" class="app-icon-img" alt="${app.name} icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"> <span class="app-icon-text" style="display:none;">${app.name.charAt(0).toUpperCase()}</span>` 
                     : `<span class="app-icon-text">${app.name.charAt(0).toUpperCase()}</span>`;
 
+                // Decoupled Wrapper Structure
                 container.innerHTML += `
-                    <div class="app-card">
+                    <div class="app-wrapper">
                         <div class="app-actions">
-                            <button class="action-btn" onclick="openModal('${app.id}')" title="Edit">✏️</button>
-                            <button class="action-btn delete" onclick="deleteApp('${app.id}')" title="Delete">🗑️</button>
+                            <button class="action-btn" onclick="event.preventDefault(); openModal('${app.id}')" title="Edit">✏️</button>
+                            <button class="action-btn delete" onclick="event.preventDefault(); deleteApp('${app.id}')" title="Delete">🗑️</button>
                         </div>
-                        <a href="${app.url}" target="_blank" class="app-link-wrapper">
+                        <a href="${app.url}" target="_blank" class="app-card">
                             <div class="app-icon-container">${iconHtml}</div>
                             <h4 class="app-name">${app.name}</h4>
                             <p class="app-url">${app.url.replace(/^https?:\/\//, '')}</p>
@@ -160,7 +158,6 @@
             });
         }
 
-        // UI: Open Modal for Add OR Edit
         function openModal(editId = null) {
             const modal = document.getElementById('app-modal');
             const title = document.getElementById('modal-title');
@@ -186,7 +183,6 @@
             document.getElementById('app-modal').style.display = 'none';
         }
 
-        // Action: Save or Update App
         function saveApp() {
             const idInput = document.getElementById('editAppId').value;
             const nameInput = document.getElementById('appName').value.trim();
@@ -208,12 +204,7 @@
                     apps[index].iconUrl = iconInput;
                 }
             } else {
-                const newApp = {
-                    id: 'app_' + Date.now(),
-                    name: nameInput,
-                    url: urlInput,
-                    iconUrl: iconInput
-                };
+                const newApp = { id: 'app_' + Date.now(), name: nameInput, url: urlInput, iconUrl: iconInput };
                 apps.push(newApp);
             }
 
@@ -222,7 +213,6 @@
             loadApps();
         }
 
-        // Action: Delete App
         function deleteApp(id) {
             if(confirm("Are you sure you want to remove this application shortcut?")) {
                 let apps = getApps();

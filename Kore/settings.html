@@ -41,6 +41,8 @@
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
 
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+
         /* Global Search Infrastructure */
         .search-container { display: flex; align-items: center; position: relative; }
         .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
@@ -144,6 +146,8 @@
             </nav>
         </div>
         
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+
         <div class="search-container">
             <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
             <div id="globalSearchDropdown" class="search-dropdown"></div>
@@ -162,12 +166,12 @@
             <div>
                 <section class="section-card">
                     <h3 class="section-title">
-                        Identity Profile
+                        Personal Identity Profile
                         <span class="status-msg" id="identityStatus">Saved</span>
                     </h3>
                     <div class="form-group">
                         <label class="form-label" for="profileNameInput">Local Profile Name</label>
-                        <input type="text" id="profileNameInput" class="input" placeholder="e.g. Joshua Smolak">
+                        <input type="text" id="profileNameInput" class="input" placeholder="Your name">
                     </div>
                     <div class="form-group" style="margin-top: 8px;">
                         <label class="form-label" for="timeZoneSelect">System Time Zone</label>
@@ -180,12 +184,12 @@
                             <option value="America/Los_Angeles">Pacific Time (US) - Los Angeles</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" id="saveIdentityBtn">Save Identity Settings</button>
+                    <button class="btn btn-primary" id="saveIdentityBtn">Save Personal Settings</button>
                 </section>
 
                 <section class="section-card">
                     <h3 class="section-title">
-                        Dashboard Shortcuts
+                        Personal Dashboard Shortcuts
                         <span class="status-msg" id="shortcutsStatus">Saved</span>
                     </h3>
                     <p class="form-hint" style="margin-top: -10px;">Manage the Quick Links that appear on your <code>index.html</code> homepage.</p>
@@ -245,7 +249,7 @@
 
                 <section class="section-card">
                     <h3 class="section-title">
-                        Admin Controls
+                        Global Admin Controls
                         <span class="status-msg" id="adminStatus">Saved</span>
                     </h3>
 
@@ -284,7 +288,7 @@
         </div>
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <div id="archiveModal" class="modal-overlay">
         <div class="modal-content">
@@ -308,6 +312,26 @@
         }
         function escapeHtml(str) {
             return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // --- Microsoft Entra ID Integration ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
+                }
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            }
         }
 
         // 1. Global Search
@@ -344,24 +368,27 @@
             });
         })();
 
-        // 2. Identity & Time Zone
-        document.addEventListener('DOMContentLoaded', () => {
+        // --- Core UI & Data Loading (Wait for Entra ID First) ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity(); // Ensure we know who is logged in before loading settings
+
+            // 2. Identity & Time Zone (Per-Person)
             const profileInput = document.getElementById('profileNameInput');
             const tzSelect = document.getElementById('timeZoneSelect');
-            profileInput.value = localStorage.getItem('koreProfileName') || "";
-            tzSelect.value = localStorage.getItem('koreHomeTimeZone') || "America/New_York";
+            
+            profileInput.value = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`) || cloudIdentity.userName;
+            tzSelect.value = localStorage.getItem(`koreHomeTimeZone_${cloudIdentity.userId}`) || "America/New_York";
+            
             document.getElementById('saveIdentityBtn').addEventListener('click', () => {
-                localStorage.setItem('koreProfileName', profileInput.value.trim());
-                localStorage.setItem('koreHomeTimeZone', tzSelect.value);
+                localStorage.setItem(`koreProfileName_${cloudIdentity.userId}`, profileInput.value.trim());
+                localStorage.setItem(`koreHomeTimeZone_${cloudIdentity.userId}`, tzSelect.value);
                 flashStatus('identityStatus');
             });
-        });
 
-        // 3. Home Shortcuts
-        document.addEventListener('DOMContentLoaded', () => {
+            // 3. Home Shortcuts (Per-Person)
             const scContainer = document.getElementById('shortcutsListContainer');
             function getShortcuts() {
-                const sc = localStorage.getItem('kore_shortcuts');
+                const sc = localStorage.getItem(`kore_shortcuts_${cloudIdentity.userId}`);
                 if (sc) return JSON.parse(sc);
                 return [
                     {title: "Apps", url: "apps.html"},
@@ -385,7 +412,7 @@
                     const idx = e.target.dataset.idx;
                     const shortcuts = getShortcuts();
                     shortcuts.splice(idx, 1);
-                    localStorage.setItem('kore_shortcuts', JSON.stringify(shortcuts));
+                    localStorage.setItem(`kore_shortcuts_${cloudIdentity.userId}`, JSON.stringify(shortcuts));
                     renderShortcuts();
                     flashStatus('shortcutsStatus');
                 }
@@ -396,15 +423,13 @@
                 if(!title || !url) return alert("Provide both title and URL.");
                 const shortcuts = getShortcuts();
                 shortcuts.push({title, url});
-                localStorage.setItem('kore_shortcuts', JSON.stringify(shortcuts));
+                localStorage.setItem(`kore_shortcuts_${cloudIdentity.userId}`, JSON.stringify(shortcuts));
                 document.getElementById('newScTitle').value = ''; document.getElementById('newScUrl').value = '';
                 renderShortcuts(); flashStatus('shortcutsStatus');
             });
             renderShortcuts();
-        });
 
-        // 4. Work Tracker Settings
-        document.addEventListener('DOMContentLoaded', () => {
+            // 4. Work Tracker Settings (Global for team logic)
             const typesInput = document.getElementById('workTypesInput');
             const accountsInput = document.getElementById('workAccountsInput');
             const savedTypes = JSON.parse(localStorage.getItem('kore_set_types')) || ["Feature Update", "Bug Fix", "Content Load", "Maintenance", "Security Patch"];
@@ -418,6 +443,45 @@
                 localStorage.setItem('kore_set_accounts', JSON.stringify(newAccounts));
                 flashStatus('workLogicStatus');
             });
+
+            // 6. Admin Panel (Global with Session Security Token)
+            const lockScreen = document.getElementById('adminLockScreen');
+            const adminContent = document.getElementById('adminContent');
+            const pinInput = document.getElementById('adminPinInput');
+            const errorMsg = document.getElementById('adminLockError');
+            const bulletinInput = document.getElementById('sysBulletinInput');
+            const newPinInput = document.getElementById('newPinInput');
+
+            // Check if already unlocked in this session
+            if (sessionStorage.getItem('kore_admin_unlocked') === 'true') {
+                lockScreen.style.display = 'none';
+                adminContent.style.display = 'flex';
+                bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
+            }
+
+            document.getElementById('unlockAdminBtn').addEventListener('click', () => {
+                const currentPin = localStorage.getItem('kore_admin_pin') || 'Admin2026!';
+                if (pinInput.value === currentPin) {
+                    lockScreen.style.display = 'none';
+                    adminContent.style.display = 'flex';
+                    bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
+                    // Issue the Security Token to allow bypassing PIN on Create Page
+                    sessionStorage.setItem('kore_admin_unlocked', 'true'); 
+                } else {
+                    errorMsg.style.display = 'block';
+                }
+            });
+
+            document.getElementById('saveAdminBtn').addEventListener('click', () => {
+                localStorage.setItem('kore_bulletin', bulletinInput.value.trim());
+                if (newPinInput.value.trim() !== "") {
+                    localStorage.setItem('kore_admin_pin', newPinInput.value.trim());
+                    newPinInput.value = "";
+                }
+                flashStatus('adminStatus');
+            });
+
+            updateDataStats();
         });
 
         // 5. Data & Archive Manager Modal
@@ -525,38 +589,6 @@
             }
             renderArchiveList(); updateDataStats();
         }
-
-        document.addEventListener('DOMContentLoaded', updateDataStats);
-
-        // 6. Admin Panel
-        document.addEventListener('DOMContentLoaded', () => {
-            const lockScreen = document.getElementById('adminLockScreen');
-            const adminContent = document.getElementById('adminContent');
-            const pinInput = document.getElementById('adminPinInput');
-            const errorMsg = document.getElementById('adminLockError');
-            const bulletinInput = document.getElementById('sysBulletinInput');
-            const newPinInput = document.getElementById('newPinInput');
-
-            document.getElementById('unlockAdminBtn').addEventListener('click', () => {
-                const currentPin = localStorage.getItem('kore_admin_pin') || 'Admin2026!';
-                if (pinInput.value === currentPin) {
-                    lockScreen.style.display = 'none';
-                    adminContent.style.display = 'flex';
-                    bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
-                } else {
-                    errorMsg.style.display = 'block';
-                }
-            });
-
-            document.getElementById('saveAdminBtn').addEventListener('click', () => {
-                localStorage.setItem('kore_bulletin', bulletinInput.value.trim());
-                if (newPinInput.value.trim() !== "") {
-                    localStorage.setItem('kore_admin_pin', newPinInput.value.trim());
-                    newPinInput.value = "";
-                }
-                flashStatus('adminStatus');
-            });
-        });
     </script>
 </body>
 </html>

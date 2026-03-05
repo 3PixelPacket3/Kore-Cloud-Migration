@@ -38,6 +38,8 @@
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
 
         /* --- Main Layout --- */
         .main-container { padding: 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
@@ -123,6 +125,7 @@
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
     </header>
 
     <main class="main-container">
@@ -171,9 +174,18 @@
                 <div class="sidebar">
                     
                     <div class="side-card">
-                        <button type="button" id="publishBtn" class="btn btn-primary">Publish to Info Hub</button>
+                        <button type="button" id="publishBtn" class="btn btn-primary">Publish & Save to Cloud</button>
                         <button type="button" id="saveDraftBtn" class="btn">Save Draft</button>
                         <button type="button" id="deletePageBtn" class="btn btn-danger" style="margin-top: 12px;">Delete Page</button>
+                    </div>
+
+                    <div class="side-card" style="border-color: var(--accent-primary); background-color: #f0f9ff;">
+                        <h3 class="side-title" style="color: var(--accent-primary);">Enterprise Controls</h3>
+                        <div class="input-group" style="margin-bottom:0; display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="globalPushToggle" style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="globalPushToggle" style="margin-bottom: 0; cursor: pointer; color: var(--text-main);">Push to Global Workspace</label>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">If enabled, this guide will bypass your personal folder and broadcast directly to all team accounts.</p>
                     </div>
 
                     <div class="side-card">
@@ -207,10 +219,34 @@
 
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
         const STORAGE_KEY = 'infoPages';
+
+        // --- Microsoft Entra ID Integration ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                    
+                    // Auto-fill Author if blank
+                    const authorInput = document.getElementById('authorInput');
+                    if (!authorInput.value) authorInput.value = cloudIdentity.userName;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
+                }
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            }
+        }
 
         const titleEl = document.getElementById('infoTitle');
         const summaryEl = document.getElementById('infoSummary');
@@ -223,6 +259,7 @@
         const updatedAtEl = document.getElementById('updatedAt');
         const statusDisplayEl = document.getElementById('statusDisplay');
         const autosaveEl = document.getElementById('autosaveStatus');
+        const globalToggleEl = document.getElementById('globalPushToggle');
         
         const imagesContainer = document.getElementById('imagesContainer');
         const linksContainer = document.getElementById('linksContainer');
@@ -237,7 +274,7 @@
 
         const HOWTO_TEMPLATE = `<h2>Overview</h2><p><em>What this is, when to use it, and the outcome you want.</em></p><h2>Prerequisites</h2><ul><li>Access/permissions:</li><li>Required files/links:</li></ul><h2>Steps</h2><ol><li><strong>Step 1:</strong> </li><li><strong>Step 2:</strong> </li></ol><h2>Troubleshooting</h2><ul><li><strong>Problem:</strong> … <br><strong>Fix:</strong> …</li></ul>`;
 
-        // Data Management
+        // Data Management (Local Fallback & Caching)
         function loadPages() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
@@ -348,7 +385,7 @@
         linksContainer.addEventListener('click', e => { if (e.target.classList.contains('lnk-rm')) { links.splice(e.target.dataset.idx, 1); renderLinks(); markDirty(); }});
         linksContainer.addEventListener('input', e => { if (e.target.tagName === 'INPUT') { links[e.target.dataset.idx][e.target.dataset.type] = e.target.value; markDirty(); }});
 
-        // Save Logic
+        // --- Azure Cloud Transmission System ---
         function buildPagePayload(status) {
             const nowIso = new Date().toISOString();
             let createdAt = nowIso;
@@ -368,25 +405,51 @@
                 links: [...links],
                 tags: (tagsEl.value || '').split(',').map(t=>t.trim()).filter(Boolean),
                 createdAt, updatedAt: nowIso,
-                author: authorEl.value.trim() || 'Local User',
+                authorId: cloudIdentity.userId,
+                author: authorEl.value.trim() || cloudIdentity.userName,
+                isGlobal: globalToggleEl.checked,
                 status, archived: false
             };
         }
 
-        document.getElementById('saveDraftBtn').addEventListener('click', () => {
+        async function transmitToCloud(payload) {
+            try {
+                const response = await fetch('/api/save_info_page', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) console.warn("Cloud transmit failed or still compiling.");
+            } catch (err) {
+                console.error("Cloud link offline. Falling back to local cache.", err);
+            }
+        }
+
+        document.getElementById('saveDraftBtn').addEventListener('click', async () => {
             if (!titleEl.value.trim()) return alert('Title required.');
-            const page = buildPagePayload('draft'); upsertPage(page);
+            const btn = document.getElementById('saveDraftBtn');
+            btn.innerText = "Saving...";
+            
+            const page = buildPagePayload('draft'); 
+            upsertPage(page); // Cache locally instantly
+            await transmitToCloud(page); // Fire to Azure silently
+
             currentStatus = 'draft'; isDirty = false;
             createdAtEl.textContent = formatDate(page.createdAt); updatedAtEl.textContent = formatDate(page.updatedAt);
             statusDisplayEl.textContent = 'DRAFT'; statusDisplayEl.className = 'status-badge status-draft';
-            alert('Draft Saved.');
+            btn.innerText = "Save Draft";
         });
 
-        document.getElementById('publishBtn').addEventListener('click', () => {
+        document.getElementById('publishBtn').addEventListener('click', async () => {
             if (!titleEl.value.trim()) return alert('Title required.');
-            const page = buildPagePayload('published'); upsertPage(page);
+            const btn = document.getElementById('publishBtn');
+            btn.innerText = "Transmitting to Cloud..."; btn.disabled = true;
+
+            const page = buildPagePayload('published'); 
+            upsertPage(page);
+            await transmitToCloud(page);
+            
             isDirty = false;
-            alert('Published successfully!');
             window.location.href = 'info-hub.html';
         });
 
@@ -395,20 +458,10 @@
             if (confirm('Archive this page?')) { archivePage(currentPageId); window.location.href = 'info-hub.html'; }
         });
 
-        // Autosave
-        setInterval(() => {
-            if (!isDirty || !titleEl.value.trim() || currentStatus === 'published') return;
-            const now = Date.now(); if (now - lastAutosaveAt < 10000) return;
-            lastAutosaveAt = now;
-            const page = buildPagePayload('draft'); upsertPage(page);
-            isDirty = false;
-            updatedAtEl.textContent = formatDate(page.updatedAt);
-            autosaveEl.textContent = 'Autosaved';
-            setTimeout(() => autosaveEl.textContent = '', 2500);
-        }, 20000);
-
         // Load Existing
         document.addEventListener('DOMContentLoaded', () => {
+            fetchSecureIdentity(); // Initiate Entra ID handshake immediately
+
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
             if (id) {
@@ -422,6 +475,7 @@
                     authorEl.value = existing.author || '';
                     tagsEl.value = (existing.tags || []).join(', ');
                     images = existing.images || []; links = existing.links || [];
+                    globalToggleEl.checked = existing.isGlobal || false;
                     
                     createdAtEl.textContent = formatDate(existing.createdAt);
                     updatedAtEl.textContent = formatDate(existing.updatedAt);
@@ -435,7 +489,7 @@
                 createdAtEl.textContent = formatDate(new Date().toISOString());
             }
 
-            [titleEl, summaryEl, authorEl, tagsEl, contentEl, contentHtmlEl].forEach(el => el.addEventListener('input', markDirty));
+            [titleEl, summaryEl, authorEl, tagsEl, contentEl, contentHtmlEl, globalToggleEl].forEach(el => el.addEventListener('input', markDirty));
         });
     </script>
 </body>

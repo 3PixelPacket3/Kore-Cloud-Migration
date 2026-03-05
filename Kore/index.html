@@ -32,6 +32,8 @@
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
 
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+
         .search-container { display: flex; align-items: center; position: relative; }
         .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
         .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
@@ -106,6 +108,8 @@
             </nav>
         </div>
         
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+
         <div class="search-container">
             <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
             <div id="globalSearchDropdown" class="search-dropdown"></div>
@@ -149,11 +153,31 @@
     </main>
 
     <footer class="global-footer">
-        &copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.
+        &copy; 2026 Kore | Enterprise Cloud Vault Connected.
     </footer>
 
     <script>
-        // 1. Global Search
+        // --- 1. Microsoft Entra ID Integration ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
+                }
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            }
+        }
+
+        // --- 2. Global Search ---
         (function initGlobalSearch() {
             const searchInput = document.getElementById('globalSearchInput');
             const searchDropdown = document.getElementById('globalSearchDropdown');
@@ -188,10 +212,11 @@
             });
         })();
 
-        // 2. Precision Clock & Timezone
+        // --- 3. Precision Clock & Timezone (Personalized) ---
         function updateClock() {
             const now = new Date();
-            const tz = localStorage.getItem('koreHomeTimeZone') || 'America/New_York';
+            // Pull the user's specific timezone setting, defaulting to East Coast US
+            const tz = localStorage.getItem(`koreHomeTimeZone_${cloudIdentity.userId}`) || 'America/New_York';
             try {
                 const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz };
                 document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
@@ -203,18 +228,21 @@
                 document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
         }
-        setInterval(updateClock, 1000); updateClock(); 
 
-        // 3. Render Dynamic Data
+        // --- 4. Render Dynamic Dashboard Data ---
         function initializeDashboard() {
-            const profileName = localStorage.getItem('koreProfileName');
-            if (profileName) document.getElementById('greeting-title').textContent = `Welcome back, ${profileName}`;
+            // Personalized Greeting
+            const profileName = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`);
+            const displayGreeting = profileName ? profileName : cloudIdentity.userName.split('@')[0];
+            document.getElementById('greeting-title').textContent = `Welcome back, ${displayGreeting}`;
 
+            // Master Admin Bulletin (Global)
             const savedBulletin = localStorage.getItem('kore_bulletin');
             const defaultMsg = "Welcome to the upgraded Kore cloud environment. Please ensure all tickets are logged in the new Work Queue before end of day.";
             document.getElementById('global-message-text').textContent = savedBulletin ? savedBulletin : defaultMsg;
 
-            const savedShortcuts = localStorage.getItem('kore_shortcuts');
+            // Personalized Shortcuts
+            const savedShortcuts = localStorage.getItem(`kore_shortcuts_${cloudIdentity.userId}`);
             const defaultLinks = [
                 { title: "Apps", url: "apps.html" },
                 { title: "Work Tracker", url: "work.html" },
@@ -241,9 +269,17 @@
                     </a>
                 `;
             });
+
+            // Start clock cycle after determining user timezone
+            setInterval(updateClock, 1000); 
+            updateClock(); 
         }
         
-        document.addEventListener('DOMContentLoaded', initializeDashboard);
+        // Execute the pipeline sequentially
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
+            initializeDashboard();
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Page Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app); color: var(--text-main);
+            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+        }
+
+        /* --- Global Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+
+        /* --- Main Layout --- */
+        .main-container { padding: 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .header-bar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+        .title-input-wrapper { flex-grow: 1; margin-right: 40px; }
+        .title-input { width: 100%; font-size: 2rem; font-weight: 800; color: var(--text-main); border: none; background: transparent; outline: none; border-bottom: 2px solid transparent; padding: 4px 0; transition: border-color 0.2s; }
+        .title-input:focus { border-bottom-color: var(--accent-primary); }
+        .title-input::placeholder { color: #cbd5e1; }
+        
+        .meta-stats { display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; color: var(--text-secondary); gap: 4px; }
+        .status-badge { padding: 4px 12px; border-radius: 99px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+        .status-published { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+        .status-draft { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+
+        .layout-grid { display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; }
+
+        /* --- Editor Area --- */
+        .editor-section { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; }
+        .editor-toolbar { background: var(--bg-app); border-bottom: 1px solid var(--border-subtle); padding: 12px 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .tool-btn { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 6px 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text-main); }
+        .tool-btn:hover { background: #f0f9ff; border-color: var(--accent-primary); color: var(--accent-primary); }
+        
+        .summary-input { width: 100%; border: none; border-bottom: 1px dashed var(--border-subtle); padding: 16px; font-family: inherit; font-size: 1rem; outline: none; background: var(--bg-surface); resize: vertical; box-sizing: border-box; }
+        .summary-input:focus { background: #f8fafc; }
+        
+        .rich-editor { min-height: 400px; padding: 24px; outline: none; font-size: 1rem; line-height: 1.6; color: var(--text-main); overflow-y: auto; }
+        .rich-editor:focus { box-shadow: inset 0 0 0 2px rgba(14, 165, 233, 0.1); }
+        .html-source { width: 100%; min-height: 400px; padding: 24px; font-family: monospace; font-size: 0.9rem; background: #1e293b; color: #e2e8f0; border: none; outline: none; resize: vertical; display: none; box-sizing: border-box;}
+
+        /* --- Sidebar --- */
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+        .side-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
+        .side-title { margin: 0 0 16px 0; font-size: 1rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; }
+        
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-secondary); }
+        .input { width: 100%; padding: 10px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; box-sizing: border-box; }
+        .input:focus { border-color: var(--accent-primary); }
+
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; width: 100%; box-sizing: border-box; margin-bottom: 8px;}
+        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
+        .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); }
+        .btn-danger { color: #ef4444; border-color: #fca5a5; background: #fef2f2; }
+        .btn-danger:hover { background: #fee2e2; border-color: #ef4444; }
+
+        /* List Items (Images & Links) */
+        .attachment-item { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px; position: relative; }
+        .attachment-item img { width: 100%; border-radius: 4px; margin-bottom: 6px; }
+        .attachment-item input { margin-bottom: 6px; }
+        .remove-btn { font-size: 0.75rem; color: #ef4444; background: transparent; border: none; cursor: pointer; padding: 0; font-weight: 600; }
+
+        /* --- Global Footer --- */
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item active">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <form id="pageBuilderForm" onsubmit="return false;">
+            
+            <div class="header-bar">
+                <div class="title-input-wrapper">
+                    <input type="text" id="infoTitle" class="title-input" placeholder="Page Title..." required>
+                </div>
+                <div class="meta-stats">
+                    <span id="statusDisplay" class="status-badge status-draft">Draft</span>
+                    <span>Created: <span id="createdAt" style="font-weight:600;">--</span></span>
+                    <span>Updated: <span id="updatedAt" style="font-weight:600;">--</span></span>
+                    <span id="autosaveStatus" style="color: var(--accent-primary); font-weight:600; height: 16px;"></span>
+                </div>
+            </div>
+
+            <div class="layout-grid">
+                
+                <div class="editor-section">
+                    <textarea id="infoSummary" class="summary-input" rows="2" placeholder="Short description or summary of this guide..."></textarea>
+                    
+                    <div class="editor-toolbar" id="toolbar">
+                        <button type="button" class="tool-btn" data-cmd="bold"><b>B</b></button>
+                        <button type="button" class="tool-btn" data-cmd="italic"><i>I</i></button>
+                        <button type="button" class="tool-btn" data-cmd="underline"><u>U</u></button>
+                        <span style="color: var(--border-subtle);">|</span>
+                        <button type="button" class="tool-btn" data-cmd="formatBlock" data-value="H2">H2</button>
+                        <button type="button" class="tool-btn" data-cmd="formatBlock" data-value="H3">H3</button>
+                        <span style="color: var(--border-subtle);">|</span>
+                        <button type="button" class="tool-btn" data-cmd="insertUnorderedList">• List</button>
+                        <button type="button" class="tool-btn" data-cmd="insertOrderedList">1. List</button>
+                        <button type="button" class="tool-btn" data-action="link">🔗 Link</button>
+                        <span style="color: var(--border-subtle);">|</span>
+                        <button type="button" class="tool-btn" id="htmlModeBtn">⚙️ HTML Mode</button>
+                        <button type="button" class="tool-btn" id="insertTemplateBtn" style="margin-left: auto;">+ Insert Structure Template</button>
+                    </div>
+
+                    <div id="infoContent" class="rich-editor" contenteditable="true">
+                        <p><strong>Write your guide here.</strong> Recommended structure: <em>Overview</em>, <em>Prerequisites</em>, <em>Steps</em>.</p>
+                    </div>
+                    <textarea id="infoContentHtml" class="html-source" spellcheck="false"></textarea>
+                </div>
+
+                <div class="sidebar">
+                    
+                    <div class="side-card">
+                        <button type="button" id="publishBtn" class="btn btn-primary">Publish to Info Hub</button>
+                        <button type="button" id="saveDraftBtn" class="btn">Save Draft</button>
+                        <button type="button" id="deletePageBtn" class="btn btn-danger" style="margin-top: 12px;">Delete Page</button>
+                    </div>
+
+                    <div class="side-card">
+                        <h3 class="side-title">Metadata</h3>
+                        <div class="input-group">
+                            <label for="authorInput">Author</label>
+                            <input type="text" id="authorInput" class="input" placeholder="Your name">
+                        </div>
+                        <div class="input-group" style="margin-bottom:0;">
+                            <label for="tagsInput">Tags (Comma separated)</label>
+                            <input type="text" id="tagsInput" class="input" placeholder="e.g. guide, HR, tools">
+                        </div>
+                    </div>
+
+                    <div class="side-card">
+                        <h3 class="side-title">Supporting Images</h3>
+                        <button type="button" id="addImageBtn" class="btn" style="font-size: 0.8rem;">+ Add Image</button>
+                        <div id="imagesContainer"></div>
+                    </div>
+
+                    <div class="side-card">
+                        <h3 class="side-title">External Links</h3>
+                        <button type="button" id="addLinkBtn" class="btn" style="font-size: 0.8rem;">+ Add Link</button>
+                        <div id="linksContainer"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+
+    <script>
+        const STORAGE_KEY = 'infoPages';
+
+        const titleEl = document.getElementById('infoTitle');
+        const summaryEl = document.getElementById('infoSummary');
+        const contentEl = document.getElementById('infoContent');
+        const contentHtmlEl = document.getElementById('infoContentHtml');
+        const authorEl = document.getElementById('authorInput');
+        const tagsEl = document.getElementById('tagsInput');
+        
+        const createdAtEl = document.getElementById('createdAt');
+        const updatedAtEl = document.getElementById('updatedAt');
+        const statusDisplayEl = document.getElementById('statusDisplay');
+        const autosaveEl = document.getElementById('autosaveStatus');
+        
+        const imagesContainer = document.getElementById('imagesContainer');
+        const linksContainer = document.getElementById('linksContainer');
+
+        let currentPageId = null;
+        let images = [];
+        let links = [];
+        let currentStatus = 'draft';
+        let isHtmlMode = false;
+        let isDirty = false;
+        let lastAutosaveAt = 0;
+
+        const HOWTO_TEMPLATE = `<h2>Overview</h2><p><em>What this is, when to use it, and the outcome you want.</em></p><h2>Prerequisites</h2><ul><li>Access/permissions:</li><li>Required files/links:</li></ul><h2>Steps</h2><ol><li><strong>Step 1:</strong> </li><li><strong>Step 2:</strong> </li></ol><h2>Troubleshooting</h2><ul><li><strong>Problem:</strong> … <br><strong>Fix:</strong> …</li></ul>`;
+
+        // Data Management
+        function loadPages() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) { return []; }
+        }
+        function savePages(pages) {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pages)); } catch (e) {}
+        }
+        function generateId() { return 'page_' + Date.now() + '_' + Math.floor(Math.random() * 1e6); }
+        
+        function upsertPage(page) {
+            const pages = loadPages();
+            const idx = pages.findIndex(p => p.id === page.id);
+            if (idx === -1) pages.push(page); else pages[idx] = page;
+            savePages(pages);
+        }
+        function archivePage(id) {
+            const pages = loadPages();
+            const idx = pages.findIndex(p => p.id === id);
+            if (idx !== -1) { pages[idx].archived = true; savePages(pages); }
+        }
+        
+        function escapeHtml(str) { return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function stripTags(html) { return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
+        function formatDate(iso) { try { return new Date(iso).toLocaleDateString(); } catch(e) { return iso; } }
+
+        function markDirty() { isDirty = true; }
+
+        // Editor Functions
+        function getContentHtml() { return isHtmlMode ? contentHtmlEl.value : contentEl.innerHTML; }
+        function setContentHtml(html) { contentEl.innerHTML = html; contentHtmlEl.value = html; }
+
+        document.getElementById('htmlModeBtn').addEventListener('click', (e) => {
+            isHtmlMode = !isHtmlMode;
+            if (isHtmlMode) {
+                contentHtmlEl.value = contentEl.innerHTML;
+                contentEl.style.display = 'none';
+                contentHtmlEl.style.display = 'block';
+                e.target.innerHTML = '📝 Rich Text';
+            } else {
+                contentEl.innerHTML = contentHtmlEl.value;
+                contentEl.style.display = 'block';
+                contentHtmlEl.style.display = 'none';
+                e.target.innerHTML = '⚙️ HTML Mode';
+            }
+        });
+
+        document.getElementById('toolbar').addEventListener('click', e => {
+            if (isHtmlMode) return;
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const cmd = btn.dataset.cmd;
+            const val = btn.dataset.value;
+            const action = btn.dataset.action;
+
+            if (cmd) {
+                contentEl.focus();
+                document.execCommand(cmd, false, val ? `<${val}>` : null);
+                markDirty();
+            } else if (action === 'link') {
+                const url = prompt('Link URL:');
+                if (url) { contentEl.focus(); document.execCommand('createLink', false, url); markDirty(); }
+            }
+        });
+
+        document.getElementById('insertTemplateBtn').addEventListener('click', () => {
+            if (confirm('Insert How-To template? This overwrites current content.')) {
+                if(isHtmlMode) document.getElementById('htmlModeBtn').click();
+                setContentHtml(HOWTO_TEMPLATE);
+                markDirty();
+            }
+        });
+
+        // Media Handlers
+        function renderImages() {
+            imagesContainer.innerHTML = '';
+            images.forEach((img, idx) => {
+                const div = document.createElement('div');
+                div.className = 'attachment-item';
+                div.innerHTML = `<img src="${img.dataUrl}"><input type="text" class="input" placeholder="Caption" value="${escapeHtml(img.caption)}" data-idx="${idx}"><button type="button" class="remove-btn img-rm" data-idx="${idx}">Remove Image</button>`;
+                imagesContainer.appendChild(div);
+            });
+        }
+        document.getElementById('addImageBtn').addEventListener('click', () => {
+            const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*';
+            input.onchange = () => {
+                const file = input.files[0]; if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => { images.push({ dataUrl: reader.result, caption: '' }); renderImages(); markDirty(); };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        });
+        imagesContainer.addEventListener('click', e => { if (e.target.classList.contains('img-rm')) { images.splice(e.target.dataset.idx, 1); renderImages(); markDirty(); }});
+        imagesContainer.addEventListener('input', e => { if (e.target.tagName === 'INPUT') { images[e.target.dataset.idx].caption = e.target.value; markDirty(); }});
+
+        function renderLinks() {
+            linksContainer.innerHTML = '';
+            links.forEach((lnk, idx) => {
+                const div = document.createElement('div');
+                div.className = 'attachment-item';
+                div.innerHTML = `<input type="text" class="input" placeholder="Label" value="${escapeHtml(lnk.label)}" data-idx="${idx}" data-type="label"><input type="url" class="input" placeholder="URL" value="${escapeHtml(lnk.url)}" data-idx="${idx}" data-type="url"><button type="button" class="remove-btn lnk-rm" data-idx="${idx}">Remove Link</button>`;
+                linksContainer.appendChild(div);
+            });
+        }
+        document.getElementById('addLinkBtn').addEventListener('click', () => { links.push({label:'', url:''}); renderLinks(); markDirty(); });
+        linksContainer.addEventListener('click', e => { if (e.target.classList.contains('lnk-rm')) { links.splice(e.target.dataset.idx, 1); renderLinks(); markDirty(); }});
+        linksContainer.addEventListener('input', e => { if (e.target.tagName === 'INPUT') { links[e.target.dataset.idx][e.target.dataset.type] = e.target.value; markDirty(); }});
+
+        // Save Logic
+        function buildPagePayload(status) {
+            const nowIso = new Date().toISOString();
+            let createdAt = nowIso;
+            if (currentPageId) {
+                const existing = loadPages().find(p => p.id === currentPageId);
+                if (existing && existing.createdAt) createdAt = existing.createdAt;
+            } else { currentPageId = generateId(); }
+
+            return {
+                id: currentPageId,
+                titleHtml: titleEl.value.trim() || 'Untitled Page',
+                summaryHtml: summaryEl.value.trim(),
+                title: stripTags(titleEl.value.trim() || 'Untitled'),
+                summary: stripTags(summaryEl.value.trim()),
+                contentHtml: getContentHtml(),
+                images: [...images],
+                links: [...links],
+                tags: (tagsEl.value || '').split(',').map(t=>t.trim()).filter(Boolean),
+                createdAt, updatedAt: nowIso,
+                author: authorEl.value.trim() || 'Local User',
+                status, archived: false
+            };
+        }
+
+        document.getElementById('saveDraftBtn').addEventListener('click', () => {
+            if (!titleEl.value.trim()) return alert('Title required.');
+            const page = buildPagePayload('draft'); upsertPage(page);
+            currentStatus = 'draft'; isDirty = false;
+            createdAtEl.textContent = formatDate(page.createdAt); updatedAtEl.textContent = formatDate(page.updatedAt);
+            statusDisplayEl.textContent = 'DRAFT'; statusDisplayEl.className = 'status-badge status-draft';
+            alert('Draft Saved.');
+        });
+
+        document.getElementById('publishBtn').addEventListener('click', () => {
+            if (!titleEl.value.trim()) return alert('Title required.');
+            const page = buildPagePayload('published'); upsertPage(page);
+            isDirty = false;
+            alert('Published successfully!');
+            window.location.href = 'info-hub.html';
+        });
+
+        document.getElementById('deletePageBtn').addEventListener('click', () => {
+            if (!currentPageId) { if(confirm('Clear form?')) window.location.href = 'create-page.html'; return; }
+            if (confirm('Archive this page?')) { archivePage(currentPageId); window.location.href = 'info-hub.html'; }
+        });
+
+        // Autosave
+        setInterval(() => {
+            if (!isDirty || !titleEl.value.trim() || currentStatus === 'published') return;
+            const now = Date.now(); if (now - lastAutosaveAt < 10000) return;
+            lastAutosaveAt = now;
+            const page = buildPagePayload('draft'); upsertPage(page);
+            isDirty = false;
+            updatedAtEl.textContent = formatDate(page.updatedAt);
+            autosaveEl.textContent = 'Autosaved';
+            setTimeout(() => autosaveEl.textContent = '', 2500);
+        }, 20000);
+
+        // Load Existing
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                const existing = loadPages().find(p => p.id === id);
+                if (existing) {
+                    currentPageId = existing.id;
+                    titleEl.value = existing.titleHtml || existing.title || '';
+                    summaryEl.value = existing.summaryHtml || existing.summary || '';
+                    contentEl.innerHTML = existing.contentHtml || '';
+                    contentHtmlEl.value = existing.contentHtml || '';
+                    authorEl.value = existing.author || '';
+                    tagsEl.value = (existing.tags || []).join(', ');
+                    images = existing.images || []; links = existing.links || [];
+                    
+                    createdAtEl.textContent = formatDate(existing.createdAt);
+                    updatedAtEl.textContent = formatDate(existing.updatedAt);
+                    currentStatus = existing.status === 'published' ? 'published' : 'draft';
+                    statusDisplayEl.textContent = currentStatus.toUpperCase();
+                    statusDisplayEl.className = currentStatus === 'published' ? 'status-badge status-published' : 'status-badge status-draft';
+                    
+                    renderImages(); renderLinks();
+                }
+            } else {
+                createdAtEl.textContent = formatDate(new Date().toISOString());
+            }
+
+            [titleEl, summaryEl, authorEl, tagsEl, contentEl, contentHtmlEl].forEach(el => el.addEventListener('input', markDirty));
+        });
+    </script>
+</body>
+</html>

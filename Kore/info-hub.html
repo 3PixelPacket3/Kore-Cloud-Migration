@@ -41,6 +41,8 @@
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
 
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
+
         /* --- Main Content Layout --- */
         .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
@@ -55,8 +57,6 @@
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
         .btn-primary:hover { background-color: var(--accent-hover); border: none; box-shadow: var(--shadow-sm); }
-        .btn-danger { color: #ef4444; border-color: #fca5a5; background: #fef2f2; }
-        .btn-danger:hover { background: #fee2e2; border-color: #ef4444; }
         
         .input, .form-select { padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; transition: border-color 0.2s; }
         .input:focus, .form-select:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
@@ -74,18 +74,22 @@
         .infohub-thumb { width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover; background: var(--bg-app); border: 1px solid var(--border-subtle); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--text-secondary); }
         
         .infohub-content { flex-grow: 1; min-width: 0; }
-        .infohub-title { font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .infohub-title { font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin: 0 0 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 12px;}
         .infohub-card:hover .infohub-title { color: var(--accent-primary); }
         .infohub-summary { font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 12px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .infohub-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .tag { background: #f0f9ff; color: var(--accent-primary); border: 1px solid #bae6fd; padding: 2px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .tag-global { background: #fef2f2; color: #ef4444; border-color: #fca5a5; }
+        .tag-personal { background: #fdf4ff; color: #c026d3; border-color: #f5d0fe; }
         
         .infohub-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; min-width: 140px; }
         .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
         .status-published { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
         .status-draft { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
         .timestamp { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+        #loadingState { text-align: center; padding: 40px; color: var(--text-secondary); font-weight: 600; display: none; }
 
         /* --- Global Footer --- */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
@@ -119,6 +123,7 @@
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
     </header>
 
     <main class="main-container">
@@ -127,8 +132,8 @@
             <img src="images/InfoHubBanner.jpg" alt="Info Hub" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
             <div class="hero-overlay">
                 <div>
-                    <h2 class="hero-title">Info Hub</h2>
-                    <p class="hero-subtitle">Centralized knowledge base and procedural guides.</p>
+                    <h2 class="hero-title">Enterprise Info Hub</h2>
+                    <p class="hero-subtitle">Centralized company documentation & personal guides.</p>
                 </div>
                 <a href="create-page.html" class="btn btn-primary" style="background: white; color: var(--accent-primary);">+ Create a Page</a>
             </div>
@@ -138,6 +143,11 @@
             <div class="search-wrapper">
                 <input type="search" id="infoSearch" class="input" placeholder="Search by title, summary, or tag...">
             </div>
+            <select id="infoScopeFilter" class="form-select" style="width: 180px;">
+                <option value="all">All Scopes</option>
+                <option value="global">Global (Company)</option>
+                <option value="personal">Personal (Me)</option>
+            </select>
             <select id="infoStatusFilter" class="form-select" style="width: 180px;">
                 <option value="all">All Statuses</option>
                 <option value="published">Published</option>
@@ -151,75 +161,61 @@
             </select>
         </div>
 
-        <div id="infoPageList" class="infohub-list">
-            </div>
+        <div id="loadingState">🔄 Establishing secure connection to Azure Cloud Vault...</div>
+        <div id="infoPageList" class="infohub-list"></div>
 
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
         const STORAGE_KEY = 'infoPages';
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let masterPagesList = [];
 
-        // 1. Initial Seed Logic (Preserved entirely)
-        function ensureDefaultGettingStartedPage() {
+        // --- 1. Microsoft Entra ID Integration ---
+        async function fetchSecureIdentity() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    const arr = JSON.parse(raw);
-                    if (Array.isArray(arr) && arr.length) return;
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
                 }
-            } catch (e) {}
-
-            const nowIso = new Date().toISOString();
-            const pages = [
-                {
-                    id: "kore-getting-started",
-                    title: "Kore – Getting Started",
-                    shortDesc: "Overview of Kore and where everything lives.",
-                    tags: ["kore", "getting started", "overview"],
-                    status: "published",
-                    createdAt: nowIso,
-                    updatedAt: nowIso,
-                    archived: false,
-                    contentHtml: `<p><strong>Welcome to Kore.</strong> Kore is a local-first work and knowledge system.</p>`
-                },
-                {
-                    id: "kore-training-work-tracker",
-                    title: "Training – Work Tracker Deep Dive",
-                    shortDesc: "How to use Work Tracker as your daily queue.",
-                    tags: ["kore", "training", "work tracker"],
-                    status: "published",
-                    createdAt: nowIso,
-                    updatedAt: nowIso,
-                    archived: false,
-                    contentHtml: `<p>The <strong>Work Tracker</strong> is your primary queue in Kore.</p>`
-                }
-            ];
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pages)); } catch (e) {}
-        }
-
-        // 2. Data Handlers
-        function loadPages() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return [];
-                const arr = JSON.parse(raw);
-                return Array.isArray(arr) ? arr : [];
-            } catch (e) { return []; }
-        }
-
-        function savePages(pages) {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pages)); } catch (e) {}
-        }
-
-        function archivePage(id) {
-            const pages = loadPages();
-            const idx = pages.findIndex(p => p.id === id);
-            if (idx !== -1) {
-                pages[idx].archived = true;
-                savePages(pages);
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
             }
+        }
+
+        // --- 2. Data Fetching (Cloud & Local Merge) ---
+        async function fetchPages() {
+            let localPages = [];
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) localPages = JSON.parse(raw);
+            } catch (e) { console.error("Local parse error", e); }
+
+            let cloudPages = [];
+            try {
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
+                if (res.ok) {
+                    cloudPages = await res.json();
+                }
+            } catch (e) {
+                console.warn("Cloud vault unreachable. Displaying local cache only.");
+            }
+
+            // Merge Logic: Cloud takes precedence if IDs match
+            const mergedMap = new Map();
+            localPages.forEach(p => mergedMap.set(p.id, p));
+            cloudPages.forEach(p => mergedMap.set(p.id, p)); // Overwrites local with fresh cloud data
+            
+            masterPagesList = Array.from(mergedMap.values()).filter(p => !p.archived);
+            renderTable();
         }
 
         function escapeHtml(str) {
@@ -236,113 +232,109 @@
             try { return new Date(iso).toLocaleDateString(); } catch (e) { return iso; }
         }
 
-        // 3. UI Rendering
-        function initInfoHubLanding() {
+        // --- 3. UI Rendering ---
+        function renderTable() {
             const listEl = document.getElementById('infoPageList');
             const searchEl = document.getElementById('infoSearch');
             const statusEl = document.getElementById('infoStatusFilter');
+            const scopeEl = document.getElementById('infoScopeFilter');
             const sortEl = document.getElementById('infoSort');
 
-            function getThumb(page) {
-                const first = (page.images || [])[0];
-                return first && first.dataUrl ? first.dataUrl : '';
+            document.getElementById('loadingState').style.display = 'none';
+
+            const query = String(searchEl.value || '').toLowerCase();
+            const statusVal = statusEl.value;
+            const scopeVal = scopeEl.value;
+            const sortVal = sortEl.value;
+
+            let filtered = masterPagesList;
+
+            // Status Filter
+            if (statusVal !== 'all') {
+                filtered = filtered.filter(p => (p.status || 'draft').toLowerCase() === statusVal);
             }
 
-            function normalizeText(s) { return String(s || '').toLowerCase(); }
-
-            function render() {
-                const pagesRaw = loadPages().filter(p => !p.archived);
-                const query = normalizeText(searchEl.value);
-                const statusVal = statusEl.value;
-                const sortVal = sortEl.value;
-
-                let filtered = pagesRaw;
-
-                // Status Filter
-                if (statusVal !== 'all') {
-                    filtered = filtered.filter(p => (p.status || 'draft').toLowerCase() === statusVal);
-                }
-
-                // Search Filter
-                if (query) {
-                    filtered = filtered.filter(p =>
-                        normalizeText(stripTags(p.titleHtml || p.title)).includes(query) ||
-                        normalizeText(stripTags(p.summaryHtml || p.shortDesc || p.summary)).includes(query) ||
-                        normalizeText((p.tags || []).join(', ')).includes(query)
-                    );
-                }
-
-                // Sorting
-                filtered.sort((a, b) => {
-                    const aTitle = stripTags(a.titleHtml || a.title).toLowerCase();
-                    const bTitle = stripTags(b.titleHtml || b.title).toLowerCase();
-                    const aUpdated = new Date(a.updatedAt || a.createdAt || 0).getTime();
-                    const bUpdated = new Date(b.updatedAt || b.createdAt || 0).getTime();
-
-                    if (sortVal === 'titleAsc') return aTitle.localeCompare(bTitle);
-                    if (sortVal === 'titleDesc') return bTitle.localeCompare(aTitle);
-                    if (sortVal === 'updatedAsc') return aUpdated - bUpdated;
-                    return bUpdated - aUpdated; 
-                });
-
-                listEl.innerHTML = '';
-
-                if (filtered.length === 0) {
-                    listEl.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-secondary); background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">No pages found. Try adjusting your search or filters.</div>';
-                    return;
-                }
-
-                filtered.forEach(page => {
-                    const card = document.createElement('a');
-                    card.href = `info-page.html?id=${encodeURIComponent(page.id)}`; // Assuming this points to your viewer
-                    card.className = 'infohub-card';
-                    
-                    const thumb = getThumb(page);
-                    const thumbHtml = thumb ? `<img src="${thumb}" class="infohub-thumb" />` : `<div class="infohub-thumb">📄</div>`;
-
-                    const titleText = stripTags(page.titleHtml || page.title || 'Untitled Page');
-                    const summaryText = stripTags(page.summaryHtml || page.shortDesc || page.summary || 'No description provided.');
-                    const statusClass = (page.status || 'draft').toLowerCase() === 'published' ? 'status-published' : 'status-draft';
-                    const statusText = (page.status || 'draft').toUpperCase();
-
-                    card.innerHTML = `
-                        ${thumbHtml}
-                        <div class="infohub-content">
-                            <h3 class="infohub-title">${escapeHtml(titleText)}</h3>
-                            <p class="infohub-summary">${escapeHtml(summaryText)}</p>
-                            ${(page.tags && page.tags.length) ? `<div class="infohub-tags">${page.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-                        </div>
-                        <div class="infohub-meta">
-                            <span class="status-badge ${statusClass}">${statusText}</span>
-                            <span class="timestamp">${formatDate(page.updatedAt || page.createdAt)}</span>
-                            <button type="button" class="btn btn-danger infohub-delete" data-id="${escapeHtml(page.id)}" style="padding: 6px 12px; font-size: 0.8rem;">Archive</button>
-                        </div>
-                    `;
-                    listEl.appendChild(card);
-                });
+            // Scope Filter (Global vs Personal)
+            if (scopeVal === 'global') {
+                filtered = filtered.filter(p => p.isGlobal === true);
+            } else if (scopeVal === 'personal') {
+                filtered = filtered.filter(p => p.isGlobal !== true);
             }
 
-            render();
+            // Search Filter
+            if (query) {
+                filtered = filtered.filter(p =>
+                    String(stripTags(p.titleHtml || p.title)).toLowerCase().includes(query) ||
+                    String(stripTags(p.summaryHtml || p.summary || '')).toLowerCase().includes(query) ||
+                    (p.tags || []).join(' ').toLowerCase().includes(query)
+                );
+            }
 
-            searchEl.addEventListener('input', render);
-            statusEl.addEventListener('change', render);
-            sortEl.addEventListener('change', render);
+            // Sorting
+            filtered.sort((a, b) => {
+                const aTitle = stripTags(a.titleHtml || a.title).toLowerCase();
+                const bTitle = stripTags(b.titleHtml || b.title).toLowerCase();
+                const aUpdated = new Date(a.updatedAt || a.createdAt || 0).getTime();
+                const bUpdated = new Date(b.updatedAt || b.createdAt || 0).getTime();
 
-            listEl.addEventListener('click', (e) => {
-                const btn = e.target.closest('.infohub-delete');
-                if (!btn) return;
-                e.preventDefault(); // Prevent navigating to info-page.html
-                const id = btn.getAttribute('data-id');
-                if (confirm('Archive this page? It will be removed from the main index.')) {
-                    archivePage(id);
-                    render();
-                }
+                if (sortVal === 'titleAsc') return aTitle.localeCompare(bTitle);
+                if (sortVal === 'titleDesc') return bTitle.localeCompare(aTitle);
+                if (sortVal === 'updatedAsc') return aUpdated - bUpdated;
+                return bUpdated - aUpdated; 
+            });
+
+            listEl.innerHTML = '';
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-secondary); background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">No pages found. Try adjusting your search or filters.</div>';
+                return;
+            }
+
+            filtered.forEach(page => {
+                const card = document.createElement('a');
+                card.href = `info-page.html?id=${encodeURIComponent(page.id)}`;
+                card.className = 'infohub-card';
+                
+                const thumb = (page.images && page.images.length > 0) ? page.images[0].dataUrl : '';
+                const thumbHtml = thumb ? `<img src="${thumb}" class="infohub-thumb" />` : `<div class="infohub-thumb">📄</div>`;
+
+                const titleText = stripTags(page.titleHtml || page.title || 'Untitled Page');
+                const summaryText = stripTags(page.summaryHtml || page.summary || 'No description provided.');
+                const statusClass = (page.status || 'draft').toLowerCase() === 'published' ? 'status-published' : 'status-draft';
+                const statusText = (page.status || 'draft').toUpperCase();
+
+                // Dynamic Global/Personal Scope Badge
+                const scopeBadge = page.isGlobal 
+                    ? `<span class="tag tag-global">🌐 GLOBAL</span>` 
+                    : `<span class="tag tag-personal">👤 PERSONAL</span>`;
+
+                card.innerHTML = `
+                    ${thumbHtml}
+                    <div class="infohub-content">
+                        <h3 class="infohub-title">${escapeHtml(titleText)} ${scopeBadge}</h3>
+                        <p class="infohub-summary">${escapeHtml(summaryText)}</p>
+                        ${(page.tags && page.tags.length) ? `<div class="infohub-tags">${page.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                    </div>
+                    <div class="infohub-meta">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <span class="timestamp">${formatDate(page.updatedAt || page.createdAt)}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">By: ${escapeHtml(page.author || 'Unknown')}</span>
+                    </div>
+                `;
+                listEl.appendChild(card);
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            ensureDefaultGettingStartedPage();
-            initInfoHubLanding();
+        // --- 4. Initialization ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('loadingState').style.display = 'block';
+            await fetchSecureIdentity();
+            await fetchPages();
+
+            document.getElementById('infoSearch').addEventListener('input', renderTable);
+            document.getElementById('infoStatusFilter').addEventListener('change', renderTable);
+            document.getElementById('infoScopeFilter').addEventListener('change', renderTable);
+            document.getElementById('infoSort').addEventListener('change', renderTable);
         });
     </script>
 </body>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kore | Global Workspace</title>
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        /* PC-Only Constraint Enforced */
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-width: 1024px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Global Header --- */
+        .global-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        
+        /* Navigation */
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item {
+            text-decoration: none; color: var(--text-secondary); padding: 0 16px;
+            display: flex; align-items: center; height: 100%; font-weight: 500;
+            font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease;
+            cursor: pointer; position: relative;
+        }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        
+        .dropdown-content {
+            display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface);
+            min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle);
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101;
+        }
+        .nav-item:hover .dropdown-content { display: block; animation: fadeIn 0.2s ease; }
+        .dropdown-content a {
+            color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500;
+        }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Global Search Infrastructure */
+        .search-container { display: flex; align-items: center; position: relative; }
+        .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
+        .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+        .search-dropdown { display: none; position: absolute; top: 50px; right: 0; width: 340px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-md); z-index: 1000; max-height: 400px; overflow-y: auto; }
+        .search-group-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; padding: 12px 16px 4px 16px; letter-spacing: 0.5px; }
+        .search-item { display: block; padding: 10px 16px; text-decoration: none; color: var(--text-main); border-left: 3px solid transparent; }
+        .search-item:hover { background: #f0f9ff; border-left-color: var(--accent-primary); }
+        .search-item-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+        .search-item-sub { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* --- Main Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* --- Left Column --- */
+        .left-col { display: flex; flex-direction: column; gap: 32px; }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden;
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm);
+            height: 280px; position: relative;
+        }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.85), transparent);
+            padding: 40px 30px 20px 30px; box-sizing: border-box; color: white;
+        }
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+        .hero-subtitle { margin: 4px 0 0 0; color: #cbd5e1; font-size: 1rem; font-weight: 400; }
+
+        /* Quick Access Grid (3x2) */
+        .section-header { margin: 0 0 16px 0; font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .qa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .qa-btn {
+            background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 20px;
+            border-radius: var(--radius-md); text-decoration: none; color: var(--text-main);
+            font-weight: 600; transition: all 0.2s ease; box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .qa-btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-primary); opacity: 0; transition: opacity 0.2s ease;
+        }
+        .qa-btn:hover {
+            transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: transparent;
+        }
+        .qa-btn:hover::before { opacity: 1; }
+        .qa-icon { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary); }
+
+        /* --- Right Column (Widgets) --- */
+        .right-col { display: flex; flex-direction: column; gap: 24px; }
+
+        /* Time & Date Widget */
+        .time-widget {
+            background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px 24px;
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm);
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+        }
+        #live-time { font-size: 3.5rem; font-weight: 300; color: var(--text-main); margin: 0; line-height: 1; letter-spacing: -1px; }
+        #live-date { font-size: 1.1rem; color: var(--accent-primary); margin-top: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Global Message Board */
+        .message-panel {
+            background: var(--bg-surface); border-radius: var(--radius-md); padding: 24px;
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm);
+            position: relative; overflow: hidden;
+        }
+        .message-panel::top { border-top: 4px solid var(--accent-primary); }
+        .panel-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .pulse-dot { width: 10px; height: 10px; background-color: var(--accent-primary); border-radius: 50%; box-shadow: 0 0 0 rgba(14, 165, 233, 0.4); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
+        .message-label { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin: 0; }
+        #global-message-text { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); margin: 0; background: #f0f9ff; padding: 16px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-primary); }
+        
+        /* --- Global Footer --- */
+        .global-footer {
+            background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle);
+            padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;
+            flex-shrink: 0; font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item active">Dashboard</a>
+                
+                <div class="nav-item">
+                    Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
+            <div id="globalSearchDropdown" class="search-dropdown"></div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="dashboard-grid">
+            
+            <div class="left-col">
+                
+                <section class="hero-banner">
+                    <img src="images/HomePage.png" alt="Kore Workspace" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+                    <div class="hero-overlay">
+                        <h2 class="hero-title" id="greeting-title">Enterprise Workspace</h2>
+                        <p class="hero-subtitle">Streamlined operations and resource management.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3 class="section-header">Quick Access Links</h3>
+                    <div class="qa-grid" id="qa-container">
+                        </div>
+                </section>
+            </div>
+
+            <div class="right-col">
+                
+                <div class="time-widget">
+                    <div id="live-time">--:--</div>
+                    <div id="live-date">Loading...</div>
+                </div>
+
+                <div class="message-panel">
+                    <div class="panel-header">
+                        <div class="pulse-dot"></div>
+                        <h3 class="message-label">System Bulletin</h3>
+                    </div>
+                    <p id="global-message-text">Connecting to server...</p>
+                </div>
+                
+            </div>
+        </div>
+    </main>
+
+    <footer class="global-footer">
+        &copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.
+    </footer>
+
+    <script>
+        // --- 1. Global Search Engine ---
+        (function initGlobalSearch() {
+            const searchInput = document.getElementById('globalSearchInput');
+            const searchDropdown = document.getElementById('globalSearchDropdown');
+            if (!searchInput || !searchDropdown) return;
+
+            document.addEventListener('click', e => {
+                if (!e.target.closest('.search-container')) {
+                    searchDropdown.style.display = 'none';
+                }
+            });
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                if (query.length < 2) { searchDropdown.style.display = 'none'; return; }
+
+                let resultsHtml = ''; let hasResults = false;
+
+                const apps = JSON.parse(localStorage.getItem('kore_custom_apps')) || [];
+                const matchedApps = apps.filter(a => String(a.name).toLowerCase().includes(query) || String(a.url).toLowerCase().includes(query));
+                if (matchedApps.length > 0) {
+                    hasResults = true; resultsHtml += `<div class="search-group-title">Applications</div>`;
+                    matchedApps.forEach(app => resultsHtml += `<a href="${app.url}" class="search-item" target="_blank"><div class="search-item-title">${app.name}</div><div class="search-item-sub">${app.url}</div></a>`);
+                }
+
+                const guides = JSON.parse(localStorage.getItem('infoPages')) || [];
+                const matchedGuides = guides.filter(g => !g.archived && (String(g.title).toLowerCase().includes(query) || String(g.summary).toLowerCase().includes(query)));
+                if (matchedGuides.length > 0) {
+                    hasResults = true; resultsHtml += `<div class="search-group-title">Info Hub Guides</div>`;
+                    matchedGuides.forEach(g => resultsHtml += `<a href="info-page.html?id=${encodeURIComponent(g.id)}" class="search-item"><div class="search-item-title">${g.title || 'Untitled'}</div><div class="search-item-sub">${g.summary || 'Documentation'}</div></a>`);
+                }
+
+                searchDropdown.innerHTML = hasResults ? resultsHtml : `<div style="padding: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">No local results found.</div>`;
+                searchDropdown.style.display = 'block';
+            });
+        })();
+
+        // --- 2. Precision Clock Engine with Time Zone Sync ---
+        function updateClock() {
+            const now = new Date();
+            const tz = localStorage.getItem('koreHomeTimeZone') || 'America/New_York';
+            
+            try {
+                const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz };
+                document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: tz };
+                document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+            } catch (e) {
+                // Fallback if timezone is invalid
+                document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); 
+
+        // --- 3. Render Dynamic Dashboard Data ---
+        function initializeDashboard() {
+            // Apply Profile Name
+            const profileName = localStorage.getItem('koreProfileName');
+            if (profileName) {
+                document.getElementById('greeting-title').textContent = `Welcome back, ${profileName}`;
+            }
+
+            // Apply System Bulletin
+            const savedBulletin = localStorage.getItem('kore_bulletin');
+            const defaultMsg = "Welcome to the upgraded Kore cloud environment. Please ensure all tickets are logged in the new Work Queue before end of day.";
+            document.getElementById('global-message-text').textContent = savedBulletin ? savedBulletin : defaultMsg;
+
+            // Render Dynamic Shortcuts
+            const savedShortcuts = localStorage.getItem('kore_shortcuts');
+            const defaultLinks = [
+                { title: "Apps", url: "apps.html" },
+                { title: "Work Tracker", url: "work.html" },
+                { title: "Info Hub", url: "info-hub.html" },
+                { title: "LOD Validation", url: "lod.html" },
+                { title: "Product Converter", url: "product-html.html" },
+                { title: "Nebula Forge", url: "nebula.html" }
+            ];
+            
+            const linksToRender = savedShortcuts ? JSON.parse(savedShortcuts) : defaultLinks;
+            const qaContainer = document.getElementById('qa-container');
+            qaContainer.innerHTML = '';
+            
+            if (linksToRender.length === 0) {
+                qaContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--text-secondary); font-size: 0.9rem;">No shortcuts configured. Add them in Settings.</div>';
+            }
+
+            linksToRender.forEach(link => {
+                const target = link.url.startsWith('http') ? '_blank' : '_self';
+                qaContainer.innerHTML += `
+                    <a href="${link.url}" class="qa-btn" target="${target}">
+                        <span class="qa-icon">🔗</span>
+                        ${link.title}
+                    </a>
+                `;
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>

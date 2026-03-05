@@ -19,6 +19,7 @@
             --radius-md: 12px;
             --radius-sm: 8px;
             --success: #10b981;
+            --danger: #ef4444;
         }
 
         body {
@@ -52,7 +53,7 @@
         .search-item-sub { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* --- Main Layout --- */
-        .main-container { padding: 40px 32px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
         .page-header { margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
         .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
@@ -68,7 +69,7 @@
         .form-label { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
         .form-hint { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-top: -4px;}
         
-        .input, .textarea, .select { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; transition: border-color 0.2s; }
+        .input, .textarea, .select { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; transition: border-color 0.2s; width: 100%; box-sizing: border-box; }
         .input:focus, .textarea:focus, .select:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
         .textarea { min-height: 120px; resize: vertical; white-space: pre; }
 
@@ -76,13 +77,25 @@
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
         .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); }
+        .btn-danger { background-color: var(--danger); color: white; border: none; }
+        .btn-danger:hover { background-color: #dc2626; box-shadow: var(--shadow-sm); }
 
         .status-pill { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #f1f5f9; color: var(--text-secondary); border: 1px solid var(--border-subtle); width: fit-content; }
         .status-pill.active { background: #ecfdf5; color: #10b981; border-color: #a7f3d0; }
-        .status-pill.pending { background: #fffbeb; color: #d97706; border-color: #fde68a; }
 
         .status-msg { font-size: 0.85rem; font-weight: 600; color: var(--success); transition: opacity 0.3s; opacity: 0; }
         .status-msg.show { opacity: 1; }
+
+        /* Dynamic Lists */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--bg-app); margin-bottom: 8px; }
+        .list-item-title { font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
+        .list-item-sub { font-size: 0.8rem; color: var(--text-secondary); }
+        .remove-btn { color: var(--danger); background: transparent; border: none; font-weight: 600; font-size: 0.85rem; cursor: pointer; padding: 4px; }
+        .remove-btn:hover { text-decoration: underline; }
+
+        /* Admin Lock Overlay */
+        .admin-lock-screen { background: #f8fafc; border-radius: var(--radius-md); padding: 32px; text-align: center; border: 1px dashed var(--border-subtle); }
+        .admin-content { display: none; }
 
         /* --- Global Footer --- */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
@@ -108,6 +121,7 @@
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
                     </div>
                 </div>
@@ -118,8 +132,7 @@
         
         <div class="search-container">
             <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
-            <div id="globalSearchDropdown" class="search-dropdown">
-                </div>
+            <div id="globalSearchDropdown" class="search-dropdown"></div>
         </div>
     </header>
 
@@ -127,7 +140,7 @@
         
         <div class="page-header">
             <h2 class="page-title">System Settings</h2>
-            <p class="page-subtitle">Configure identity profiles, manage global UI variables, and prep the environment for Microsoft Entra ID sync.</p>
+            <p class="page-subtitle">Manage UI preferences, dashboard links, caching, and administrative controls.</p>
         </div>
 
         <div class="settings-grid">
@@ -135,18 +148,10 @@
             <div>
                 <section class="section-card">
                     <h3 class="section-title">
-                        User Profile & Identity
+                        Identity Profile
                         <span class="status-msg" id="identityStatus">Saved</span>
                     </h3>
                     
-                    <div class="form-group">
-                        <label class="form-label">Microsoft Entra ID Status</label>
-                        <span class="status-pill pending">Pending Phase 2 Connect</span>
-                        <p class="form-hint">Cloud sync is currently disabled. Profile data is saved locally until Azure AD integration is complete.</p>
-                    </div>
-
-                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 4px 0;">
-
                     <div class="form-group">
                         <label class="form-label" for="profileNameInput">Local Profile Name</label>
                         <input type="text" id="profileNameInput" class="input" placeholder="e.g. Joshua Smolak">
@@ -169,10 +174,51 @@
 
                 <section class="section-card">
                     <h3 class="section-title">
-                        Work Tracker Logic
+                        Dashboard Shortcuts
+                        <span class="status-msg" id="shortcutsStatus">Saved</span>
+                    </h3>
+                    <p class="form-hint" style="margin-top: -10px;">Manage the Quick Links that appear on your <code>index.html</code> homepage.</p>
+                    
+                    <div id="shortcutsListContainer" style="margin-bottom: 12px;">
+                        </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="newScTitle" class="input" placeholder="Title (e.g. NVISION)">
+                        <input type="url" id="newScUrl" class="input" placeholder="https://...">
+                        <button class="btn btn-primary" id="addShortcutBtn">Add</button>
+                    </div>
+                </section>
+
+                <section class="section-card">
+                    <h3 class="section-title">Data & Archives</h3>
+                    <p class="form-hint" style="margin-top: -10px;">Permanently wipe archived/deleted items from local storage to save space.</p>
+                    
+                    <div class="list-item">
+                        <div>
+                            <div class="list-item-title">Work Tracker Tickets</div>
+                            <div class="list-item-sub" id="workDataStats">Loading...</div>
+                        </div>
+                        <button class="btn" id="purgeWorkBtn">Empty Trash</button>
+                    </div>
+
+                    <div class="list-item">
+                        <div>
+                            <div class="list-item-title">Info Hub Guides</div>
+                            <div class="list-item-sub" id="infoDataStats">Loading...</div>
+                        </div>
+                        <button class="btn" id="purgeInfoBtn">Empty Trash</button>
+                    </div>
+                </section>
+
+            </div>
+
+            <div>
+                <section class="section-card">
+                    <h3 class="section-title">
+                        Work Tracker Configuration
                         <span class="status-msg" id="workLogicStatus">Saved</span>
                     </h3>
-                    <p class="form-hint" style="margin-top: -10px;">Manage the dynamic dropdown arrays used in the Work Tracker form. Place one item per line.</p>
+                    <p class="form-hint" style="margin-top: -10px;">Manage the dynamic dropdown arrays used in the Work Tracker form. One item per line.</p>
                     
                     <div class="form-group">
                         <label class="form-label" for="workTypesInput">Ticket Categories (Request Types)</label>
@@ -186,42 +232,56 @@
 
                     <button class="btn btn-primary" id="saveWorkLogicBtn">Save Configurations</button>
                 </section>
-            </div>
 
-            <div>
                 <section class="section-card">
                     <h3 class="section-title">
-                        Admin Controls & UI
+                        Admin Controls
                         <span class="status-msg" id="adminStatus">Saved</span>
                     </h3>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="sysBulletinInput">Global System Bulletin</label>
-                        <p class="form-hint">This message will broadcast to the top of the main Dashboard.</p>
-                        <input type="text" id="sysBulletinInput" class="input" placeholder="Enter a global message...">
+
+                    <div id="adminLockScreen" class="admin-lock-screen">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">🔒</div>
+                        <div style="font-weight: 600; color: var(--text-main); margin-bottom: 16px;">Administrative Access Required</div>
+                        <div style="display: flex; justify-content: center; gap: 8px;">
+                            <input type="password" id="adminPinInput" class="input" placeholder="Enter PIN" style="width: 200px; text-align: center;">
+                            <button class="btn btn-primary" id="unlockAdminBtn">Unlock</button>
+                        </div>
+                        <div id="adminLockError" style="color: var(--danger); font-size: 0.85rem; margin-top: 12px; display: none;">Incorrect PIN.</div>
                     </div>
 
-                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 8px 0;">
+                    <div id="adminContent" class="admin-content" style="display: flex; flex-direction: column; gap: 20px;">
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="sysBulletinInput">Global System Bulletin (Banner)</label>
+                            <p class="form-hint">Broadcast a message to the top of the main Dashboard.</p>
+                            <input type="text" id="sysBulletinInput" class="input" placeholder="Enter a global message...">
+                        </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Theme Engine</label>
-                        <span class="status-pill active">Enterprise Light</span>
-                        <p class="form-hint">The visual theme is currently locked to corporate standards. Dark mode and legacy neon palettes have been deprecated in v4.0 to match the Microsoft ecosystem.</p>
+                        <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 0;">
+
+                        <div class="form-group">
+                            <label class="form-label" for="newPinInput">Change Admin PIN</label>
+                            <p class="form-hint">Note: In Phase 2, this will be replaced by Microsoft Entra ID Authentication.</p>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="password" id="newPinInput" class="input" placeholder="New PIN">
+                            </div>
+                        </div>
+
+                        <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 0;">
+
+                        <div class="form-group">
+                            <label class="form-label">Azure Database Routing</label>
+                            <select class="select" disabled>
+                                <option>Local Storage (Active)</option>
+                                <option>Microsoft Graph API</option>
+                                <option>SharePoint List DB</option>
+                            </select>
+                            <p class="form-hint">Backend database targets will automatically unlock once Python routing functions are deployed to Azure.</p>
+                        </div>
+
+                        <button class="btn btn-primary" id="saveAdminBtn">Save Admin Settings</button>
                     </div>
 
-                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 8px 0;">
-
-                    <div class="form-group">
-                        <label class="form-label">Azure Database Routing</label>
-                        <select class="select" disabled>
-                            <option>Local Storage (Active)</option>
-                            <option>Microsoft Graph API</option>
-                            <option>SharePoint List DB</option>
-                        </select>
-                        <p class="form-hint">Backend database targets will automatically unlock once Python routing functions are deployed to the Azure server.</p>
-                    </div>
-
-                    <button class="btn btn-primary" id="saveAdminBtn" style="margin-top: 8px;">Save Admin Settings</button>
                 </section>
             </div>
 
@@ -247,73 +307,42 @@
 
             if (!searchInput || !searchDropdown) return;
 
-            function closeSearch(e) {
+            document.addEventListener('click', e => {
                 if (!e.target.closest('.search-container')) {
                     searchDropdown.style.display = 'none';
                 }
-            }
-            document.addEventListener('click', closeSearch);
+            });
 
             searchInput.addEventListener('input', function() {
                 const query = this.value.trim().toLowerCase();
-                if (query.length < 2) {
-                    searchDropdown.style.display = 'none';
-                    return;
-                }
+                if (query.length < 2) { searchDropdown.style.display = 'none'; return; }
 
-                let resultsHtml = '';
-                let hasResults = false;
+                let resultsHtml = ''; let hasResults = false;
 
-                // Search Custom Apps
                 const apps = JSON.parse(localStorage.getItem('kore_custom_apps')) || [];
                 const matchedApps = apps.filter(a => String(a.name).toLowerCase().includes(query) || String(a.url).toLowerCase().includes(query));
-                
                 if (matchedApps.length > 0) {
-                    hasResults = true;
-                    resultsHtml += `<div class="search-group-title">Applications</div>`;
-                    matchedApps.forEach(app => {
-                        resultsHtml += `
-                            <a href="${app.url}" class="search-item" target="_blank">
-                                <div class="search-item-title">${app.name}</div>
-                                <div class="search-item-sub">${app.url}</div>
-                            </a>
-                        `;
-                    });
+                    hasResults = true; resultsHtml += `<div class="search-group-title">Applications</div>`;
+                    matchedApps.forEach(app => resultsHtml += `<a href="${app.url}" class="search-item" target="_blank"><div class="search-item-title">${app.name}</div><div class="search-item-sub">${app.url}</div></a>`);
                 }
 
-                // Search Info Hub Guides
                 const guides = JSON.parse(localStorage.getItem('infoPages')) || [];
                 const matchedGuides = guides.filter(g => !g.archived && (String(g.title).toLowerCase().includes(query) || String(g.summary).toLowerCase().includes(query)));
-                
                 if (matchedGuides.length > 0) {
-                    hasResults = true;
-                    resultsHtml += `<div class="search-group-title">Info Hub Guides</div>`;
-                    matchedGuides.forEach(g => {
-                        resultsHtml += `
-                            <a href="info-page.html?id=${encodeURIComponent(g.id)}" class="search-item">
-                                <div class="search-item-title">${g.title || 'Untitled'}</div>
-                                <div class="search-item-sub">${g.summary || 'Documentation'}</div>
-                            </a>
-                        `;
-                    });
+                    hasResults = true; resultsHtml += `<div class="search-group-title">Info Hub Guides</div>`;
+                    matchedGuides.forEach(g => resultsHtml += `<a href="info-page.html?id=${encodeURIComponent(g.id)}" class="search-item"><div class="search-item-title">${g.title || 'Untitled'}</div><div class="search-item-sub">${g.summary || 'Documentation'}</div></a>`);
                 }
 
-                if (hasResults) {
-                    searchDropdown.innerHTML = resultsHtml;
-                    searchDropdown.style.display = 'block';
-                } else {
-                    searchDropdown.innerHTML = `<div style="padding: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">No local results found for "${query}"</div>`;
-                    searchDropdown.style.display = 'block';
-                }
+                searchDropdown.innerHTML = hasResults ? resultsHtml : `<div style="padding: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">No local results found.</div>`;
+                searchDropdown.style.display = 'block';
             });
         })();
 
-        // --- 2. Identity & Time Zone Logic ---
+        // --- 2. Identity & Time Zone ---
         document.addEventListener('DOMContentLoaded', () => {
             const profileInput = document.getElementById('profileNameInput');
             const tzSelect = document.getElementById('timeZoneSelect');
 
-            // Load Existing
             profileInput.value = localStorage.getItem('koreProfileName') || "";
             tzSelect.value = localStorage.getItem('koreHomeTimeZone') || "America/New_York";
 
@@ -324,12 +353,72 @@
             });
         });
 
-        // --- 3. Work Tracker Logic Sync ---
+        // --- 3. Home Shortcuts Manager ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const scContainer = document.getElementById('shortcutsListContainer');
+            
+            function getShortcuts() {
+                const sc = localStorage.getItem('kore_shortcuts');
+                if (sc) return JSON.parse(sc);
+                // Defaults
+                return [
+                    {title: "NVISION Login", url: "https://example.com/nvision"},
+                    {title: "HR Portal", url: "https://example.com/hr"}
+                ];
+            }
+            
+            function renderShortcuts() {
+                const shortcuts = getShortcuts();
+                scContainer.innerHTML = shortcuts.length ? '' : '<div style="font-size:0.85rem; color:var(--text-secondary);">No shortcuts added.</div>';
+                
+                shortcuts.forEach((sc, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    div.innerHTML = `
+                        <div>
+                            <div class="list-item-title">${sc.title}</div>
+                            <div class="list-item-sub">${sc.url}</div>
+                        </div>
+                        <button class="remove-btn" data-idx="${idx}">Remove</button>
+                    `;
+                    scContainer.appendChild(div);
+                });
+            }
+
+            scContainer.addEventListener('click', (e) => {
+                if(e.target.classList.contains('remove-btn')) {
+                    const idx = e.target.dataset.idx;
+                    const shortcuts = getShortcuts();
+                    shortcuts.splice(idx, 1);
+                    localStorage.setItem('kore_shortcuts', JSON.stringify(shortcuts));
+                    renderShortcuts();
+                    flashStatus('shortcutsStatus');
+                }
+            });
+
+            document.getElementById('addShortcutBtn').addEventListener('click', () => {
+                const title = document.getElementById('newScTitle').value.trim();
+                const url = document.getElementById('newScUrl').value.trim();
+                if(!title || !url) return alert("Please provide both a title and URL.");
+                
+                const shortcuts = getShortcuts();
+                shortcuts.push({title, url});
+                localStorage.setItem('kore_shortcuts', JSON.stringify(shortcuts));
+                
+                document.getElementById('newScTitle').value = '';
+                document.getElementById('newScUrl').value = '';
+                renderShortcuts();
+                flashStatus('shortcutsStatus');
+            });
+
+            renderShortcuts();
+        });
+
+        // --- 4. Work Tracker Logic ---
         document.addEventListener('DOMContentLoaded', () => {
             const typesInput = document.getElementById('workTypesInput');
             const accountsInput = document.getElementById('workAccountsInput');
             
-            // Load existing or defaults
             const savedTypes = JSON.parse(localStorage.getItem('kore_set_types')) || ["Feature Update", "Bug Fix", "Content Load", "Maintenance", "Security Patch"];
             const savedAccounts = JSON.parse(localStorage.getItem('kore_set_accounts')) || ["Internal Base", "Client Alpha", "Client Omega", "Stark Industries"];
 
@@ -346,15 +435,67 @@
             });
         });
 
-        // --- 4. Admin & Bulletin Logic ---
+        // --- 5. Data & Archives Manager ---
         document.addEventListener('DOMContentLoaded', () => {
-            const bulletinInput = document.getElementById('sysBulletinInput');
+            const workStats = document.getElementById('workDataStats');
+            const infoStats = document.getElementById('infoDataStats');
+
+            function updateDataStats() {
+                const workItems = JSON.parse(localStorage.getItem('kore_work_items')) || [];
+                const workArchived = workItems.filter(i => i.archived || i.deleted).length;
+                workStats.textContent = `Total: ${workItems.length} | In Trash: ${workArchived}`;
+
+                const infoItems = JSON.parse(localStorage.getItem('infoPages')) || [];
+                const infoArchived = infoItems.filter(i => i.archived).length;
+                infoStats.textContent = `Total: ${infoItems.length} | In Trash: ${infoArchived}`;
+            }
+
+            document.getElementById('purgeWorkBtn').addEventListener('click', () => {
+                if(!confirm("Permanently wipe all archived Work Tracker items?")) return;
+                let items = JSON.parse(localStorage.getItem('kore_work_items')) || [];
+                items = items.filter(i => !i.archived && !i.deleted);
+                localStorage.setItem('kore_work_items', JSON.stringify(items));
+                updateDataStats();
+            });
+
+            document.getElementById('purgeInfoBtn').addEventListener('click', () => {
+                if(!confirm("Permanently wipe all archived Info Hub guides?")) return;
+                let items = JSON.parse(localStorage.getItem('infoPages')) || [];
+                items = items.filter(i => !i.archived);
+                localStorage.setItem('infoPages', JSON.stringify(items));
+                updateDataStats();
+            });
+
+            updateDataStats();
+        });
+
+        // --- 6. Admin Panel & Lock ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const lockScreen = document.getElementById('adminLockScreen');
+            const adminContent = document.getElementById('adminContent');
+            const pinInput = document.getElementById('adminPinInput');
+            const errorMsg = document.getElementById('adminLockError');
             
-            // Load existing
-            bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
+            const bulletinInput = document.getElementById('sysBulletinInput');
+            const newPinInput = document.getElementById('newPinInput');
+
+            document.getElementById('unlockAdminBtn').addEventListener('click', () => {
+                const currentPin = localStorage.getItem('kore_admin_pin') || 'Admin2026!';
+                if (pinInput.value === currentPin) {
+                    lockScreen.style.display = 'none';
+                    adminContent.style.display = 'flex';
+                    bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
+                } else {
+                    errorMsg.style.display = 'block';
+                }
+            });
 
             document.getElementById('saveAdminBtn').addEventListener('click', () => {
                 localStorage.setItem('kore_bulletin', bulletinInput.value.trim());
+                if (newPinInput.value.trim() !== "") {
+                    localStorage.setItem('kore_admin_pin', newPinInput.value.trim());
+                    newPinInput.value = "";
+                }
                 flashStatus('adminStatus');
             });
         });

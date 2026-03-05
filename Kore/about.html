@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | About</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app); color: var(--text-main);
+            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+        }
+
+        /* --- Global Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+
+        /* --- Main Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1000px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 160px; position: relative; margin-bottom: 32px; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end; }
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+
+        /* --- Dense Single Section --- */
+        .article-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 40px; box-shadow: var(--shadow-sm); line-height: 1.7; font-size: 0.95rem; color: var(--text-main); }
+        .article-card h2 { color: var(--text-main); font-size: 1.4rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; margin-top: 1.5em; margin-bottom: 0.8em; }
+        .article-card h2:first-child { margin-top: 0; }
+        .article-card h3 { color: var(--accent-primary); font-size: 1.1rem; margin-top: 1.5em; margin-bottom: 0.5em; }
+        .article-card ul { padding-left: 20px; margin-top: 0.5em; }
+        .article-card li { margin-bottom: 6px; }
+        
+        .tech-pill { display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; color: var(--text-secondary); margin: 0 4px 4px 0; }
+
+        /* --- Global Footer --- */
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item active">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <section class="hero-banner">
+            <img src="images/AboutBanner.jpg" alt="About Kore" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+            <div class="hero-overlay">
+                <h2 class="hero-title">System Architecture</h2>
+            </div>
+        </section>
+
+        <article class="article-card">
+            
+            <h2>Mission & Objective</h2>
+            <p>Kore is an enterprise-grade administrative workspace designed to centralize critical operations, streamline data validation, and manage procedural documentation. Originally conceived as an offline, browser-based utility, <strong>Version 4.0</strong> marks the transition to a secure, cloud-hosted architecture integrated directly into the corporate ecosystem.</p>
+
+            <h2>System Architecture (Phase 2 Migration)</h2>
+            <p>To ensure data persistence, security, and multi-device synchronization, the application is undergoing a structural migration:</p>
+            <ul>
+                <li><strong>Frontend Delivery:</strong> Hosted via <span class="tech-pill">Azure Static Web Apps</span>, delivering a responsive, PC-optimized grid utilizing strict DOM structures and a professional Light Theme.</li>
+                <li><strong>Authentication:</strong> Secured by <span class="tech-pill">Microsoft Entra ID (Azure AD)</span>, ensuring only authenticated personnel can access administrative tools and proprietary documentation.</li>
+                <li><strong>Backend Processing:</strong> API endpoints and data routing are handled by <span class="tech-pill">Python (Azure Functions)</span>.</li>
+                <li><strong>Database & Storage:</strong> Data payloads (Work Tracker tickets, Info Hub markup) are routed via the <span class="tech-pill">Microsoft Graph API</span> directly into secure Microsoft 365 environments (SharePoint Lists / Excel architecture).</li>
+            </ul>
+
+            <h2>Core Modules</h2>
+            <h3>Operations Suite</h3>
+            <ul>
+                <li><strong>Work Tracker:</strong> A robust ticket management queue with advanced filtering, CSV export, and localized HTML-capable note taking.</li>
+                <li><strong>LOD Validation Tool:</strong> A strict CSV parsing engine that validates internal payload files against 28 distinct rule sets before ingestion into NVISION.</li>
+                <li><strong>Product HTML Converter:</strong> A dynamic generation engine that transforms raw product specs into heavily styled, client-ready HTML cards via 5 distinct templates.</li>
+                <li><strong>Nebula HTML Forge:</strong> A visual layout builder that synthesizes text into rigid, production-ready HTML code blocks.</li>
+            </ul>
+            
+            <h3>Resources Suite</h3>
+            <ul>
+                <li><strong>Info Hub:</strong> A centralized knowledge base for documenting standard operating procedures (SOPs). Features a built-in WYSIWYG editor, image handling, and local archiving capabilities.</li>
+                <li><strong>Data & Reports:</strong> A visualization engine generating real-time charting, workload aging statistics, and priority distributions based on Work Tracker data.</li>
+            </ul>
+
+            <h2 style="margin-top: 2.5em; font-size: 1.1rem; color: var(--text-secondary); border: none;">Version History</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>v4.0 (Current)</strong> – Enterprise UI overhaul, Azure architecture migration prep.<br>
+            <strong>v3.x</strong> – Introduction of Info Hub and Nebula Forge.<br>
+            <strong>v2.x</strong> – Implementation of offline Work Tracker and local JSON backups.</p>
+
+        </article>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+
+</body>
+</html>

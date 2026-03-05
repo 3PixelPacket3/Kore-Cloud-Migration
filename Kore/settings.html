@@ -33,7 +33,7 @@
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
         .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
         .nav-item:hover .dropdown-content { display: block; }
@@ -62,26 +62,30 @@
 
         /* --- Settings Cards --- */
         .section-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 20px; margin-bottom: 32px;}
-        .section-title { margin: 0; font-size: 1.15rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; }
+        .section-title { margin: 0; font-size: 1.15rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
         
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
-        .form-hint { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; }
+        .form-label { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        .form-hint { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-top: -4px;}
         
         .input, .textarea, .select { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; transition: border-color 0.2s; }
         .input:focus, .textarea:focus, .select:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
         .textarea { min-height: 120px; resize: vertical; white-space: pre; }
 
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; width: fit-content; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
         .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); }
 
         .status-pill { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #f1f5f9; color: var(--text-secondary); border: 1px solid var(--border-subtle); width: fit-content; }
         .status-pill.active { background: #ecfdf5; color: #10b981; border-color: #a7f3d0; }
+        .status-pill.pending { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+
+        .status-msg { font-size: 0.85rem; font-weight: 600; color: var(--success); transition: opacity 0.3s; opacity: 0; }
+        .status-msg.show { opacity: 1; }
 
         /* --- Global Footer --- */
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
     </style>
 </head>
 <body>
@@ -123,68 +127,89 @@
         
         <div class="page-header">
             <h2 class="page-title">System Settings</h2>
-            <p class="page-subtitle">Configure application parameters, manage local caching, and administer cloud routing logic.</p>
+            <p class="page-subtitle">Configure identity profiles, manage global UI variables, and prep the environment for Microsoft Entra ID sync.</p>
         </div>
 
         <div class="settings-grid">
             
             <div>
                 <section class="section-card">
-                    <h3 class="section-title">Identity & Sync</h3>
+                    <h3 class="section-title">
+                        User Profile & Identity
+                        <span class="status-msg" id="identityStatus">Saved</span>
+                    </h3>
+                    
                     <div class="form-group">
                         <label class="form-label">Microsoft Entra ID Status</label>
-                        <span class="status-pill">Pending Phase 2 Connect</span>
-                        <p class="form-hint">Cloud sync is currently disabled. All configurations below are saved to local browser cache until the Azure backend API is provisioned.</p>
+                        <span class="status-pill pending">Pending Phase 2 Connect</span>
+                        <p class="form-hint">Cloud sync is currently disabled. Profile data is saved locally until Azure AD integration is complete.</p>
                     </div>
-                    <div class="form-group" style="margin-top: 10px;">
-                        <label class="form-label">Time Zone Profile</label>
+
+                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 4px 0;">
+
+                    <div class="form-group">
+                        <label class="form-label" for="profileNameInput">Local Profile Name</label>
+                        <input type="text" id="profileNameInput" class="input" placeholder="e.g. Joshua Smolak">
+                    </div>
+
+                    <div class="form-group" style="margin-top: 8px;">
+                        <label class="form-label" for="timeZoneSelect">System Time Zone</label>
+                        <p class="form-hint">Used for rendering clocks and ticket timestamps.</p>
                         <select class="select" id="timeZoneSelect">
-                            <option value="America/New_York">Eastern Time (US)</option>
-                            <option value="America/Chicago">Central Time (US)</option>
-                            <option value="America/Denver">Mountain Time (US)</option>
-                            <option value="America/Los_Angeles">Pacific Time (US)</option>
+                            <option value="America/New_York">Eastern Time (US) - New York</option>
+                            <option value="America/Chicago">Central Time (US) - Chicago</option>
+                            <option value="America/Denver">Mountain Time (US) - Denver</option>
+                            <option value="America/Phoenix">Mountain Time (US) - Phoenix</option>
+                            <option value="America/Los_Angeles">Pacific Time (US) - Los Angeles</option>
                         </select>
                     </div>
+
+                    <button class="btn btn-primary" id="saveIdentityBtn">Save Identity Settings</button>
                 </section>
 
                 <section class="section-card">
-                    <h3 class="section-title">Work Tracker Logic</h3>
-                    <p class="form-hint" style="margin-top: 0;">Manage the dynamic dropdown arrays used in the Work Tracker form. Place one item per line.</p>
+                    <h3 class="section-title">
+                        Work Tracker Logic
+                        <span class="status-msg" id="workLogicStatus">Saved</span>
+                    </h3>
+                    <p class="form-hint" style="margin-top: -10px;">Manage the dynamic dropdown arrays used in the Work Tracker form. Place one item per line.</p>
                     
                     <div class="form-group">
-                        <label class="form-label">Request Types</label>
-                        <textarea id="workTypesInput" class="textarea"></textarea>
+                        <label class="form-label" for="workTypesInput">Ticket Categories (Request Types)</label>
+                        <textarea id="workTypesInput" class="textarea" placeholder="Feature Update&#10;Bug Fix..."></textarea>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Account Routing</label>
-                        <textarea id="workAccountsInput" class="textarea"></textarea>
+                    <div class="form-group" style="margin-top: 8px;">
+                        <label class="form-label" for="workAccountsInput">Account / Client Routing</label>
+                        <textarea id="workAccountsInput" class="textarea" placeholder="Internal Base&#10;Client Alpha..."></textarea>
                     </div>
 
-                    <button class="btn btn-primary" id="saveWorkLogicBtn" style="margin-top: 8px;">Save Work Config</button>
+                    <button class="btn btn-primary" id="saveWorkLogicBtn">Save Configurations</button>
                 </section>
             </div>
 
             <div>
                 <section class="section-card">
-                    <h3 class="section-title">Workspace UI</h3>
+                    <h3 class="section-title">
+                        Admin Controls & UI
+                        <span class="status-msg" id="adminStatus">Saved</span>
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="sysBulletinInput">Global System Bulletin</label>
+                        <p class="form-hint">This message will broadcast to the top of the main Dashboard.</p>
+                        <input type="text" id="sysBulletinInput" class="input" placeholder="Enter a global message...">
+                    </div>
+
+                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 8px 0;">
+
                     <div class="form-group">
                         <label class="form-label">Theme Engine</label>
                         <span class="status-pill active">Enterprise Light</span>
-                        <p class="form-hint">The visual theme is currently locked to corporate standards. Dark mode and legacy neon palettes have been deprecated in v4.0.</p>
-                    </div>
-                </section>
-
-                <section class="section-card">
-                    <h3 class="section-title">Admin Controls (Phase 2 Prep)</h3>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Homepage System Bulletin</label>
-                        <input type="text" id="sysBulletinInput" class="input" placeholder="Enter a global message for the dashboard...">
-                        <button class="btn" id="saveBulletinBtn" style="width: fit-content; margin-top: 4px;">Update Bulletin</button>
+                        <p class="form-hint">The visual theme is currently locked to corporate standards. Dark mode and legacy neon palettes have been deprecated in v4.0 to match the Microsoft ecosystem.</p>
                     </div>
 
-                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 10px 0;">
+                    <hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 8px 0;">
 
                     <div class="form-group">
                         <label class="form-label">Azure Database Routing</label>
@@ -193,18 +218,10 @@
                             <option>Microsoft Graph API</option>
                             <option>SharePoint List DB</option>
                         </select>
-                        <p class="form-hint">Backend database targets will unlock once Python routing functions are deployed to the Azure server.</p>
+                        <p class="form-hint">Backend database targets will automatically unlock once Python routing functions are deployed to the Azure server.</p>
                     </div>
-                </section>
 
-                <section class="section-card">
-                    <h3 class="section-title">Local Cache Management</h3>
-                    <p class="form-hint" style="margin-top: 0;">Export your offline data to a JSON backup file before migrating browsers or clearing cookies.</p>
-                    
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn" id="exportBackupBtn">⬇️ Download Backup JSON</button>
-                        <button class="btn btn-danger" onclick="if(confirm('Wipe all local data?')) { localStorage.clear(); location.reload(); }">Wipe Cache</button>
-                    </div>
+                    <button class="btn btn-primary" id="saveAdminBtn" style="margin-top: 8px;">Save Admin Settings</button>
                 </section>
             </div>
 
@@ -214,6 +231,15 @@
     <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
 
     <script>
+        // --- Utility: Flash Status Message ---
+        function flashStatus(elementId) {
+            const el = document.getElementById(elementId);
+            if(el) {
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 2500);
+            }
+        }
+
         // --- 1. Global Search Engine ---
         (function initGlobalSearch() {
             const searchInput = document.getElementById('globalSearchInput');
@@ -282,7 +308,23 @@
             });
         })();
 
-        // --- 2. Work Tracker Logic Sync ---
+        // --- 2. Identity & Time Zone Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileInput = document.getElementById('profileNameInput');
+            const tzSelect = document.getElementById('timeZoneSelect');
+
+            // Load Existing
+            profileInput.value = localStorage.getItem('koreProfileName') || "";
+            tzSelect.value = localStorage.getItem('koreHomeTimeZone') || "America/New_York";
+
+            document.getElementById('saveIdentityBtn').addEventListener('click', () => {
+                localStorage.setItem('koreProfileName', profileInput.value.trim());
+                localStorage.setItem('koreHomeTimeZone', tzSelect.value);
+                flashStatus('identityStatus');
+            });
+        });
+
+        // --- 3. Work Tracker Logic Sync ---
         document.addEventListener('DOMContentLoaded', () => {
             const typesInput = document.getElementById('workTypesInput');
             const accountsInput = document.getElementById('workAccountsInput');
@@ -294,44 +336,26 @@
             typesInput.value = savedTypes.join('\n');
             accountsInput.value = savedAccounts.join('\n');
 
-            document.getElementById('saveWorkLogicBtn').addEventListener('click', (e) => {
+            document.getElementById('saveWorkLogicBtn').addEventListener('click', () => {
                 const newTypes = typesInput.value.split('\n').map(s => s.trim()).filter(Boolean);
                 const newAccounts = accountsInput.value.split('\n').map(s => s.trim()).filter(Boolean);
 
                 localStorage.setItem('kore_set_types', JSON.stringify(newTypes));
                 localStorage.setItem('kore_set_accounts', JSON.stringify(newAccounts));
-                
-                const btn = e.target;
-                const og = btn.innerHTML;
-                btn.innerHTML = "✅ Saved";
-                setTimeout(() => btn.innerHTML = og, 2000);
+                flashStatus('workLogicStatus');
             });
+        });
 
-            // System Bulletin
+        // --- 4. Admin & Bulletin Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
             const bulletinInput = document.getElementById('sysBulletinInput');
-            bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
-            document.getElementById('saveBulletinBtn').addEventListener('click', (e) => {
-                localStorage.setItem('kore_bulletin', bulletinInput.value.trim());
-                e.target.innerHTML = "✅ Updated";
-                setTimeout(() => e.target.innerHTML = "Update Bulletin", 2000);
-            });
             
-            // Export Backup
-            document.getElementById('exportBackupBtn').addEventListener('click', () => {
-                const data = {
-                    version: "4.0",
-                    timestamp: new Date().toISOString(),
-                    apps: JSON.parse(localStorage.getItem('kore_custom_apps')) || [],
-                    work: JSON.parse(localStorage.getItem('kore_work_items')) || [],
-                    guides: JSON.parse(localStorage.getItem('infoPages')) || []
-                };
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-                const a = document.createElement("a");
-                a.href = URL.createObjectURL(blob);
-                a.download = `Kore_Backup_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+            // Load existing
+            bulletinInput.value = localStorage.getItem('kore_bulletin') || "";
+
+            document.getElementById('saveAdminBtn').addEventListener('click', () => {
+                localStorage.setItem('kore_bulletin', bulletinInput.value.trim());
+                flashStatus('adminStatus');
             });
         });
     </script>

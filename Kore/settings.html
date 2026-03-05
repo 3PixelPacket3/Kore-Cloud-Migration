@@ -429,13 +429,15 @@
             
             const workItems = JSON.parse(localStorage.getItem('kore_work_items')) || [];
             const workArchived = workItems.filter(i => i.archived || i.deleted).length;
-            if(workStats) workStats.textContent = `Total: ${workItems.length} | In Trash: ${workArchived}`;
+            const workActive = workItems.length - workArchived;
+            if(workStats) workStats.textContent = `Active: ${workActive} | In Trash: ${workArchived}`;
             
             const infoItems = JSON.parse(localStorage.getItem('infoPages')) || [];
             const infoArchived = infoItems.filter(i => i.archived).length;
-            if(infoStats) infoStats.textContent = `Total: ${infoItems.length} | In Trash: ${infoArchived}`;
+            const infoActive = infoItems.length - infoArchived;
+            if(infoStats) infoStats.textContent = `Active: ${infoActive} | In Trash: ${infoArchived}`;
         }
-
+        
         window.openArchiveModal = function(mode) {
             currentArchiveMode = mode;
             document.getElementById('archiveModalTitle').textContent = mode === 'work' ? 'Work Tracker Archive' : 'Info Hub Archive';

@@ -28,7 +28,7 @@ def save_work_item(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse("Error: Missing Ticket ID.", status_code=400)
 
         # 2. Connect to the Azure Vault
-        connection_string = os.environ.get("AzureWebJobsStorage")
+        connection_string = os.environ.get("KORE_DB_CONNECTION")
         if not connection_string:
             return func.HttpResponse("Server Error: Database connection string missing.", status_code=500)
             

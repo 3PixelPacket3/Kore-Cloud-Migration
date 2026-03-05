@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Data & Reports</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app); color: var(--text-main);
+            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+        }
+
+        /* --- Global Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+
+        /* --- Main Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 140px; position: relative; margin-bottom: 24px; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end; }
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+        
+        /* Toolbar */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: var(--bg-surface); padding: 16px 24px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
+        .toolbar-meta { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+        .toolbar-actions { display: flex; gap: 12px; }
+
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
+        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
+        .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); border: none; }
+
+        /* --- Report Sections --- */
+        .report-section { margin-bottom: 40px; }
+        .section-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin: 0 0 16px 0; border-bottom: 2px solid var(--border-subtle); padding-bottom: 8px; }
+        
+        /* Summary KPI Cards */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .kpi-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+        .kpi-title { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 8px 0; }
+        .kpi-value { font-size: 2.5rem; font-weight: 800; color: var(--text-main); margin: 0; line-height: 1; }
+        .kpi-desc { font-size: 0.85rem; color: var(--text-secondary); margin: 8px 0 0 0; }
+        
+        .kpi-card.highlight { border-top: 4px solid var(--accent-primary); }
+
+        /* Charts & Tables Grid */
+        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .panel-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); }
+        .panel-header { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin: 0 0 16px 0; }
+        
+        /* Chart Canvas Constraints */
+        .chart-wrapper { width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
+        canvas { max-width: 100%; height: auto !important; }
+        .pie-canvas { max-height: 220px; }
+        .bar-canvas { max-height: 240px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left; }
+        th { background: var(--bg-app); padding: 10px 12px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border-subtle); }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); color: var(--text-main); font-weight: 500; }
+        tr:last-child td { border-bottom: none; }
+
+        /* Legend */
+        .pie-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+        .legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+
+        /* --- Global Footer --- */
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item active">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <section class="hero-banner">
+            <img src="images/ReportsBanner.jpg" alt="Data and Reports" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+            <div class="hero-overlay">
+                <h2 class="hero-title">Work Tracker Analytics</h2>
+            </div>
+        </section>
+
+        <div class="toolbar">
+            <span class="toolbar-meta">Snapshot Generated: <strong id="reportsUpdatedAt" style="color: var(--text-main);">Just now</strong></span>
+            <div class="toolbar-actions">
+                <button type="button" class="btn" id="refreshReportsBtn">🔄 Refresh Data</button>
+                <button type="button" class="btn" id="exportSummaryCsvBtn">⬇️ Export Summary CSV</button>
+                <button type="button" class="btn btn-primary" id="exportWorkCsvBtn">⬇️ Export Full Master List</button>
+            </div>
+        </div>
+
+        <section class="report-section">
+            <h2 class="section-title">Queue Overview</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card highlight">
+                    <h3 class="kpi-title">Total Logged Tickets</h3>
+                    <p id="repTotalRequests" class="kpi-value">0</p>
+                    <p class="kpi-desc">All historical items stored.</p>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="kpi-title">Active (Open)</h3>
+                    <p id="repOpenRequests" class="kpi-value" style="color: #3b82f6;">0</p>
+                    <p class="kpi-desc">New, Progress, or Hold.</p>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="kpi-title">Completed</h3>
+                    <p id="repCompletedRequests" class="kpi-value" style="color: #10b981;">0</p>
+                    <p class="kpi-desc">Successfully resolved.</p>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="kpi-title">Overdue</h3>
+                    <p id="repOverdueRequests" class="kpi-value" style="color: #ef4444;">0</p>
+                    <p class="kpi-desc">Past due date, unresolved.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="report-section">
+            <h2 class="section-title">Workload Aging (Active Tickets)</h2>
+            <div class="kpi-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="kpi-card">
+                    <h3 class="kpi-title">Average Age</h3>
+                    <p id="repAvgAgeOpen" class="kpi-value">0</p>
+                    <p class="kpi-desc">Average days open in the queue.</p>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="kpi-title">Oldest Open Ticket</h3>
+                    <p id="repMaxAgeOpen" class="kpi-value">0</p>
+                    <p class="kpi-desc">Maximum age in days across open items.</p>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="panel-card">
+                    <h3 class="panel-header">Open Items by Age Bucket</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="agingChart" width="500" height="240" class="bar-canvas"></canvas>
+                    </div>
+                </div>
+                <div class="panel-card">
+                    <h3 class="panel-header">Aging Breakdown</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Age Bucket</th><th>Open Items</th></tr>
+                        </thead>
+                        <tbody id="repAgingBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="report-section">
+            <h2 class="section-title">Volume Distribution</h2>
+            <div class="chart-grid">
+                <div class="panel-card">
+                    <h3 class="panel-header">Tickets by Status</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="statusChart" width="500" height="240" class="bar-canvas"></canvas>
+                    </div>
+                </div>
+                <div class="panel-card">
+                    <h3 class="panel-header">Tickets by Priority</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="priorityChart" width="500" height="240" class="bar-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="report-section">
+            <h2 class="section-title">Strategic Breakdown</h2>
+            <div class="chart-grid">
+                <div class="panel-card">
+                    <h3 class="panel-header">By Request Type</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="typePieChart" width="220" height="220" class="pie-canvas"></canvas>
+                    </div>
+                    <div id="typePieLegend" class="pie-legend" style="margin-bottom: 20px;"></div>
+                    <table>
+                        <thead><tr><th>Type</th><th>Total</th><th>Open</th><th>Done</th></tr></thead>
+                        <tbody id="repByTypeBody"></tbody>
+                    </table>
+                </div>
+                
+                <div class="panel-card">
+                    <h3 class="panel-header">By Account Allocation</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="accountPieChart" width="220" height="220" class="pie-canvas"></canvas>
+                    </div>
+                    <div id="accountPieLegend" class="pie-legend" style="margin-bottom: 20px;"></div>
+                    <table>
+                        <thead><tr><th>Account</th><th>Total</th><th>Open</th><th>Done</th></tr></thead>
+                        <tbody id="repByAccountBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+
+    <script>
+        (function () {
+            // Note: In your new work.html, the key is 'kore_work_items'
+            const STORAGE_KEY = "kore_work_items";
+
+            const totalEl = document.getElementById("repTotalRequests");
+            const openEl = document.getElementById("repOpenRequests");
+            const completedEl = document.getElementById("repCompletedRequests");
+            const overdueEl = document.getElementById("repOverdueRequests");
+            const avgAgeOpenEl = document.getElementById("repAvgAgeOpen");
+            const maxAgeOpenEl = document.getElementById("repMaxAgeOpen");
+
+            const byTypeBody = document.getElementById("repByTypeBody");
+            const byAccountBody = document.getElementById("repByAccountBody");
+            const agingBody = document.getElementById("repAgingBody");
+
+            const statusCanvas = document.getElementById("statusChart");
+            const priorityCanvas = document.getElementById("priorityChart");
+            const agingCanvas = document.getElementById("agingChart");
+
+            const exportWorkBtn = document.getElementById("exportWorkCsvBtn");
+            const exportSummaryBtn = document.getElementById("exportSummaryCsvBtn");
+            const refreshBtn = document.getElementById("refreshReportsBtn");
+            const updatedEl = document.getElementById("reportsUpdatedAt");
+
+            function loadWorkItems() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY) || "[]";
+                    const arr = JSON.parse(raw);
+                    return Array.isArray(arr) ? arr : [];
+                } catch (e) { return []; }
+            }
+
+            function isCompleted(item) {
+                return String(item.status || "").toLowerCase() === "completed";
+            }
+
+            function isOpen(item) {
+                const s = String(item.status || "").toLowerCase();
+                return s === "open" || s === "in progress" || s === "on hold" || s === "new";
+            }
+
+            function isOverdue(item) {
+                if (!item.dueDate || isCompleted(item)) return false;
+                const today = new Date();
+                const due = new Date(item.dueDate);
+                if (Number.isNaN(due.getTime())) return false;
+                // Add 1 day to due to ensure it only triggers *after* the day has passed
+                return due < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            }
+
+            function summarise(items) {
+                const summary = { total: items.length, open: 0, completed: 0, overdue: 0, byStatus: {}, byPriority: {}, byType: {}, byAccount: {} };
+                items.forEach((item) => {
+                    const status = String(item.status || "Open");
+                    const priority = String(item.priority || "Medium");
+                    const type = String(item.type || "Unspecified");
+                    const account = String(item.account || "Unspecified");
+
+                    if (isOpen(item)) summary.open++;
+                    if (isCompleted(item)) summary.completed++;
+                    if (isOverdue(item)) summary.overdue++;
+
+                    summary.byStatus[status] = (summary.byStatus[status] || 0) + 1;
+                    summary.byPriority[priority] = (summary.byPriority[priority] || 0) + 1;
+                    summary.byType[type] = (summary.byType[type] || 0) + 1;
+                    summary.byAccount[account] = (summary.byAccount[account] || 0) + 1;
+                });
+                return summary;
+            }
+
+            function computeAgingStats(items) {
+                const today = new Date();
+                let totalDays = 0; let count = 0; let maxAge = 0;
+                const buckets = { "0-2": 0, "3-7": 0, "8-14": 0, "15+": 0 };
+                
+                if (!Array.isArray(items)) return { avgAge: 0, maxAge: 0, buckets, count: 0 };
+                
+                items.forEach(function (item) {
+                    try {
+                        if (!item) return;
+                        if (isCompleted(item)) return;
+
+                        const createdRaw = item.created || item.createdAt;
+                        if (!createdRaw) return;
+
+                        const dt = new Date(createdRaw);
+                        if (!dt || !dt.getTime || !isFinite(dt.getTime())) return;
+
+                        const ageMs = today.getTime() - dt.getTime();
+                        if (!isFinite(ageMs) || ageMs < 0) return;
+
+                        const ageDays = Math.floor(ageMs / 86400000);
+                        totalDays += ageDays; count++;
+
+                        if (ageDays > maxAge) maxAge = ageDays;
+
+                        if (ageDays <= 2) buckets["0-2"]++;
+                        else if (ageDays <= 7) buckets["3-7"]++;
+                        else if (ageDays <= 14) buckets["8-14"]++;
+                        else buckets["15+"]++;
+                    } catch (e) {}
+                });
+                const avgAge = count ? totalDays / count : 0;
+                return { avgAge: avgAge, maxAge: maxAge, buckets: buckets, count: count };
+            }
+
+            function renderAging(stats) {
+                if (avgAgeOpenEl) avgAgeOpenEl.textContent = stats.count ? stats.avgAge.toFixed(1) : "0";
+                if (maxAgeOpenEl) maxAgeOpenEl.textContent = stats.maxAge || 0;
+                if (agingBody) {
+                    agingBody.innerHTML = "";
+                    ["0-2", "3-7", "8-14", "15+"].forEach(function (bucket) {
+                        const tr = document.createElement("tr");
+                        const count = stats.buckets && stats.buckets[bucket] ? stats.buckets[bucket] : 0;
+                        tr.innerHTML = "<td>" + bucket + " days</td><td>" + count + "</td>";
+                        agingBody.appendChild(tr);
+                    });
+                }
+            }
+
+            function renderSummary(summary) {
+                if (totalEl) totalEl.textContent = String(summary.total);
+                if (openEl) openEl.textContent = String(summary.open);
+                if (completedEl) completedEl.textContent = String(summary.completed);
+                if (overdueEl) overdueEl.textContent = String(summary.overdue);
+            }
+
+            function buildPieData(counts) {
+                var labels = Object.keys(counts || {});
+                var values = labels.map(function (label) { return counts[label] || 0; });
+                var total = values.reduce(function (sum, v) { return sum + v; }, 0);
+                return { labels: labels, values: values, total: total };
+            }
+
+            // Upgraded corporate colors
+            const corpColors = ["#0ea5e9", "#f59e0b", "#10b981", "#8b5cf6", "#64748b", "#f43f5e", "#06b6d4"];
+
+            function drawPieChart(canvasId, pieData) {
+                var canvas = document.getElementById(canvasId);
+                if (!canvas || !canvas.getContext) return;
+                var ctx = canvas.getContext("2d");
+                if (!pieData.labels.length || !pieData.total) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+
+                var centerX = canvas.width / 2; var centerY = canvas.height / 2;
+                var radius = Math.min(canvas.width, canvas.height) / 2 - 10;
+                var startAngle = -Math.PI / 2;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieData.labels.forEach(function (label, index) {
+                    var value = pieData.values[index] || 0; if (!value) return;
+                    var sliceAngle = (value / pieData.total) * Math.PI * 2;
+                    var endAngle = startAngle + sliceAngle;
+
+                    ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                    ctx.closePath(); ctx.fillStyle = corpColors[index % corpColors.length]; ctx.fill();
+
+                    // White stroke for separation
+                    ctx.lineWidth = 2; ctx.strokeStyle = "#ffffff"; ctx.stroke();
+
+                    var percent = (value / pieData.total) * 100;
+                    if (percent >= 10) {
+                        var midAngle = startAngle + sliceAngle / 2;
+                        var labelRadius = radius * 0.6;
+                        var labelX = centerX + Math.cos(midAngle) * labelRadius;
+                        var labelY = centerY + Math.sin(midAngle) * labelRadius;
+                        ctx.fillStyle = "#ffffff"; ctx.font = "bold 12px Inter, sans-serif";
+                        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                        ctx.fillText(Math.round(percent) + "%", labelX, labelY);
+                    }
+                    startAngle = endAngle;
+                });
+            }
+
+            function renderLegend(legendId, pieData) {
+                var legendEl = document.getElementById(legendId); if (!legendEl) return;
+                legendEl.innerHTML = "";
+                if (!pieData.labels.length || !pieData.total) return;
+
+                pieData.labels.forEach(function (label, index) {
+                    var value = pieData.values[index] || 0; if (!value) return;
+                    var percent = (value / pieData.total) * 100;
+                    var item = document.createElement("div"); item.className = "legend-item";
+                    var swatch = document.createElement("span"); swatch.className = "legend-swatch";
+                    swatch.style.backgroundColor = corpColors[index % corpColors.length];
+                    var text = document.createElement("span"); text.textContent = label + " (" + value + ")";
+                    item.appendChild(swatch); item.appendChild(text); legendEl.appendChild(item);
+                });
+            }
+
+            function renderAdvanced(summary, items) {
+                if (byTypeBody) {
+                    byTypeBody.innerHTML = '';
+                    var types = Object.keys(summary.byType || {});
+                    if (!types.length) byTypeBody.innerHTML = '<tr><td colspan="4">No data yet.</td></tr>';
+                    else {
+                        types.forEach(function (label) {
+                            var total = 0, open = 0, completed = 0;
+                            items.forEach(function (item) {
+                                if (String(item.type || "Unspecified") !== label) return;
+                                total++; if (isOpen(item)) open++; if (isCompleted(item)) completed++;
+                            });
+                            var tr = document.createElement("tr"); tr.innerHTML = "<td>" + label + "</td><td>" + total + "</td><td>" + open + "</td><td>" + completed + "</td>";
+                            byTypeBody.appendChild(tr);
+                        });
+                    }
+                    var typePie = buildPieData(summary.byType || {});
+                    drawPieChart("typePieChart", typePie); renderLegend("typePieLegend", typePie);
+                }
+
+                if (byAccountBody) {
+                    byAccountBody.innerHTML = '';
+                    var accounts = Object.keys(summary.byAccount || {});
+                    if (!accounts.length) byAccountBody.innerHTML = '<tr><td colspan="4">No data yet.</td></tr>';
+                    else {
+                        accounts.forEach(function (label) {
+                            var totalA = 0, openA = 0, completedA = 0;
+                            items.forEach(function (item) {
+                                if (String(item.account || "Unspecified") !== label) return;
+                                totalA++; if (isOpen(item)) openA++; if (isCompleted(item)) completedA++;
+                            });
+                            var trA = document.createElement("tr"); trA.innerHTML = "<td>" + label + "</td><td>" + totalA + "</td><td>" + openA + "</td><td>" + completedA + "</td>";
+                            byAccountBody.appendChild(trA);
+                        });
+                    }
+                    var accountPie = buildPieData(summary.byAccount || {});
+                    drawPieChart("accountPieChart", accountPie); renderLegend("accountPieLegend", accountPie);
+                }
+            }
+
+            function drawBarChart(canvas, counts, orderedLabels) {
+                if (!canvas || !canvas.getContext) return;
+                var ctx = canvas.getContext("2d");
+                var labels = orderedLabels && orderedLabels.length ? orderedLabels.slice() : Object.keys(counts || {});
+                if (!labels.length) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+                
+                var values = labels.map(function (label) { return counts[label] || 0; });
+                var maxVal = 0; values.forEach(function (v) { if (v > maxVal) maxVal = v; });
+                if (!maxVal) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+
+                var width = canvas.width; var height = canvas.height;
+                ctx.clearRect(0, 0, width, height);
+
+                var padding = 30; var chartHeight = height - padding * 2; var chartWidth = width - padding * 2;
+                var barWidth = Math.min(chartWidth / (labels.length * 1.5), 60);
+                var barGap = barWidth * 0.5;
+                var originX = padding + (chartWidth - (labels.length * (barWidth + barGap) - barGap)) / 2;
+                var originY = height - padding;
+
+                labels.forEach(function (label, index) {
+                    var value = values[index]; var barHeight = (value / maxVal) * chartHeight;
+                    var x = originX + index * (barWidth + barGap); var y = originY - barHeight;
+
+                    // Bar
+                    ctx.fillStyle = corpColors[index % corpColors.length];
+                    ctx.fillRect(x, y, barWidth, barHeight);
+
+                    // Value label above bar
+                    ctx.fillStyle = "#475569"; ctx.font = "bold 12px Inter, sans-serif";
+                    ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+                    ctx.fillText(String(value), x + barWidth / 2, y - 5);
+
+                    // X-axis label
+                    ctx.fillStyle = "#0f172a";
+                    ctx.textAlign = "center"; ctx.textBaseline = "top";
+                    ctx.fillText(label, x + barWidth / 2, originY + 8);
+                });
+            }
+
+            function snapshotAndRender() {
+                const items = loadWorkItems();
+                const summary = summarise(items);
+                renderSummary(summary);
+                renderAdvanced(summary, items);
+                
+                if (statusCanvas) drawBarChart(statusCanvas, summary.byStatus || {}, ["Open", "In Progress", "On Hold", "Completed"]);
+                if (priorityCanvas) drawBarChart(priorityCanvas, summary.byPriority || {}, ["Low", "Medium", "High", "Critical"]);
+                
+                const aging = computeAgingStats(items);
+                renderAging(aging);
+                
+                if (agingCanvas) {
+                    const b = aging.buckets || {};
+                    drawBarChart(agingCanvas, { "0-2": b["0-2"], "3-7": b["3-7"], "8-14": b["8-14"], "15+": b["15+"] }, ["0-2", "3-7", "8-14", "15+"]);
+                }
+
+                if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
+                return { items, summary };
+            }
+
+            // Export CSV logic
+            function downloadCsv(filename, rows) {
+                if (!rows || !rows.length) return;
+                const csv = rows.map(r => r.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(",")).join("\r\n");
+                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            }
+
+            if (exportWorkBtn) {
+                exportWorkBtn.addEventListener("click", () => {
+                    const items = loadWorkItems();
+                    const rows = [["Ticket ID", "Title", "Type", "Account", "Priority", "Status", "Requestor", "Created", "Due", "Notes"]];
+                    items.forEach(i => rows.push([i.id, i.title, i.type, i.account, i.priority, i.status, i.requestor, i.created, i.dueDate, String(i.notes).replace(/<[^>]+>/g, ' ')]));
+                    downloadCsv(`Kore_Full_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
+                });
+            }
+
+            if (exportSummaryBtn) {
+                exportSummaryBtn.addEventListener("click", () => {
+                    const items = loadWorkItems(); const s = summarise(items);
+                    const rows = [
+                        ["Metric", "Value"], ["Total", s.total], ["Open", s.open], ["Completed", s.completed], ["Overdue", s.overdue], [],
+                        ["Status", "Count"]
+                    ];
+                    Object.keys(s.byStatus).forEach(k => rows.push([k, s.byStatus[k]]));
+                    rows.push([], ["Priority", "Count"]);
+                    Object.keys(s.byPriority).forEach(k => rows.push([k, s.byPriority[k]]));
+                    downloadCsv(`Kore_Summary_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
+                });
+            }
+
+            if (refreshBtn) refreshBtn.addEventListener("click", snapshotAndRender);
+
+            document.addEventListener("DOMContentLoaded", snapshotAndRender);
+        })();
+    </script>
+</body>
+</html>

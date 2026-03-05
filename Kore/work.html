@@ -17,6 +17,7 @@
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --radius-md: 12px;
             --radius-sm: 8px;
+            --success: #10b981;
         }
 
         body {
@@ -33,10 +34,8 @@
         .nav-menu { display: flex; gap: 8px; height: 100%; }
         .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
-        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); z-index: 101; }
-        .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
-        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
 
         /* --- Main Content --- */
         .main-container { padding: 40px 32px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
@@ -53,7 +52,7 @@
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
         .btn-primary:hover { background-color: var(--accent-hover); border: none; }
         
-        select, input[type="text"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; }
+        select, input[type="text"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; }
         select:focus, input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
 
         /* --- View 1: Dashboard --- */
@@ -69,6 +68,8 @@
         td { padding: 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; vertical-align: middle; }
         tr:hover td { background-color: #f8fafc; cursor: pointer; }
         .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+        
+        .progress-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
 
         /* --- View 2: Form --- */
         #view-form { display: none; }
@@ -77,6 +78,14 @@
         .form-group.full-width { grid-column: span 3; }
         .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
         
+        /* Checklist System */
+        .task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+        .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-app); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
+        .task-item-left { display: flex; align-items: center; gap: 12px; }
+        .task-item.done .task-text { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
+        .task-text { font-size: 0.9rem; font-weight: 500; }
+        .delete-task-btn { background: transparent; border: none; color: #ef4444; cursor: pointer; font-weight: bold; font-size: 1rem; }
+
         .editor-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
         .editor-toolbar { background: var(--bg-app); border-bottom: 1px solid var(--border-subtle); padding: 8px; display: flex; gap: 8px; }
         .editor-btn { background: transparent; border: 1px solid transparent; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; color: var(--text-secondary); transition: all 0.2s; }
@@ -84,7 +93,6 @@
         .editor-content { min-height: 250px; padding: 16px; background: var(--bg-surface); outline: none; font-size: 0.95rem; line-height: 1.6; }
         .form-actions { display: flex; justify-content: flex-end; gap: 16px; }
 
-        /* --- Global Footer --- */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
 </head>
@@ -95,12 +103,11 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-                <div class="nav-item active">Operations ▼<div class="dropdown-content"><a href="apps.html">Apps</a><a href="work.html">Work Tracker</a><a href="passwords.html">Password Generator</a><a href="product-html.html">Product Long HTML Converter</a><a href="nebula.html">Nebula HTML Forge</a><a href="lod.html">LOD Validation Tool</a></div></div>
-                <div class="nav-item">Resources ▼<div class="dropdown-content"><a href="info-hub.html">Info Hub</a><a href="reports.html">Data/Reports</a></div></div>
-                <a href="about.html" class="nav-item">About</a>
+                <a href="work.html" class="nav-item active">Work Tracker</a>
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
     </header>
 
     <main class="main-container">
@@ -108,7 +115,7 @@
         <div id="view-dashboard">
             <section class="hero-banner">
                 <img src="images/WorkTrackerBanner.jpg" alt="Work Tracker" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
-                <div class="hero-overlay"><h2 class="hero-title">Work Tracker</h2></div>
+                <div class="hero-overlay"><h2 class="hero-title">Work Tracker Enterprise</h2></div>
             </section>
 
             <div class="toolbar">
@@ -116,11 +123,10 @@
                     <div class="filter-item">
                         <label>Status Filter</label>
                         <select id="filterStatus" onchange="renderTable()">
-                            <option value="Active" selected>Active Tasks (Open/Progress)</option>
+                            <option value="Active" selected>Active Tasks</option>
                             <option value="All">All Statuses</option>
                             <option value="Open">Open</option>
                             <option value="In Progress">In Progress</option>
-                            <option value="On Hold">On Hold</option>
                             <option value="Completed">Completed</option>
                         </select>
                     </div>
@@ -134,17 +140,8 @@
                             <option value="Critical">Critical</option>
                         </select>
                     </div>
-                    <div class="filter-item">
-                        <label>Request Type</label>
-                        <select id="filterType" onchange="renderTable()"><option value="All">All Types</option></select>
-                    </div>
-                    <div class="filter-item">
-                        <label>Account</label>
-                        <select id="filterAccount" onchange="renderTable()"><option value="All">All Accounts</option></select>
-                    </div>
                 </div>
                 <div class="actions-group">
-                    <button class="btn" onclick="exportCSV()">⬇️ Export CSV</button>
                     <button class="btn btn-primary" onclick="openForm()">➕ Add Request</button>
                 </div>
             </div>
@@ -155,22 +152,19 @@
                         <tr>
                             <th>Ticket</th>
                             <th>Title</th>
-                            <th>Type</th>
-                            <th>Account</th>
                             <th>Priority</th>
                             <th>Status</th>
+                            <th>Progress</th>
                             <th>Due Date</th>
                         </tr>
                     </thead>
-                    <tbody id="tracker-body">
-                        </tbody>
+                    <tbody id="tracker-body"></tbody>
                 </table>
             </div>
         </div>
 
         <div id="view-form">
-            <section class="hero-banner">
-                <img src="images/WorkNewRequest.svg" alt="New Request" onerror="this.src=''; this.style.backgroundColor='#0f172a';">
+            <section class="hero-banner" style="height: 120px;">
                 <div class="hero-overlay"><h2 class="hero-title" id="form-title">New Request</h2></div>
             </section>
 
@@ -181,11 +175,6 @@
                 <div class="form-group full-width">
                     <label class="form-label">Title</label>
                     <input type="text" id="reqTitle" placeholder="Brief description of the request...">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Requestor</label>
-                    <input type="text" id="reqUser" placeholder="Name/Email">
                 </div>
 
                 <div class="form-group">
@@ -213,83 +202,75 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Account</label>
-                    <select id="reqAccount"></select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Request Type</label>
-                    <select id="reqType"></select>
+                <div class="form-group full-width" style="margin-top: 12px; padding-top: 24px; border-top: 1px solid var(--border-subtle);">
+                    <label class="form-label" style="font-size: 1.1rem; color: var(--accent-primary);">Sub-Tasks / Checklist</label>
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="text" id="newTaskInput" placeholder="Add a new checklist item...">
+                        <button class="btn" type="button" onclick="addChecklistItem()">Add Task</button>
+                    </div>
+                    <div id="checklistContainer" class="task-list"></div>
                 </div>
 
                 <div class="form-group full-width">
                     <label class="form-label">Notes & Details</label>
                     <div class="editor-container">
                         <div class="editor-toolbar">
-                            <button class="editor-btn" type="button" onclick="formatDoc('bold')" title="Bold">B</button>
-                            <button class="editor-btn" type="button" onclick="formatDoc('italic')" style="font-style:italic;" title="Italic">I</button>
-                            <button class="editor-btn" type="button" onclick="formatDoc('underline')" style="text-decoration:underline;" title="Underline">U</button>
-                            <button class="editor-btn" type="button" onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
-                            <button class="editor-btn" type="button" onclick="addHtmlTemplate()" title="Insert Layout Template">&lt;/&gt; Insert HTML</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('bold')">B</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('italic')" style="font-style:italic;">I</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('insertUnorderedList')">• List</button>
                         </div>
-                        <div id="reqNotes" class="editor-content" contenteditable="true" placeholder="Enter request details, HTML, or standard text here..."></div>
+                        <div id="reqNotes" class="editor-content" contenteditable="true"></div>
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
                 <button class="btn" onclick="closeForm()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveRequest()">Save Request</button>
+                <button class="btn btn-primary" onclick="saveRequest()" id="saveBtn">Save & Transmit to Cloud</button>
             </div>
         </div>
 
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
-
     <script>
-        // --- 1. Settings & Configurations ---
-        const configSettings = {
-            types: JSON.parse(localStorage.getItem('kore_set_types')) || ["Feature Update", "Bug Fix", "Content Load", "Maintenance", "Security Patch"],
-            accounts: JSON.parse(localStorage.getItem('kore_set_accounts')) || ["Internal Base", "Client Alpha", "Client Omega", "Stark Industries"]
-        };
+        // --- 1. Microsoft Entra ID Authentication ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let activeChecklist = [];
 
-        function populateDropdowns() {
-            const typeFilter = document.getElementById('filterType');
-            const typeReq = document.getElementById('reqType');
-            const accFilter = document.getElementById('filterAccount');
-            const accReq = document.getElementById('reqAccount');
-
-            configSettings.types.forEach(t => { typeFilter.add(new Option(t, t)); typeReq.add(new Option(t, t)); });
-            configSettings.accounts.forEach(a => { accFilter.add(new Option(a, a)); accReq.add(new Option(a, a)); });
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
+                }
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            }
         }
 
-        // --- 2. Database ---
+        // --- 2. Database & State Management ---
         function getWorkItems() { return JSON.parse(localStorage.getItem('kore_work_items')) || []; }
 
         function getStatusColor(status) {
             switch(status) {
                 case 'Open': return 'background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe;';
                 case 'In Progress': return 'background:#fffbeb; color:#d97706; border:1px solid #fde68a;';
-                case 'On Hold': return 'background:#fef2f2; color:#ef4444; border:1px solid #fecaca;';
                 case 'Completed': return 'background:#ecfdf5; color:#10b981; border:1px solid #a7f3d0;';
                 default: return 'background:#f1f5f9; color:#64748b;';
             }
         }
 
-        // Guarantees absolute uniqueness for new IDs
-        function generateUniqueTicketId(items) {
-            let newId;
-            let exists = true;
-            while(exists) {
-                newId = "TKT-" + Math.floor(10000 + Math.random() * 90000); // 5 digit unique
-                exists = items.some(i => i.id === newId);
-            }
-            return newId;
+        function generateUniqueTicketId() {
+            return "TKT-" + Math.floor(10000 + Math.random() * 90000);
         }
 
-        // --- 3. View Management ---
+        // --- 3. UI Rendering ---
         function renderTable() {
             const items = getWorkItems();
             const tbody = document.getElementById('tracker-body');
@@ -297,45 +278,76 @@
 
             const fStatus = document.getElementById('filterStatus').value;
             const fPriority = document.getElementById('filterPriority').value;
-            const fType = document.getElementById('filterType').value;
-            const fAccount = document.getElementById('filterAccount').value;
 
-            // Apply Filters
             const filtered = items.filter(item => {
-                let statusMatch = false;
-                if (fStatus === 'All') statusMatch = true;
-                else if (fStatus === 'Active') statusMatch = (item.status === 'Open' || item.status === 'In Progress');
-                else statusMatch = (item.status === fStatus);
-
-                return statusMatch &&
-                       (fPriority === 'All' || item.priority === fPriority) &&
-                       (fType === 'All' || item.type === fType) &&
-                       (fAccount === 'All' || item.account === fAccount);
+                let statusMatch = (fStatus === 'All') || 
+                                  (fStatus === 'Active' && (item.status === 'Open' || item.status === 'In Progress')) || 
+                                  (item.status === fStatus);
+                let prioMatch = (fPriority === 'All' || item.priority === fPriority);
+                return statusMatch && prioMatch && !item.archived && !item.deleted;
             });
 
-            // Sort by Date (Newest first)
             filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
 
-            if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:#94a3b8; font-weight:500;">No tasks match your current filters.</td></tr>`;
-                return;
-            }
-
             filtered.forEach(item => {
+                // Checklist progress calculation
+                let progressBadge = '--';
+                if (item.tasks && item.tasks.length > 0) {
+                    const completed = item.tasks.filter(t => t.done).length;
+                    progressBadge = `<span class="progress-pill">✅ ${completed} / ${item.tasks.length}</span>`;
+                }
+
                 tbody.innerHTML += `
                     <tr onclick="openForm('${item.id}')">
                         <td style="font-family:monospace; color:#64748b; font-weight:600;">${item.id}</td>
                         <td style="font-weight:600; color:#0f172a;">${item.title}</td>
-                        <td>${item.type}</td>
-                        <td>${item.account}</td>
                         <td style="font-weight:600;">${item.priority}</td>
                         <td><span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span></td>
+                        <td>${progressBadge}</td>
                         <td>${item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '--'}</td>
                     </tr>
                 `;
             });
         }
 
+        // --- 4. Checklist System ---
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = '';
+            
+            activeChecklist.forEach((task, index) => {
+                container.innerHTML += `
+                    <div class="task-item ${task.done ? 'done' : ''}">
+                        <div class="task-item-left">
+                            <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleChecklistItem(${index})">
+                            <span class="task-text">${task.text}</span>
+                        </div>
+                        <button class="delete-task-btn" onclick="removeChecklistItem(${index})">&times;</button>
+                    </div>
+                `;
+            });
+        }
+
+        window.addChecklistItem = function() {
+            const input = document.getElementById('newTaskInput');
+            if (input.value.trim() !== '') {
+                activeChecklist.push({ text: input.value.trim(), done: false });
+                input.value = '';
+                renderChecklist();
+            }
+        };
+
+        window.toggleChecklistItem = function(index) {
+            activeChecklist[index].done = !activeChecklist[index].done;
+            renderChecklist();
+        };
+
+        window.removeChecklistItem = function(index) {
+            activeChecklist.splice(index, 1);
+            renderChecklist();
+        };
+
+        // --- 5. Form Management & Azure Transmission ---
         function openForm(id = null) {
             document.getElementById('view-dashboard').style.display = 'none';
             document.getElementById('view-form').style.display = 'block';
@@ -347,24 +359,23 @@
                 document.getElementById('ticketId').value = item.id;
                 document.getElementById('createdDate').value = item.created;
                 document.getElementById('reqTitle').value = item.title;
-                document.getElementById('reqUser').value = item.requestor;
-                document.getElementById('reqDue').value = item.dueDate;
+                document.getElementById('reqDue').value = item.dueDate || "";
                 document.getElementById('reqStatus').value = item.status;
                 document.getElementById('reqPriority').value = item.priority;
-                document.getElementById('reqAccount').value = item.account;
-                document.getElementById('reqType').value = item.type;
-                document.getElementById('reqNotes').innerHTML = item.notes;
+                document.getElementById('reqNotes').innerHTML = item.notes || "";
+                activeChecklist = item.tasks || [];
             } else {
                 document.getElementById('form-title').innerText = "New Request";
                 document.getElementById('ticketId').value = "";
                 document.getElementById('createdDate').value = new Date().toISOString();
                 document.getElementById('reqTitle').value = "";
-                document.getElementById('reqUser').value = sessionStorage.getItem('kore_user_id') || "";
                 document.getElementById('reqDue').value = "";
                 document.getElementById('reqStatus').value = "Open";
                 document.getElementById('reqPriority').value = "Medium";
                 document.getElementById('reqNotes').innerHTML = "";
+                activeChecklist = [];
             }
+            renderChecklist();
         }
 
         function closeForm() {
@@ -373,69 +384,55 @@
             renderTable();
         }
 
-        // --- 4. Data Processing ---
-        function saveRequest() {
-            const title = document.getElementById('reqTitle').value.trim();
-            if (!title) return alert('Title is required to save the request.');
+        async function saveRequest() {
+            const btn = document.getElementById('saveBtn');
+            btn.innerText = "Transmitting..."; btn.disabled = true;
 
-            let items = getWorkItems();
-            const idInput = document.getElementById('ticketId').value;
+            const title = document.getElementById('reqTitle').value.trim();
+            if (!title) { alert('Title is required.'); btn.innerText = "Save & Transmit to Cloud"; btn.disabled = false; return; }
+
+            const idInput = document.getElementById('ticketId').value || generateUniqueTicketId();
             
+            // Package the Azure Payload
             const payload = {
+                id: idInput,
+                created: document.getElementById('createdDate').value,
                 title: title,
-                requestor: document.getElementById('reqUser').value,
                 dueDate: document.getElementById('reqDue').value,
                 status: document.getElementById('reqStatus').value,
                 priority: document.getElementById('reqPriority').value,
-                account: document.getElementById('reqAccount').value,
-                type: document.getElementById('reqType').value,
                 notes: document.getElementById('reqNotes').innerHTML,
+                tasks: activeChecklist,
+                authorId: cloudIdentity.userId,
+                authorEmail: cloudIdentity.userName
             };
 
-            if (idInput) {
-                const idx = items.findIndex(i => i.id === idInput);
-                payload.id = idInput;
-                payload.created = document.getElementById('createdDate').value;
-                items[idx] = payload;
-            } else {
-                payload.id = generateUniqueTicketId(items);
-                payload.created = document.getElementById('createdDate').value;
-                items.push(payload);
+            // 1. Transmit to Azure Cloud Database
+            try {
+                const response = await fetch('/api/save_work_item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) console.warn("Cloud transmit pending (Backend may still be compiling).");
+            } catch (err) {
+                console.error("Cloud link offline. Caching locally.", err);
             }
 
+            // 2. Save to Local Memory immediately for seamless UI
+            let items = getWorkItems();
+            const idx = items.findIndex(i => i.id === payload.id);
+            if (idx > -1) { items[idx] = payload; } else { items.push(payload); }
             localStorage.setItem('kore_work_items', JSON.stringify(items));
+
+            btn.innerText = "Save & Transmit to Cloud"; btn.disabled = false;
             closeForm();
         }
 
-        function exportCSV() {
-            const items = getWorkItems();
-            if (items.length === 0) return alert('No items to export.');
-
-            const headers = ['ID', 'Title', 'Type', 'Account', 'Priority', 'Status', 'Due Date', 'Requestor'];
-            const rows = items.map(i => [ i.id, `"${i.title}"`, i.type, i.account, i.priority, i.status, i.dueDate, i.requestor ]);
-
-            let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", `Kore_Work_Export_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // --- 5. Editor ---
-        function formatDoc(cmd, value=null) {
-            document.execCommand(cmd, false, value);
-            document.getElementById('reqNotes').focus();
-        }
-
-        function addHtmlTemplate() {
-            const template = `<div style="background:#f8fafc; padding:10px; border-left:3px solid #0ea5e9; margin-bottom:10px;"><strong>Update:</strong><br><em>Enter details here...</em></div><br>`;
-            formatDoc('insertHTML', template);
-        }
+        function formatDoc(cmd) { document.execCommand(cmd, false, null); document.getElementById('reqNotes').focus(); }
 
         document.addEventListener('DOMContentLoaded', () => {
-            populateDropdowns();
+            fetchSecureIdentity();
             renderTable();
         });
     </script>

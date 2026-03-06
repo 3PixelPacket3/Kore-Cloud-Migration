@@ -135,4 +135,4 @@ def get_macros(req: func.HttpRequest) -> func.HttpResponse:
         query = f"PartitionKey eq '{user_id}' or PartitionKey eq 'GLOBAL_MACRO'"
         entities = list(table_client.query_entities(query_filter=query))
         return func.HttpResponse(json.dumps([json.loads(e['RawJSON']) for e in entities]), mimetype="application/json", status_code=200)
-    except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200)
+    except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200) 

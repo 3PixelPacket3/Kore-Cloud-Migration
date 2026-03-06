@@ -37,6 +37,7 @@
             flex-direction: column;
             min-height: 100vh;
             min-width: 1024px;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- Global Header --- */
@@ -54,29 +55,35 @@
             top: 0;
             z-index: 100;
         }
+
         .header-left {
             display: flex;
             align-items: center;
             gap: 40px;
             height: 100%;
         }
+
         .kore-logo {
             font-size: 1.5rem;
             font-weight: 800;
             color: var(--text-main);
+            letter-spacing: -0.5px;
             margin: 0;
             display: flex;
             align-items: center;
             gap: 8px;
         }
+
         .kore-logo span {
             color: var(--accent-primary);
         }
+
         .nav-menu {
             display: flex;
             gap: 8px;
             height: 100%;
         }
+
         .nav-item {
             text-decoration: none;
             color: var(--text-secondary);
@@ -91,11 +98,13 @@
             position: relative;
             transition: all 0.2s ease;
         }
+
         .nav-item:hover, .nav-item.active {
             color: var(--accent-primary);
             border-bottom-color: var(--accent-primary);
             background-color: #f0f9ff;
         }
+
         .dropdown-content {
             display: none;
             position: absolute;
@@ -109,9 +118,11 @@
             overflow: hidden;
             z-index: 101;
         }
+
         .nav-item:hover .dropdown-content {
             display: block;
         }
+
         .dropdown-content a {
             color: var(--text-secondary);
             padding: 14px 20px;
@@ -120,12 +131,20 @@
             border-bottom: 1px solid var(--bg-app);
             font-weight: 500;
         }
+
         .dropdown-content a:hover {
             background-color: #f0f9ff;
             color: var(--accent-primary);
             padding-left: 24px;
             transition: all 0.2s ease;
         }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
         .user-badge {
             font-size: 0.85rem;
             font-weight: 600;
@@ -141,6 +160,7 @@
             align-items: center;
             position: relative;
         }
+
         .search-bar {
             padding: 10px 16px 10px 36px;
             border: 1px solid var(--border-subtle);
@@ -150,7 +170,11 @@
             font-size: 0.9rem;
             outline: none;
             transition: width 0.3s ease;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+            background-repeat: no-repeat;
+            background-position: 12px center;
         }
+
         .search-bar:focus {
             width: 340px;
             border-color: var(--accent-primary);
@@ -167,6 +191,7 @@
             box-sizing: border-box;
             flex-grow: 1;
         }
+
         .hero-banner {
             background: var(--bg-surface);
             border-radius: var(--radius-md);
@@ -177,11 +202,13 @@
             position: relative;
             margin-bottom: 32px;
         }
+
         .hero-banner img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .hero-overlay {
             position: absolute;
             bottom: 0;
@@ -195,11 +222,13 @@
             justify-content: space-between;
             align-items: flex-end;
         }
+
         .hero-title {
             margin: 0;
             font-size: 1.8rem;
             font-weight: 700;
         }
+
         .hero-subtitle {
             margin: 6px 0 0 0;
             font-size: 1rem;
@@ -219,18 +248,23 @@
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             font-size: 0.95rem;
+            text-decoration: none;
         }
+
         .btn:hover {
             background-color: var(--bg-app);
             border-color: var(--text-secondary);
         }
+
         .btn-primary {
             background-color: var(--accent-primary);
             color: white;
             border: none;
         }
+
         .btn-primary:hover {
             background-color: var(--accent-hover);
             border: none;
@@ -245,9 +279,12 @@
             outline: none;
             background: var(--bg-surface);
             color: var(--text-main);
+            font-family: inherit;
             width: 100%;
             box-sizing: border-box;
+            transition: border-color 0.2s;
         }
+
         .input:focus, .form-select:focus {
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
@@ -256,23 +293,34 @@
         .form-row {
             margin-bottom: 24px;
         }
+
         .form-row label {
             font-weight: 600;
             display: block;
             margin-bottom: 8px;
             color: var(--text-main);
         }
+
         .form-hint {
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-top: 6px;
+            line-height: 1.4;
         }
+
         .checkbox-label {
             display: flex;
             align-items: center;
             gap: 10px;
             font-weight: 500;
             font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-primary);
             cursor: pointer;
         }
 
@@ -285,6 +333,7 @@
             box-shadow: var(--shadow-sm);
             margin-bottom: 32px;
         }
+
         .section-header {
             margin: 0 0 24px 0;
             font-size: 1.3rem;
@@ -293,6 +342,7 @@
             border-bottom: 1px solid var(--border-subtle);
             padding-bottom: 16px;
         }
+
         .layout-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -309,12 +359,14 @@
             border-radius: var(--radius-sm);
             display: none;
         }
+
         .status-text.active {
             display: block;
             background: #f1f5f9;
             color: var(--text-main);
             border: 1px solid var(--border-subtle);
         }
+
         .status-text.error {
             background: var(--error-bg);
             color: var(--error-text);
@@ -328,6 +380,7 @@
             gap: 16px;
             margin-bottom: 24px;
         }
+
         .metric-card {
             background: var(--bg-app);
             border: 1px solid var(--border-subtle);
@@ -335,14 +388,17 @@
             padding: 16px;
             text-align: center;
         }
+
         .metric-label {
             display: block;
             font-size: 0.8rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: var(--text-secondary);
             font-weight: 600;
             margin-bottom: 8px;
         }
+
         .metric-value {
             display: block;
             font-size: 2rem;
@@ -358,6 +414,7 @@
             overflow: hidden;
             margin-bottom: 24px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -365,6 +422,7 @@
             background: var(--bg-surface);
             font-size: 0.9rem;
         }
+
         th {
             background: var(--bg-app);
             padding: 12px 16px;
@@ -372,12 +430,18 @@
             color: var(--text-main);
             border-bottom: 2px solid var(--border-subtle);
         }
+
         td {
             padding: 12px 16px;
             border-bottom: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             vertical-align: top;
         }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
         .error-pill {
             background: var(--error-bg);
             color: var(--error-text);
@@ -388,6 +452,7 @@
             font-weight: 600;
             display: inline-block;
         }
+        
         .success-banner {
             background: var(--success-bg);
             border: 1px solid var(--success-border);
@@ -405,18 +470,21 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
         }
+
         .rule-group {
             background: var(--bg-app);
             padding: 20px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-subtle);
         }
+
         .rule-group h3 {
             margin: 0 0 12px 0;
             font-size: 1rem;
             color: var(--text-main);
             font-weight: 700;
         }
+
         .rule-group ul {
             margin: 0;
             padding-left: 20px;
@@ -424,8 +492,18 @@
             font-size: 0.9rem;
             line-height: 1.6;
         }
+
         .rule-group li {
             margin-bottom: 6px;
+        }
+
+        .rule-group code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #0f172a;
         }
 
         /* --- Global Footer --- */
@@ -463,6 +541,7 @@
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
                     </div>
                 </div>
@@ -470,9 +549,12 @@
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
-        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
-        <div class="search-container">
-            <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
+
+        <div class="header-right">
+            <div class="search-container">
+                <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
+            </div>
+            <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
         </div>
     </header>
 
@@ -492,6 +574,7 @@
             
             <section class="section-card">
                 <h2 class="section-header">1. Configuration & Upload</h2>
+
                 <div class="form-row">
                     <label for="lodMode">Validation Profile</label>
                     <select id="lodMode" class="form-select">
@@ -499,26 +582,37 @@
                         <option value="palod">PALOD (Requires 1NAPR prefix on all POs)</option>
                     </select>
                 </div>
+
                 <div class="form-row">
                     <label for="lodFileInput">Target CSV File</label>
                     <input type="file" id="lodFileInput" class="input" style="padding: 9px;" accept=".csv">
                     <p class="form-hint">Must match the standard 28-column LOD layout. First row must contain headers.</p>
                 </div>
+
                 <div class="form-row">
                     <label>Execution Settings</label>
                     <label class="checkbox-label">
-                        <input type="checkbox" id="lodStopOnFatal" checked> 
-                        Halt execution if column layout deviates
+                        <input type="checkbox" id="lodStopOnFatal" checked>
+                        Halt execution if column layout deviates from template
                     </label>
                 </div>
-                <button type="button" id="lodValidateBtn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.05rem; margin-top: 16px;">
-                    Run Validation Engine
-                </button>
+
+                <div class="form-row" style="margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px;">
+                    <label>Reference Materials</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                        <a href="data/lod/LOD-Blank-Template.csv" class="btn" download>Blank Template (CSV)</a>
+                        <a href="data/lod/LOD-Rules.docx" class="btn" download>Rules Documentation</a>
+                    </div>
+                </div>
+
+                <button type="button" id="lodValidateBtn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.05rem; margin-top: 16px;">Run Validation Engine</button>
+
                 <div id="lodStatus" class="status-text"></div>
             </section>
 
             <section class="section-card">
                 <h2 class="section-header">2. Diagnostic Results</h2>
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <span class="metric-label">Total Data Rows</span>
@@ -549,11 +643,14 @@
                                     <th>Violation</th>
                                 </tr>
                             </thead>
-                            <tbody id="lodErrorsTableBody"></tbody>
+                            <tbody id="lodErrorsTableBody">
+                                </tbody>
                         </table>
                     </div>
+
                     <div style="display: flex; flex-wrap: wrap; gap: 12px;">
                         <button type="button" id="lodDownloadErrorCsvBtn" class="btn">Export CSV Report</button>
+                        <button type="button" id="lodDownloadHtmlReportBtn" class="btn">Export HTML Report</button>
                         <button type="button" id="lodCopyResultsBtn" class="btn btn-primary">Copy Results</button>
                     </div>
                 </div>
@@ -563,32 +660,48 @@
 
         <section class="section-card">
             <h2 class="section-header">Reference: Applied Logic Rules</h2>
+            
             <div class="rules-grid">
                 <div class="rule-group">
                     <h3>Core Identifiers</h3>
                     <ul>
-                        <li><strong>Group Code</strong>: Must be uppercase (e.g., <code>SAMS</code>).</li>
-                        <li><strong>Customer Number</strong>: Must be numeric; cannot end in <code>00</code>.</li>
-                        <li><strong>Quantity</strong>: Must be a numeric whole number greater than 0.</li>
-                        <li><strong>Order Type</strong>: Strictly limited to <code>GO</code>, <code>GR</code>, <code>PA</code>, or <code>DO</code>.</li>
-                        <li><strong>Allocation Rule</strong>: Must be exactly <code>O</code>.</li>
+                        <li><strong>Group Code</strong>: All caps (e.g., <code>SAMS</code>).</li>
+                        <li><strong>Customer Number</strong>: Numeric; cannot end in <code>00</code>.</li>
+                        <li><strong>Quantity</strong>: Numeric, > 0.</li>
+                        <li><strong>Order Type</strong>: <code>GO</code>, <code>GR</code>, <code>PA</code>, or <code>DO</code>.</li>
+                        <li><strong>Allocation Rule</strong>: Strictly <code>O</code>.</li>
                     </ul>
                 </div>
+                
                 <div class="rule-group">
                     <h3>PA & PALOD Strict Logic</h3>
                     <ul>
-                        <li><strong>LOD Mode:</strong> If Order Type is <code>PA</code>, the PO number must begin with the <code>1NAPR</code> prefix.</li>
-                        <li><strong>PALOD Mode:</strong> ALL rows require the PO to start with <code>1NAPR</code>, regardless of Order Type.</li>
-                        <li><strong>Uniqueness:</strong> A PO number applied to a different address in the same file will be flagged. Maximum 20 characters.</li>
+                        <li><strong>LOD:</strong> If Order Type is <code>PA</code>, PO must start with <code>1NAPR</code>.</li>
+                        <li><strong>PALOD:</strong> ALL rows require PO to start with <code>1NAPR</code>.</li>
+                        <li><strong>Uniqueness:</strong> Same PO applied to a different address will flag. Max 20 chars.</li>
                     </ul>
                 </div>
+
                 <div class="rule-group">
-                    <h3>Formatting Standards</h3>
+                    <h3>Address & Contact Formatting</h3>
                     <ul>
-                        <li><strong>State / Country</strong>: Exactly 2 uppercase letters (e.g., <code>NY</code>, <code>US</code>).</li>
-                        <li><strong>ZIP Code</strong>: 5 or 9 digits (hyphens are automatically stripped and validated).</li>
-                        <li><strong>Phone Number</strong>: Exactly 10 digits (no spaces or hyphens allowed).</li>
-                        <li><strong>Email Addresses</strong>: Cannot contain spaces. Must use <code>.com</code> (flags <code>,com</code> typos). Multiple emails must be separated by a semicolon <code>;</code>.</li>
+                        <li><strong>Address 1</strong>: Contact/Company (Max 35 chars).</li>
+                        <li><strong>Address 2</strong>: Street (Do not combine PO Box & Street).</li>
+                        <li><strong>State</strong>: 2-char uppercase (<code>NY</code>).</li>
+                        <li><strong>ZIP</strong>: 5 or 9 digits (hyphens removed).</li>
+                        <li><strong>Country</strong>: 2-char uppercase (<code>US</code>).</li>
+                        <li><strong>Phone</strong>: Exactly 10 digits (no spaces/hyphens).</li>
+                    </ul>
+                </div>
+
+                <div class="rule-group">
+                    <h3>Execution & Logistics</h3>
+                    <ul>
+                        <li><strong>In Hands Date</strong>: Format <code>MM.DD.YYYY</code>.</li>
+                        <li><strong>Indicator</strong>: Must be <code>O</code> (on) or <code>B</code> (before).</li>
+                        <li><strong>Address Over-Ride</strong>: <code>Y</code> or <code>N</code>.</li>
+                        <li><strong>Service Level</strong>: Uppercase (<code>NEXT</code>, <code>2DAY</code>).</li>
+                        <li><strong>Emails</strong>: No spaces. Use <code>.com</code> (not <code>,com</code>). Delimit with <code>;</code>.</li>
                     </ul>
                 </div>
             </div>
@@ -599,8 +712,9 @@
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
+        // --- Microsoft Entra ID Integration ---
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
-        
+
         async function fetchSecureIdentity() {
             try {
                 const response = await fetch('/.auth/me');
@@ -609,232 +723,584 @@
                     cloudIdentity.userId = data.clientPrincipal.userId;
                     cloudIdentity.userName = data.clientPrincipal.userDetails;
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
                 }
             } catch (error) {
                 console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
             }
         }
-        
-        document.addEventListener('DOMContentLoaded', async () => { 
-            await fetchSecureIdentity(); 
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
         });
 
-        // --- LOD Validation Logic ---
+        // --- Validation Logic ---
         (function () {
             var fileInput = document.getElementById('lodFileInput');
             var validateBtn = document.getElementById('lodValidateBtn');
+            var modeSelect = document.getElementById('lodMode');
+            var stopOnFatalCheckbox = document.getElementById('lodStopOnFatal');
             var statusEl = document.getElementById('lodStatus');
+
+            var totalRowsEl = document.getElementById('lodTotalRows');
+            var errorRowCountEl = document.getElementById('lodErrorRowCount');
+            var totalIssuesEl = document.getElementById('lodTotalIssues');
+
+            var noErrorsMessageEl = document.getElementById('lodNoErrorsMessage');
+            var errorsContainerEl = document.getElementById('lodErrorsContainer');
             var errorsTableBodyEl = document.getElementById('lodErrorsTableBody');
+
+            var downloadErrorCsvBtn = document.getElementById('lodDownloadErrorCsvBtn');
+            var downloadHtmlReportBtn = document.getElementById('lodDownloadHtmlReportBtn');
+            var copyResultsBtn = document.getElementById('lodCopyResultsBtn');
+
             var lastValidation = null;
 
+            if (!fileInput || !validateBtn) return;
+
             validateBtn.addEventListener('click', function () {
-                if (!fileInput.files || !fileInput.files[0]) { 
-                    setStatus('Error: Please select a CSV file.', true); 
-                    return; 
+                if (!fileInput.files || !fileInput.files[0]) {
+                    setStatus('Error: Please select a CSV file first.', true);
+                    return;
                 }
-                
+
+                var file = fileInput.files[0];
                 var reader = new FileReader();
+
                 setStatus('Parsing file data...', false);
-                
+
                 reader.onload = function (e) {
                     try {
                         var text = e.target.result || '';
-                        var mode = document.getElementById('lodMode').value || 'lod';
-                        var result = validateLodCsv(text, mode, document.getElementById('lodStopOnFatal').checked);
-                        
+                        var mode = (modeSelect && modeSelect.value) || 'lod';
+                        var stopOnFatal = !!(stopOnFatalCheckbox && stopOnFatalCheckbox.checked);
+
+                        var result = validateLodCsv(text, mode, stopOnFatal);
                         lastValidation = result;
                         renderValidation(result);
                         setStatus('Engine execution complete.', false);
                     } catch (err) {
-                        lastValidation = null; 
-                        renderEmpty(); 
-                        setStatus('Fatal Error: ' + err.message, true);
+                        console.error(err);
+                        lastValidation = null;
+                        renderEmpty();
+                        setStatus('Fatal Error: ' + (err && err.message ? err.message : String(err)), true);
                     }
                 };
-                
-                reader.readAsText(fileInput.files[0]);
+
+                reader.onerror = function () {
+                    setStatus('IO Error: Unable to read file payload.', true);
+                };
+
+                reader.readAsText(file);
             });
 
-            document.getElementById('lodDownloadErrorCsvBtn').addEventListener('click', function () {
-                if (!lastValidation || !lastValidation.issues.length) return;
-                var lines = ['Row,Column,Value,Issue'];
-                lastValidation.issues.forEach(i => {
-                    lines.push(`${i.row},"${i.columnName}","${i.value}","${i.message}"`);
+            if (downloadErrorCsvBtn) {
+                downloadErrorCsvBtn.addEventListener('click', function () {
+                    if (!lastValidation || !lastValidation.issues || !lastValidation.issues.length) return;
+                    var csv = buildIssueCsv(lastValidation);
+                    downloadTextFile(csv, buildSuggestedFilename(lastValidation, 'lod-validation-issues.csv'), 'text/csv');
                 });
-                downloadTextFile(lines.join('\r\n'), 'lod-validation-issues.csv', 'text/csv');
-            });
-
-            document.getElementById('lodCopyResultsBtn').addEventListener('click', function () {
-                if (!lastValidation) return;
-                var lines = [
-                    'LOD Validation Results', 
-                    `Total data rows: ${lastValidation.dataRowCount}`, 
-                    `Rows with issues: ${lastValidation.errorRowCount}`, 
-                    ''
-                ];
-                lastValidation.issues.forEach(i => {
-                    lines.push(`Row ${i.row} - ${i.columnName}: ${i.message}`);
-                });
-                navigator.clipboard.writeText(lines.join('\n')).then(() => {
-                    setStatus('Copied to clipboard.', false);
-                });
-            });
-
-            function setStatus(msg, err) { 
-                statusEl.textContent = msg; 
-                statusEl.className = 'status-text active ' + (err ? 'error' : ''); 
-                setTimeout(() => statusEl.classList.remove('active'), 3000); 
             }
-            
-            function renderEmpty() { 
-                document.getElementById('lodTotalRows').textContent = '0'; 
-                document.getElementById('lodErrorRowCount').textContent = '0'; 
-                document.getElementById('lodTotalIssues').textContent = '0'; 
-                document.getElementById('lodNoErrorsMessage').style.display = 'none'; 
-                document.getElementById('lodErrorsContainer').style.display = 'none'; 
-                errorsTableBodyEl.innerHTML = ''; 
+
+            if (downloadHtmlReportBtn) {
+                downloadHtmlReportBtn.addEventListener('click', function () {
+                    if (!lastValidation || !lastValidation.rows || !lastValidation.rows.length) return;
+                    var html = buildHtmlReport(lastValidation);
+                    downloadTextFile(html, buildSuggestedFilename(lastValidation, 'lod-validation-report.html'), 'text/html');
+                });
             }
-            
-            function renderValidation(res) {
-                document.getElementById('lodTotalRows').textContent = res.dataRowCount; 
-                document.getElementById('lodErrorRowCount').textContent = res.errorRowCount; 
-                document.getElementById('lodTotalIssues').textContent = res.issues.length;
+
+            if (copyResultsBtn) {
+                copyResultsBtn.addEventListener('click', function () {
+                    if (!lastValidation) return;
+                    var text = buildClipboardSummary(lastValidation);
+                    if (!text) return;
+
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text)
+                            .then(function () { setStatus('Results copied to clipboard.', false); })
+                            .catch(function (err) { console.error(err); fallbackCopyText(text); });
+                    } else {
+                        fallbackCopyText(text);
+                    }
+                });
+            }
+
+            function setStatus(message, isError) {
+                if (!statusEl) return;
+                statusEl.textContent = message || '';
+                statusEl.className = 'status-text active ' + (isError ? 'error' : '');
                 
-                if (!res.issues.length) { 
-                    document.getElementById('lodNoErrorsMessage').style.display = 'block'; 
-                    document.getElementById('lodErrorsContainer').style.display = 'none'; 
-                    return; 
+                if (!isError) {
+                    setTimeout(() => { statusEl.classList.remove('active'); }, 3000);
                 }
-                
-                document.getElementById('lodNoErrorsMessage').style.display = 'none'; 
-                document.getElementById('lodErrorsContainer').style.display = 'block';
-                
-                errorsTableBodyEl.innerHTML = res.issues.map(i => `
-                    <tr>
-                        <td><strong>${i.row}</strong></td>
-                        <td><span style="font-weight:600;">${i.columnName}</span></td>
-                        <td><code>${i.value}</code></td>
-                        <td><span class="error-pill">${i.message}</span></td>
-                    </tr>
-                `).join('');
+            }
+
+            function renderEmpty() {
+                if (totalRowsEl) totalRowsEl.textContent = '0';
+                if (errorRowCountEl) errorRowCountEl.textContent = '0';
+                if (totalIssuesEl) totalIssuesEl.textContent = '0';
+                if (noErrorsMessageEl) noErrorsMessageEl.style.display = 'none';
+                if (errorsContainerEl) errorsContainerEl.style.display = 'none';
+                if (errorsTableBodyEl) errorsTableBodyEl.innerHTML = '';
+            }
+
+            function renderValidation(result) {
+                if (!result) { renderEmpty(); return; }
+
+                if (totalRowsEl) totalRowsEl.textContent = String(result.dataRowCount || 0);
+                if (errorRowCountEl) errorRowCountEl.textContent = String(result.errorRowCount || 0);
+                if (totalIssuesEl) totalIssuesEl.textContent = String(result.issues.length || 0);
+
+                if (!result.issues.length) {
+                    if (noErrorsMessageEl) noErrorsMessageEl.style.display = 'block';
+                    if (errorsContainerEl) errorsContainerEl.style.display = 'none';
+                    if (errorsTableBodyEl) errorsTableBodyEl.innerHTML = '';
+                    return;
+                }
+
+                if (noErrorsMessageEl) noErrorsMessageEl.style.display = 'none';
+                if (errorsContainerEl) errorsContainerEl.style.display = 'block';
+
+                if (!errorsTableBodyEl) return;
+                var rowsHtml = [];
+                for (var i = 0; i < result.issues.length; i++) {
+                    var issue = result.issues[i];
+                    rowsHtml.push(
+                        '<tr>' +
+                            '<td><strong style="color:var(--text-main);">' + escapeHtml(String(issue.row)) + '</strong></td>' +
+                            '<td><span style="font-weight:600;">' + escapeHtml(issue.columnName || '') + '</span></td>' +
+                            '<td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; border:1px solid #cbd5e1; font-family:monospace;">' + escapeHtml(issue.value == null ? '' : String(issue.value)) + '</code></td>' +
+                            '<td><span class="error-pill">' + escapeHtml(issue.message || '') + '</span></td>' +
+                        '</tr>'
+                    );
+                }
+                errorsTableBodyEl.innerHTML = rowsHtml.join('');
             }
 
             function parseCsv(text) {
                 var rows = []; 
-                var cur = []; 
-                var f = ''; 
-                var inQ = false;
+                var row = []; 
+                var cur = ''; 
+                var inQuotes = false;
                 
                 for (var i = 0; i < text.length; i++) {
-                    var c = text[i];
-                    if (inQ) { 
-                        if (c === '"' && text[i+1] === '"') { 
-                            f += '"'; 
-                            i++; 
-                        } else if (c === '"') {
-                            inQ = false; 
-                        } else {
-                            f += c; 
+                    var ch = text[i];
+                    if (inQuotes) {
+                        if (ch === '"') {
+                            var peek = text[i + 1];
+                            if (peek === '"') { 
+                                cur += '"'; 
+                                i++; 
+                            } else { 
+                                inQuotes = false; 
+                            }
+                        } else { 
+                            cur += ch; 
                         }
-                    } else { 
-                        if (c === '"') {
-                            inQ = true; 
-                        } else if (c === ',') { 
-                            cur.push(f); 
-                            f = ''; 
-                        } else if (c === '\n') { 
-                            cur.push(f); 
-                            rows.push(cur); 
-                            cur = []; 
-                            f = ''; 
-                        } else if (c !== '\r') {
-                            f += c; 
+                    } else {
+                        if (ch === '"') { 
+                            inQuotes = true; 
+                        } else if (ch === ',') { 
+                            row.push(cur); 
+                            cur = ''; 
+                        } else if (ch === '\r') { 
+                            // ignore carriage return
+                        } else if (ch === '\n') { 
+                            row.push(cur); 
+                            rows.push(row); 
+                            row = []; 
+                            cur = ''; 
+                        } else { 
+                            cur += ch; 
                         }
                     }
                 }
-                if (f || cur.length) { 
-                    cur.push(f); 
-                    rows.push(cur); 
+                if (cur.length || row.length) { 
+                    row.push(cur); 
+                    rows.push(row); 
                 }
-                return rows.filter(r => r.some(c => c.trim() !== ''));
+
+                var cleaned = [];
+                for (var r = 0; r < rows.length; r++) {
+                    var cells = rows[r]; 
+                    var allEmpty = true;
+                    for (var c = 0; c < cells.length; c++) {
+                        if (String(cells[c]).trim() !== '') { 
+                            allEmpty = false; 
+                            break; 
+                        }
+                    }
+                    if (!allEmpty) { 
+                        cleaned.push(cells); 
+                    }
+                }
+                return cleaned;
             }
 
             function validateLodCsv(text, mode, stopOnFatal) {
-                var rows = parseCsv(text); 
-                if (!rows.length) throw new Error('Empty file.');
-                
-                var header = rows[0]; 
+                var rows = parseCsv(text || '');
+                if (!rows.length) throw new Error('The file appears to be empty.');
+
+                var header = rows[0];
                 var dataRows = rows.slice(1);
-                
-                if (header.length !== 28 && stopOnFatal) {
-                    throw new Error(`Expected exactly 28 columns, found ${header.length}.`);
-                }
-                
-                var issues = []; 
-                var errSet = {};
-                var poMap = {};
+                var EXPECTED_COLUMNS = 28;
 
-                function addIss(r, c, m, v) { 
-                    issues.push({
-                        row: r, 
-                        columnIndex: c, 
-                        columnName: header[c] || `Col ${c+1}`, 
-                        message: m, 
-                        value: v
-                    }); 
-                    errSet[r] = 1; 
+                if (header.length !== EXPECTED_COLUMNS) {
+                    if (stopOnFatal) throw new Error('Unexpected column layout. Expected ' + EXPECTED_COLUMNS + ' columns but found ' + header.length + '.');
                 }
 
-                dataRows.forEach((r, i) => {
-                    var rowIdx = i + 2; 
-                    var val = (idx) => (r[idx] || '').trim();
-                    
-                    // Group Code
-                    if (val(0) && val(0) !== val(0).toUpperCase()) addIss(rowIdx, 0, 'Must be uppercase', val(0));
-                    
-                    // Customer Number
-                    if (val(1) && !/^\d+$/.test(val(1))) addIss(rowIdx, 1, 'Must be numeric', val(1));
-                    if (val(1) && val(1).endsWith('00')) addIss(rowIdx, 1, 'Cannot end in 00', val(1));
-                    
-                    // Quantity
-                    if (val(3) && (!/^\d+$/.test(val(3)) || parseInt(val(3)) <= 0)) addIss(rowIdx, 3, 'Must be positive integer', val(3));
-                    
-                    // PO Logic
-                    var po = val(4);
-                    if (po.length > 20) addIss(rowIdx, 4, 'Max 20 characters', po);
-                    if (mode === 'palod' && !po.startsWith('1NAPR')) addIss(rowIdx, 4, 'PALOD requires 1NAPR prefix', po);
-                    if (mode === 'lod' && val(15) === 'PA' && !po.startsWith('1NAPR')) addIss(rowIdx, 4, 'PA Order Type requires 1NAPR prefix', po);
-                    
-                    var addrKey = [val(1),val(5),val(6),val(7),val(8),val(9),val(10),val(11),val(12)].join('|').toUpperCase();
-                    if (po && poMap[po] && poMap[po] !== addrKey) addIss(rowIdx, 4, 'PO reused on a different address', po);
-                    else if (po) poMap[po] = addrKey;
+                var DISPLAY_COLUMN_NAMES = [
+                    'Group Code', 'Customer #', 'Item Number', 'Quantity', 'Customer PO', 'Name', 'Ship-to-Address 1', 'Ship-to Address 2', 'Ship-to Address 3', 'City', 'State', 'ZIP', 'Country', 'Contact name', 'Contact', 'Order Type', 'Service Level of Shipment', 'Allocation Rule', 'Customer In Hands Date', 'On or Before Indicator (O or B)', 'Must Ship Date', 'Address Over-Ride', 'Carrier', 'Ship From Warehouse', 'GL-Code', 'Confirmation Email', 'Ship Confirmation Email', 'Site'
+                ];
 
-                    // Formatting
-                    if (val(10) && !/^[A-Z]{2}$/.test(val(10))) addIss(rowIdx, 10, 'Must be 2 uppercase letters', val(10));
+                function getColName(index) {
+                    if (header[index] && String(header[index]).trim()) return String(header[index]).trim();
+                    return DISPLAY_COLUMN_NAMES[index] || ('Column ' + (index + 1));
+                }
+
+                var issues = [];
+                var errorRowSet = {};
+
+                function addIssue(rowIndex, colIndex, message, value) {
+                    issues.push({ 
+                        row: rowIndex, 
+                        columnIndex: colIndex, 
+                        columnName: getColName(colIndex), 
+                        message: message, 
+                        value: value 
+                    });
+                    errorRowSet[rowIndex] = true;
+                }
+
+                var poAddressMap = {};
+
+                for (var i = 0; i < dataRows.length; i++) {
+                    var row = dataRows[i] || [];
+                    var rowIndex = i + 2; 
+
+                    var nonEmpty = false;
+                    for (var c = 0; c < row.length; c++) {
+                        if (String(row[c] || '').trim() !== '') { 
+                            nonEmpty = true; 
+                            break; 
+                        }
+                    }
+                    if (!nonEmpty) continue;
+
+                    function val(idx) { 
+                        return (row[idx] == null ? '' : String(row[idx])).trim(); 
+                    }
+
+                    // 0: Group Code
+                    (function () {
+                        var v = val(0);
+                        if (!v) addIssue(rowIndex, 0, 'Group Code is required.', v);
+                        else if (v !== v.toUpperCase()) addIssue(rowIndex, 0, 'Group Code must be uppercase.', v);
+                    })();
                     
-                    var zip = val(11).replace(/-/g,''); 
-                    if (zip && !/^\d{5}(\d{4})?$/.test(zip)) addIss(rowIdx, 11, 'Invalid ZIP format', val(11));
+                    // 1: Customer Number
+                    (function () {
+                        var v = val(1);
+                        if (!v) { addIssue(rowIndex, 1, 'Customer # is required.', v); return; }
+                        if (!/^\d+$/.test(v)) addIssue(rowIndex, 1, 'Customer # must be numeric.', v);
+                        if (v.slice(-2) === '00') addIssue(rowIndex, 1, 'Customer # cannot end in "00".', v);
+                    })();
                     
-                    if (val(15) && !['GO','GR','PA','DO'].includes(val(15))) addIss(rowIdx, 15, 'Invalid Order Type', val(15));
-                });
-                
+                    // 2: Item Number
+                    (function () { 
+                        var v = val(2); 
+                        if (!v) addIssue(rowIndex, 2, 'Item Number is required.', v); 
+                    })();
+                    
+                    // 3: Quantity
+                    (function () {
+                        var v = val(3);
+                        if (!v) { addIssue(rowIndex, 3, 'Quantity is required.', v); return; }
+                        if (!/^\d+$/.test(v)) addIssue(rowIndex, 3, 'Quantity must be a whole number.', v);
+                        else if (parseInt(v, 10) <= 0) addIssue(rowIndex, 3, 'Quantity must be greater than zero.', v);
+                    })();
+                    
+                    // 4: Customer PO
+                    (function () {
+                        var v = val(4);
+                        if (!v) { addIssue(rowIndex, 4, 'Customer PO is required.', v); return; }
+                        if (v.length > 20) addIssue(rowIndex, 4, 'Customer PO must be 20 characters or fewer.', v);
+
+                        var orderType = val(15);
+                        if (mode === 'palod') {
+                            if (v.indexOf('1NAPR') !== 0) addIssue(rowIndex, 4, 'PALOD requires Customer PO to start with 1NAPR.', v);
+                        } else {
+                            if (orderType === 'PA' && v.indexOf('1NAPR') !== 0) addIssue(rowIndex, 4, 'PA orders must have Customer PO starting with 1NAPR.', v);
+                        }
+
+                        var addrKey = [val(1), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12)].join('|').toUpperCase();
+                        if (v) {
+                            if (poAddressMap[v] && poAddressMap[v] !== addrKey) {
+                                addIssue(rowIndex, 4, 'Customer PO is reused for a different address.', v);
+                            } else if (!poAddressMap[v]) {
+                                poAddressMap[v] = addrKey;
+                            }
+                        }
+                    })();
+                    
+                    // 5: Name
+                    (function () { 
+                        var v = val(5); 
+                        if (!v) addIssue(rowIndex, 5, 'Customer name is required.', v); 
+                    })();
+                    
+                    // 6: Address 1
+                    (function () { 
+                        var v = val(6); 
+                        if (v && v.length > 35) addIssue(rowIndex, 6, 'Address 1 max 35 characters.', v); 
+                    })();
+                    
+                    // 7: Address 2
+                    (function () {
+                        var v = val(7);
+                        if (!v) { addIssue(rowIndex, 7, 'Ship-to Address 2 is required.', v); return; }
+                        if (/PO\s*BOX/i.test(v) && /,/.test(v) && /\d/.test(v.split(',')[1] || '')) {
+                            addIssue(rowIndex, 7, 'Contains multiple addresses.', v);
+                        }
+                    })();
+                    
+                    // 9: City
+                    (function () { 
+                        var v = val(9); 
+                        if (!v) addIssue(rowIndex, 9, 'City is required.', v); 
+                    })();
+                    
+                    // 10: State
+                    (function () {
+                        var v = val(10);
+                        if (!v) { addIssue(rowIndex, 10, 'State is required.', v); return; }
+                        if (!/^[A-Z]{2}$/.test(v)) addIssue(rowIndex, 10, 'State must be 2 uppercase letters.', v);
+                    })();
+                    
+                    // 11: ZIP
+                    (function () {
+                        var v = val(11);
+                        if (!v) { addIssue(rowIndex, 11, 'ZIP is required.', v); return; }
+                        var cleaned = String(v).replace(/-/g, '').trim();
+                        if (!/^\d+$/.test(cleaned)) { addIssue(rowIndex, 11, 'ZIP must be numeric.', v); return; }
+                        if (cleaned.length === 4 || cleaned.length === 8) cleaned = '0' + cleaned;
+                        if (!(cleaned.length === 5 || cleaned.length === 9)) addIssue(rowIndex, 11, 'ZIP must be 5 or 9 digits.', v);
+                    })();
+                    
+                    // 12: Country
+                    (function () {
+                        var v = val(12);
+                        if (!v) { addIssue(rowIndex, 12, 'Country is required.', v); return; }
+                        if (!/^[A-Z]{2}$/.test(v)) addIssue(rowIndex, 12, 'Country must be 2 uppercase letters.', v);
+                    })();
+                    
+                    // 14: Contact
+                    (function () {
+                        var v = val(14);
+                        if (!v) return;
+                        var digits = v.replace(/\D/g, '');
+                        if (digits.length !== 10) addIssue(rowIndex, 14, 'Contact must be 10 digits.', v);
+                    })();
+                    
+                    // 15: Order Type
+                    (function () {
+                        var v = val(15);
+                        if (!v) { addIssue(rowIndex, 15, 'Order Type is required.', v); return; }
+                        if (!{GO:1, GR:1, PA:1, DO:1}[v]) addIssue(rowIndex, 15, 'Must be GO, GR, PA, or DO.', v);
+                    })();
+                    
+                    // 16: Service Level
+                    (function () { 
+                        var v = val(16); 
+                        if (v && v !== v.toUpperCase()) addIssue(rowIndex, 16, 'Service Level must be uppercase.', v); 
+                    })();
+                    
+                    // 17: Allocation Rule
+                    (function () { 
+                        var v = val(17); 
+                        if (!v || v !== 'O') addIssue(rowIndex, 17, 'Allocation Rule must be "O".', v); 
+                    })();
+                    
+                    // 18 & 20: Dates
+                    (function () {
+                        var inHands = val(18), mustShip = val(20);
+                        if (!inHands) { 
+                            if (!mustShip) addIssue(rowIndex, 18, 'Date required.', inHands); 
+                            return; 
+                        }
+                        if (!/^\d{2}\.\d{2}\.\d{4}$/.test(inHands)) addIssue(rowIndex, 18, 'Format must be MM.DD.YYYY.', inHands);
+                    })();
+                    
+                    // 19: Indicator
+                    (function () { 
+                        var v = val(19); 
+                        if (v !== 'O' && v !== 'B') addIssue(rowIndex, 19, 'Indicator must be O or B.', v); 
+                    })();
+                    
+                    // 20: Must Ship Date
+                    (function () { 
+                        var v = val(20); 
+                        if (v && !/^\d{2}\.\d{2}\.\d{4}$/.test(v)) addIssue(rowIndex, 20, 'Format must be MM.DD.YYYY.', v); 
+                    })();
+                    
+                    // 21: Address Over-Ride
+                    (function () { 
+                        var v = val(21); 
+                        if (v !== 'Y' && v !== 'N') addIssue(rowIndex, 21, 'Must be Y or N.', v); 
+                    })();
+                    
+                    // 23: Ship From Warehouse
+                    (function () { 
+                        var v = val(23); 
+                        if (v) addIssue(rowIndex, 23, 'Should be blank for standard LOD.', v); 
+                    })();
+                    
+                    // 25, 26, 27: Emails and Site
+                    (function () {
+                        var conf = val(25), shipConf = val(26), site = val(27);
+                        function validateEmailField(v, colIndex) {
+                            if (!v) return;
+                            var parts = v.split(';');
+                            for (var j = 0; j < parts.length; j++) {
+                                var email = parts[j].trim();
+                                if (!email) continue;
+                                if (email.indexOf(' ') !== -1) addIssue(rowIndex, colIndex, 'Email cannot contain spaces.', email);
+                                if (email.indexOf(',com') !== -1) addIssue(rowIndex, colIndex, 'Contains ",com".', email);
+                                if (email.indexOf('@') === -1) addIssue(rowIndex, colIndex, 'Missing "@".', email);
+                                var atIndex = email.indexOf('@');
+                                if (atIndex !== -1 && email.indexOf('.', atIndex) === -1) {
+                                    addIssue(rowIndex, colIndex, 'Domain must contain a dot.', email);
+                                }
+                            }
+                        }
+                        validateEmailField(conf, 25);
+                        validateEmailField(shipConf, 26);
+                        if ((conf || shipConf) && !site) addIssue(rowIndex, 27, 'Site required with email.', site);
+                    })();
+                }
+
                 return { 
                     mode: mode, 
+                    header: header, 
+                    rows: rows, 
+                    dataRows: dataRows, 
                     dataRowCount: dataRows.length, 
-                    errorRowCount: Object.keys(errSet).length, 
+                    errorRowCount: Object.keys(errorRowSet).length, 
                     issues: issues 
                 };
             }
 
+            function buildClipboardSummary(result) {
+                if (!result) return '';
+                var lines = [
+                    'LOD Validation Results', 
+                    'Mode: ' + (result.mode || 'LOD'), 
+                    'Total data rows: ' + (result.dataRowCount || 0), 
+                    'Rows with issues: ' + (result.errorRowCount || 0), 
+                    'Total issues: ' + ((result.issues && result.issues.length) || 0), 
+                    ''
+                ];
+                if (!result.issues || !result.issues.length) { 
+                    lines.push('Passed.'); 
+                    return lines.join('\n'); 
+                }
+                lines.push('Issues:');
+                for (var i = 0; i < result.issues.length; i++) {
+                    var issue = result.issues[i];
+                    var line = 'Row ' + issue.row + ' – ' + (issue.columnName || ('Column ' + (issue.columnIndex + 1))) + ' – ' + issue.message;
+                    if (issue.value != null && String(issue.value).trim() !== '') {
+                        line += ' (Value: ' + String(issue.value) + ')';
+                    }
+                    lines.push(line);
+                }
+                return lines.join('\n');
+            }
+
+            function fallbackCopyText(text) {
+                var textarea = document.createElement('textarea'); 
+                textarea.value = text; 
+                document.body.appendChild(textarea); 
+                textarea.select(); 
+                document.execCommand('copy'); 
+                document.body.removeChild(textarea); 
+                setStatus('Results copied.', false);
+            }
+
+            function buildIssueCsv(result) {
+                var lines = ['Row,Column,Value,Issue'];
+                for (var i = 0; i < result.issues.length; i++) {
+                    var issue = result.issues[i];
+                    lines.push([
+                        String(issue.row), 
+                        csvQuote(issue.columnName || ''), 
+                        csvQuote(issue.value == null ? '' : String(issue.value)), 
+                        csvQuote(issue.message || '')
+                    ].join(','));
+                }
+                return lines.join('\r\n');
+            }
+
+            function csvQuote(value) {
+                var v = String(value == null ? '' : value);
+                return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+            }
+
+            function buildHtmlReport(result) {
+                var badCellMap = {};
+                for (var i = 0; i < result.issues.length; i++) {
+                    badCellMap[result.issues[i].row + ':' + result.issues[i].columnIndex] = true;
+                }
+                
+                var html = [
+                    '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>LOD Validation Report</title>',
+                    '<style>body { font-family: system-ui, sans-serif; background:#f8fafc; color:#0f172a; padding:2rem; } ',
+                    'table { width:100%; border-collapse:collapse; margin-top:1rem; font-size:0.85rem; background:#fff; } ',
+                    'th, td { border:1px solid #e2e8f0; padding:6px 10px; text-align:left; } ',
+                    'th { background:#0f172a; color:#fff; } ',
+                    'td.bad-cell { background:#fef2f2; color:#ef4444; font-weight:700; }</style></head><body>',
+                    '<h1>Validation Report</h1><table><thead><tr><th>Line</th>'
+                ];
+                
+                for (var h = 0; h < result.header.length; h++) {
+                    html.push('<th>' + escapeHtml(String(result.header[h] || '')) + '</th>');
+                }
+                html.push('</tr></thead><tbody>');
+
+                for (var r = 1; r < result.rows.length; r++) {
+                    var row = result.rows[r] || []; 
+                    var rowIndex = r + 1;
+                    html.push('<tr><td>' + String(rowIndex) + '</td>');
+                    
+                    for (var c = 0; c < result.header.length; c++) {
+                        var cellValue = String(row[c] == null ? '' : row[c]).replace(/[\uFFFD]/g, '').replace(/[^\x20-\x7E]/g, '');
+                        html.push('<td' + (badCellMap[rowIndex + ':' + c] ? ' class="bad-cell"' : '') + '>' + escapeHtml(cellValue) + '</td>');
+                    }
+                    html.push('</tr>');
+                }
+                return html.join('') + '</tbody></table></body></html>';
+            }
+
             function downloadTextFile(content, filename, mimeType) {
-                var blob = new Blob([content], { type: mimeType }); 
+                var blob = new Blob([content], { type: mimeType || 'text/plain' });
                 var url = URL.createObjectURL(blob);
                 var a = document.createElement('a'); 
                 a.href = url; 
-                a.download = filename; 
+                a.download = filename || 'download.txt';
                 document.body.appendChild(a); 
                 a.click(); 
-                document.body.removeChild(a);
+                document.body.removeChild(a); 
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }
+
+            function buildSuggestedFilename(result, fallback) { 
+                return (result && result.mode ? String(result.mode).toUpperCase() : 'LOD') + '-' + fallback; 
+            }
+            
+            function escapeHtml(str) { 
+                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); 
             }
         })();
     </script>

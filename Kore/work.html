@@ -13,6 +13,7 @@
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --radius-md: 12px; --radius-sm: 8px;
+            --danger: #ef4444; --danger-hover: #dc2626;
         }
 
         body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
@@ -39,18 +40,21 @@
         .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 30px; box-sizing: border-box; color: white; }
         .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
 
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
-        .btn-primary:hover { background-color: var(--accent-hover); border: none; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-danger { background-color: var(--danger); color: white; border: none; }
+        .btn-danger:hover { background-color: var(--danger-hover); }
         
-        select, input[type="text"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; }
+        select, input[type="text"], input[type="search"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; }
         select:focus, input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
 
-        .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
-        .filters-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-        .filter-item { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
-        .actions-group { display: flex; gap: 12px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 16px; }
+        .filters-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; flex-grow: 1; }
+        .filter-item { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); min-width: 140px; }
+        .search-item { flex-grow: 1; min-width: 200px; }
+        .actions-group { display: flex; gap: 12px; align-items: flex-end; }
 
         .table-container { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -59,11 +63,13 @@
         tr:hover td { background-color: #f8fafc; cursor: pointer; }
         .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
         .progress-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
+        .meta-text { font-size: 0.8rem; color: var(--text-secondary); display: block; margin-top: 4px; }
 
         #view-form { display: none; }
-        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+        .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group.full-width { grid-column: span 3; }
+        .form-group.full-width { grid-column: span 4; }
+        .form-group.half-width { grid-column: span 2; }
         .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
         
         .task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
@@ -78,7 +84,9 @@
         .editor-btn { background: transparent; border: 1px solid transparent; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; color: var(--text-secondary); transition: all 0.2s; }
         .editor-btn:hover { background: #e2e8f0; color: var(--text-main); }
         .editor-content { min-height: 250px; padding: 16px; background: var(--bg-surface); outline: none; font-size: 0.95rem; line-height: 1.6; }
-        .form-actions { display: flex; justify-content: flex-end; gap: 16px; }
+        
+        .form-actions { display: flex; justify-content: space-between; align-items: center; }
+        .actions-right { display: flex; gap: 16px; }
 
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
@@ -125,8 +133,12 @@
 
             <div class="toolbar">
                 <div class="filters-group">
+                    <div class="filter-item search-item">
+                        <label>Search Tickets</label>
+                        <input type="search" id="searchWork" placeholder="Title, ID, or notes..." oninput="renderTable()">
+                    </div>
                     <div class="filter-item">
-                        <label>Status Filter</label>
+                        <label>Status</label>
                         <select id="filterStatus" onchange="renderTable()">
                             <option value="Active" selected>Active Tasks</option>
                             <option value="All">All Statuses</option>
@@ -145,6 +157,18 @@
                             <option value="Critical">Critical</option>
                         </select>
                     </div>
+                    <div class="filter-item">
+                        <label>Request Type</label>
+                        <select id="filterType" onchange="renderTable()">
+                            <option value="All">All Types</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>Account Allocation</label>
+                        <select id="filterAllocation" onchange="renderTable()">
+                            <option value="All">All Accounts</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="actions-group">
                     <button class="btn btn-primary" onclick="openForm()">➕ Add Request</button>
@@ -156,7 +180,7 @@
                     <thead>
                         <tr>
                             <th>Ticket</th>
-                            <th>Title</th>
+                            <th>Title & Details</th>
                             <th>Priority</th>
                             <th>Status</th>
                             <th>Progress</th>
@@ -182,9 +206,14 @@
                     <input type="text" id="reqTitle" placeholder="Brief description of the request...">
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Due Date</label>
-                    <input type="date" id="reqDue">
+                <div class="form-group half-width">
+                    <label class="form-label">Request Type</label>
+                    <select id="reqType"></select>
+                </div>
+
+                <div class="form-group half-width">
+                    <label class="form-label">Account Allocation</label>
+                    <select id="reqAllocation"></select>
                 </div>
 
                 <div class="form-group">
@@ -205,6 +234,11 @@
                         <option value="High">High</option>
                         <option value="Critical">Critical</option>
                     </select>
+                </div>
+
+                <div class="form-group half-width">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" id="reqDue">
                 </div>
 
                 <div class="form-group full-width" style="margin-top: 12px; padding-top: 24px; border-top: 1px solid var(--border-subtle);">
@@ -230,8 +264,13 @@
             </div>
 
             <div class="form-actions">
-                <button class="btn" onclick="closeForm()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveRequest()" id="saveBtn">Save & Transmit to Cloud</button>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteRequest()" id="deleteBtn" style="display: none;">Delete Ticket</button>
+                </div>
+                <div class="actions-right">
+                    <button class="btn" onclick="closeForm()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveRequest()" id="saveBtn">Save & Transmit to Cloud</button>
+                </div>
             </div>
         </div>
 
@@ -240,6 +279,7 @@
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let activeChecklist = [];
+        let masterWorkItems = [];
 
         async function fetchSecureIdentity() {
             try {
@@ -253,7 +293,48 @@
             } catch (error) {}
         }
 
-        function getWorkItems() { return JSON.parse(localStorage.getItem('kore_work_items')) || []; }
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        async function populateDropdowns() {
+            const config = await loadCloudData('work_config') || { 
+                types: ["Feature Update", "Bug Fix"], 
+                allocations: ["Internal Overhead", "Client A"] 
+            };
+
+            const typeOpts = config.types.map(t => `<option value="${t}">${t}</option>`).join('');
+            const allocOpts = config.allocations.map(a => `<option value="${a}">${a}</option>`).join('');
+
+            // Form Dropdowns
+            document.getElementById('reqType').innerHTML = `<option value="Unassigned">Select Type...</option>` + typeOpts;
+            document.getElementById('reqAllocation').innerHTML = `<option value="Unassigned">Select Account...</option>` + allocOpts;
+
+            // Filter Dropdowns
+            document.getElementById('filterType').innerHTML += typeOpts;
+            document.getElementById('filterAllocation').innerHTML += allocOpts;
+        }
+
+        async function fetchWorkItems() {
+            try {
+                const res = await fetch('/api/get_work_items'); // Assuming this endpoint exists based on save endpoint
+                if (res.ok) {
+                    masterWorkItems = await res.json();
+                } else {
+                    masterWorkItems = await loadCloudData('work_items') || [];
+                }
+            } catch (err) {
+                masterWorkItems = [];
+            }
+            renderTable();
+        }
 
         function getStatusColor(status) {
             switch(status) {
@@ -267,19 +348,32 @@
         function generateUniqueTicketId() { return "TKT-" + Math.floor(10000 + Math.random() * 90000); }
 
         function renderTable() {
-            const items = getWorkItems();
             const tbody = document.getElementById('tracker-body');
             tbody.innerHTML = '';
 
             const fStatus = document.getElementById('filterStatus').value;
             const fPriority = document.getElementById('filterPriority').value;
+            const fType = document.getElementById('filterType').value;
+            const fAlloc = document.getElementById('filterAllocation').value;
+            const searchQ = document.getElementById('searchWork').value.toLowerCase();
 
-            const filtered = items.filter(item => {
+            const filtered = masterWorkItems.filter(item => {
+                if(item.archived || item.deleted) return false;
+
                 let statusMatch = (fStatus === 'All') || 
                                   (fStatus === 'Active' && (item.status === 'Open' || item.status === 'In Progress')) || 
                                   (item.status === fStatus);
                 let prioMatch = (fPriority === 'All' || item.priority === fPriority);
-                return statusMatch && prioMatch && !item.archived && !item.deleted;
+                let typeMatch = (fType === 'All' || item.type === fType);
+                let allocMatch = (fAlloc === 'All' || item.allocation === fAlloc);
+                
+                let searchMatch = true;
+                if (searchQ) {
+                    const searchString = `${item.id} ${item.title} ${item.notes || ''}`.toLowerCase();
+                    searchMatch = searchString.includes(searchQ);
+                }
+
+                return statusMatch && prioMatch && typeMatch && allocMatch && searchMatch;
             });
 
             filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
@@ -291,10 +385,16 @@
                     progressBadge = `<span class="progress-pill">✅ ${completed} / ${item.tasks.length}</span>`;
                 }
 
+                const typeDisplay = item.type || 'Unassigned';
+                const allocDisplay = item.allocation || 'Unassigned';
+
                 tbody.innerHTML += `
                     <tr onclick="openForm('${item.id}')">
                         <td style="font-family:monospace; color:#64748b; font-weight:600;">${item.id}</td>
-                        <td style="font-weight:600; color:#0f172a;">${item.title}</td>
+                        <td>
+                            <div style="font-weight:600; color:#0f172a;">${item.title}</div>
+                            <span class="meta-text">${typeDisplay} &bull; ${allocDisplay}</span>
+                        </td>
                         <td style="font-weight:600;">${item.priority}</td>
                         <td><span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span></td>
                         <td>${progressBadge}</td>
@@ -345,27 +445,32 @@
             document.getElementById('view-form').style.display = 'block';
 
             if (id) {
-                const items = getWorkItems();
-                const item = items.find(i => i.id === id);
+                const item = masterWorkItems.find(i => i.id === id);
                 document.getElementById('form-title').innerText = "Edit Request: " + id;
                 document.getElementById('ticketId').value = item.id;
                 document.getElementById('createdDate').value = item.created;
                 document.getElementById('reqTitle').value = item.title;
+                document.getElementById('reqType').value = item.type || "Unassigned";
+                document.getElementById('reqAllocation').value = item.allocation || "Unassigned";
                 document.getElementById('reqDue').value = item.dueDate || "";
                 document.getElementById('reqStatus').value = item.status;
                 document.getElementById('reqPriority').value = item.priority;
                 document.getElementById('reqNotes').innerHTML = item.notes || "";
                 activeChecklist = item.tasks || [];
+                document.getElementById('deleteBtn').style.display = 'block';
             } else {
                 document.getElementById('form-title').innerText = "New Request";
                 document.getElementById('ticketId').value = "";
                 document.getElementById('createdDate').value = new Date().toISOString();
                 document.getElementById('reqTitle').value = "";
+                document.getElementById('reqType').value = "Unassigned";
+                document.getElementById('reqAllocation').value = "Unassigned";
                 document.getElementById('reqDue').value = "";
                 document.getElementById('reqStatus').value = "Open";
                 document.getElementById('reqPriority').value = "Medium";
                 document.getElementById('reqNotes').innerHTML = "";
                 activeChecklist = [];
+                document.getElementById('deleteBtn').style.display = 'none';
             }
             renderChecklist();
         }
@@ -389,15 +494,19 @@
                 id: idInput,
                 created: document.getElementById('createdDate').value,
                 title: title,
+                type: document.getElementById('reqType').value,
+                allocation: document.getElementById('reqAllocation').value,
                 dueDate: document.getElementById('reqDue').value,
                 status: document.getElementById('reqStatus').value,
                 priority: document.getElementById('reqPriority').value,
                 notes: document.getElementById('reqNotes').innerHTML,
                 tasks: activeChecklist,
                 authorId: cloudIdentity.userId,
-                authorEmail: cloudIdentity.userName
+                authorEmail: cloudIdentity.userName,
+                deleted: false
             };
 
+            // Post to Cloud
             try {
                 await fetch('/api/save_work_item', {
                     method: 'POST',
@@ -406,20 +515,45 @@
                 });
             } catch (err) {}
 
-            let items = getWorkItems();
-            const idx = items.findIndex(i => i.id === payload.id);
-            if (idx > -1) { items[idx] = payload; } else { items.push(payload); }
-            localStorage.setItem('kore_work_items', JSON.stringify(items));
+            // Update Local State Matrix
+            const idx = masterWorkItems.findIndex(i => i.id === payload.id);
+            if (idx > -1) { masterWorkItems[idx] = payload; } else { masterWorkItems.push(payload); }
 
             btn.innerText = "Save & Transmit to Cloud"; btn.disabled = false;
             closeForm();
+        }
+
+        async function deleteRequest() {
+            const id = document.getElementById('ticketId').value;
+            if (!id) return;
+            
+            if (confirm(`Are you certain you wish to delete ticket ${id}? This action updates the central database.`)) {
+                const btn = document.getElementById('deleteBtn');
+                btn.innerText = "Deleting..."; btn.disabled = true;
+
+                const item = masterWorkItems.find(i => i.id === id);
+                if(item) {
+                    item.deleted = true;
+                    try {
+                        await fetch('/api/save_work_item', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(item)
+                        });
+                    } catch (err) {}
+                }
+
+                btn.innerText = "Delete Ticket"; btn.disabled = false;
+                closeForm();
+            }
         }
 
         function formatDoc(cmd) { document.execCommand(cmd, false, null); document.getElementById('reqNotes').focus(); }
 
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();
-            renderTable();
+            await populateDropdowns();
+            await fetchWorkItems();
         });
     </script>
 </body>

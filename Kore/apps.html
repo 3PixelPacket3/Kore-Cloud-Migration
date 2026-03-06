@@ -53,16 +53,17 @@
         .action-btn:hover { color: #ef4444; border-color: #ef4444; background: #fef2f2; }
 
         .app-icon-container { width: 56px; height: 56px; margin-bottom: 16px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f0f9ff; }
+        .app-icon-img { width: 100%; height: 100%; object-fit: cover; }
         .app-icon-text { font-size: 1.8rem; font-weight: bold; color: var(--accent-primary); }
         .app-name { margin: 0; font-weight: 600; font-size: 1.05rem; }
         .app-url { margin: 8px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: #fff; padding: 32px; border-radius: 12px; width: 400px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-content { background: #fff; padding: 32px; border-radius: 12px; width: 450px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         .modal-input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; outline: none; width: 100%; box-sizing: border-box; }
         .modal-input:focus { border-color: var(--accent-primary); }
 
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
     </style>
 </head>
 <body>
@@ -118,8 +119,20 @@
     <div id="app-modal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin:0; font-size:1.4rem; color:#0f172a;">New Shortcut</h3>
-            <input type="text" id="appName" class="modal-input" placeholder="Application Name (Required)">
-            <input type="url" id="appUrl" class="modal-input" placeholder="Link URL (Required)">
+            
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: -10px;">App Name</label>
+            <input type="text" id="appName" class="modal-input" placeholder="e.g. BradyPLUS Portal" required>
+            
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: -10px;">App URL</label>
+            <input type="url" id="appUrl" class="modal-input" placeholder="https://..." required>
+            
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: -10px;">App Icon (Optional)</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="url" id="appIconUrl" class="modal-input" placeholder="Paste Image URL..." oninput="clearFileIfUrl()">
+            </div>
+            <div style="font-size: 0.85rem; text-align: center; color: var(--text-secondary);">OR</div>
+            <input type="file" id="appIconFile" class="modal-input" accept="image/*" style="padding: 6px;" onchange="handleFileUpload(event)">
+
             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:10px;">
                 <button onclick="closeModal()" style="padding:10px 20px; background:transparent; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight:600; color:#475569;">Cancel</button>
                 <button onclick="saveApp()" style="padding:10px 20px; background:var(--accent-primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;" id="saveAppBtn">Save App</button>
@@ -130,6 +143,7 @@
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let activeApps = [];
+        let currentUploadedImageBase64 = "";
 
         async function fetchSecureIdentity() {
             try {
@@ -152,7 +166,7 @@
                 }
             } catch(e) {}
             activeApps = JSON.parse(localStorage.getItem(`kore_apps_${cloudIdentity.userId}`)) || [
-                { id: 'app_1', name: "BradyPLUS Portal", url: "https://www.bradyplus.com" }
+                { id: 'app_1', name: "BradyPLUS Portal", url: "https://www.bradyplus.com", iconUrl: "" }
             ];
             renderApps();
         }
@@ -177,11 +191,18 @@
             }
 
             activeApps.forEach(app => {
+                let iconHtml = '';
+                if (app.iconUrl) {
+                    iconHtml = `<img src="${app.iconUrl}" class="app-icon-img" alt="icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"> <span class="app-icon-text" style="display:none;">${app.name.charAt(0).toUpperCase()}</span>`;
+                } else {
+                    iconHtml = `<span class="app-icon-text">${app.name.charAt(0).toUpperCase()}</span>`;
+                }
+
                 container.innerHTML += `
                     <div class="app-wrapper">
                         <div class="app-actions"><button class="action-btn" onclick="event.preventDefault(); deleteApp('${app.id}')">🗑️</button></div>
                         <a href="${app.url}" target="_blank" class="app-card">
-                            <div class="app-icon-container"><span class="app-icon-text">${app.name.charAt(0).toUpperCase()}</span></div>
+                            <div class="app-icon-container">${iconHtml}</div>
                             <h4 class="app-name">${escapeHtml(app.name)}</h4>
                             <p class="app-url">${escapeHtml(app.url.replace(/^https?:\/\//, ''))}</p>
                         </a>
@@ -190,17 +211,53 @@
             });
         }
 
-        function openModal() { document.getElementById('appName').value = ""; document.getElementById('appUrl').value = ""; document.getElementById('app-modal').style.display = 'flex'; }
+        // Handle Image Uploads
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) { currentUploadedImageBase64 = ""; return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentUploadedImageBase64 = e.target.result;
+                document.getElementById('appIconUrl').value = ""; // clear URL input if file is uploaded
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearFileIfUrl() {
+            if (document.getElementById('appIconUrl').value.trim() !== "") {
+                document.getElementById('appIconFile').value = "";
+                currentUploadedImageBase64 = "";
+            }
+        }
+
+        function openModal() { 
+            document.getElementById('appName').value = ""; 
+            document.getElementById('appUrl').value = ""; 
+            document.getElementById('appIconUrl').value = "";
+            document.getElementById('appIconFile').value = "";
+            currentUploadedImageBase64 = "";
+            document.getElementById('app-modal').style.display = 'flex'; 
+        }
+        
         function closeModal() { document.getElementById('app-modal').style.display = 'none'; }
 
         window.saveApp = async function() {
             const nameInput = document.getElementById('appName').value.trim();
             let urlInput = document.getElementById('appUrl').value.trim();
+            let finalIcon = document.getElementById('appIconUrl').value.trim() || currentUploadedImageBase64;
+
             if (!nameInput || !urlInput) return alert('Name and URL are required.');
             if (!urlInput.startsWith('http')) urlInput = 'https://' + urlInput;
 
             const btn = document.getElementById('saveAppBtn'); btn.innerText = "Saving...";
-            activeApps.push({ id: 'app_' + Date.now(), name: nameInput, url: urlInput });
+            
+            activeApps.push({ 
+                id: 'app_' + Date.now(), 
+                name: nameInput, 
+                url: urlInput,
+                iconUrl: finalIcon
+            });
+            
             await saveData();
             closeModal(); renderApps(); btn.innerText = "Save App";
         }

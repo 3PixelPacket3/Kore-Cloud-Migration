@@ -128,10 +128,6 @@
             </nav>
         </div>
         
-        <div class="search-container">
-            <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
-        </div>
-        
         <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
     </header>
 
@@ -210,7 +206,7 @@
                     if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
                 }
             } catch(e) {}
-            return null; 
+            return null; // Local caching removed per strict backend constraints
         }
 
         async function fetchSecureIdentity() {
@@ -233,7 +229,7 @@
             // Personalized AI Greeting
             const welcomeMessages = [
                 `Hello, ${profileName}. I am your Kore Copilot. How can I assist you today?`,
-                `Welcome back, ${profileName}. I'm synced to your local data. Need me to find anything?`,
+                `Welcome back, ${profileName}. I'm synced to your cloud data. Need me to find anything?`,
                 `Good to see you, ${profileName}. I can navigate the site, check your tasks, or look up tickets for you.`
             ];
             document.getElementById('botWelcomeMsg').innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
@@ -262,8 +258,18 @@
         }
 
         async function loadDashboardData() {
-            localTasks = await loadCloudData('todos');
-            localTickets = JSON.parse(localStorage.getItem('kore_work_items')) || [];
+            localTasks = await loadCloudData('todos') || [];
+            
+            try {
+                const res = await fetch('/api/get_work_items');
+                if (res.ok) {
+                    localTickets = await res.json();
+                } else {
+                    localTickets = await loadCloudData('work_items') || [];
+                }
+            } catch(e) {
+                localTickets = await loadCloudData('work_items') || [];
+            }
 
             // Work Intel
             const wContainer = document.getElementById('workIntel');
@@ -296,11 +302,13 @@
             }
 
             // Shortcuts
-            let shortcuts = await loadCloudData('shortcuts');
+            let shortcuts = await loadCloudData('shortcuts') || [];
             if(shortcuts.length === 0) shortcuts = [ { title: "Apps", url: "apps.html", icon: "🚀" }, { title: "Work Tracker", url: "work.html", icon: "📋" }, { title: "Macro Library", url: "macros.html", icon: "💻" } ];
             document.getElementById('qa-container').innerHTML = shortcuts.map(link => `<a href="${link.url}" class="qa-btn" target="${link.url.startsWith('http') ? '_blank' : '_self'}"><span class="qa-icon">${link.icon || "🔗"}</span>${link.title}</a>`).join('');
             
-            document.getElementById('global-message-text').textContent = localStorage.getItem('kore_bulletin') || "Welcome to Kore.";
+            // Cloud Synchronization for Bulletin
+            const adminData = await loadCloudData('admin_settings') || {};
+            document.getElementById('global-message-text').textContent = adminData.bulletin || "Welcome to Kore. All systems online.";
         }
 
         // --- Advanced AI NLP Simulation ---
@@ -395,7 +403,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();
             updateClock();
-            setInterval(updateClock, 1000);
+            setInterval(updateClock, 1000); // Activated live clock pulse
             await loadDashboardData();
         });
     </script>

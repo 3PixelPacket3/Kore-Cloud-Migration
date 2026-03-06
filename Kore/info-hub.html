@@ -478,6 +478,7 @@
                 <div class="nav-item active">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
                     </div>
                 </div>
@@ -546,7 +547,6 @@
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
-        const STORAGE_KEY = 'infoPages';
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let masterPagesList = [];
         
@@ -573,30 +573,32 @@
             }
         }
 
-        // --- 2. Data Fetching (Cloud & Local Merge) ---
-        async function fetchPages() {
-            let localPages = [];
+        // --- Data Fetching Helper ---
+        async function loadCloudData(dataType) {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) localPages = JSON.parse(raw);
-            } catch (e) { console.error("Local parse error", e); }
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
 
-            let cloudPages = [];
+        // --- 2. Data Fetching (Cloud Strict) ---
+        async function fetchPages() {
             try {
                 const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
                 if (res.ok) {
-                    cloudPages = await res.json();
+                    const cloudPages = await res.json();
+                    masterPagesList = cloudPages.filter(p => !p.archived);
+                } else {
+                    masterPagesList = [];
                 }
             } catch (e) {
-                console.warn("Cloud vault unreachable. Displaying local cache only.");
+                console.warn("Cloud vault unreachable.");
+                masterPagesList = [];
             }
-
-            // Merge Logic: Cloud takes precedence if IDs match
-            const mergedMap = new Map();
-            localPages.forEach(p => mergedMap.set(p.id, p));
-            cloudPages.forEach(p => mergedMap.set(p.id, p)); // Overwrites local with fresh cloud data
-            
-            masterPagesList = Array.from(mergedMap.values()).filter(p => !p.archived);
             renderTable();
         }
 
@@ -721,11 +723,12 @@
         }
 
         async function initCopilotData() {
-            profileName = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`) || cloudIdentity.userName.split('@')[0];
+            const profile = await loadCloudData('profile');
+            profileName = profile?.name || cloudIdentity.userName.split('@')[0] || "User";
             
             const welcomeMessages = [
                 `Hello, ${profileName}. I am your Kore Copilot. How can I assist you with the Info Hub?`,
-                `Welcome back, ${profileName}. I'm synced to your local data. Need me to find a ticket?`,
+                `Welcome back, ${profileName}. I'm synced to your cloud data. Need me to find a ticket?`,
                 `Good to see you, ${profileName}. I can navigate the site, check your tasks, or look up tickets for you.`
             ];
             const botWelcomeMsg = document.getElementById('botWelcomeMsg');
@@ -733,17 +736,20 @@
                 botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
             }
 
-            // Fetch tasks for intel
+            // Fetch tasks for intel from Cloud
+            localTasks = await loadCloudData('todos') || [];
+
+            // Fetch tickets for intel from Cloud
             try {
-                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=todos`);
+                const res = await fetch('/api/get_work_items'); 
                 if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) localTasks = data;
+                    localTickets = await res.json();
+                } else {
+                    localTickets = await loadCloudData('work_items') || [];
                 }
             } catch(e) {
-                localTasks = JSON.parse(localStorage.getItem(`kore_todo_${cloudIdentity.userId}`)) || [];
+                localTickets = await loadCloudData('work_items') || [];
             }
-            localTickets = JSON.parse(localStorage.getItem('kore_work_items')) || [];
         }
 
         function toggleCopilot() {
@@ -782,7 +788,7 @@
                     if (ticket) {
                         reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
                     } else {
-                        reply = `I searched the local database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
+                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
                     }
                 } 
                 // 2. Navigation

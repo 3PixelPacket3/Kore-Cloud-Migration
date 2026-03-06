@@ -424,8 +424,12 @@
                 <section class="section-card">
                     <h3 class="section-title">Work Tracker Config <span class="status-msg" id="workLogicStatus">Saved</span></h3>
                     <div class="form-group">
-                        <label class="form-label">Ticket Categories (One per line)</label>
+                        <label class="form-label">Request Types (One per line)</label>
                         <textarea id="workTypesInput" class="textarea" placeholder="e.g. Feature Update&#10;Bug Fix"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Account Allocations (One per line)</label>
+                        <textarea id="accountAllocationsInput" class="textarea" placeholder="e.g. Internal Overhead&#10;Client A"></textarea>
                     </div>
                     <button class="btn btn-primary" id="saveWorkLogicBtn">Save Configurations</button>
                 </section>
@@ -512,13 +516,11 @@
 
         // --- Initialization ---
         async function initSettings() {
-            // 1. Load Identity / Profile
+            // 1. Load Identity / Profile (Cloud First)
             const profile = await loadCloudData('profile');
             if (profile) {
                 document.getElementById('profileNameInput').value = profile.name || '';
                 document.getElementById('timeZoneSelect').value = profile.tz || 'America/New_York';
-            } else {
-                document.getElementById('profileNameInput').value = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`) || '';
             }
 
             document.getElementById('saveIdentityBtn').addEventListener('click', async () => {
@@ -527,13 +529,11 @@
                     tz: document.getElementById('timeZoneSelect').value 
                 };
                 await saveCloudData('profile', p);
-                localStorage.setItem(`koreProfileName_${cloudIdentity.userId}`, p.name);
-                localStorage.setItem(`koreHomeTimeZone_${cloudIdentity.userId}`, p.tz);
                 flashStatus('identityStatus');
             });
 
-            // 2. Load Shortcuts
-            activeShortcuts = await loadCloudData('shortcuts') || JSON.parse(localStorage.getItem(`kore_shortcuts_${cloudIdentity.userId}`)) || [
+            // 2. Load Shortcuts (Cloud Only)
+            activeShortcuts = await loadCloudData('shortcuts') || [
                 {title: "Apps", url: "apps.html", icon: "🚀"}, 
                 {title: "Work Tracker", url: "work.html", icon: "📋"}, 
                 {title: "Macro Library", url: "macros.html", icon: "💻"}
@@ -557,7 +557,6 @@
                 activeShortcuts.splice(idx, 1);
                 renderShortcuts();
                 await saveCloudData('shortcuts', activeShortcuts);
-                localStorage.setItem(`kore_shortcuts_${cloudIdentity.userId}`, JSON.stringify(activeShortcuts));
             }
 
             document.getElementById('addShortcutBtn').addEventListener('click', async () => {
@@ -569,36 +568,46 @@
                     document.getElementById('newScTitle').value = '';
                     document.getElementById('newScUrl').value = '';
                     await saveCloudData('shortcuts', activeShortcuts);
-                    localStorage.setItem(`kore_shortcuts_${cloudIdentity.userId}`, JSON.stringify(activeShortcuts));
                     flashStatus('shortcutsStatus');
                 }
             });
 
-            // 3. Load Work Logic
-            const workConfig = await loadCloudData('work_config') || { types: ["Feature Update", "Bug Fix"] };
-            document.getElementById('workTypesInput').value = workConfig.types.join('\n');
+            // 3. Load Work Logic (Cloud Only)
+            const workConfig = await loadCloudData('work_config') || { 
+                types: ["Feature Update", "Bug Fix"], 
+                allocations: ["Internal Overhead", "Client A"] 
+            };
+            
+            document.getElementById('workTypesInput').value = (workConfig.types || []).join('\n');
+            document.getElementById('accountAllocationsInput').value = (workConfig.allocations || []).join('\n');
+            
             document.getElementById('saveWorkLogicBtn').addEventListener('click', async () => {
                 const conf = { 
-                    types: document.getElementById('workTypesInput').value.split('\n').map(s=>s.trim()).filter(Boolean) 
+                    types: document.getElementById('workTypesInput').value.split('\n').map(s=>s.trim()).filter(Boolean),
+                    allocations: document.getElementById('accountAllocationsInput').value.split('\n').map(s=>s.trim()).filter(Boolean)
                 };
                 await saveCloudData('work_config', conf);
                 flashStatus('workLogicStatus');
             });
 
-            // 4. Admin Persistence Logic
+            // 4. Admin Persistence Logic (Cloud/Session)
             if (sessionStorage.getItem('kore_admin_unlocked') === 'true') {
                 document.getElementById('adminLockScreen').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'flex';
-                document.getElementById('sysBulletinInput').value = localStorage.getItem('kore_bulletin') || "";
+                // Fetching bulletin from cloud instead of local
+                const adminData = await loadCloudData('admin_settings') || { bulletin: "" };
+                document.getElementById('sysBulletinInput').value = adminData.bulletin || "";
             }
 
-            document.getElementById('unlockAdminBtn').addEventListener('click', () => {
+            document.getElementById('unlockAdminBtn').addEventListener('click', async () => {
                 const pin = document.getElementById('adminPinInput').value;
-                const masterPin = localStorage.getItem('kore_admin_pin') || 'Admin2026!';
+                const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!', bulletin: "" };
+                const masterPin = adminData.pin || 'Admin2026!';
+                
                 if (pin === masterPin) {
                     document.getElementById('adminLockScreen').style.display = 'none';
                     document.getElementById('adminContent').style.display = 'flex';
-                    document.getElementById('sysBulletinInput').value = localStorage.getItem('kore_bulletin') || "";
+                    document.getElementById('sysBulletinInput').value = adminData.bulletin || "";
                     sessionStorage.setItem('kore_admin_unlocked', 'true');
                 } else {
                     document.getElementById('adminLockError').style.display = 'block';
@@ -606,12 +615,14 @@
             });
 
             document.getElementById('saveAdminBtn').addEventListener('click', async () => {
+                const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
                 const bulletin = document.getElementById('sysBulletinInput').value.trim();
                 const newPin = document.getElementById('newPinInput').value.trim();
                 
-                localStorage.setItem('kore_bulletin', bulletin);
-                if (newPin) localStorage.setItem('kore_admin_pin', newPin);
+                adminData.bulletin = bulletin;
+                if (newPin) adminData.pin = newPin;
                 
+                await saveCloudData('admin_settings', adminData);
                 document.getElementById('newPinInput').value = "";
                 flashStatus('adminStatus');
             });

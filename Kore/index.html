@@ -37,7 +37,6 @@
         .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
 
         .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
-        
         .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 200px; position: relative; margin-bottom: 32px; }
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
         .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15, 23, 42, 0.85), transparent); padding: 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end;}
@@ -47,7 +46,7 @@
         .left-col { display: flex; flex-direction: column; gap: 32px; }
         .right-col { display: flex; flex-direction: column; gap: 24px; }
         
-        .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; } /* Changed to 2 columns */
+        .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; } 
 
         .panel-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
         .panel-header { font-size: 1.1rem; color: var(--text-main); font-weight: 700; margin: 0 0 16px 0; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
@@ -74,17 +73,21 @@
         .pulse-dot { width: 10px; height: 10px; background-color: var(--accent-primary); border-radius: 50%; box-shadow: 0 0 0 rgba(14, 165, 233, 0.4); animation: pulse 2s infinite; display: inline-block; margin-right: 8px;}
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
 
-        /* Copilot Studio Container */
+        /* AI Copilot */
         .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
         .copilot-trigger:hover { transform: scale(1.05); }
-        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 400px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 350px; height: 500px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
-        .copilot-iframe-container { flex-grow: 1; background: var(--bg-app); width: 100%; height: 100%; display: flex; flex-direction: column;}
-        
-        /* Ensures the iframe fills the box perfectly without scrollbars on the outside */
-        .copilot-iframe-container iframe { width: 100%; flex-grow: 1; border: none; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); }
+        .chat-msg { padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; max-width: 85%; line-height: 1.4; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 12px; background: var(--bg-surface); }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 20px; padding: 10px 16px; outline: none; font-size: 0.9rem; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); }
+        .copilot-input-area button { background: transparent; border: none; color: var(--accent-primary); font-weight: 700; cursor: pointer; padding: 0 12px; font-size: 1.2rem; }
 
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
@@ -122,10 +125,6 @@
         </div>
         
         <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
-
-        <div class="search-container">
-            <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
-        </div>
     </header>
 
     <main class="main-container">
@@ -153,7 +152,6 @@
                         <h3 class="panel-header">📋 Active Tickets</h3>
                         <div id="workIntel" class="intel-list"></div>
                     </div>
-
                     <div class="panel-card">
                         <h3 class="panel-header">📌 Personal Tasks</h3>
                         <div id="todoIntel" class="intel-list"></div>
@@ -178,18 +176,22 @@
             <span>🤖 Kore Copilot</span>
             <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
         </div>
-        <div class="copilot-iframe-container">
-            
-            <div style="padding: 20px; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
-                Awaiting Copilot iframe URL. Check the HTML source code at line 148 to embed your custom agent.
-            </div>
+        <div class="copilot-messages" id="copilotMessages">
+            <div class="chat-msg bot">Hello, sir. I am fully integrated into the local environment. What data would you like me to retrieve?</div>
         </div>
+        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+            <input type="text" id="copilotInput" placeholder="Ask me about your tasks..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
     </div>
 
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let localTasks = [];
+        let localTickets = [];
+
         async function fetchSecureIdentity() {
             try {
                 const response = await fetch('/.auth/me');
@@ -202,14 +204,24 @@
             } catch (error) {}
         }
 
+        // Fetch user data from Cloud
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return JSON.parse(localStorage.getItem(`kore_${dataType}_${cloudIdentity.userId}`)) || [];
+        }
+
         function updateClock() {
             const now = new Date();
             const tz = localStorage.getItem(`koreHomeTimeZone_${cloudIdentity.userId}`) || 'America/New_York';
             try {
-                const timeOpts = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz };
-                document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', timeOpts);
-                const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: tz };
-                document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', dateOpts);
+                document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz });
+                document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: tz });
             } catch (e) {
                 document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
             }
@@ -218,24 +230,23 @@
         function isDateToday(dateStr) {
             if (!dateStr) return false;
             const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date();
-            return d.toDateString() === today.toDateString();
+            return d.toDateString() === new Date().toDateString();
         }
-        
         function isDatePast(dateStr) {
             if (!dateStr) return false;
             const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date();
-            today.setHours(0,0,0,0);
+            const today = new Date(); today.setHours(0,0,0,0);
             return d < today;
         }
 
-        function loadLocalIntel() {
-            // Work Tracker
+        async function loadDashboardData() {
+            localTasks = await loadCloudData('todos');
+            localTickets = JSON.parse(localStorage.getItem('kore_work_items')) || [];
+
+            // Work Intel
             const wContainer = document.getElementById('workIntel');
-            const wItems = JSON.parse(localStorage.getItem('kore_work_items')) || [];
             let wHtml = ''; let wCount = 0;
-            wItems.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').forEach(item => {
+            localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').forEach(item => {
                 if (wCount >= 5) return; 
                 if (isDatePast(item.dueDate)) {
                     wHtml += `<a href="work.html" style="text-decoration:none;"><div class="intel-item danger"><div class="intel-title">${item.title}</div><div class="intel-meta"><span>${item.id}</span><span style="color:var(--danger); font-weight:600;">Past Due</span></div></div></a>`;
@@ -249,38 +260,25 @@
 
             // To-Do Intel
             const tContainer = document.getElementById('todoIntel');
-            const tasks = JSON.parse(localStorage.getItem(`kore_todo_${cloudIdentity.userId}`)) || [];
-            const activeTasks = tasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate)));
+            const activeTasks = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate)));
             activeTasks.sort((a,b) => { const p={'High':3,'Medium':2,'Low':1}; return p[b.priority] - p[a.priority]; });
-            if (activeTasks.length === 0) { tContainer.innerHTML = '<div class="intel-empty">No tasks active.</div>'; return; }
-            let tHtml = '';
-            activeTasks.slice(0, 5).forEach(t => {
-                const borderClass = isDatePast(t.dueDate) ? 'danger' : 'active';
-                const dateLabel = isDatePast(t.dueDate) ? 'Past Due' : 'Today';
-                tHtml += `
-                    <a href="todo.html" style="text-decoration:none;">
-                        <div class="intel-item ${borderClass}"><div class="intel-title">${t.title}</div><div class="intel-meta"><span>${t.priority}</span><span style="font-weight:600;">${dateLabel}</span></div></div>
-                    </a>`;
-            });
-            tContainer.innerHTML = tHtml;
-        }
+            if (activeTasks.length === 0) { tContainer.innerHTML = '<div class="intel-empty">No tasks active.</div>'; }
+            else {
+                let tHtml = '';
+                activeTasks.slice(0, 5).forEach(t => {
+                    const borderClass = isDatePast(t.dueDate) ? 'danger' : 'active';
+                    const dateLabel = isDatePast(t.dueDate) ? 'Past Due' : 'Today';
+                    tHtml += `<a href="todo.html" style="text-decoration:none;"><div class="intel-item ${borderClass}"><div class="intel-title">${t.title}</div><div class="intel-meta"><span>${t.priority}</span><span style="font-weight:600;">${dateLabel}</span></div></div></a>`;
+                });
+                tContainer.innerHTML = tHtml;
+            }
 
-        function initializeDashboard() {
-            const profileName = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`);
-            document.getElementById('greeting-title').textContent = `Welcome back, ${profileName ? profileName : cloudIdentity.userName.split('@')[0]}`;
-            document.getElementById('global-message-text').textContent = localStorage.getItem('kore_bulletin') || "Welcome to Kore.";
-
-            const shortcuts = JSON.parse(localStorage.getItem(`kore_shortcuts_${cloudIdentity.userId}`)) || [
-                { title: "Apps", url: "apps.html", icon: "🚀" },
-                { title: "Work Tracker", url: "work.html", icon: "📋" },
-                { title: "Macro Library", url: "macros.html", icon: "💻" }
-            ];
+            // Shortcuts
+            let shortcuts = await loadCloudData('shortcuts');
+            if(shortcuts.length === 0) shortcuts = [ { title: "Apps", url: "apps.html", icon: "🚀" }, { title: "Work Tracker", url: "work.html", icon: "📋" }, { title: "Macro Library", url: "macros.html", icon: "💻" } ];
+            document.getElementById('qa-container').innerHTML = shortcuts.map(link => `<a href="${link.url}" class="qa-btn" target="${link.url.startsWith('http') ? '_blank' : '_self'}"><span class="qa-icon">${link.icon || "🔗"}</span>${link.title}</a>`).join('');
             
-            const qaContainer = document.getElementById('qa-container');
-            qaContainer.innerHTML = shortcuts.map(link => `<a href="${link.url}" class="qa-btn" target="${link.url.startsWith('http') ? '_blank' : '_self'}"><span class="qa-icon">${link.icon || "🔗"}</span>${link.title}</a>`).join('');
-
-            loadLocalIntel();
-            setInterval(updateClock, 1000); updateClock(); 
+            document.getElementById('global-message-text').textContent = localStorage.getItem('kore_bulletin') || "Welcome to Kore.";
         }
 
         function toggleCopilot() {
@@ -288,9 +286,49 @@
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
         }
 
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendChatMessage(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = "I'm ready. Ask me about your 'tasks', 'tickets', or 'macros'.";
+                
+                if(lower.includes('task') || lower.includes('todo')) {
+                    const active = localTasks.filter(t => !t.completed).length;
+                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
+                    reply = `You currently have ${active} active tasks. ${due} of them require your attention today.`;
+                } else if(lower.includes('ticket') || lower.includes('work')) {
+                    const active = localTickets.filter(i => !i.archived && i.status !== 'Completed').length;
+                    reply = `There are ${active} open tickets in the Work Queue currently.`;
+                } else if(lower.includes('macro') || lower.includes('code')) {
+                    reply = "The Macro Library is fully operational and populated with your standard Excel, Python, and iSeries starter codes.";
+                } else if(lower.includes('ciao')) {
+                    reply = "Understood. Terminating chat protocols. Have a good day, sir.";
+                }
+
+                appendChatMessage(reply, 'bot');
+            }, 600);
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerText = text;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+        
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();
-            initializeDashboard();
+            await loadDashboardData();
+            setInterval(updateClock, 1000); updateClock(); 
         });
     </script>
 </body>

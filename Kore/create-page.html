@@ -93,6 +93,25 @@
         .attachment-item input { margin-bottom: 6px; }
         .remove-btn { font-size: 0.75rem; color: #ef4444; background: transparent; border: none; cursor: pointer; padding: 0; font-weight: 600; }
 
+        /* --- Kore Copilot AI Chat --- */
+        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
+        .copilot-trigger:hover { transform: scale(1.05); }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
+        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
+        .chat-msg a:hover { text-decoration: underline; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px; }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
+
         /* --- Global Footer --- */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
     </style>
@@ -106,6 +125,8 @@
                 <a href="index.html" class="nav-item">Dashboard</a>
                 <div class="nav-item">Operations ▼
                     <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
                         <a href="apps.html">Apps</a>
                         <a href="work.html">Work Tracker</a>
                         <a href="passwords.html">Password Generator</a>
@@ -219,13 +240,28 @@
 
     </main>
 
+    <button class="copilot-trigger" onclick="toggleCopilot()">💬</button>
+    <div class="copilot-window" id="copilotWindow">
+        <div class="copilot-header">
+            <span>🤖 Kore Copilot</span>
+            <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
+        </div>
+        <div class="copilot-messages" id="copilotMessages">
+            <div class="chat-msg bot" id="botWelcomeMsg">Initializing AI matrix...</div>
+        </div>
+        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+            <input type="text" id="copilotInput" placeholder="Message Copilot..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
+
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
-        const STORAGE_KEY = 'infoPages';
-
-        // --- Microsoft Entra ID Integration ---
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let profileName = "User";
+        let localTasks = [];
+        let localTickets = [];
 
         async function fetchSecureIdentity() {
             try {
@@ -238,13 +274,151 @@
                     
                     const authorInput = document.getElementById('authorInput');
                     if (!authorInput.value) authorInput.value = cloudIdentity.userName;
-                } else {
-                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
                 }
-            } catch (error) {
-                console.log("Auth fetch bypassed - Local execution.");
-                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            } catch (error) {}
+
+            const profile = await loadCloudData('profile') || {};
+            profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
+            
+            const welcomeMessages = [
+                `Hello, ${profileName}. I am your Kore Copilot. Let me know if you need to pull up a ticket.`,
+                `Welcome back, ${profileName}. I'm synced to your cloud data.`,
+                `Good to see you, ${profileName}. Let's build a great guide.`
+            ];
+            const botWelcomeMsg = document.getElementById('botWelcomeMsg');
+            if (botWelcomeMsg) {
+                botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
             }
+
+            localTasks = await loadCloudData('todos') || [];
+            try {
+                const res = await fetch('/api/get_work_items'); 
+                if (res.ok) { localTickets = await res.json(); } 
+                else { localTickets = await loadCloudData('work_items') || []; }
+            } catch(e) { localTickets = await loadCloudData('work_items') || []; }
+        }
+
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        async function saveCloudData(dataType, data) {
+            try {
+                await fetch('/api/save_user_data', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
+                });
+            } catch(e) {}
+        }
+
+        // --- Copilot Logic ---
+        function toggleCopilot() {
+            const win = document.getElementById('copilotWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            if (win.style.display === 'flex') document.getElementById('copilotInput').focus();
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerHTML = text; 
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function isDateToday(dateStr) {
+            if (!dateStr) return false;
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toDateString() === new Date().toDateString();
+        }
+        function isDatePast(dateStr) {
+            if (!dateStr) return false;
+            const d = new Date(dateStr + 'T00:00:00');
+            const today = new Date(); today.setHours(0,0,0,0);
+            return d < today;
+        }
+
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendChatMessage(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = '';
+
+                const ticketMatch = text.match(/tkt-\d+/i);
+                if (ticketMatch) {
+                    const tktId = ticketMatch[0].toUpperCase();
+                    const ticket = localTickets.find(t => t.id === tktId);
+                    if (ticket) {
+                        reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
+                    } else {
+                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
+                    }
+                } 
+                else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
+                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
+                        reply = "Navigating to the Work Tracker now...";
+                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
+                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
+                        reply = "Opening the Enterprise Macro Library...";
+                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
+                    } else if (lower.includes('todo') || lower.includes('task')) {
+                        reply = "Opening your Personal To-Do list...";
+                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
+                    } else if (lower.includes('lod') || lower.includes('validate')) {
+                        reply = "Taking you to the LOD Validation Tool...";
+                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
+                    } else if (lower.includes('hub') || lower.includes('info')) {
+                        reply = "Navigating to the Info Hub...";
+                        setTimeout(() => { window.location.href = 'info-hub.html'; }, 1000);
+                    } else {
+                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
+                    }
+                } 
+                else if (lower.includes('task') || lower.includes('todo')) {
+                    const active = localTasks.filter(t => !t.completed).length;
+                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
+                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
+                } 
+                else if (lower.includes('ticket') || lower.includes('work')) {
+                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
+                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
+                } 
+                else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+                    const greetings = [
+                        `Hello again, ${profileName}. What are we working on?`,
+                        `Greetings. All systems are green. How can I help?`,
+                        `Hi there, ${profileName}. Let me know if you need to pull up any data.`
+                    ];
+                    reply = greetings[Math.floor(Math.random() * greetings.length)];
+                } 
+                else if (lower.includes('thank')) {
+                    reply = "You are very welcome. Let me know if you need anything else.";
+                }
+                else if (lower.includes('ciao') || lower.includes('bye')) {
+                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
+                    setTimeout(() => { toggleCopilot(); }, 2000);
+                }
+                else {
+                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, search for a specific <b>TKT-1234</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
+                }
+
+                appendChatMessage(reply, 'bot');
+            }, 600);
         }
 
         const titleEl = document.getElementById('infoTitle');
@@ -257,7 +431,6 @@
         const createdAtEl = document.getElementById('createdAt');
         const updatedAtEl = document.getElementById('updatedAt');
         const statusDisplayEl = document.getElementById('statusDisplay');
-        const autosaveEl = document.getElementById('autosaveStatus');
         const globalToggleEl = document.getElementById('globalPushToggle');
         
         const imagesContainer = document.getElementById('imagesContainer');
@@ -269,33 +442,10 @@
         let currentStatus = 'draft';
         let isHtmlMode = false;
         let isDirty = false;
-        let lastAutosaveAt = 0;
 
         const HOWTO_TEMPLATE = `<h2>Overview</h2><p><em>What this is, when to use it, and the outcome you want.</em></p><h2>Prerequisites</h2><ul><li>Access/permissions:</li><li>Required files/links:</li></ul><h2>Steps</h2><ol><li><strong>Step 1:</strong> </li><li><strong>Step 2:</strong> </li></ol><h2>Troubleshooting</h2><ul><li><strong>Problem:</strong> … <br><strong>Fix:</strong> …</li></ul>`;
 
-        // Data Management (Local Fallback & Caching)
-        function loadPages() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                return raw ? JSON.parse(raw) : [];
-            } catch (e) { return []; }
-        }
-        function savePages(pages) {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pages)); } catch (e) {}
-        }
         function generateId() { return 'page_' + Date.now() + '_' + Math.floor(Math.random() * 1e6); }
-        
-        function upsertPage(page) {
-            const pages = loadPages();
-            const idx = pages.findIndex(p => p.id === page.id);
-            if (idx === -1) pages.push(page); else pages[idx] = page;
-            savePages(pages);
-        }
-        function archivePage(id) {
-            const pages = loadPages();
-            const idx = pages.findIndex(p => p.id === id);
-            if (idx !== -1) { pages[idx].archived = true; savePages(pages); }
-        }
         
         function escapeHtml(str) { return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
         function stripTags(html) { return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
@@ -304,18 +454,19 @@
         function markDirty() { isDirty = true; }
 
         // --- Admin Lock Logic ---
-        globalToggleEl.addEventListener('change', (e) => {
+        globalToggleEl.addEventListener('change', async (e) => {
             if (e.target.checked) {
                 const isUnlocked = sessionStorage.getItem('kore_admin_unlocked') === 'true';
                 if (!isUnlocked) {
                     const pin = prompt("🔒 Security Check: Enter Admin PIN to unlock Global Workspace broadcast:");
-                    const currentPin = localStorage.getItem('kore_admin_pin') || 'Admin2026!';
-                    if (pin === currentPin) {
+                    const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                    const masterPin = adminData.pin || 'Admin2026!';
+                    
+                    if (pin === masterPin) {
                         sessionStorage.setItem('kore_admin_unlocked', 'true');
-                        // Allow checkbox to remain checked
                     } else {
                         alert("Incorrect PIN. Access Denied.");
-                        e.target.checked = false; // Force it back off
+                        e.target.checked = false;
                     }
                 }
             }
@@ -403,13 +554,48 @@
         linksContainer.addEventListener('input', e => { if (e.target.tagName === 'INPUT') { links[e.target.dataset.idx][e.target.dataset.type] = e.target.value; markDirty(); }});
 
         // --- Azure Cloud Transmission System ---
-        function buildPagePayload(status) {
+        async function fetchPagesFromCloud() {
+            try {
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data)) return data;
+                }
+            } catch(e) {}
+            const fallback = await loadCloudData('infoPages');
+            return Array.isArray(fallback) ? fallback : [];
+        }
+
+        async function transmitToCloud(payload) {
+            let pages = await fetchPagesFromCloud();
+            const idx = pages.findIndex(p => p.id === payload.id);
+            if (idx > -1) pages[idx] = payload; else pages.push(payload);
+            
+            try {
+                await fetch('/api/save_info_page', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.warn("Primary endpoint offline. Relying on vault sync.");
+            }
+            
+            try {
+                await saveCloudData('infoPages', pages);
+            } catch(e) {}
+        }
+
+        async function buildPagePayload(status) {
             const nowIso = new Date().toISOString();
             let createdAt = nowIso;
             if (currentPageId) {
-                const existing = loadPages().find(p => p.id === currentPageId);
+                const pages = await fetchPagesFromCloud();
+                const existing = pages.find(p => p.id === currentPageId);
                 if (existing && existing.createdAt) createdAt = existing.createdAt;
-            } else { currentPageId = generateId(); }
+            } else { 
+                currentPageId = generateId(); 
+            }
 
             return {
                 id: currentPageId,
@@ -429,27 +615,13 @@
             };
         }
 
-        async function transmitToCloud(payload) {
-            try {
-                const response = await fetch('/api/save_info_page', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) console.warn("Cloud transmit failed or still compiling.");
-            } catch (err) {
-                console.error("Cloud link offline. Falling back to local cache.", err);
-            }
-        }
-
         document.getElementById('saveDraftBtn').addEventListener('click', async () => {
             if (!titleEl.value.trim()) return alert('Title required.');
             const btn = document.getElementById('saveDraftBtn');
-            btn.innerText = "Saving...";
+            btn.innerText = "Saving to Cloud...";
             
-            const page = buildPagePayload('draft'); 
-            upsertPage(page); // Cache locally instantly
-            await transmitToCloud(page); // Fire to Azure silently
+            const page = await buildPagePayload('draft'); 
+            await transmitToCloud(page); 
 
             currentStatus = 'draft'; isDirty = false;
             createdAtEl.textContent = formatDate(page.createdAt); updatedAtEl.textContent = formatDate(page.updatedAt);
@@ -462,27 +634,47 @@
             const btn = document.getElementById('publishBtn');
             btn.innerText = "Transmitting to Cloud..."; btn.disabled = true;
 
-            const page = buildPagePayload('published'); 
-            upsertPage(page);
+            const page = await buildPagePayload('published'); 
             await transmitToCloud(page);
             
             isDirty = false;
             window.location.href = 'info-hub.html';
         });
 
-        document.getElementById('deletePageBtn').addEventListener('click', () => {
+        document.getElementById('deletePageBtn').addEventListener('click', async () => {
             if (!currentPageId) { if(confirm('Clear form?')) window.location.href = 'create-page.html'; return; }
-            if (confirm('Archive this page?')) { archivePage(currentPageId); window.location.href = 'info-hub.html'; }
+            if (confirm('Archive this page?')) { 
+                const btn = document.getElementById('deletePageBtn');
+                btn.innerText = "Archiving...";
+                
+                let pages = await fetchPagesFromCloud();
+                const idx = pages.findIndex(p => p.id === currentPageId);
+                if (idx !== -1) {
+                    pages[idx].archived = true;
+                    try {
+                        await fetch('/api/save_info_page', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(pages[idx])
+                        });
+                    } catch(e) {}
+                    await saveCloudData('infoPages', pages);
+                }
+                
+                window.location.href = 'info-hub.html'; 
+            }
         });
 
         // Load Existing
         document.addEventListener('DOMContentLoaded', async () => {
-            await fetchSecureIdentity(); // Initiate Entra ID handshake immediately
+            await fetchSecureIdentity(); 
 
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
+            
             if (id) {
-                const existing = loadPages().find(p => p.id === id);
+                const pages = await fetchPagesFromCloud();
+                const existing = pages.find(p => p.id === id);
                 if (existing) {
                     currentPageId = existing.id;
                     titleEl.value = existing.titleHtml || existing.title || '';

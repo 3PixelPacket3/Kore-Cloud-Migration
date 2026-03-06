@@ -69,6 +69,7 @@
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
 
         /* --- Main Layout --- */
         .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
@@ -124,139 +125,23 @@
         .legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
 
         /* --- Kore Copilot AI Chat --- */
-        .copilot-trigger {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            z-index: 1000;
-            transition: transform 0.2s;
-            border: none;
-        }
+        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
         .copilot-trigger:hover { transform: scale(1.05); }
-        .copilot-window {
-            position: fixed;
-            bottom: 105px;
-            right: 30px;
-            width: 380px;
-            height: 550px;
-            background: var(--bg-surface);
-            border-radius: var(--radius-md);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border: 1px solid var(--border-subtle);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-            overflow: hidden;
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .copilot-header {
-            background: var(--accent-primary);
-            color: white;
-            padding: 16px;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .copilot-close {
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-        .copilot-messages {
-            flex-grow: 1;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: var(--bg-app);
-            scroll-behavior: smooth;
-        }
-        .chat-msg {
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            max-width: 85%;
-            line-height: 1.5;
-            word-wrap: break-word;
-        }
-        .chat-msg.bot {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            color: var(--text-main);
-        }
-        .chat-msg.user {
-            background: var(--accent-primary);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-msg a {
-            color: var(--accent-primary);
-            font-weight: 600;
-            text-decoration: none;
-        }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
+        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
         .chat-msg a:hover { text-decoration: underline; }
-        .copilot-input-area {
-            display: flex;
-            border-top: 1px solid var(--border-subtle);
-            padding: 16px;
-            background: var(--bg-surface);
-            align-items: center;
-            gap: 12px;
-        }
-        .copilot-input-area input {
-            flex-grow: 1;
-            border: 1px solid var(--border-subtle);
-            border-radius: 99px;
-            padding: 12px 16px;
-            outline: none;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-        .copilot-input-area input:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-        .copilot-input-area button {
-            background: var(--accent-primary);
-            border: none;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .copilot-input-area button:hover {
-            background: var(--accent-hover);
-            transform: scale(1.05);
-        }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px; }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
 
         /* --- Global Footer --- */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto; }
@@ -291,6 +176,7 @@
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
     </header>
 
     <main class="main-container">
@@ -303,7 +189,7 @@
         </section>
 
         <div class="toolbar">
-            <span class="toolbar-meta">Snapshot Generated: <strong id="reportsUpdatedAt" style="color: var(--text-main);">Just now</strong></span>
+            <span class="toolbar-meta">Snapshot Generated: <strong id="reportsUpdatedAt" style="color: var(--text-main);">Connecting to Cloud...</strong></span>
             <div class="toolbar-actions">
                 <button type="button" class="btn" id="refreshReportsBtn">🔄 Refresh Data</button>
                 <button type="button" class="btn" id="exportSummaryCsvBtn">⬇️ Export Summary CSV</button>
@@ -435,354 +321,357 @@
         </form>
     </div>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
-        (function () {
-            // Data Loading Logic
-            const STORAGE_KEY = "kore_work_items";
-
-            const totalEl = document.getElementById("repTotalRequests");
-            const openEl = document.getElementById("repOpenRequests");
-            const completedEl = document.getElementById("repCompletedRequests");
-            const overdueEl = document.getElementById("repOverdueRequests");
-            const avgAgeOpenEl = document.getElementById("repAvgAgeOpen");
-            const maxAgeOpenEl = document.getElementById("repMaxAgeOpen");
-
-            const byTypeBody = document.getElementById("repByTypeBody");
-            const byAccountBody = document.getElementById("repByAccountBody");
-            const agingBody = document.getElementById("repAgingBody");
-
-            const statusCanvas = document.getElementById("statusChart");
-            const priorityCanvas = document.getElementById("priorityChart");
-            const agingCanvas = document.getElementById("agingChart");
-
-            const exportWorkBtn = document.getElementById("exportWorkCsvBtn");
-            const exportSummaryBtn = document.getElementById("exportSummaryCsvBtn");
-            const refreshBtn = document.getElementById("refreshReportsBtn");
-            const updatedEl = document.getElementById("reportsUpdatedAt");
-
-            function loadWorkItems() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY) || "[]";
-                    const arr = JSON.parse(raw);
-                    return Array.isArray(arr) ? arr : [];
-                } catch (e) { return []; }
-            }
-
-            function isCompleted(item) {
-                return String(item.status || "").toLowerCase() === "completed";
-            }
-
-            function isOpen(item) {
-                const s = String(item.status || "").toLowerCase();
-                return s === "open" || s === "in progress" || s === "on hold" || s === "new";
-            }
-
-            function isOverdue(item) {
-                if (!item.dueDate || isCompleted(item)) return false;
-                const today = new Date();
-                const due = new Date(item.dueDate);
-                if (Number.isNaN(due.getTime())) return false;
-                return due < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            }
-
-            function summarise(items) {
-                const summary = { total: items.length, open: 0, completed: 0, overdue: 0, byStatus: {}, byPriority: {}, byType: {}, byAccount: {} };
-                items.forEach((item) => {
-                    const status = String(item.status || "Open");
-                    const priority = String(item.priority || "Medium");
-                    const type = String(item.type || "Unspecified");
-                    const account = String(item.account || "Unspecified");
-
-                    if (isOpen(item)) summary.open++;
-                    if (isCompleted(item)) summary.completed++;
-                    if (isOverdue(item)) summary.overdue++;
-
-                    summary.byStatus[status] = (summary.byStatus[status] || 0) + 1;
-                    summary.byPriority[priority] = (summary.byPriority[priority] || 0) + 1;
-                    summary.byType[type] = (summary.byType[type] || 0) + 1;
-                    summary.byAccount[account] = (summary.byAccount[account] || 0) + 1;
-                });
-                return summary;
-            }
-
-            function computeAgingStats(items) {
-                const today = new Date();
-                let totalDays = 0; let count = 0; let maxAge = 0;
-                const buckets = { "0-2": 0, "3-7": 0, "8-14": 0, "15+": 0 };
-                
-                if (!Array.isArray(items)) return { avgAge: 0, maxAge: 0, buckets, count: 0 };
-                
-                items.forEach(function (item) {
-                    try {
-                        if (!item || isCompleted(item)) return;
-
-                        const createdRaw = item.created || item.createdAt;
-                        if (!createdRaw) return;
-
-                        const dt = new Date(createdRaw);
-                        if (!dt || !dt.getTime || !isFinite(dt.getTime())) return;
-
-                        const ageMs = today.getTime() - dt.getTime();
-                        if (!isFinite(ageMs) || ageMs < 0) return;
-
-                        const ageDays = Math.floor(ageMs / 86400000);
-                        totalDays += ageDays; count++;
-
-                        if (ageDays > maxAge) maxAge = ageDays;
-
-                        if (ageDays <= 2) buckets["0-2"]++;
-                        else if (ageDays <= 7) buckets["3-7"]++;
-                        else if (ageDays <= 14) buckets["8-14"]++;
-                        else buckets["15+"]++;
-                    } catch (e) {}
-                });
-                const avgAge = count ? totalDays / count : 0;
-                return { avgAge: avgAge, maxAge: maxAge, buckets: buckets, count: count };
-            }
-
-            function renderAging(stats) {
-                if (avgAgeOpenEl) avgAgeOpenEl.textContent = stats.count ? stats.avgAge.toFixed(1) : "0";
-                if (maxAgeOpenEl) maxAgeOpenEl.textContent = stats.maxAge || 0;
-                if (agingBody) {
-                    agingBody.innerHTML = "";
-                    ["0-2", "3-7", "8-14", "15+"].forEach(function (bucket) {
-                        const tr = document.createElement("tr");
-                        const count = stats.buckets && stats.buckets[bucket] ? stats.buckets[bucket] : 0;
-                        tr.innerHTML = "<td>" + bucket + " days</td><td>" + count + "</td>";
-                        agingBody.appendChild(tr);
-                    });
-                }
-            }
-
-            function renderSummary(summary) {
-                if (totalEl) totalEl.textContent = String(summary.total);
-                if (openEl) openEl.textContent = String(summary.open);
-                if (completedEl) completedEl.textContent = String(summary.completed);
-                if (overdueEl) overdueEl.textContent = String(summary.overdue);
-            }
-
-            function buildPieData(counts) {
-                var labels = Object.keys(counts || {});
-                var values = labels.map(function (label) { return counts[label] || 0; });
-                var total = values.reduce(function (sum, v) { return sum + v; }, 0);
-                return { labels: labels, values: values, total: total };
-            }
-
-            const corpColors = ["#0ea5e9", "#f59e0b", "#10b981", "#8b5cf6", "#64748b", "#f43f5e", "#06b6d4"];
-
-            function drawPieChart(canvasId, pieData) {
-                var canvas = document.getElementById(canvasId);
-                if (!canvas || !canvas.getContext) return;
-                var ctx = canvas.getContext("2d");
-                if (!pieData.labels.length || !pieData.total) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
-
-                var centerX = canvas.width / 2; var centerY = canvas.height / 2;
-                var radius = Math.min(canvas.width, canvas.height) / 2 - 10;
-                var startAngle = -Math.PI / 2;
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                pieData.labels.forEach(function (label, index) {
-                    var value = pieData.values[index] || 0; if (!value) return;
-                    var sliceAngle = (value / pieData.total) * Math.PI * 2;
-                    var endAngle = startAngle + sliceAngle;
-
-                    ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                    ctx.closePath(); ctx.fillStyle = corpColors[index % corpColors.length]; ctx.fill();
-
-                    ctx.lineWidth = 2; ctx.strokeStyle = "#ffffff"; ctx.stroke();
-
-                    var percent = (value / pieData.total) * 100;
-                    if (percent >= 10) {
-                        var midAngle = startAngle + sliceAngle / 2;
-                        var labelRadius = radius * 0.6;
-                        var labelX = centerX + Math.cos(midAngle) * labelRadius;
-                        var labelY = centerY + Math.sin(midAngle) * labelRadius;
-                        ctx.fillStyle = "#ffffff"; ctx.font = "bold 12px Inter, sans-serif";
-                        ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                        ctx.fillText(Math.round(percent) + "%", labelX, labelY);
-                    }
-                    startAngle = endAngle;
-                });
-            }
-
-            function renderLegend(legendId, pieData) {
-                var legendEl = document.getElementById(legendId); if (!legendEl) return;
-                legendEl.innerHTML = "";
-                if (!pieData.labels.length || !pieData.total) return;
-
-                pieData.labels.forEach(function (label, index) {
-                    var value = pieData.values[index] || 0; if (!value) return;
-                    var item = document.createElement("div"); item.className = "legend-item";
-                    var swatch = document.createElement("span"); swatch.className = "legend-swatch";
-                    swatch.style.backgroundColor = corpColors[index % corpColors.length];
-                    var text = document.createElement("span"); text.textContent = label + " (" + value + ")";
-                    item.appendChild(swatch); item.appendChild(text); legendEl.appendChild(item);
-                });
-            }
-
-            function renderAdvanced(summary, items) {
-                if (byTypeBody) {
-                    byTypeBody.innerHTML = '';
-                    var types = Object.keys(summary.byType || {});
-                    if (!types.length) byTypeBody.innerHTML = '<tr><td colspan="4">No data yet.</td></tr>';
-                    else {
-                        types.forEach(function (label) {
-                            var total = 0, open = 0, completed = 0;
-                            items.forEach(function (item) {
-                                if (String(item.type || "Unspecified") !== label) return;
-                                total++; if (isOpen(item)) open++; if (isCompleted(item)) completed++;
-                            });
-                            var tr = document.createElement("tr"); tr.innerHTML = "<td>" + label + "</td><td>" + total + "</td><td>" + open + "</td><td>" + completed + "</td>";
-                            byTypeBody.appendChild(tr);
-                        });
-                    }
-                    var typePie = buildPieData(summary.byType || {});
-                    drawPieChart("typePieChart", typePie); renderLegend("typePieLegend", typePie);
-                }
-
-                if (byAccountBody) {
-                    byAccountBody.innerHTML = '';
-                    var accounts = Object.keys(summary.byAccount || {});
-                    if (!accounts.length) byAccountBody.innerHTML = '<tr><td colspan="4">No data yet.</td></tr>';
-                    else {
-                        accounts.forEach(function (label) {
-                            var totalA = 0, openA = 0, completedA = 0;
-                            items.forEach(function (item) {
-                                if (String(item.account || "Unspecified") !== label) return;
-                                totalA++; if (isOpen(item)) openA++; if (isCompleted(item)) completedA++;
-                            });
-                            var trA = document.createElement("tr"); trA.innerHTML = "<td>" + label + "</td><td>" + totalA + "</td><td>" + openA + "</td><td>" + completedA + "</td>";
-                            byAccountBody.appendChild(trA);
-                        });
-                    }
-                    var accountPie = buildPieData(summary.byAccount || {});
-                    drawPieChart("accountPieChart", accountPie); renderLegend("accountPieLegend", accountPie);
-                }
-            }
-
-            function drawBarChart(canvas, counts, orderedLabels) {
-                if (!canvas || !canvas.getContext) return;
-                var ctx = canvas.getContext("2d");
-                var labels = orderedLabels && orderedLabels.length ? orderedLabels.slice() : Object.keys(counts || {});
-                if (!labels.length) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
-                
-                var values = labels.map(function (label) { return counts[label] || 0; });
-                var maxVal = 0; values.forEach(function (v) { if (v > maxVal) maxVal = v; });
-                if (!maxVal) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
-
-                var width = canvas.width; var height = canvas.height;
-                ctx.clearRect(0, 0, width, height);
-
-                var padding = 30; var chartHeight = height - padding * 2; var chartWidth = width - padding * 2;
-                var barWidth = Math.min(chartWidth / (labels.length * 1.5), 60);
-                var barGap = barWidth * 0.5;
-                var originX = padding + (chartWidth - (labels.length * (barWidth + barGap) - barGap)) / 2;
-                var originY = height - padding;
-
-                labels.forEach(function (label, index) {
-                    var value = values[index]; var barHeight = (value / maxVal) * chartHeight;
-                    var x = originX + index * (barWidth + barGap); var y = originY - barHeight;
-
-                    ctx.fillStyle = corpColors[index % corpColors.length];
-                    ctx.fillRect(x, y, barWidth, barHeight);
-
-                    ctx.fillStyle = "#475569"; ctx.font = "bold 12px Inter, sans-serif";
-                    ctx.textAlign = "center"; ctx.textBaseline = "bottom";
-                    ctx.fillText(String(value), x + barWidth / 2, y - 5);
-
-                    ctx.fillStyle = "#0f172a";
-                    ctx.textAlign = "center"; ctx.textBaseline = "top";
-                    ctx.fillText(label, x + barWidth / 2, originY + 8);
-                });
-            }
-
-            function snapshotAndRender() {
-                const items = loadWorkItems();
-                const summary = summarise(items);
-                renderSummary(summary);
-                renderAdvanced(summary, items);
-                
-                if (statusCanvas) drawBarChart(statusCanvas, summary.byStatus || {}, ["Open", "In Progress", "On Hold", "Completed"]);
-                if (priorityCanvas) drawBarChart(priorityCanvas, summary.byPriority || {}, ["Low", "Medium", "High", "Critical"]);
-                
-                const aging = computeAgingStats(items);
-                renderAging(aging);
-                
-                if (agingCanvas) {
-                    const b = aging.buckets || {};
-                    drawBarChart(agingCanvas, { "0-2": b["0-2"], "3-7": b["3-7"], "8-14": b["8-14"], "15+": b["15+"] }, ["0-2", "3-7", "8-14", "15+"]);
-                }
-
-                if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
-                return { items, summary };
-            }
-
-            function downloadCsv(filename, rows) {
-                if (!rows || !rows.length) return;
-                const csv = rows.map(r => r.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(",")).join("\r\n");
-                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                document.body.appendChild(link); link.click(); document.body.removeChild(link);
-            }
-
-            if (exportWorkBtn) {
-                exportWorkBtn.addEventListener("click", () => {
-                    const items = loadWorkItems();
-                    const rows = [["Ticket ID", "Title", "Type", "Account", "Priority", "Status", "Requestor", "Created", "Due", "Notes"]];
-                    items.forEach(i => rows.push([i.id, i.title, i.type, i.account, i.priority, i.status, i.requestor, i.created, i.dueDate, String(i.notes).replace(/<[^>]+>/g, ' ')]));
-                    downloadCsv(`Kore_Full_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
-                });
-            }
-
-            if (exportSummaryBtn) {
-                exportSummaryBtn.addEventListener("click", () => {
-                    const items = loadWorkItems(); const s = summarise(items);
-                    const rows = [
-                        ["Metric", "Value"], ["Total", s.total], ["Open", s.open], ["Completed", s.completed], ["Overdue", s.overdue], [],
-                        ["Status", "Count"]
-                    ];
-                    Object.keys(s.byStatus).forEach(k => rows.push([k, s.byStatus[k]]));
-                    rows.push([], ["Priority", "Count"]);
-                    Object.keys(s.byPriority).forEach(k => rows.push([k, s.byPriority[k]]));
-                    downloadCsv(`Kore_Summary_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
-                });
-            }
-
-            if (refreshBtn) refreshBtn.addEventListener("click", snapshotAndRender);
-
-            document.addEventListener("DOMContentLoaded", snapshotAndRender);
-        })();
-
-        // --- Copilot Logic ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let profileName = "User";
         let localTasks = [];
-        let localTickets = [];
+        let masterWorkItems = []; // Held in memory for exports
+        
+        const corpColors = ["#0ea5e9", "#f59e0b", "#10b981", "#8b5cf6", "#64748b", "#f43f5e", "#06b6d4"];
 
-        function escapeHtml(str) { return String(str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-        async function initCopilotData() {
-            // Because we don't have the fetchSecureIdentity module loaded locally here, we will just read from local storage if available.
-            let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
-            profileName = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`) || "User";
+        // --- Cloud Connection & Identity ---
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                }
+            } catch (error) {}
+            
+            const profile = await loadCloudData('profile') || {};
+            profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
             
             const welcomeMessages = [
                 `Hello, ${profileName}. I am your Kore Copilot. Let me know if you need to run a report.`,
-                `Welcome back, ${profileName}. I'm synced to your local data. Need me to find a ticket?`,
+                `Welcome back, ${profileName}. I'm synced to your cloud data. Need me to find a ticket?`,
                 `Good to see you, ${profileName}. I can navigate the site, check your tasks, or look up tickets for you.`
             ];
             const botWelcomeMsg = document.getElementById('botWelcomeMsg');
             if (botWelcomeMsg) {
                 botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
             }
-
-            localTasks = JSON.parse(localStorage.getItem(`kore_todo_${cloudIdentity.userId}`)) || [];
-            localTickets = JSON.parse(localStorage.getItem('kore_work_items')) || [];
         }
 
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        async function loadWorkItemsFromCloud() {
+            try {
+                const res = await fetch('/api/get_work_items');
+                if (res.ok) {
+                    return await res.json();
+                }
+            } catch (e) {}
+            // Fallback generic cloud load
+            return await loadCloudData('work_items') || [];
+        }
+
+        // --- Reporting Core ---
+        function isCompleted(item) { return String(item.status || "").toLowerCase() === "completed"; }
+        function isOpen(item) {
+            const s = String(item.status || "").toLowerCase();
+            return s === "open" || s === "in progress" || s === "on hold" || s === "new";
+        }
+        function isOverdue(item) {
+            if (!item.dueDate || isCompleted(item)) return false;
+            const today = new Date();
+            const due = new Date(item.dueDate);
+            if (Number.isNaN(due.getTime())) return false;
+            return due < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        }
+
+        function summarise(items) {
+            const summary = { total: items.length, open: 0, completed: 0, overdue: 0, byStatus: {}, byPriority: {}, byType: {}, byAccount: {} };
+            items.forEach((item) => {
+                if (item.deleted) return; // ignore deleted
+                const status = String(item.status || "Open");
+                const priority = String(item.priority || "Medium");
+                const type = String(item.type || "Unassigned");
+                const account = String(item.allocation || "Unassigned"); // Updated to match new work form variable name
+
+                if (isOpen(item)) summary.open++;
+                if (isCompleted(item)) summary.completed++;
+                if (isOverdue(item)) summary.overdue++;
+
+                summary.byStatus[status] = (summary.byStatus[status] || 0) + 1;
+                summary.byPriority[priority] = (summary.byPriority[priority] || 0) + 1;
+                summary.byType[type] = (summary.byType[type] || 0) + 1;
+                summary.byAccount[account] = (summary.byAccount[account] || 0) + 1;
+            });
+            // fix total to not include deleted
+            summary.total = items.filter(i => !i.deleted).length;
+            return summary;
+        }
+
+        function computeAgingStats(items) {
+            const today = new Date();
+            let totalDays = 0; let count = 0; let maxAge = 0;
+            const buckets = { "0-2": 0, "3-7": 0, "8-14": 0, "15+": 0 };
+            
+            if (!Array.isArray(items)) return { avgAge: 0, maxAge: 0, buckets, count: 0 };
+            
+            items.forEach(function (item) {
+                try {
+                    if (!item || isCompleted(item) || item.deleted) return;
+
+                    const createdRaw = item.created || item.createdAt;
+                    if (!createdRaw) return;
+
+                    const dt = new Date(createdRaw);
+                    if (!dt || !dt.getTime || !isFinite(dt.getTime())) return;
+
+                    const ageMs = today.getTime() - dt.getTime();
+                    if (!isFinite(ageMs) || ageMs < 0) return;
+
+                    const ageDays = Math.floor(ageMs / 86400000);
+                    totalDays += ageDays; count++;
+
+                    if (ageDays > maxAge) maxAge = ageDays;
+
+                    if (ageDays <= 2) buckets["0-2"]++;
+                    else if (ageDays <= 7) buckets["3-7"]++;
+                    else if (ageDays <= 14) buckets["8-14"]++;
+                    else buckets["15+"]++;
+                } catch (e) {}
+            });
+            const avgAge = count ? totalDays / count : 0;
+            return { avgAge: avgAge, maxAge: maxAge, buckets: buckets, count: count };
+        }
+
+        // --- Render UI ---
+        function renderSummary(summary) {
+            const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = String(val); };
+            safeSet("repTotalRequests", summary.total);
+            safeSet("repOpenRequests", summary.open);
+            safeSet("repCompletedRequests", summary.completed);
+            safeSet("repOverdueRequests", summary.overdue);
+        }
+
+        function renderAging(stats) {
+            const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = String(val); };
+            safeSet("repAvgAgeOpen", stats.count ? stats.avgAge.toFixed(1) : "0");
+            safeSet("repMaxAgeOpen", stats.maxAge || 0);
+            
+            const aBody = document.getElementById("repAgingBody");
+            if (aBody) {
+                aBody.innerHTML = "";
+                ["0-2", "3-7", "8-14", "15+"].forEach(function (bucket) {
+                    const tr = document.createElement("tr");
+                    const count = stats.buckets && stats.buckets[bucket] ? stats.buckets[bucket] : 0;
+                    tr.innerHTML = "<td>" + bucket + " days</td><td>" + count + "</td>";
+                    aBody.appendChild(tr);
+                });
+            }
+        }
+
+        function buildPieData(counts) {
+            var labels = Object.keys(counts || {});
+            var values = labels.map(function (label) { return counts[label] || 0; });
+            var total = values.reduce(function (sum, v) { return sum + v; }, 0);
+            return { labels: labels, values: values, total: total };
+        }
+
+        function drawPieChart(canvasId, pieData) {
+            var canvas = document.getElementById(canvasId);
+            if (!canvas || !canvas.getContext) return;
+            var ctx = canvas.getContext("2d");
+            if (!pieData.labels.length || !pieData.total) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+
+            var centerX = canvas.width / 2; var centerY = canvas.height / 2;
+            var radius = Math.min(canvas.width, canvas.height) / 2 - 10;
+            var startAngle = -Math.PI / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieData.labels.forEach(function (label, index) {
+                var value = pieData.values[index] || 0; if (!value) return;
+                var sliceAngle = (value / pieData.total) * Math.PI * 2;
+                var endAngle = startAngle + sliceAngle;
+
+                ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath(); ctx.fillStyle = corpColors[index % corpColors.length]; ctx.fill();
+
+                ctx.lineWidth = 2; ctx.strokeStyle = "#ffffff"; ctx.stroke();
+
+                var percent = (value / pieData.total) * 100;
+                if (percent >= 10) {
+                    var midAngle = startAngle + sliceAngle / 2;
+                    var labelRadius = radius * 0.6;
+                    var labelX = centerX + Math.cos(midAngle) * labelRadius;
+                    var labelY = centerY + Math.sin(midAngle) * labelRadius;
+                    ctx.fillStyle = "#ffffff"; ctx.font = "bold 12px Inter, sans-serif";
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                    ctx.fillText(Math.round(percent) + "%", labelX, labelY);
+                }
+                startAngle = endAngle;
+            });
+        }
+
+        function renderLegend(legendId, pieData) {
+            var legendEl = document.getElementById(legendId); if (!legendEl) return;
+            legendEl.innerHTML = "";
+            if (!pieData.labels.length || !pieData.total) return;
+
+            pieData.labels.forEach(function (label, index) {
+                var value = pieData.values[index] || 0; if (!value) return;
+                var item = document.createElement("div"); item.className = "legend-item";
+                var swatch = document.createElement("span"); swatch.className = "legend-swatch";
+                swatch.style.backgroundColor = corpColors[index % corpColors.length];
+                var text = document.createElement("span"); text.textContent = label + " (" + value + ")";
+                item.appendChild(swatch); item.appendChild(text); legendEl.appendChild(item);
+            });
+        }
+
+        function drawBarChart(canvasId, counts, orderedLabels) {
+            var canvas = document.getElementById(canvasId);
+            if (!canvas || !canvas.getContext) return;
+            var ctx = canvas.getContext("2d");
+            var labels = orderedLabels && orderedLabels.length ? orderedLabels.slice() : Object.keys(counts || {});
+            if (!labels.length) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+            
+            var values = labels.map(function (label) { return counts[label] || 0; });
+            var maxVal = 0; values.forEach(function (v) { if (v > maxVal) maxVal = v; });
+            if (!maxVal) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+
+            var width = canvas.width; var height = canvas.height;
+            ctx.clearRect(0, 0, width, height);
+
+            var padding = 30; var chartHeight = height - padding * 2; var chartWidth = width - padding * 2;
+            var barWidth = Math.min(chartWidth / (labels.length * 1.5), 60);
+            var barGap = barWidth * 0.5;
+            var originX = padding + (chartWidth - (labels.length * (barWidth + barGap) - barGap)) / 2;
+            var originY = height - padding;
+
+            labels.forEach(function (label, index) {
+                var value = values[index]; var barHeight = (value / maxVal) * chartHeight;
+                var x = originX + index * (barWidth + barGap); var y = originY - barHeight;
+
+                ctx.fillStyle = corpColors[index % corpColors.length];
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                ctx.fillStyle = "#475569"; ctx.font = "bold 12px Inter, sans-serif";
+                ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+                ctx.fillText(String(value), x + barWidth / 2, y - 5);
+
+                ctx.fillStyle = "#0f172a";
+                ctx.textAlign = "center"; ctx.textBaseline = "top";
+                ctx.fillText(label, x + barWidth / 2, originY + 8);
+            });
+        }
+
+        function renderAdvanced(summary, items) {
+            const bType = document.getElementById("repByTypeBody");
+            if (bType) {
+                bType.innerHTML = '';
+                var types = Object.keys(summary.byType || {});
+                if (!types.length) bType.innerHTML = '<tr><td colspan="4">No data yet.</td></tr>';
+                else {
+                    types.forEach(function (label) {
+                        var total = 0, open = 0, completed = 0;
+                        items.forEach(function (item) {
+                            if (item.deleted || String(item.type || "Unassigned") !== label) return;
+                            total++; if (isOpen(item)) open++; if (isCompleted(item)) completed++;
+                        });
+                        var tr = document.createElement("tr"); tr.innerHTML = "<td>" + label + "</td><td>" + total + "</td><td>" + open + "</td><td>" + completed + "</td>";
+                        bType.appendChild(tr);
+                    });
+                }
+                var typePie = buildPieData(summary.byType || {});
+                drawPieChart("typePieChart", typePie); renderLegend("typePieLegend", typePie);
+            }
+
+            const bAcc = document.getElementById("repByAccountBody");
+            if (bAcc) {
+                bAcc.innerHTML = '';
+                var accounts = Object.keys(summary.byAccount || {});
+                if (!accounts.length) bAcc.innerHTML = '<tr><td colspan="4">No data yet.</td></tr>';
+                else {
+                    accounts.forEach(function (label) {
+                        var totalA = 0, openA = 0, completedA = 0;
+                        items.forEach(function (item) {
+                            if (item.deleted || String(item.allocation || "Unassigned") !== label) return;
+                            totalA++; if (isOpen(item)) openA++; if (isCompleted(item)) completedA++;
+                        });
+                        var trA = document.createElement("tr"); trA.innerHTML = "<td>" + label + "</td><td>" + totalA + "</td><td>" + openA + "</td><td>" + completedA + "</td>";
+                        bAcc.appendChild(trA);
+                    });
+                }
+                var accountPie = buildPieData(summary.byAccount || {});
+                drawPieChart("accountPieChart", accountPie); renderLegend("accountPieLegend", accountPie);
+            }
+        }
+
+        async function snapshotAndRender() {
+            const updatedEl = document.getElementById("reportsUpdatedAt");
+            if(updatedEl) updatedEl.textContent = "Fetching...";
+            
+            masterWorkItems = await loadWorkItemsFromCloud();
+            localTasks = await loadCloudData('todos') || [];
+
+            const summary = summarise(masterWorkItems);
+            renderSummary(summary);
+            renderAdvanced(summary, masterWorkItems);
+            
+            drawBarChart("statusChart", summary.byStatus || {}, ["Open", "In Progress", "On Hold", "Completed"]);
+            drawBarChart("priorityChart", summary.byPriority || {}, ["Low", "Medium", "High", "Critical"]);
+            
+            const aging = computeAgingStats(masterWorkItems);
+            renderAging(aging);
+            
+            const b = aging.buckets || {};
+            drawBarChart("agingChart", { "0-2": b["0-2"], "3-7": b["3-7"], "8-14": b["8-14"], "15+": b["15+"] }, ["0-2", "3-7", "8-14", "15+"]);
+
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
+        }
+
+        // --- Export Logic ---
+        function downloadCsv(filename, rows) {
+            if (!rows || !rows.length) return;
+            const csv = rows.map(r => r.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(",")).join("\r\n");
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
+        document.getElementById("exportWorkCsvBtn").addEventListener("click", () => {
+            const rows = [["Ticket ID", "Title", "Type", "Account", "Priority", "Status", "Requestor", "Created", "Due", "Notes"]];
+            masterWorkItems.filter(i => !i.deleted).forEach(i => {
+                rows.push([i.id, i.title, i.type, i.allocation, i.priority, i.status, i.authorEmail, i.created, i.dueDate, String(i.notes).replace(/<[^>]+>/g, ' ')]);
+            });
+            downloadCsv(`Kore_Full_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
+        });
+
+        document.getElementById("exportSummaryCsvBtn").addEventListener("click", () => {
+            const s = summarise(masterWorkItems);
+            const rows = [
+                ["Metric", "Value"], ["Total", s.total], ["Open", s.open], ["Completed", s.completed], ["Overdue", s.overdue], [],
+                ["Status", "Count"]
+            ];
+            Object.keys(s.byStatus).forEach(k => rows.push([k, s.byStatus[k]]));
+            rows.push([], ["Priority", "Count"]);
+            Object.keys(s.byPriority).forEach(k => rows.push([k, s.byPriority[k]]));
+            downloadCsv(`Kore_Summary_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
+        });
+
+        document.getElementById("refreshReportsBtn").addEventListener("click", snapshotAndRender);
+
+        // --- Copilot NLP Integration ---
+        function escapeHtml(str) { return String(str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        
         function toggleCopilot() {
             const win = document.getElementById('copilotWindow');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
@@ -796,18 +685,6 @@
             msg.innerHTML = text; 
             container.appendChild(msg);
             container.scrollTop = container.scrollHeight;
-        }
-
-        function isDateToday(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toDateString() === new Date().toDateString();
-        }
-        function isDatePast(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            return d < today;
         }
 
         function handleCopilotSubmit(e) {
@@ -826,11 +703,11 @@
                 const ticketMatch = text.match(/tkt-\d+/i);
                 if (ticketMatch) {
                     const tktId = ticketMatch[0].toUpperCase();
-                    const ticket = localTickets.find(t => t.id === tktId);
+                    const ticket = masterWorkItems.find(t => t.id === tktId && !t.deleted);
                     if (ticket) {
                         reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
                     } else {
-                        reply = `I searched the local database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
+                        reply = `I searched the cloud database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
                     }
                 } 
                 else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
@@ -860,11 +737,10 @@
                 } 
                 else if (lower.includes('task') || lower.includes('todo')) {
                     const active = localTasks.filter(t => !t.completed).length;
-                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
+                    reply = `You currently have <b>${active} active tasks</b> on your To-Do list. Shall I <a href="todo.html">open it</a> for you?`;
                 } 
                 else if (lower.includes('ticket') || lower.includes('work')) {
-                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
+                    const active = masterWorkItems.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
                     reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
                 } 
                 else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
@@ -890,7 +766,11 @@
             }, 600);
         }
 
-        document.addEventListener('DOMContentLoaded', initCopilotData);
+        // --- Initialization Sequence ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
+            await snapshotAndRender();
+        });
     </script>
 </body>
 </html>

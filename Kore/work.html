@@ -135,11 +135,11 @@
                 <div class="filters-group">
                     <div class="filter-item search-item">
                         <label>Search Tickets</label>
-                        <input type="search" id="searchWork" placeholder="Title, ID, or notes..." oninput="renderTable()">
+                        <input type="search" id="searchWork" placeholder="Title, ID, or notes..." oninput="updateFilters()">
                     </div>
                     <div class="filter-item">
                         <label>Status</label>
-                        <select id="filterStatus" onchange="renderTable()">
+                        <select id="filterStatus" onchange="updateFilters()">
                             <option value="Active" selected>Active Tasks</option>
                             <option value="All">All Statuses</option>
                             <option value="Open">Open</option>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="filter-item">
                         <label>Priority</label>
-                        <select id="filterPriority" onchange="renderTable()">
+                        <select id="filterPriority" onchange="updateFilters()">
                             <option value="All">All Priorities</option>
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
@@ -159,13 +159,13 @@
                     </div>
                     <div class="filter-item">
                         <label>Request Type</label>
-                        <select id="filterType" onchange="renderTable()">
+                        <select id="filterType" onchange="updateFilters()">
                             <option value="All">All Types</option>
                         </select>
                     </div>
                     <div class="filter-item">
                         <label>Account Allocation</label>
-                        <select id="filterAllocation" onchange="renderTable()">
+                        <select id="filterAllocation" onchange="updateFilters()">
                             <option value="All">All Accounts</option>
                         </select>
                     </div>
@@ -304,6 +304,16 @@
             return null;
         }
 
+        async function saveCloudData(dataType, data) {
+            try {
+                await fetch('/api/save_user_data', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
+                });
+            } catch(e) {}
+        }
+
         async function populateDropdowns() {
             const config = await loadCloudData('work_config') || { 
                 types: ["Feature Update", "Bug Fix"], 
@@ -324,15 +334,25 @@
 
         async function fetchWorkItems() {
             try {
-                const res = await fetch('/api/get_work_items'); // Assuming this endpoint exists based on save endpoint
+                const res = await fetch('/api/get_work_items'); 
                 if (res.ok) {
                     masterWorkItems = await res.json();
                 } else {
                     masterWorkItems = await loadCloudData('work_items') || [];
                 }
             } catch (err) {
-                masterWorkItems = [];
+                masterWorkItems = await loadCloudData('work_items') || [];
             }
+            
+            // Load Saved User Filters
+            const savedFilters = await loadCloudData('work_filters');
+            if (savedFilters) {
+                if (savedFilters.status) document.getElementById('filterStatus').value = savedFilters.status;
+                if (savedFilters.priority) document.getElementById('filterPriority').value = savedFilters.priority;
+                if (savedFilters.type) document.getElementById('filterType').value = savedFilters.type;
+                if (savedFilters.allocation) document.getElementById('filterAllocation').value = savedFilters.allocation;
+            }
+
             renderTable();
         }
 
@@ -346,6 +366,18 @@
         }
 
         function generateUniqueTicketId() { return "TKT-" + Math.floor(10000 + Math.random() * 90000); }
+
+        function updateFilters() {
+            renderTable();
+            // Fire off a background save of the filter state
+            const filters = {
+                status: document.getElementById('filterStatus').value,
+                priority: document.getElementById('filterPriority').value,
+                type: document.getElementById('filterType').value,
+                allocation: document.getElementById('filterAllocation').value
+            };
+            saveCloudData('work_filters', filters);
+        }
 
         function renderTable() {
             const tbody = document.getElementById('tracker-body');
@@ -506,7 +538,7 @@
                 deleted: false
             };
 
-            // Post to Cloud
+            // Post to specific endpoint if available
             try {
                 await fetch('/api/save_work_item', {
                     method: 'POST',
@@ -515,9 +547,12 @@
                 });
             } catch (err) {}
 
-            // Update Local State Matrix
+            // Update State Matrix
             const idx = masterWorkItems.findIndex(i => i.id === payload.id);
             if (idx > -1) { masterWorkItems[idx] = payload; } else { masterWorkItems.push(payload); }
+            
+            // Backup to generic cloud endpoint to ensure persistence if the main API is down
+            await saveCloudData('work_items', masterWorkItems);
 
             btn.innerText = "Save & Transmit to Cloud"; btn.disabled = false;
             closeForm();
@@ -541,6 +576,9 @@
                             body: JSON.stringify(item)
                         });
                     } catch (err) {}
+                    
+                    // Backup the deletion to the generic cloud store
+                    await saveCloudData('work_items', masterWorkItems);
                 }
 
                 btn.innerText = "Delete Ticket"; btn.disabled = false;

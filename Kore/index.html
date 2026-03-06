@@ -73,21 +73,24 @@
         .pulse-dot { width: 10px; height: 10px; background-color: var(--accent-primary); border-radius: 50%; box-shadow: 0 0 0 rgba(14, 165, 233, 0.4); animation: pulse 2s infinite; display: inline-block; margin-right: 8px;}
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
 
-        /* AI Copilot */
+        /* Copilot UI */
         .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
         .copilot-trigger:hover { transform: scale(1.05); }
-        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 350px; height: 500px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
-        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); }
-        .chat-msg { padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; max-width: 85%; line-height: 1.4; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
+        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
         .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
         .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 12px; background: var(--bg-surface); }
-        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 20px; padding: 10px 16px; outline: none; font-size: 0.9rem; }
-        .copilot-input-area input:focus { border-color: var(--accent-primary); }
-        .copilot-input-area button { background: transparent; border: none; color: var(--accent-primary); font-weight: 700; cursor: pointer; padding: 0 12px; font-size: 1.2rem; }
+        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
+        .chat-msg a:hover { text-decoration: underline; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px;}
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;}
+        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
 
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
@@ -177,10 +180,10 @@
             <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
         </div>
         <div class="copilot-messages" id="copilotMessages">
-            <div class="chat-msg bot">Hello, sir. I am fully integrated into the local environment. What data would you like me to retrieve?</div>
+            <div class="chat-msg bot" id="botWelcomeMsg">Initializing AI matrix...</div>
         </div>
         <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
-            <input type="text" id="copilotInput" placeholder="Ask me about your tasks..." autocomplete="off">
+            <input type="text" id="copilotInput" placeholder="Message Copilot..." autocomplete="off">
             <button type="submit">➤</button>
         </form>
     </div>
@@ -191,6 +194,7 @@
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let localTasks = [];
         let localTickets = [];
+        let profileName = "User";
 
         async function fetchSecureIdentity() {
             try {
@@ -202,6 +206,17 @@
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
                 }
             } catch (error) {}
+            
+            profileName = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`) || cloudIdentity.userName.split('@')[0];
+            document.getElementById('greeting-title').textContent = `Welcome back, ${profileName}`;
+            
+            // Personalized AI Greeting
+            const welcomeMessages = [
+                `Hello, ${profileName}. I am your Kore Copilot. How can I assist you today?`,
+                `Welcome back, ${profileName}. I'm synced to your local data. Need me to find anything?`,
+                `Good to see you, ${profileName}. I can navigate the site, check your tasks, or look up tickets for you.`
+            ];
+            document.getElementById('botWelcomeMsg').innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         }
 
         // Fetch user data from Cloud
@@ -281,9 +296,20 @@
             document.getElementById('global-message-text').textContent = localStorage.getItem('kore_bulletin') || "Welcome to Kore.";
         }
 
+        // --- Advanced AI NLP Simulation ---
         function toggleCopilot() {
             const win = document.getElementById('copilotWindow');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            if (win.style.display === 'flex') document.getElementById('copilotInput').focus();
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerHTML = text; // Allow HTML links
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
         }
 
         function handleCopilotSubmit(e) {
@@ -297,38 +323,71 @@
 
             setTimeout(() => {
                 const lower = text.toLowerCase();
-                let reply = "I'm ready. Ask me about your 'tasks', 'tickets', or 'macros'.";
-                
-                if(lower.includes('task') || lower.includes('todo')) {
+                let reply = '';
+
+                // Intent: Navigation
+                if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
+                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
+                        reply = "Navigating to the Work Tracker now...";
+                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
+                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
+                        reply = "Opening the Enterprise Macro Library...";
+                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
+                    } else if (lower.includes('lod') || lower.includes('validate')) {
+                        reply = "Taking you to the LOD Validation Tool...";
+                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
+                    } else if (lower.includes('todo') || lower.includes('task')) {
+                        reply = "Opening your Personal To-Do list...";
+                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
+                    } else if (lower.includes('password')) {
+                        reply = "Navigating to the Secure Password Generator...";
+                        setTimeout(() => { window.location.href = 'passwords.html'; }, 1000);
+                    } else {
+                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
+                    }
+                } 
+                // Intent: Status / Summaries
+                else if (lower.includes('task') || lower.includes('todo')) {
                     const active = localTasks.filter(t => !t.completed).length;
                     const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have ${active} active tasks. ${due} of them require your attention today.`;
-                } else if(lower.includes('ticket') || lower.includes('work')) {
-                    const active = localTickets.filter(i => !i.archived && i.status !== 'Completed').length;
-                    reply = `There are ${active} open tickets in the Work Queue currently.`;
-                } else if(lower.includes('macro') || lower.includes('code')) {
-                    reply = "The Macro Library is fully operational and populated with your standard Excel, Python, and iSeries starter codes.";
-                } else if(lower.includes('ciao')) {
-                    reply = "Understood. Terminating chat protocols. Have a good day, sir.";
+                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
+                } 
+                else if (lower.includes('ticket') || lower.includes('work')) {
+                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
+                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
+                } 
+                // Intent: Search Simulation
+                else if (lower.includes('search for') || lower.includes('find')) {
+                    reply = `To search the entire platform for a specific term, please use the Global Search bar located at the top right of your screen. It checks your Apps, Guides, and Tickets instantly.`;
+                }
+                // Intent: Casual Conversation
+                else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+                    const greetings = [
+                        `Hello again, ${profileName}. What are we working on?`,
+                        `Greetings. All systems are green. How can I help?`,
+                        `Hi there, ${profileName}. Let me know if you need to pull up any data.`
+                    ];
+                    reply = greetings[Math.floor(Math.random() * greetings.length)];
+                } 
+                else if (lower.includes('thank')) {
+                    reply = "You are very welcome. Let me know if you need anything else.";
+                }
+                else if (lower.includes('ciao') || lower.includes('bye')) {
+                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
+                    setTimeout(() => { toggleCopilot(); }, 2000);
+                }
+                // Fallback
+                else {
+                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, count your open <b>tickets</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
                 }
 
                 appendChatMessage(reply, 'bot');
             }, 600);
         }
-
-        function appendChatMessage(text, sender) {
-            const container = document.getElementById('copilotMessages');
-            const msg = document.createElement('div');
-            msg.className = `chat-msg ${sender}`;
-            msg.innerText = text;
-            container.appendChild(msg);
-            container.scrollTop = container.scrollHeight;
-        }
         
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();
             await loadDashboardData();
-            setInterval(updateClock, 1000); updateClock(); 
         });
     </script>
 </body>

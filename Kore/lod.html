@@ -5,83 +5,440 @@
     <title>Kore | LOD Validation Tool</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+        /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
-            --bg-app: #f8fafc; --bg-surface: #ffffff;
-            --text-main: #0f172a; --text-secondary: #475569;
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --radius-md: 12px; --radius-sm: 8px;
-            --error-bg: #fef2f2; --error-text: #ef4444; --error-border: #fecaca;
-            --success-bg: #ecfdf5; --success-text: #10b981; --success-border: #a7f3d0;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            
+            /* Status Colors */
+            --error-bg: #fef2f2;
+            --error-text: #ef4444;
+            --error-border: #fecaca;
+            --success-bg: #ecfdf5;
+            --success-text: #10b981;
+            --success-border: #a7f3d0;
         }
 
-        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-width: 1024px;
+        }
 
-        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
-        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
-        .kore-logo span { color: var(--accent-primary); }
-        .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
-        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
-        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
-        .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
-        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
-        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
+        /* --- Global Header --- */
+        .global-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            height: 100%;
+        }
+        .kore-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .kore-logo span {
+            color: var(--accent-primary);
+        }
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            height: 100%;
+        }
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+            background-color: #f0f9ff;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            background-color: var(--bg-surface);
+            min-width: 260px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            overflow: hidden;
+            z-index: 101;
+        }
+        .nav-item:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: var(--text-secondary);
+            padding: 14px 20px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid var(--bg-app);
+            font-weight: 500;
+        }
+        .dropdown-content a:hover {
+            background-color: #f0f9ff;
+            color: var(--accent-primary);
+            padding-left: 24px;
+            transition: all 0.2s ease;
+        }
+        .user-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-app);
+            padding: 6px 12px;
+            border-radius: 99px;
+            border: 1px solid var(--border-subtle);
+        }
 
-        .search-container { display: flex; align-items: center; position: relative; }
-        .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; }
-        .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+        .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .search-bar {
+            padding: 10px 16px 10px 36px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 99px;
+            width: 260px;
+            background-color: var(--bg-app);
+            font-size: 0.9rem;
+            outline: none;
+            transition: width 0.3s ease;
+        }
+        .search-bar:focus {
+            width: 340px;
+            border-color: var(--accent-primary);
+            background-color: var(--bg-surface);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
 
-        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
-        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 160px; position: relative; margin-bottom: 32px; }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end; }
-        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
-        .hero-subtitle { margin: 6px 0 0 0; font-size: 1rem; color: #cbd5e1; max-width: 800px;}
+        /* --- Main Content Layout --- */
+        .main-container {
+            padding: 40px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+        .hero-banner {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
+            height: 160px;
+            position: relative;
+            margin-bottom: 32px;
+        }
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(15,23,42,0.9), transparent);
+            padding: 24px 30px;
+            box-sizing: border-box;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .hero-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .hero-subtitle {
+            margin: 6px 0 0 0;
+            font-size: 1rem;
+            color: #cbd5e1;
+            max-width: 800px;
+        }
 
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
-        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
-        .btn-primary:hover { background-color: var(--accent-hover); border: none; box-shadow: var(--shadow-sm); }
+        /* --- Buttons & Inputs --- */
+        .btn {
+            background-color: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .btn:hover {
+            background-color: var(--bg-app);
+            border-color: var(--text-secondary);
+        }
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
         
-        .input, .form-select { padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); width: 100%; box-sizing: border-box; }
-        .input:focus, .form-select:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .input, .form-select {
+            padding: 12px 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            outline: none;
+            background: var(--bg-surface);
+            color: var(--text-main);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .input:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
         
-        .form-row { margin-bottom: 24px; }
-        .form-row label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-main); }
-        .form-hint { font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px; }
-        .checkbox-label { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 0.95rem; cursor: pointer; }
+        .form-row {
+            margin-bottom: 24px;
+        }
+        .form-row label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
 
-        .section-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 32px; }
-        .section-header { margin: 0 0 24px 0; font-size: 1.3rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; }
-        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+        /* --- Sections --- */
+        .section-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            padding: 32px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 32px;
+        }
+        .section-header {
+            margin: 0 0 24px 0;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 16px;
+        }
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
 
-        .status-text { margin-top: 16px; font-weight: 600; font-size: 0.95rem; padding: 12px 16px; border-radius: var(--radius-sm); display: none; }
-        .status-text.active { display: block; background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border-subtle); }
-        .status-text.error { background: var(--error-bg); color: var(--error-text); border-color: var(--error-border); }
+        /* --- Validation Status --- */
+        .status-text {
+            margin-top: 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            display: none;
+        }
+        .status-text.active {
+            display: block;
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+        }
+        .status-text.error {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
 
-        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-        .metric-card { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
-        .metric-label { display: block; font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
-        .metric-value { display: block; font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+        /* --- Results Metrics --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .metric-card {
+            background: var(--bg-app);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1;
+        }
         
-        .table-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 24px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-surface); font-size: 0.9rem; }
-        th { background: var(--bg-app); padding: 12px 16px; font-weight: 600; color: var(--text-main); border-bottom: 2px solid var(--border-subtle); }
-        td { padding: 12px 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); vertical-align: top; }
-        .error-pill { background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
-        .success-banner { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); padding: 16px; border-radius: var(--radius-sm); font-weight: 600; text-align: center; font-size: 1.05rem; }
+        /* --- Results Table --- */
+        .table-container {
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background: var(--bg-surface);
+            font-size: 0.9rem;
+        }
+        th {
+            background: var(--bg-app);
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border-subtle);
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+        .error-pill {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-border);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .success-banner {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.05rem;
+        }
 
-        .rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .rule-group { background: var(--bg-app); padding: 20px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
-        .rule-group h3 { margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main); font-weight: 700; }
-        .rule-group ul { margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+        /* --- Rules Grid --- */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .rule-group {
+            background: var(--bg-app);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+        }
+        .rule-group h3 {
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        .rule-group ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .rule-group li {
+            margin-bottom: 6px;
+        }
 
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+        /* --- Global Footer --- */
+        .global-footer {
+            background-color: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            padding: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -149,18 +506,32 @@
                 </div>
                 <div class="form-row">
                     <label>Execution Settings</label>
-                    <label class="checkbox-label"><input type="checkbox" id="lodStopOnFatal" checked> Halt execution if column layout deviates</label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="lodStopOnFatal" checked> 
+                        Halt execution if column layout deviates
+                    </label>
                 </div>
-                <button type="button" id="lodValidateBtn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.05rem; margin-top: 16px;">Run Validation Engine</button>
+                <button type="button" id="lodValidateBtn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.05rem; margin-top: 16px;">
+                    Run Validation Engine
+                </button>
                 <div id="lodStatus" class="status-text"></div>
             </section>
 
             <section class="section-card">
                 <h2 class="section-header">2. Diagnostic Results</h2>
                 <div class="metrics-grid">
-                    <div class="metric-card"><span class="metric-label">Total Data Rows</span><span class="metric-value" id="lodTotalRows">0</span></div>
-                    <div class="metric-card"><span class="metric-label">Rows with Errors</span><span class="metric-value" id="lodErrorRowCount" style="color: var(--error-text);">0</span></div>
-                    <div class="metric-card"><span class="metric-label">Total Issues</span><span class="metric-value" id="lodTotalIssues" style="color: var(--error-text);">0</span></div>
+                    <div class="metric-card">
+                        <span class="metric-label">Total Data Rows</span>
+                        <span class="metric-value" id="lodTotalRows">0</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Rows with Errors</span>
+                        <span class="metric-value" id="lodErrorRowCount" style="color: var(--error-text);">0</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Total Issues</span>
+                        <span class="metric-value" id="lodTotalIssues" style="color: var(--error-text);">0</span>
+                    </div>
                 </div>
 
                 <div id="lodNoErrorsMessage" style="display:none; margin-bottom: 24px;">
@@ -170,7 +541,14 @@
                 <div id="lodErrorsContainer" style="display:none;">
                     <div class="table-container">
                         <table>
-                            <thead><tr><th style="width: 60px;">Row</th><th style="width: 180px;">Target Column</th><th style="width: 150px;">Detected Value</th><th>Violation</th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">Row</th>
+                                    <th style="width: 180px;">Target Column</th>
+                                    <th style="width: 150px;">Detected Value</th>
+                                    <th>Violation</th>
+                                </tr>
+                            </thead>
                             <tbody id="lodErrorsTableBody"></tbody>
                         </table>
                     </div>
@@ -188,15 +566,30 @@
             <div class="rules-grid">
                 <div class="rule-group">
                     <h3>Core Identifiers</h3>
-                    <ul><li><strong>Group Code</strong>: All caps.</li><li><strong>Customer Number</strong>: Numeric; cannot end in 00.</li><li><strong>Quantity</strong>: Numeric, > 0.</li><li><strong>Order Type</strong>: GO, GR, PA, or DO.</li><li><strong>Allocation Rule</strong>: Strictly O.</li></ul>
+                    <ul>
+                        <li><strong>Group Code</strong>: Must be uppercase (e.g., <code>SAMS</code>).</li>
+                        <li><strong>Customer Number</strong>: Must be numeric; cannot end in <code>00</code>.</li>
+                        <li><strong>Quantity</strong>: Must be a numeric whole number greater than 0.</li>
+                        <li><strong>Order Type</strong>: Strictly limited to <code>GO</code>, <code>GR</code>, <code>PA</code>, or <code>DO</code>.</li>
+                        <li><strong>Allocation Rule</strong>: Must be exactly <code>O</code>.</li>
+                    </ul>
                 </div>
                 <div class="rule-group">
                     <h3>PA & PALOD Strict Logic</h3>
-                    <ul><li><strong>LOD:</strong> If Order Type is PA, PO must start with 1NAPR.</li><li><strong>PALOD:</strong> ALL rows require PO to start with 1NAPR.</li><li><strong>Uniqueness:</strong> Same PO applied to a different address will flag.</li></ul>
+                    <ul>
+                        <li><strong>LOD Mode:</strong> If Order Type is <code>PA</code>, the PO number must begin with the <code>1NAPR</code> prefix.</li>
+                        <li><strong>PALOD Mode:</strong> ALL rows require the PO to start with <code>1NAPR</code>, regardless of Order Type.</li>
+                        <li><strong>Uniqueness:</strong> A PO number applied to a different address in the same file will be flagged. Maximum 20 characters.</li>
+                    </ul>
                 </div>
                 <div class="rule-group">
-                    <h3>Formatting</h3>
-                    <ul><li><strong>State / Country</strong>: 2-char uppercase.</li><li><strong>ZIP</strong>: 5 or 9 digits (hyphens removed).</li><li><strong>Phone</strong>: Exactly 10 digits.</li><li><strong>Emails</strong>: No spaces. Use .com (not ,com).</li></ul>
+                    <h3>Formatting Standards</h3>
+                    <ul>
+                        <li><strong>State / Country</strong>: Exactly 2 uppercase letters (e.g., <code>NY</code>, <code>US</code>).</li>
+                        <li><strong>ZIP Code</strong>: 5 or 9 digits (hyphens are automatically stripped and validated).</li>
+                        <li><strong>Phone Number</strong>: Exactly 10 digits (no spaces or hyphens allowed).</li>
+                        <li><strong>Email Addresses</strong>: Cannot contain spaces. Must use <code>.com</code> (flags <code>,com</code> typos). Multiple emails must be separated by a semicolon <code>;</code>.</li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -207,6 +600,7 @@
 
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        
         async function fetchSecureIdentity() {
             try {
                 const response = await fetch('/.auth/me');
@@ -216,10 +610,16 @@
                     cloudIdentity.userName = data.clientPrincipal.userDetails;
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+            }
         }
-        document.addEventListener('DOMContentLoaded', async () => { await fetchSecureIdentity(); });
+        
+        document.addEventListener('DOMContentLoaded', async () => { 
+            await fetchSecureIdentity(); 
+        });
 
+        // --- LOD Validation Logic ---
         (function () {
             var fileInput = document.getElementById('lodFileInput');
             var validateBtn = document.getElementById('lodValidateBtn');
@@ -228,94 +628,213 @@
             var lastValidation = null;
 
             validateBtn.addEventListener('click', function () {
-                if (!fileInput.files || !fileInput.files[0]) { setStatus('Error: Please select a CSV file.', true); return; }
+                if (!fileInput.files || !fileInput.files[0]) { 
+                    setStatus('Error: Please select a CSV file.', true); 
+                    return; 
+                }
+                
                 var reader = new FileReader();
                 setStatus('Parsing file data...', false);
+                
                 reader.onload = function (e) {
                     try {
                         var text = e.target.result || '';
                         var mode = document.getElementById('lodMode').value || 'lod';
                         var result = validateLodCsv(text, mode, document.getElementById('lodStopOnFatal').checked);
+                        
                         lastValidation = result;
                         renderValidation(result);
                         setStatus('Engine execution complete.', false);
                     } catch (err) {
-                        lastValidation = null; renderEmpty(); setStatus('Fatal Error: ' + err.message, true);
+                        lastValidation = null; 
+                        renderEmpty(); 
+                        setStatus('Fatal Error: ' + err.message, true);
                     }
                 };
+                
                 reader.readAsText(fileInput.files[0]);
             });
 
             document.getElementById('lodDownloadErrorCsvBtn').addEventListener('click', function () {
                 if (!lastValidation || !lastValidation.issues.length) return;
                 var lines = ['Row,Column,Value,Issue'];
-                lastValidation.issues.forEach(i => lines.push(`${i.row},"${i.columnName}","${i.value}","${i.message}"`));
+                lastValidation.issues.forEach(i => {
+                    lines.push(`${i.row},"${i.columnName}","${i.value}","${i.message}"`);
+                });
                 downloadTextFile(lines.join('\r\n'), 'lod-validation-issues.csv', 'text/csv');
             });
 
             document.getElementById('lodCopyResultsBtn').addEventListener('click', function () {
                 if (!lastValidation) return;
-                var lines = ['LOD Validation Results', `Total data rows: ${lastValidation.dataRowCount}`, `Rows with issues: ${lastValidation.errorRowCount}`, ''];
-                lastValidation.issues.forEach(i => lines.push(`Row ${i.row} - ${i.columnName}: ${i.message}`));
-                navigator.clipboard.writeText(lines.join('\n')).then(() => setStatus('Copied.', false));
+                var lines = [
+                    'LOD Validation Results', 
+                    `Total data rows: ${lastValidation.dataRowCount}`, 
+                    `Rows with issues: ${lastValidation.errorRowCount}`, 
+                    ''
+                ];
+                lastValidation.issues.forEach(i => {
+                    lines.push(`Row ${i.row} - ${i.columnName}: ${i.message}`);
+                });
+                navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                    setStatus('Copied to clipboard.', false);
+                });
             });
 
-            function setStatus(msg, err) { statusEl.textContent = msg; statusEl.className = 'status-text active ' + (err ? 'error' : ''); setTimeout(() => statusEl.classList.remove('active'), 3000); }
-            function renderEmpty() { document.getElementById('lodTotalRows').textContent = '0'; document.getElementById('lodErrorRowCount').textContent = '0'; document.getElementById('lodTotalIssues').textContent = '0'; document.getElementById('lodNoErrorsMessage').style.display = 'none'; document.getElementById('lodErrorsContainer').style.display = 'none'; errorsTableBodyEl.innerHTML = ''; }
+            function setStatus(msg, err) { 
+                statusEl.textContent = msg; 
+                statusEl.className = 'status-text active ' + (err ? 'error' : ''); 
+                setTimeout(() => statusEl.classList.remove('active'), 3000); 
+            }
+            
+            function renderEmpty() { 
+                document.getElementById('lodTotalRows').textContent = '0'; 
+                document.getElementById('lodErrorRowCount').textContent = '0'; 
+                document.getElementById('lodTotalIssues').textContent = '0'; 
+                document.getElementById('lodNoErrorsMessage').style.display = 'none'; 
+                document.getElementById('lodErrorsContainer').style.display = 'none'; 
+                errorsTableBodyEl.innerHTML = ''; 
+            }
             
             function renderValidation(res) {
-                document.getElementById('lodTotalRows').textContent = res.dataRowCount; document.getElementById('lodErrorRowCount').textContent = res.errorRowCount; document.getElementById('lodTotalIssues').textContent = res.issues.length;
-                if (!res.issues.length) { document.getElementById('lodNoErrorsMessage').style.display = 'block'; document.getElementById('lodErrorsContainer').style.display = 'none'; return; }
-                document.getElementById('lodNoErrorsMessage').style.display = 'none'; document.getElementById('lodErrorsContainer').style.display = 'block';
-                errorsTableBodyEl.innerHTML = res.issues.map(i => `<tr><td><strong>${i.row}</strong></td><td><span style="font-weight:600;">${i.columnName}</span></td><td><code>${i.value}</code></td><td><span class="error-pill">${i.message}</span></td></tr>`).join('');
+                document.getElementById('lodTotalRows').textContent = res.dataRowCount; 
+                document.getElementById('lodErrorRowCount').textContent = res.errorRowCount; 
+                document.getElementById('lodTotalIssues').textContent = res.issues.length;
+                
+                if (!res.issues.length) { 
+                    document.getElementById('lodNoErrorsMessage').style.display = 'block'; 
+                    document.getElementById('lodErrorsContainer').style.display = 'none'; 
+                    return; 
+                }
+                
+                document.getElementById('lodNoErrorsMessage').style.display = 'none'; 
+                document.getElementById('lodErrorsContainer').style.display = 'block';
+                
+                errorsTableBodyEl.innerHTML = res.issues.map(i => `
+                    <tr>
+                        <td><strong>${i.row}</strong></td>
+                        <td><span style="font-weight:600;">${i.columnName}</span></td>
+                        <td><code>${i.value}</code></td>
+                        <td><span class="error-pill">${i.message}</span></td>
+                    </tr>
+                `).join('');
             }
 
             function parseCsv(text) {
-                var rows = []; var cur = []; var f = ''; var inQ = false;
+                var rows = []; 
+                var cur = []; 
+                var f = ''; 
+                var inQ = false;
+                
                 for (var i = 0; i < text.length; i++) {
                     var c = text[i];
-                    if (inQ) { if (c === '"' && text[i+1] === '"') { f += '"'; i++; } else if (c === '"') inQ = false; else f += c; }
-                    else { if (c === '"') inQ = true; else if (c === ',') { cur.push(f); f = ''; } else if (c === '\n') { cur.push(f); rows.push(cur); cur = []; f = ''; } else if (c !== '\r') f += c; }
+                    if (inQ) { 
+                        if (c === '"' && text[i+1] === '"') { 
+                            f += '"'; 
+                            i++; 
+                        } else if (c === '"') {
+                            inQ = false; 
+                        } else {
+                            f += c; 
+                        }
+                    } else { 
+                        if (c === '"') {
+                            inQ = true; 
+                        } else if (c === ',') { 
+                            cur.push(f); 
+                            f = ''; 
+                        } else if (c === '\n') { 
+                            cur.push(f); 
+                            rows.push(cur); 
+                            cur = []; 
+                            f = ''; 
+                        } else if (c !== '\r') {
+                            f += c; 
+                        }
+                    }
                 }
-                if (f || cur.length) { cur.push(f); rows.push(cur); }
+                if (f || cur.length) { 
+                    cur.push(f); 
+                    rows.push(cur); 
+                }
                 return rows.filter(r => r.some(c => c.trim() !== ''));
             }
 
             function validateLodCsv(text, mode, stopOnFatal) {
-                var rows = parseCsv(text); if (!rows.length) throw new Error('Empty file.');
-                var header = rows[0]; var dataRows = rows.slice(1);
-                if (header.length !== 28 && stopOnFatal) throw new Error(`Expected 28 columns, found ${header.length}.`);
-                var issues = []; var errSet = {};
+                var rows = parseCsv(text); 
+                if (!rows.length) throw new Error('Empty file.');
+                
+                var header = rows[0]; 
+                var dataRows = rows.slice(1);
+                
+                if (header.length !== 28 && stopOnFatal) {
+                    throw new Error(`Expected exactly 28 columns, found ${header.length}.`);
+                }
+                
+                var issues = []; 
+                var errSet = {};
                 var poMap = {};
 
-                function addIss(r, c, m, v) { issues.push({row:r, columnIndex:c, columnName:header[c]||`Col ${c+1}`, message:m, value:v}); errSet[r]=1; }
+                function addIss(r, c, m, v) { 
+                    issues.push({
+                        row: r, 
+                        columnIndex: c, 
+                        columnName: header[c] || `Col ${c+1}`, 
+                        message: m, 
+                        value: v
+                    }); 
+                    errSet[r] = 1; 
+                }
 
                 dataRows.forEach((r, i) => {
-                    var rowIdx = i + 2; var val = (idx) => (r[idx]||'').trim();
+                    var rowIdx = i + 2; 
+                    var val = (idx) => (r[idx] || '').trim();
+                    
+                    // Group Code
                     if (val(0) && val(0) !== val(0).toUpperCase()) addIss(rowIdx, 0, 'Must be uppercase', val(0));
+                    
+                    // Customer Number
                     if (val(1) && !/^\d+$/.test(val(1))) addIss(rowIdx, 1, 'Must be numeric', val(1));
                     if (val(1) && val(1).endsWith('00')) addIss(rowIdx, 1, 'Cannot end in 00', val(1));
+                    
+                    // Quantity
                     if (val(3) && (!/^\d+$/.test(val(3)) || parseInt(val(3)) <= 0)) addIss(rowIdx, 3, 'Must be positive integer', val(3));
                     
+                    // PO Logic
                     var po = val(4);
-                    if (po.length > 20) addIss(rowIdx, 4, 'Max 20 chars', po);
+                    if (po.length > 20) addIss(rowIdx, 4, 'Max 20 characters', po);
                     if (mode === 'palod' && !po.startsWith('1NAPR')) addIss(rowIdx, 4, 'PALOD requires 1NAPR prefix', po);
-                    if (mode === 'lod' && val(15) === 'PA' && !po.startsWith('1NAPR')) addIss(rowIdx, 4, 'PA requires 1NAPR prefix', po);
+                    if (mode === 'lod' && val(15) === 'PA' && !po.startsWith('1NAPR')) addIss(rowIdx, 4, 'PA Order Type requires 1NAPR prefix', po);
                     
                     var addrKey = [val(1),val(5),val(6),val(7),val(8),val(9),val(10),val(11),val(12)].join('|').toUpperCase();
-                    if (po && poMap[po] && poMap[po] !== addrKey) addIss(rowIdx, 4, 'PO reused on different address', po);
+                    if (po && poMap[po] && poMap[po] !== addrKey) addIss(rowIdx, 4, 'PO reused on a different address', po);
                     else if (po) poMap[po] = addrKey;
 
+                    // Formatting
                     if (val(10) && !/^[A-Z]{2}$/.test(val(10))) addIss(rowIdx, 10, 'Must be 2 uppercase letters', val(10));
-                    var zip = val(11).replace(/-/g,''); if (zip && !/^\d{5}(\d{4})?$/.test(zip)) addIss(rowIdx, 11, 'Invalid ZIP format', val(11));
+                    
+                    var zip = val(11).replace(/-/g,''); 
+                    if (zip && !/^\d{5}(\d{4})?$/.test(zip)) addIss(rowIdx, 11, 'Invalid ZIP format', val(11));
+                    
                     if (val(15) && !['GO','GR','PA','DO'].includes(val(15))) addIss(rowIdx, 15, 'Invalid Order Type', val(15));
                 });
-                return { mode: mode, dataRowCount: dataRows.length, errorRowCount: Object.keys(errSet).length, issues: issues };
+                
+                return { 
+                    mode: mode, 
+                    dataRowCount: dataRows.length, 
+                    errorRowCount: Object.keys(errSet).length, 
+                    issues: issues 
+                };
             }
 
             function downloadTextFile(content, filename, mimeType) {
-                var blob = new Blob([content], { type: mimeType }); var url = URL.createObjectURL(blob);
-                var a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                var blob = new Blob([content], { type: mimeType }); 
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a'); 
+                a.href = url; 
+                a.download = filename; 
+                document.body.appendChild(a); 
+                a.click(); 
+                document.body.removeChild(a);
             }
         })();
     </script>

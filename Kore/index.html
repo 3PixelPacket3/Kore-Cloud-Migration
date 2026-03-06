@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Kore | Personal To-Do</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kore | Global Workspace</title>
     <style>
         :root {
             --accent-primary: #0ea5e9; --accent-hover: #0284c7;
@@ -12,82 +12,92 @@
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
             --radius-md: 12px; --radius-sm: 8px;
-            --priority-high: #ef4444; --priority-med: #f59e0b; --priority-low: #10b981;
+            --danger: #ef4444; --warning: #f59e0b;
         }
 
         body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
 
-        /* --- Header --- */
-        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        /* Header */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100; }
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease; cursor: pointer; position: relative; }
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
         .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
-        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+        .search-container { display: flex; align-items: center; position: relative; }
+        .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
+        .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
 
-        /* --- Main Layout --- */
-        .main-container { padding: 40px 32px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        /* Main Container */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
-        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
-        .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
-        .page-subtitle { margin: 8px 0 0 0; font-size: 1rem; color: var(--text-secondary); }
+        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 200px; position: relative; margin-bottom: 32px; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15, 23, 42, 0.85), transparent); padding: 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end;}
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+
+        /* Multi-column Grid Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 3fr 1fr; gap: 32px; align-items: start; }
+        .left-col { display: flex; flex-direction: column; gap: 32px; }
+        .right-col { display: flex; flex-direction: column; gap: 24px; }
         
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: 99px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
-        .btn-primary { background-color: var(--accent-primary); color: white; border: none; box-shadow: var(--shadow-sm); }
-        .btn-primary:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        /* 3-Column Intel Row */
+        .intel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 
-        /* --- Form Input Area --- */
-        .add-task-panel { background: var(--bg-surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-subtle); margin-bottom: 32px; display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 16px; align-items: end; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-        .input { padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; transition: all 0.2s; }
-        .input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
-
-        /* --- Task List --- */
-        .task-list { display: flex; flex-direction: column; gap: 16px; }
-        .task-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; display: flex; align-items: flex-start; gap: 20px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; position: relative; overflow: hidden; }
-        .task-card:hover { transform: translateX(4px); border-color: var(--accent-primary); box-shadow: var(--shadow-md); }
-        .task-card.completed { opacity: 0.6; background: var(--bg-app); }
-        .task-card.completed .task-title { text-decoration: line-through; color: var(--text-secondary); }
-
-        /* Status Checkbox */
-        .check-container { padding-top: 4px; }
-        .custom-checkbox { appearance: none; width: 24px; height: 24px; border: 2px solid var(--border-subtle); border-radius: 50%; outline: none; cursor: pointer; position: relative; transition: all 0.2s; background: var(--bg-surface); flex-shrink: 0; }
-        .custom-checkbox:hover { border-color: var(--accent-primary); }
-        .custom-checkbox:checked { background: var(--success-color); border-color: var(--success-color); }
-        .custom-checkbox:checked::after { content: '✓'; position: absolute; color: white; font-size: 14px; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-
-        /* Task Content */
-        .task-content { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
-        .task-header { display: flex; justify-content: space-between; align-items: center; }
-        .task-title { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-main); }
-        .task-meta { display: flex; gap: 12px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); align-items: center; }
+        /* Panels & Cards */
+        .panel-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
+        .panel-header { font-size: 1.1rem; color: var(--text-main); font-weight: 700; margin: 0 0 16px 0; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
         
-        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .tag-priority-High { background: #fef2f2; color: var(--priority-high); border: 1px solid #fecaca; }
-        .tag-priority-Medium { background: #fffbeb; color: var(--priority-med); border: 1px solid #fde68a; }
-        .tag-priority-Low { background: #ecfdf5; color: var(--priority-low); border: 1px solid #a7f3d0; }
-        
-        .due-date { display: flex; align-items: center; gap: 4px; }
-        .due-date.past-due { color: var(--priority-high); }
-        .due-date.today { color: var(--accent-primary); }
+        /* Quick Access Links */
+        .qa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+        .qa-btn { background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; transition: all 0.2s ease; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 12px; }
+        .qa-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); color: var(--accent-primary); }
+        .qa-icon { font-size: 1.4rem; }
 
-        .delete-btn { background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 1.2rem; transition: color 0.2s; }
-        .task-card:hover .delete-btn { color: #ef4444; }
+        /* Intel Lists */
+        .intel-list { display: flex; flex-direction: column; gap: 12px; }
+        .intel-item { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; border-left: 4px solid var(--border-subtle); }
+        .intel-item.danger { border-left-color: var(--danger); }
+        .intel-item.warning { border-left-color: var(--warning); }
+        .intel-item.active { border-left-color: var(--accent-primary); }
+        .intel-title { font-weight: 600; font-size: 0.95rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .intel-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; }
+        .intel-empty { text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 20px; background: var(--bg-app); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle); }
 
-        /* Empty State */
-        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
-        .empty-state h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: var(--text-main); }
+        /* Right Column Widgets */
+        .time-widget { text-align: center; padding: 20px; }
+        #live-time { font-size: 3rem; font-weight: 300; color: var(--text-main); margin: 0; line-height: 1; letter-spacing: -1px; }
+        #live-date { font-size: 1rem; color: var(--accent-primary); margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
+        .system-bulletin { background: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid var(--accent-primary); }
+        .pulse-dot { width: 10px; height: 10px; background-color: var(--accent-primary); border-radius: 50%; box-shadow: 0 0 0 rgba(14, 165, 233, 0.4); animation: pulse 2s infinite; display: inline-block; margin-right: 8px;}
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
+
+        /* --- Kore Copilot AI Chat --- */
+        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
+        .copilot-trigger:hover { transform: scale(1.05); }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 350px; height: 500px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); }
+        .chat-msg { padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; max-width: 85%; line-height: 1.4; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 12px; background: var(--bg-surface); }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 20px; padding: 10px 16px; outline: none; font-size: 0.9rem; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); }
+        .copilot-input-area button { background: transparent; border: none; color: var(--accent-primary); font-weight: 700; cursor: pointer; padding: 0 12px; font-size: 1.2rem; }
+
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -96,10 +106,12 @@
         <div class="header-left">
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
-                <a href="index.html" class="nav-item">Dashboard</a>
-                <div class="nav-item active">Operations ▼
+                <a href="index.html" class="nav-item active">Dashboard</a>
+                <div class="nav-item">
+                    Operations ▼
                     <div class="dropdown-content">
                         <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
                         <a href="apps.html">Apps</a>
                         <a href="work.html">Work Tracker</a>
                         <a href="passwords.html">Password Generator</a>
@@ -108,7 +120,8 @@
                         <a href="lod.html">LOD Validation Tool</a>
                     </div>
                 </div>
-                <div class="nav-item">Resources ▼
+                <div class="nav-item">
+                    Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
                         <a href="reports.html">Data/Reports</a>
@@ -118,51 +131,98 @@
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
+        
         <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+
+        <div class="search-container">
+            <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
+            <div id="globalSearchDropdown" class="search-dropdown"></div>
+        </div>
     </header>
 
     <main class="main-container">
         
-        <div class="page-header">
-            <div>
-                <h2 class="page-title">Personal Action Items</h2>
-                <p class="page-subtitle">Track your daily tasks. Secured to your local profile.</p>
+        <section class="hero-banner">
+            <img src="images/HomePage.png" alt="Kore Workspace" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+            <div class="hero-overlay">
+                <div>
+                    <h2 class="hero-title" id="greeting-title">Enterprise Workspace</h2>
+                </div>
+                <div class="time-widget" style="text-align: right; padding: 0;">
+                    <div id="live-time" style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">--:--</div>
+                    <div id="live-date" style="color: #cbd5e1; text-shadow: 0 1px 2px rgba(0,0,0,0.5); margin-top: 4px;">Loading...</div>
+                </div>
             </div>
-            <div>
-                <button class="btn" onclick="clearCompleted()">Sweep Completed</button>
+        </section>
+
+        <div class="dashboard-grid">
+            
+            <div class="left-col">
+                <section>
+                    <h3 class="panel-header" style="border: none; margin-bottom: 12px;">Quick Access Links</h3>
+                    <div class="qa-grid" id="qa-container"></div>
+                </section>
+
+                <section class="intel-grid">
+                    
+                    <div class="panel-card">
+                        <h3 class="panel-header">🗓️ Today's Schedule</h3>
+                        <div id="calendarIntel" class="intel-list">
+                            <div class="intel-empty" style="border-color: var(--accent-primary);">
+                                <strong style="color: var(--text-main); display: block; margin-bottom: 8px;">MS Graph API Disconnected</strong>
+                                Azure App Registration requires 'Calendars.Read' scope grant to fetch Outlook events.<br><br>
+                                <a href="settings.html" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">Configure in Settings</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <h3 class="panel-header">📋 Active Tickets</h3>
+                        <div id="workIntel" class="intel-list"></div>
+                    </div>
+
+                    <div class="panel-card">
+                        <h3 class="panel-header">📌 Personal Tasks</h3>
+                        <div id="todoIntel" class="intel-list"></div>
+                    </div>
+
+                </section>
             </div>
+
+            <div class="right-col">
+                <div class="panel-card system-bulletin">
+                    <h3 class="panel-header" style="border: none; padding: 0; margin-bottom: 12px; color: var(--accent-primary);">
+                        <span><div class="pulse-dot"></div> System Bulletin</span>
+                    </h3>
+                    <p id="global-message-text" style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);">Connecting to server...</p>
+                </div>
+            </div>
+
         </div>
-
-        <form class="add-task-panel" onsubmit="event.preventDefault(); addTask();">
-            <div class="input-group">
-                <label>New Task</label>
-                <input type="text" id="newTaskTitle" class="input" placeholder="What needs to be done?" required autocomplete="off">
-            </div>
-            <div class="input-group">
-                <label>Due Date</label>
-                <input type="date" id="newTaskDate" class="input">
-            </div>
-            <div class="input-group">
-                <label>Priority</label>
-                <select id="newTaskPriority" class="input">
-                    <option value="Low">Low</option>
-                    <option value="Medium" selected>Medium</option>
-                    <option value="High">High</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary" style="height: 46px; padding: 0 24px;">Add Task</button>
-        </form>
-
-        <div id="taskList" class="task-list"></div>
-
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+    <footer class="global-footer">
+        &copy; 2026 Kore | Enterprise Cloud Vault Connected.
+    </footer>
+
+    <button class="copilot-trigger" onclick="toggleCopilot()">💬</button>
+    <div class="copilot-window" id="copilotWindow">
+        <div class="copilot-header">
+            <span>🤖 Kore Copilot</span>
+            <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
+        </div>
+        <div class="copilot-messages" id="copilotMessages">
+            <div class="chat-msg bot">Hello, sir. I am your Kore Copilot. How can I assist you with your operations today?</div>
+        </div>
+        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+            <input type="text" id="copilotInput" placeholder="Ask me anything..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
 
     <script>
-        // --- Identity & Storage Logic ---
+        // --- 1. Microsoft Entra ID Integration ---
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
-        let STORAGE_KEY = 'kore_todo_local';
 
         async function fetchSecureIdentity() {
             try {
@@ -172,155 +232,179 @@
                     cloudIdentity.userId = data.clientPrincipal.userId;
                     cloudIdentity.userName = data.clientPrincipal.userDetails;
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
-                    STORAGE_KEY = `kore_todo_${cloudIdentity.userId}`;
                 }
             } catch (error) {
-                console.log("Auth bypassed - Local execution.");
+                console.log("Auth fetch bypassed - Local execution.");
             }
         }
 
-        // --- Data Management ---
-        function getTasks() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        // --- 2. Precision Clock ---
+        function updateClock() {
+            const now = new Date();
+            const tz = localStorage.getItem(`koreHomeTimeZone_${cloudIdentity.userId}`) || 'America/New_York';
+            try {
+                const timeOpts = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz };
+                document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', timeOpts);
+                const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: tz };
+                document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', dateOpts);
+            } catch (e) {
+                document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            }
         }
 
-        function saveTasks(tasks) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        // --- 3. Dashboard Intel Engines ---
+        function isDateToday(dateStr) {
+            if (!dateStr) return false;
+            const d = new Date(dateStr + 'T00:00:00');
+            const today = new Date();
+            return d.toDateString() === today.toDateString();
         }
-
-        function generateId() {
-            return 'todo_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-        }
-
-        function formatDateLogic(dateStr) {
-            if (!dateStr) return { text: 'No Due Date', class: '' };
-            
-            const due = new Date(dateStr + 'T00:00:00'); // Force local timezone interpretation
+        
+        function isDatePast(dateStr) {
+            if (!dateStr) return false;
+            const d = new Date(dateStr + 'T00:00:00');
             const today = new Date();
             today.setHours(0,0,0,0);
-            
-            const diffTime = due - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 0) return { text: `Past Due (${Math.abs(diffDays)}d)`, class: 'past-due' };
-            if (diffDays === 0) return { text: 'Due Today', class: 'today' };
-            if (diffDays === 1) return { text: 'Due Tomorrow', class: '' };
-            return { text: due.toLocaleDateString(), class: '' };
+            return d < today;
         }
 
-        // --- Core Functions ---
-        function renderTasks() {
-            const tasks = getTasks();
-            const container = document.getElementById('taskList');
-            container.innerHTML = '';
+        function loadWorkIntel() {
+            const container = document.getElementById('workIntel');
+            const items = JSON.parse(localStorage.getItem('kore_work_items')) || [];
+            const activeItems = items.filter(i => !i.archived && !i.deleted && i.status !== 'Completed');
+            let intelHtml = '';
+            let count = 0;
 
-            // Sort: Incomplete first, then by date (earliest first), then priority
-            tasks.sort((a, b) => {
-                if (a.completed !== b.completed) return a.completed ? 1 : -1;
-                
-                const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
-                const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
-                if (dateA !== dateB) return dateA - dateB;
-
-                const prioWeight = { 'High': 3, 'Medium': 2, 'Low': 1 };
-                return prioWeight[b.priority] - prioWeight[a.priority];
+            activeItems.forEach(item => {
+                if (count >= 4) return; 
+                if (isDatePast(item.dueDate)) {
+                    intelHtml += `<a href="work.html" style="text-decoration:none;"><div class="intel-item danger"><div class="intel-title">${item.title}</div><div class="intel-meta"><span>${item.id}</span><span style="color:var(--danger); font-weight:600;">Past Due</span></div></div></a>`;
+                    count++;
+                } else if (isDateToday(item.dueDate)) {
+                    intelHtml += `<a href="work.html" style="text-decoration:none;"><div class="intel-item warning"><div class="intel-title">${item.title}</div><div class="intel-meta"><span>${item.id}</span><span style="color:var(--warning); font-weight:600;">Due Today</span></div></div></a>`;
+                    count++;
+                }
             });
 
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <h3>No Action Items</h3>
-                        <p>Your workspace is clear. Take a break or add a new task above.</p>
-                    </div>`;
+            if (count === 0) container.innerHTML = '<div class="intel-empty">All caught up. No active tickets due today.</div>';
+            else container.innerHTML = intelHtml;
+        }
+
+        function loadTodoIntel() {
+            const container = document.getElementById('todoIntel');
+            const tasks = JSON.parse(localStorage.getItem(`kore_todo_${cloudIdentity.userId}`)) || [];
+            const activeTasks = tasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate)));
+            
+            activeTasks.sort((a, b) => {
+                const p = {'High': 3, 'Medium': 2, 'Low': 1};
+                return p[b.priority] - p[a.priority];
+            });
+
+            if (activeTasks.length === 0) {
+                container.innerHTML = '<div class="intel-empty">No tasks scheduled for today.</div>';
                 return;
             }
 
-            tasks.forEach(task => {
-                const dateLogic = formatDateLogic(task.dueDate);
-                const dateHtml = task.dueDate ? `<span class="due-date ${dateLogic.class}">🗓️ ${dateLogic.text}</span>` : '';
-                
-                container.innerHTML += `
-                    <div class="task-card ${task.completed ? 'completed' : ''}">
-                        <div class="check-container">
-                            <input type="checkbox" class="custom-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${task.id}')">
+            let intelHtml = '';
+            activeTasks.slice(0, 5).forEach(t => {
+                const borderClass = isDatePast(t.dueDate) ? 'danger' : 'active';
+                const dateLabel = isDatePast(t.dueDate) ? 'Past Due' : 'Today';
+                intelHtml += `
+                    <a href="todo.html" style="text-decoration:none;">
+                        <div class="intel-item ${borderClass}">
+                            <div class="intel-title">${t.title}</div>
+                            <div class="intel-meta"><span>Priority: ${t.priority}</span><span style="font-weight:600;">${dateLabel}</span></div>
                         </div>
-                        <div class="task-content">
-                            <div class="task-header">
-                                <h3 class="task-title">${escapeHtml(task.title)}</h3>
-                                <button class="delete-btn" onclick="deleteTask('${task.id}')" title="Delete Task">&times;</button>
-                            </div>
-                            <div class="task-meta">
-                                <span class="tag tag-priority-${task.priority}">${task.priority}</span>
-                                ${dateHtml}
-                            </div>
-                        </div>
-                    </div>
-                `;
+                    </a>`;
             });
+            container.innerHTML = intelHtml;
         }
 
-        window.addTask = function() {
-            const titleInput = document.getElementById('newTaskTitle');
-            const dateInput = document.getElementById('newTaskDate');
-            const priorityInput = document.getElementById('newTaskPriority');
+        function initializeDashboard() {
+            const profileName = localStorage.getItem(`koreProfileName_${cloudIdentity.userId}`);
+            const displayGreeting = profileName ? profileName : cloudIdentity.userName.split('@')[0];
+            document.getElementById('greeting-title').textContent = `Welcome back, ${displayGreeting}`;
 
-            if (!titleInput.value.trim()) return;
+            const savedBulletin = localStorage.getItem('kore_bulletin');
+            document.getElementById('global-message-text').textContent = savedBulletin ? savedBulletin : "Welcome to the upgraded Kore cloud environment. Please review your task lists below.";
 
-            const newTask = {
-                id: generateId(),
-                title: titleInput.value.trim(),
-                dueDate: dateInput.value,
-                priority: priorityInput.value,
-                completed: false,
-                created: new Date().toISOString()
-            };
-
-            const tasks = getTasks();
-            tasks.push(newTask);
-            saveTasks(tasks);
-
-            titleInput.value = '';
-            dateInput.value = '';
-            priorityInput.value = 'Medium';
-            titleInput.focus();
+            const savedShortcuts = localStorage.getItem(`kore_shortcuts_${cloudIdentity.userId}`);
+            const defaultLinks = [
+                { title: "Apps", url: "apps.html", icon: "🚀" },
+                { title: "Work Tracker", url: "work.html", icon: "📋" },
+                { title: "Macro Library", url: "macros.html", icon: "💻" },
+                { title: "LOD Validation", url: "lod.html", icon: "⚙️" }
+            ];
             
-            renderTasks();
-        }
-
-        window.toggleTask = function(id) {
-            const tasks = getTasks();
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                saveTasks(tasks);
-                renderTasks();
+            const linksToRender = savedShortcuts ? JSON.parse(savedShortcuts) : defaultLinks;
+            const qaContainer = document.getElementById('qa-container');
+            
+            if (linksToRender.length === 0) {
+                qaContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem;">No shortcuts configured. Add them in Settings.</div>';
+            } else {
+                linksToRender.forEach(link => {
+                    const target = link.url.startsWith('http') ? '_blank' : '_self';
+                    const icon = link.icon || "🔗";
+                    qaContainer.innerHTML += `<a href="${link.url}" class="qa-btn" target="${target}"><span class="qa-icon">${icon}</span>${link.title}</a>`;
+                });
             }
+
+            loadWorkIntel();
+            loadTodoIntel();
+            setInterval(updateClock, 1000); 
+            updateClock(); 
         }
 
-        window.deleteTask = function(id) {
-            let tasks = getTasks();
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasks(tasks);
-            renderTasks();
+        // --- 4. Copilot AI Logic ---
+        function toggleCopilot() {
+            const win = document.getElementById('copilotWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            if(win.style.display === 'flex') document.getElementById('copilotInput').focus();
         }
 
-        window.clearCompleted = function() {
-            let tasks = getTasks();
-            tasks = tasks.filter(t => !t.completed);
-            saveTasks(tasks);
-            renderTasks();
-        }
-
-        function escapeHtml(str) {
-            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Set default date to today for the add panel
-            document.getElementById('newTaskDate').valueAsDate = new Date();
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
             
+            appendChatMessage(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = "I am Kore Copilot. I can help you navigate the system. Ask me about 'Macros', 'LOD', 'Work Tracker', or 'To-Do'.";
+                
+                if(lower.includes('macro') || lower.includes('code') || lower.includes('script')) {
+                    reply = "The Macro Library is located under the Operations menu. It stores reusable code for Excel VBA, Python, and iSeries automation.";
+                } else if(lower.includes('lod') || lower.includes('validate')) {
+                    reply = "The LOD Validation Tool checks CSV payloads against strict rules before NVISION ingestion. You can find it in the Operations menu.";
+                } else if(lower.includes('work') || lower.includes('ticket')) {
+                    reply = "The Work Tracker manages your team's support queue. It automatically flags items that are Due Today on this dashboard.";
+                } else if(lower.includes('hello') || lower.includes('hi')) {
+                    reply = "Hello sir. All systems are operating normally. What would you like to work on today?";
+                } else if(lower.includes('todo') || lower.includes('task')) {
+                    reply = "Your Personal To-Do list is secured to your profile. Items marked Due Today will appear right here on your Dashboard.";
+                } else if(lower.includes('leave') || lower.includes('ciao')) {
+                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
+                }
+
+                appendChatMessage(reply, 'bot');
+            }, 600);
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerText = text;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();
-            renderTasks();
+            initializeDashboard();
         });
     </script>
 </body>

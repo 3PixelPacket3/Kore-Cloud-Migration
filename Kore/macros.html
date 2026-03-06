@@ -202,58 +202,64 @@
             } catch (error) {}
         }
 
-        // Generate robust starters if library is empty
-        function seedDefaultMacros() {
-            if (localStorage.getItem('kore_macros_seeded')) return;
-
-            const defaults = [
-                {
-                    id: 'm_1', title: 'LOD Cleanse & Text Format', category: 'Excel VBA', isGlobal: true,
-                    description: 'Removes hyphens from ZIP codes and formats Column B and L as text to prevent leading zeros from dropping during CSV save.',
-                    codes: [{ title: 'VBA Script', code: 'Sub CleanLODFile()\n    Dim ws As Worksheet\n    Set ws = ActiveSheet\n    \n    ws.Columns("L").NumberFormat = "@"\n    ws.Columns("L").Replace What:="-", Replacement:="", LookAt:=xlPart\n    ws.Columns("B").NumberFormat = "@"\n    \n    MsgBox "LOD Cleansing Complete", vbInformation\nEnd Sub' }]
-                },
-                {
-                    id: 'm_2', title: 'Merge Multiple CSVs', category: 'Python', isGlobal: true,
-                    description: 'Uses pandas to scan a folder and combine all CSV files into a single master sheet.',
-                    codes: [{ title: 'Python Script', code: 'import pandas as pd\nimport glob\nimport os\n\npath = r"C:\\Data\\CSVs"\nall_files = glob.glob(os.path.join(path, "*.csv"))\n\ndf_from_each_file = (pd.read_csv(f) for f in all_files)\nconcatenated_df = pd.concat(df_from_each_file, ignore_index=True)\n\nconcatenated_df.to_csv("master_export.csv", index=False)\nprint("Merge complete.")' }]
-                },
-                {
-                    id: 'm_3', title: 'Automated Keystroke Loop', category: 'iSeries VBS', isGlobal: true,
-                    description: 'Standard send-keys loop for repetitive terminal entry. Ensure window focus before execution.',
-                    codes: [{ title: 'VBScript', code: 'Set WshShell = WScript.CreateObject("WScript.Shell")\nWScript.Sleep 2000 \' Wait for focus\n\nFor i = 1 To 10\n    WshShell.SendKeys "1NAPR"\n    WshShell.SendKeys "{TAB}"\n    WshShell.SendKeys "O"\n    WshShell.SendKeys "{ENTER}"\n    WScript.Sleep 500\nNext\n\nMsgBox "Sequence execution finished."' }]
-                },
-                {
-                    id: 'm_4', title: 'Fetch Azure Profile', category: 'JavaScript', isGlobal: true,
-                    description: 'Standard async function to extract Entra ID token and user data from Azure Static Web Apps proxy.',
-                    codes: [{ title: 'JS Async Function', code: 'async function fetchSecureIdentity() {\n    try {\n        const response = await fetch(\'/.auth/me\');\n        const data = await response.json();\n        if (data.clientPrincipal) {\n            return { id: data.clientPrincipal.userId, name: data.clientPrincipal.userDetails };\n        }\n    } catch (error) {\n        console.warn("Auth offline.");\n    }\n}' }]
-                },
-                {
-                    id: 'm_5', title: 'Auto-Fit Excel Columns', category: 'Excel VBA', isGlobal: true,
-                    description: 'Simple quality of life macro to auto-fit all columns and bold the header row.',
-                    codes: [{ title: 'VBA Script', code: 'Sub FormatSheet()\n    Cells.EntireColumn.AutoFit\n    Rows("1:1").Font.Bold = True\n    Rows("1:1").Interior.Color = RGB(220, 230, 240)\nEnd Sub' }]
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
                 }
-            ];
-
-            localStorage.setItem('kore_macros', JSON.stringify(defaults));
-            localStorage.setItem('kore_macros_seeded', 'true');
+            } catch(e) {}
+            return null;
         }
 
+        const defaultStarters = [
+            {
+                id: 'm_1', title: 'LOD Cleanse & Text Format', category: 'Excel VBA', isGlobal: true,
+                description: 'Removes hyphens from ZIP codes and formats Column B and L as text to prevent leading zeros from dropping during CSV save.',
+                codes: [{ title: 'VBA Script', code: 'Sub CleanLODFile()\n    Dim ws As Worksheet\n    Set ws = ActiveSheet\n    \n    ws.Columns("L").NumberFormat = "@"\n    ws.Columns("L").Replace What:="-", Replacement:="", LookAt:=xlPart\n    ws.Columns("B").NumberFormat = "@"\n    \n    MsgBox "LOD Cleansing Complete", vbInformation\nEnd Sub' }]
+            },
+            {
+                id: 'm_2', title: 'Merge Multiple CSVs', category: 'Python', isGlobal: true,
+                description: 'Uses pandas to scan a folder and combine all CSV files into a single master sheet.',
+                codes: [{ title: 'Python Script', code: 'import pandas as pd\nimport glob\nimport os\n\npath = r"C:\\Data\\CSVs"\nall_files = glob.glob(os.path.join(path, "*.csv"))\n\ndf_from_each_file = (pd.read_csv(f) for f in all_files)\nconcatenated_df = pd.concat(df_from_each_file, ignore_index=True)\n\nconcatenated_df.to_csv("master_export.csv", index=False)\nprint("Merge complete.")' }]
+            },
+            {
+                id: 'm_3', title: 'Automated Keystroke Loop', category: 'iSeries VBS', isGlobal: true,
+                description: 'Standard send-keys loop for repetitive terminal entry. Ensure window focus before execution.',
+                codes: [{ title: 'VBScript', code: 'Set WshShell = WScript.CreateObject("WScript.Shell")\nWScript.Sleep 2000 \' Wait for focus\n\nFor i = 1 To 10\n    WshShell.SendKeys "1NAPR"\n    WshShell.SendKeys "{TAB}"\n    WshShell.SendKeys "O"\n    WshShell.SendKeys "{ENTER}"\n    WScript.Sleep 500\nNext\n\nMsgBox "Sequence execution finished."' }]
+            }
+        ];
+
         async function loadMacros() {
-            seedDefaultMacros();
-            
             let cloudMacros = [];
             try {
+                // Main endpoint check
                 const res = await fetch(`/api/get_macros?userId=${cloudIdentity.userId}`);
-                if (res.ok) cloudMacros = await res.json();
-            } catch(e) {}
+                if (res.ok) {
+                    cloudMacros = await res.json();
+                } else {
+                    // Fallback to generic vault
+                    cloudMacros = await loadCloudData('macros') || [];
+                }
+            } catch(e) {
+                cloudMacros = await loadCloudData('macros') || [];
+            }
 
-            let localMacros = JSON.parse(localStorage.getItem('kore_macros')) || [];
+            // Cloud Seeding: If cloud is completely empty, provide and push starters
+            if (!cloudMacros || cloudMacros.length === 0) {
+                macrosData = [...defaultStarters];
+                // Push seeds to cloud
+                try {
+                    await fetch('/api/save_user_data', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'macros', data: macrosData })
+                    });
+                } catch(e) {}
+            } else {
+                macrosData = cloudMacros.filter(m => !m.deleted);
+            }
             
-            const map = new Map();
-            localMacros.forEach(m => map.set(m.id, m));
-            cloudMacros.forEach(m => map.set(m.id, m));
-            
-            macrosData = Array.from(map.values());
             renderNav();
         }
 
@@ -307,12 +313,19 @@
             document.getElementById('codeRepeater').innerHTML = '';
 
             const globalCheck = document.getElementById('editGlobal');
-            globalCheck.addEventListener('change', (e) => {
+            
+            // Re-wiring Event Listener to fetch Admin PIN from Cloud Settings dynamically
+            globalCheck.addEventListener('change', async (e) => {
                 if (e.target.checked && sessionStorage.getItem('kore_admin_unlocked') !== 'true') {
                     const pin = prompt("Admin PIN required to push to Global Workspace:");
-                    if (pin !== (localStorage.getItem('kore_admin_pin') || 'Admin2026!')) {
+                    const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                    const masterPin = adminData.pin || 'Admin2026!';
+
+                    if (pin !== masterPin) {
                         alert("Access Denied."); e.target.checked = false;
-                    } else { sessionStorage.setItem('kore_admin_unlocked', 'true'); }
+                    } else { 
+                        sessionStorage.setItem('kore_admin_unlocked', 'true'); 
+                    }
                 }
             });
 
@@ -376,18 +389,25 @@
                 description: document.getElementById('editDesc').value.trim(),
                 isGlobal: document.getElementById('editGlobal').checked,
                 authorId: cloudIdentity.userId,
-                codes: blocks
+                codes: blocks,
+                deleted: false
             };
 
             const idx = macrosData.findIndex(x => x.id === payload.id);
             if (idx > -1) macrosData[idx] = payload; else macrosData.push(payload);
-            localStorage.setItem('kore_macros', JSON.stringify(macrosData));
-
+            
+            // Cloud Write Protocol
             try {
+                // Primary Endpoint
                 await fetch('/api/save_macro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
+                });
+                // Fallback / Vault Sync
+                await fetch('/api/save_user_data', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'macros', data: macrosData })
                 });
             } catch(e) {}
 
@@ -397,10 +417,28 @@
             viewMacro(currentMacroId);
         }
 
-        function deleteCurrentMacro() {
+        async function deleteCurrentMacro() {
             if(!confirm("Delete this macro permanently?")) return;
-            macrosData = macrosData.filter(x => x.id !== currentMacroId);
-            localStorage.setItem('kore_macros', JSON.stringify(macrosData));
+            
+            const targetMacro = macrosData.find(x => x.id === currentMacroId);
+            if(targetMacro) {
+                targetMacro.deleted = true;
+                
+                // Cloud Deletion Protocol
+                try {
+                    await fetch('/api/save_macro', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(targetMacro)
+                    });
+                    
+                    macrosData = macrosData.filter(x => x.id !== currentMacroId);
+                    await fetch('/api/save_user_data', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'macros', data: macrosData })
+                    });
+                } catch(e) {}
+            }
+            
             currentMacroId = null;
             document.getElementById('viewPanel').style.display = 'none';
             renderNav();

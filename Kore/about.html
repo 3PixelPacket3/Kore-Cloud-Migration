@@ -19,7 +19,7 @@
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease;}
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease; position: relative;}
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
         .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
         .nav-item:hover .dropdown-content { display: block; }
@@ -30,23 +30,21 @@
         .panel-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 40px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 32px; position: relative;}
         
         .title { margin: 0 0 16px 0; font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
-        .content { font-size: 1.05rem; line-height: 1.6; color: var(--text-secondary); white-space: pre-wrap;}
+        .content { font-size: 1.05rem; line-height: 1.6; color: var(--text-main);}
         
         .release-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 24px;}
         .release-item { border-left: 3px solid var(--accent-primary); padding-left: 16px; background: var(--bg-app); padding: 16px 16px 16px 20px; border-radius: 0 8px 8px 0; border: 1px solid var(--border-subtle); border-left: 4px solid var(--accent-primary);}
         .release-date { font-weight: 700; color: var(--text-main); font-size: 1.1rem; margin-bottom: 8px;}
         .release-notes { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap;}
 
-        /* Admin Edit UI */
         .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
         .btn:hover { background: var(--bg-app); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
-        
         .admin-edit-btn { position: absolute; top: 40px; right: 40px; }
         
         .editor-view { display: none; }
         .input, .textarea { width: 100%; padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.95rem; margin-bottom: 16px; box-sizing: border-box; outline: none;}
-        .textarea { min-height: 150px; resize: vertical; }
+        .textarea { min-height: 250px; resize: vertical; font-family: Consolas, monospace; background: #1e293b; color: #e2e8f0; }
 
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; }
     </style>
@@ -89,23 +87,18 @@
         <div class="panel-card" id="displayPanel">
             <button class="btn admin-edit-btn" onclick="requestAdminEdit()">Edit Documentation</button>
             <h2 class="title">About Kore Enterprise</h2>
-            <div class="content" id="aboutContent">Kore is an interconnected enterprise workspace designed for maximum efficiency. It integrates Azure Cloud Storage, Custom Copilot Agents, and dynamic toolsets.</div>
+            <div class="content" id="aboutContent">Kore is an interconnected enterprise workspace.</div>
             
             <hr style="border:0; border-top:1px solid var(--border-subtle); margin: 32px 0;">
             
             <h3 style="margin: 0 0 20px 0; font-size: 1.4rem;">Deployment & Release Notes</h3>
-            <ul class="release-list" id="releaseList">
-                <li class="release-item">
-                    <div class="release-date">v2.0 - Enterprise AI Expansion</div>
-                    <div class="release-notes">Deployed Azure Table Storage DB.<br>Integrated Custom Copilot Studio Bot.<br>Launched the Global Macro Library.</div>
-                </li>
-            </ul>
+            <ul class="release-list" id="releaseList"></ul>
         </div>
 
         <div class="panel-card editor-view" id="editorPanel">
             <h2 class="title">Edit System Documentation</h2>
             
-            <label style="font-weight: 600; display: block; margin-bottom: 8px;">Main About Text</label>
+            <label style="font-weight: 600; display: block; margin-bottom: 8px;">Main About Text (Accepts HTML tags like &lt;b&gt;, &lt;h3&gt;, etc.)</label>
             <textarea id="editAboutText" class="textarea"></textarea>
             
             <hr style="border:0; border-top:1px solid var(--border-subtle); margin: 24px 0;">
@@ -116,7 +109,7 @@
 
             <div style="display: flex; gap: 12px; justify-content: flex-end;">
                 <button class="btn" onclick="cancelEdit()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveAboutData()">Save Global Changes</button>
+                <button class="btn btn-primary" onclick="saveAboutData()" id="saveBtn">Save Global Changes</button>
             </div>
         </div>
 
@@ -126,20 +119,17 @@
 
     <script>
         let aboutData = {
-            aboutText: "Kore is an interconnected enterprise workspace designed for maximum efficiency. It integrates Azure Cloud Storage, Custom Copilot Agents, and dynamic toolsets.",
-            notes: [{ date: "v2.0 - Enterprise AI Expansion", text: "Deployed Azure Table Storage DB.\nIntegrated Custom Copilot Studio Bot.\nLaunched the Global Macro Library." }]
+            aboutText: "<p>Kore is an interconnected enterprise workspace designed for maximum efficiency.</p><ul><li>Cloud Logic</li><li>AI Automation</li></ul>",
+            notes: [{ date: "v2.0 - Enterprise Expansion", text: "Deployed Azure Cloud Engine.\nRestored Operations Dropdown Menu.\nIntegrated App Banner & To-Do Flair." }]
         };
 
         async function loadData() {
             try {
-                // Fetching from the global info hub partition
                 const res = await fetch(`/api/get_info_pages?userId=GLOBAL_HUB`);
                 if (res.ok) {
                     const allPages = await res.json();
                     const sysPage = allPages.find(p => p.id === 'KORE_SYSTEM_ABOUT');
-                    if (sysPage && sysPage.contentHtml) {
-                        aboutData = JSON.parse(sysPage.contentHtml);
-                    }
+                    if (sysPage && sysPage.contentHtml) aboutData = JSON.parse(sysPage.contentHtml);
                 }
             } catch(e) {
                 const local = localStorage.getItem('kore_system_about');
@@ -149,7 +139,7 @@
         }
 
         function renderDisplay() {
-            document.getElementById('aboutContent').innerText = aboutData.aboutText;
+            document.getElementById('aboutContent').innerHTML = aboutData.aboutText; // Parses raw HTML
             const list = document.getElementById('releaseList');
             list.innerHTML = '';
             aboutData.notes.forEach(note => {
@@ -180,7 +170,7 @@
             div.style.display = 'flex'; div.style.gap = '12px'; div.style.marginBottom = '12px';
             div.innerHTML = `
                 <input type="text" class="input note-date-input" style="width: 250px; margin:0;" placeholder="Version / Date" value="${escapeHtml(date)}">
-                <textarea class="textarea note-text-input" style="flex-grow: 1; margin:0; min-height:60px;" placeholder="Release details...">${escapeHtml(text)}</textarea>
+                <textarea class="textarea note-text-input" style="flex-grow: 1; margin:0; min-height:60px; font-family:inherit; background:#fff; color:#0f172a;" placeholder="Release details...">${escapeHtml(text)}</textarea>
                 <button class="btn" style="color: #ef4444; height: 46px;" onclick="this.parentElement.remove()">X</button>
             `;
             document.getElementById('editNotesContainer').appendChild(div);
@@ -192,6 +182,7 @@
         }
 
         async function saveAboutData() {
+            const btn = document.getElementById('saveBtn'); btn.innerText = "Saving...";
             const newText = document.getElementById('editAboutText').value;
             const noteDivs = document.querySelectorAll('#editNotesContainer > div');
             const newNotes = [];
@@ -206,20 +197,12 @@
 
             try {
                 await fetch('/api/save_info_page', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: 'KORE_SYSTEM_ABOUT',
-                        title: 'System About Page',
-                        authorId: 'SYSTEM',
-                        isGlobal: true,
-                        contentHtml: JSON.stringify(aboutData) 
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: 'KORE_SYSTEM_ABOUT', title: 'System About Page', authorId: 'SYSTEM', isGlobal: true, contentHtml: JSON.stringify(aboutData) })
                 });
             } catch(e) {}
 
-            renderDisplay();
-            cancelEdit();
+            renderDisplay(); cancelEdit(); btn.innerText = "Save Global Changes";
         }
 
         function escapeHtml(str) { return String(str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }

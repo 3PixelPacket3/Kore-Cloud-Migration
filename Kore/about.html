@@ -2,63 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Kore | About</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kore | About & Releases</title>
     <style>
-        /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9;
-            --accent-hover: #0284c7;
-            --bg-app: #f8fafc;
-            --bg-surface: #ffffff;
-            --text-main: #0f172a;
-            --text-secondary: #475569;
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --radius-md: 12px; --radius-sm: 8px;
         }
-
-        body {
-            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-app); color: var(--text-main);
-            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
-        }
-
-        /* --- Global Header --- */
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease;}
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
-        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
-        .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
-        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
-
-        /* --- Main Layout --- */
+        
         .main-container { padding: 40px 32px; max-width: 1000px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        .panel-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 32px; position: relative;}
         
-        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 160px; position: relative; margin-bottom: 32px; }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end; }
-        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
-
-        /* --- Dense Single Section --- */
-        .article-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 40px; box-shadow: var(--shadow-sm); line-height: 1.7; font-size: 0.95rem; color: var(--text-main); }
-        .article-card h2 { color: var(--text-main); font-size: 1.4rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; margin-top: 1.5em; margin-bottom: 0.8em; }
-        .article-card h2:first-child { margin-top: 0; }
-        .article-card h3 { color: var(--accent-primary); font-size: 1.1rem; margin-top: 1.5em; margin-bottom: 0.5em; }
-        .article-card ul { padding-left: 20px; margin-top: 0.5em; }
-        .article-card li { margin-bottom: 6px; }
+        .title { margin: 0 0 16px 0; font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
+        .content { font-size: 1.05rem; line-height: 1.6; color: var(--text-secondary); white-space: pre-wrap;}
         
-        .tech-pill { display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; color: var(--text-secondary); margin: 0 4px 4px 0; }
+        .release-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px;}
+        .release-item { border-left: 3px solid var(--accent-primary); padding-left: 16px; }
+        .release-date { font-weight: 700; color: var(--text-main); font-size: 1rem; margin-bottom: 4px;}
+        .release-notes { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; white-space: pre-wrap;}
 
-        /* --- Global Footer --- */
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto; }
+        /* Admin Edit UI */
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+        .btn:hover { background: var(--bg-app); }
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
+        
+        .admin-edit-btn { position: absolute; top: 32px; right: 32px; }
+        
+        .editor-view { display: none; }
+        .input, .textarea { width: 100%; padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.95rem; margin-bottom: 16px; box-sizing: border-box; outline: none;}
+        .textarea { min-height: 150px; resize: vertical; }
+
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -68,22 +53,6 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-                <div class="nav-item">Operations ▼
-                    <div class="dropdown-content">
-                        <a href="apps.html">Apps</a>
-                        <a href="work.html">Work Tracker</a>
-                        <a href="passwords.html">Password Generator</a>
-                        <a href="product-html.html">Product HTML Converter</a>
-                        <a href="nebula.html">Nebula HTML Forge</a>
-                        <a href="lod.html">LOD Validation Tool</a>
-                    </div>
-                </div>
-                <div class="nav-item">Resources ▼
-                    <div class="dropdown-content">
-                        <a href="info-hub.html">Info Hub</a>
-                        <a href="reports.html">Data/Reports</a>
-                    </div>
-                </div>
                 <a href="about.html" class="nav-item active">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
@@ -92,52 +61,146 @@
 
     <main class="main-container">
         
-        <section class="hero-banner">
-            <img src="images/AboutBanner.jpg" alt="About Kore" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
-            <div class="hero-overlay">
-                <h2 class="hero-title">System Architecture</h2>
+        <div class="panel-card" id="displayPanel">
+            <button class="btn admin-edit-btn" onclick="requestAdminEdit()">Admin Edit</button>
+            <h2 class="title">About Kore Enterprise</h2>
+            <div class="content" id="aboutContent">Kore is an interconnected enterprise workspace designed for maximum efficiency. It integrates Azure Cloud Storage, Microsoft Graph API, and dynamic toolsets.</div>
+            
+            <hr style="border:0; border-top:1px solid var(--border-subtle); margin: 32px 0;">
+            
+            <h3 style="margin: 0 0 16px 0; font-size: 1.3rem;">Release Notes</h3>
+            <ul class="release-list" id="releaseList">
+                <li class="release-item">
+                    <div class="release-date">v2.0 - Cloud Migration</div>
+                    <div class="release-notes">Deployed Azure Table Storage, MS Graph API Integration, and Global Macro Library.</div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel-card editor-view" id="editorPanel">
+            <h2 class="title">Edit System Documentation</h2>
+            
+            <label style="font-weight: 600; display: block; margin-bottom: 8px;">Main About Text</label>
+            <textarea id="editAboutText" class="textarea"></textarea>
+            
+            <hr style="border:0; border-top:1px solid var(--border-subtle); margin: 24px 0;">
+            
+            <label style="font-weight: 600; display: block; margin-bottom: 8px;">Release Notes (Latest First)</label>
+            <div id="editNotesContainer"></div>
+            <button class="btn" onclick="addNoteField()" style="margin-bottom: 24px;">+ Add Release Note</button>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn" onclick="cancelEdit()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAboutData()">Save Global Changes</button>
             </div>
-        </section>
-
-        <article class="article-card">
-            
-            <h2>Mission & Objective</h2>
-            <p>Kore is an enterprise-grade administrative workspace designed to centralize critical operations, streamline data validation, and manage procedural documentation. Originally conceived as an offline, browser-based utility, <strong>Version 4.0</strong> marks the transition to a secure, cloud-hosted architecture integrated directly into the corporate ecosystem.</p>
-
-            <h2>System Architecture (Phase 2 Migration)</h2>
-            <p>To ensure data persistence, security, and multi-device synchronization, the application is undergoing a structural migration:</p>
-            <ul>
-                <li><strong>Frontend Delivery:</strong> Hosted via <span class="tech-pill">Azure Static Web Apps</span>, delivering a responsive, PC-optimized grid utilizing strict DOM structures and a professional Light Theme.</li>
-                <li><strong>Authentication:</strong> Secured by <span class="tech-pill">Microsoft Entra ID (Azure AD)</span>, ensuring only authenticated personnel can access administrative tools and proprietary documentation.</li>
-                <li><strong>Backend Processing:</strong> API endpoints and data routing are handled by <span class="tech-pill">Python (Azure Functions)</span>.</li>
-                <li><strong>Database & Storage:</strong> Data payloads (Work Tracker tickets, Info Hub markup) are routed via the <span class="tech-pill">Microsoft Graph API</span> directly into secure Microsoft 365 environments (SharePoint Lists / Excel architecture).</li>
-            </ul>
-
-            <h2>Core Modules</h2>
-            <h3>Operations Suite</h3>
-            <ul>
-                <li><strong>Work Tracker:</strong> A robust ticket management queue with advanced filtering, CSV export, and localized HTML-capable note taking.</li>
-                <li><strong>LOD Validation Tool:</strong> A strict CSV parsing engine that validates internal payload files against 28 distinct rule sets before ingestion into NVISION.</li>
-                <li><strong>Product HTML Converter:</strong> A dynamic generation engine that transforms raw product specs into heavily styled, client-ready HTML cards via 5 distinct templates.</li>
-                <li><strong>Nebula HTML Forge:</strong> A visual layout builder that synthesizes text into rigid, production-ready HTML code blocks.</li>
-            </ul>
-            
-            <h3>Resources Suite</h3>
-            <ul>
-                <li><strong>Info Hub:</strong> A centralized knowledge base for documenting standard operating procedures (SOPs). Features a built-in WYSIWYG editor, image handling, and local archiving capabilities.</li>
-                <li><strong>Data & Reports:</strong> A visualization engine generating real-time charting, workload aging statistics, and priority distributions based on Work Tracker data.</li>
-            </ul>
-
-            <h2 style="margin-top: 2.5em; font-size: 1.1rem; color: var(--text-secondary); border: none;">Version History</h2>
-            <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>v4.0 (Current)</strong> – Enterprise UI overhaul, Azure architecture migration prep.<br>
-            <strong>v3.x</strong> – Introduction of Info Hub and Nebula Forge.<br>
-            <strong>v2.x</strong> – Implementation of offline Work Tracker and local JSON backups.</p>
-
-        </article>
+        </div>
 
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
+    <script>
+        let aboutData = {
+            aboutText: "Kore is an interconnected enterprise workspace designed for maximum efficiency.",
+            notes: [{ date: "v2.0 - Cloud Migration", text: "Deployed Azure Table Storage, MS Graph API, and Global Macro Library." }]
+        };
+
+        async function loadData() {
+            try {
+                // We hijack the get_info_pages API to store global system config safely.
+                const res = await fetch(`/api/get_info_pages?userId=GLOBAL_HUB`);
+                if (res.ok) {
+                    const allPages = await res.json();
+                    const sysPage = allPages.find(p => p.id === 'KORE_SYSTEM_ABOUT');
+                    if (sysPage && sysPage.contentHtml) {
+                        aboutData = JSON.parse(sysPage.contentHtml);
+                    }
+                }
+            } catch(e) {
+                const local = localStorage.getItem('kore_system_about');
+                if(local) aboutData = JSON.parse(local);
+            }
+            renderDisplay();
+        }
+
+        function renderDisplay() {
+            document.getElementById('aboutContent').innerText = aboutData.aboutText;
+            const list = document.getElementById('releaseList');
+            list.innerHTML = '';
+            aboutData.notes.forEach(note => {
+                list.innerHTML += `<li class="release-item"><div class="release-date">${escapeHtml(note.date)}</div><div class="release-notes">${escapeHtml(note.text)}</div></li>`;
+            });
+        }
+
+        function requestAdminEdit() {
+            if (sessionStorage.getItem('kore_admin_unlocked') !== 'true') {
+                const pin = prompt("Enter Master Admin PIN to edit System Documentation:");
+                if (pin !== (localStorage.getItem('kore_admin_pin') || 'Admin2026!')) {
+                    alert("Access Denied."); return;
+                }
+                sessionStorage.setItem('kore_admin_unlocked', 'true');
+            }
+            
+            document.getElementById('displayPanel').style.display = 'none';
+            document.getElementById('editorPanel').style.display = 'block';
+            
+            document.getElementById('editAboutText').value = aboutData.aboutText;
+            const container = document.getElementById('editNotesContainer');
+            container.innerHTML = '';
+            aboutData.notes.forEach(n => addNoteField(n.date, n.text));
+        }
+
+        function addNoteField(date = '', text = '') {
+            const div = document.createElement('div');
+            div.style.display = 'flex'; div.style.gap = '12px'; div.style.marginBottom = '12px';
+            div.innerHTML = `
+                <input type="text" class="input note-date-input" style="width: 200px; margin:0;" placeholder="Version / Date" value="${escapeHtml(date)}">
+                <input type="text" class="input note-text-input" style="flex-grow: 1; margin:0;" placeholder="Release details..." value="${escapeHtml(text)}">
+                <button class="btn" style="color: #ef4444;" onclick="this.parentElement.remove()">X</button>
+            `;
+            document.getElementById('editNotesContainer').appendChild(div);
+        }
+
+        function cancelEdit() {
+            document.getElementById('editorPanel').style.display = 'none';
+            document.getElementById('displayPanel').style.display = 'block';
+        }
+
+        async function saveAboutData() {
+            const newText = document.getElementById('editAboutText').value;
+            const noteDivs = document.querySelectorAll('#editNotesContainer > div');
+            const newNotes = [];
+            noteDivs.forEach(div => {
+                const d = div.querySelector('.note-date-input').value.trim();
+                const t = div.querySelector('.note-text-input').value.trim();
+                if (d || t) newNotes.push({ date: d, text: t });
+            });
+
+            aboutData = { aboutText: newText, notes: newNotes };
+            localStorage.setItem('kore_system_about', JSON.stringify(aboutData));
+
+            // Push to DB using the Info Hub endpoint
+            try {
+                await fetch('/api/save_info_page', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: 'KORE_SYSTEM_ABOUT',
+                        title: 'System About Page',
+                        authorId: 'SYSTEM',
+                        isGlobal: true,
+                        contentHtml: JSON.stringify(aboutData) // Storing the JSON inside the content payload
+                    })
+                });
+            } catch(e) {}
+
+            renderDisplay();
+            cancelEdit();
+        }
+
+        function escapeHtml(str) { return String(str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
 </body>
 </html>

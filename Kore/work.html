@@ -17,7 +17,7 @@
 
         body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
 
-        /* --- Global Header (Fixed Dropdowns) --- */
+        /* --- Global Header --- */
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
@@ -31,21 +31,14 @@
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
         .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
 
-        /* Global Search Infrastructure */
-        .search-container { display: flex; align-items: center; position: relative; }
-        .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
-        .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
-
         /* --- Main Content --- */
         .main-container { padding: 40px 32px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
 
-        /* Banner System */
         .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 200px; position: relative; margin-bottom: 24px; }
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
         .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 30px; box-sizing: border-box; color: white; }
         .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
 
-        /* Buttons & Inputs */
         .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
@@ -54,30 +47,25 @@
         select, input[type="text"], input[type="date"] { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; }
         select:focus, input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
 
-        /* --- View 1: Dashboard --- */
         .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
         .filters-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
         .filter-item { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
         .actions-group { display: flex; gap: 12px; }
 
-        /* Data Table */
         .table-container { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { background: var(--bg-app); padding: 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-subtle); cursor: pointer; }
         td { padding: 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; vertical-align: middle; }
         tr:hover td { background-color: #f8fafc; cursor: pointer; }
         .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
-        
         .progress-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
 
-        /* --- View 2: Form --- */
         #view-form { display: none; }
         .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group.full-width { grid-column: span 3; }
         .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
         
-        /* Checklist System */
         .task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
         .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-app); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
         .task-item-left { display: flex; align-items: center; gap: 12px; }
@@ -105,6 +93,7 @@
                 <div class="nav-item active">Operations ▼
                     <div class="dropdown-content">
                         <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
                         <a href="apps.html">Apps</a>
                         <a href="work.html">Work Tracker</a>
                         <a href="passwords.html">Password Generator</a>
@@ -249,7 +238,6 @@
     </main>
 
     <script>
-        // --- 1. Microsoft Entra ID Authentication ---
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let activeChecklist = [];
 
@@ -261,16 +249,10 @@
                     cloudIdentity.userId = data.clientPrincipal.userId;
                     cloudIdentity.userName = data.clientPrincipal.userDetails;
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
-                } else {
-                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
                 }
-            } catch (error) {
-                console.log("Auth fetch bypassed - Local execution.");
-                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
-            }
+            } catch (error) {}
         }
 
-        // --- 2. Database & State Management ---
         function getWorkItems() { return JSON.parse(localStorage.getItem('kore_work_items')) || []; }
 
         function getStatusColor(status) {
@@ -282,11 +264,8 @@
             }
         }
 
-        function generateUniqueTicketId() {
-            return "TKT-" + Math.floor(10000 + Math.random() * 90000);
-        }
+        function generateUniqueTicketId() { return "TKT-" + Math.floor(10000 + Math.random() * 90000); }
 
-        // --- 3. UI Rendering ---
         function renderTable() {
             const items = getWorkItems();
             const tbody = document.getElementById('tracker-body');
@@ -325,7 +304,6 @@
             });
         }
 
-        // --- 4. Checklist System ---
         function renderChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
@@ -362,7 +340,6 @@
             renderChecklist();
         };
 
-        // --- 5. Form Management & Azure Transmission ---
         function openForm(id = null) {
             document.getElementById('view-dashboard').style.display = 'none';
             document.getElementById('view-form').style.display = 'block';
@@ -421,19 +398,14 @@
                 authorEmail: cloudIdentity.userName
             };
 
-            // 1. Transmit to Azure Cloud Database
             try {
-                const response = await fetch('/api/save_work_item', {
+                await fetch('/api/save_work_item', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) console.warn("Cloud transmit pending (Backend may still be compiling).");
-            } catch (err) {
-                console.error("Cloud link offline. Caching locally.", err);
-            }
+            } catch (err) {}
 
-            // 2. Save to Local Memory immediately for seamless UI
             let items = getWorkItems();
             const idx = items.findIndex(i => i.id === payload.id);
             if (idx > -1) { items[idx] = payload; } else { items.push(payload); }
@@ -445,8 +417,8 @@
 
         function formatDoc(cmd) { document.execCommand(cmd, false, null); document.getElementById('reqNotes').focus(); }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchSecureIdentity();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
             renderTable();
         });
     </script>

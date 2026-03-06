@@ -6,36 +6,35 @@
     <style>
         /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9;
-            --accent-hover: #0284c7;
-            --bg-app: #f8fafc;
-            --bg-surface: #ffffff;
-            --text-main: #0f172a;
-            --text-secondary: #475569;
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --radius-md: 12px;
-            --radius-sm: 8px;
-            --success: #10b981;
+            --radius-md: 12px; --radius-sm: 8px;
         }
 
-        body {
-            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-app); color: var(--text-main);
-            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
-        }
+        body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
 
-        /* --- Global Header --- */
+        /* --- Global Header (Fixed Dropdowns) --- */
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
-        
-        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+
+        /* Global Search Infrastructure */
+        .search-container { display: flex; align-items: center; position: relative; }
+        .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
+        .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
 
         /* --- Main Content --- */
         .main-container { padding: 40px 32px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
@@ -103,7 +102,24 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-                <a href="work.html" class="nav-item active">Work Tracker</a>
+                <div class="nav-item active">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
         </div>
@@ -290,7 +306,6 @@
             filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
 
             filtered.forEach(item => {
-                // Checklist progress calculation
                 let progressBadge = '--';
                 if (item.tasks && item.tasks.length > 0) {
                     const completed = item.tasks.filter(t => t.done).length;
@@ -393,7 +408,6 @@
 
             const idInput = document.getElementById('ticketId').value || generateUniqueTicketId();
             
-            // Package the Azure Payload
             const payload = {
                 id: idInput,
                 created: document.getElementById('createdDate').value,

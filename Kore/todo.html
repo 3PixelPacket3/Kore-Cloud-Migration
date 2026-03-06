@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Personal To-Do</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px; --radius-sm: 8px;
+            --priority-high: #ef4444; --priority-med: #f59e0b; --priority-low: #10b981;
+        }
+
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
+
+        /* --- Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
+
+        /* --- Main Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
+        .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
+        .page-subtitle { margin: 8px 0 0 0; font-size: 1rem; color: var(--text-secondary); }
+        
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: 99px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; box-shadow: var(--shadow-sm); }
+        .btn-primary:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+        /* --- Form Input Area --- */
+        .add-task-panel { background: var(--bg-surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-subtle); margin-bottom: 32px; display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 16px; align-items: end; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input { padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; transition: all 0.2s; }
+        .input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+
+        /* --- Task List --- */
+        .task-list { display: flex; flex-direction: column; gap: 16px; }
+        .task-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; display: flex; align-items: flex-start; gap: 20px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; position: relative; overflow: hidden; }
+        .task-card:hover { transform: translateX(4px); border-color: var(--accent-primary); box-shadow: var(--shadow-md); }
+        .task-card.completed { opacity: 0.6; background: var(--bg-app); }
+        .task-card.completed .task-title { text-decoration: line-through; color: var(--text-secondary); }
+
+        /* Status Checkbox */
+        .check-container { padding-top: 4px; }
+        .custom-checkbox { appearance: none; width: 24px; height: 24px; border: 2px solid var(--border-subtle); border-radius: 50%; outline: none; cursor: pointer; position: relative; transition: all 0.2s; background: var(--bg-surface); flex-shrink: 0; }
+        .custom-checkbox:hover { border-color: var(--accent-primary); }
+        .custom-checkbox:checked { background: var(--success-color); border-color: var(--success-color); }
+        .custom-checkbox:checked::after { content: '✓'; position: absolute; color: white; font-size: 14px; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        /* Task Content */
+        .task-content { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
+        .task-header { display: flex; justify-content: space-between; align-items: center; }
+        .task-title { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-main); }
+        .task-meta { display: flex; gap: 12px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); align-items: center; }
+        
+        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tag-priority-High { background: #fef2f2; color: var(--priority-high); border: 1px solid #fecaca; }
+        .tag-priority-Medium { background: #fffbeb; color: var(--priority-med); border: 1px solid #fde68a; }
+        .tag-priority-Low { background: #ecfdf5; color: var(--priority-low); border: 1px solid #a7f3d0; }
+        
+        .due-date { display: flex; align-items: center; gap: 4px; }
+        .due-date.past-due { color: var(--priority-high); }
+        .due-date.today { color: var(--accent-primary); }
+
+        .delete-btn { background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 1.2rem; transition: color 0.2s; }
+        .task-card:hover .delete-btn { color: #ef4444; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
+        .empty-state h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: var(--text-main); }
+
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item active">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Personal Action Items</h2>
+                <p class="page-subtitle">Track your daily tasks. Secured to your local profile.</p>
+            </div>
+            <div>
+                <button class="btn" onclick="clearCompleted()">Sweep Completed</button>
+            </div>
+        </div>
+
+        <form class="add-task-panel" onsubmit="event.preventDefault(); addTask();">
+            <div class="input-group">
+                <label>New Task</label>
+                <input type="text" id="newTaskTitle" class="input" placeholder="What needs to be done?" required autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Due Date</label>
+                <input type="date" id="newTaskDate" class="input">
+            </div>
+            <div class="input-group">
+                <label>Priority</label>
+                <select id="newTaskPriority" class="input">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="height: 46px; padding: 0 24px;">Add Task</button>
+        </form>
+
+        <div id="taskList" class="task-list"></div>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+
+    <script>
+        // --- Identity & Storage Logic ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let STORAGE_KEY = 'kore_todo_local';
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                    STORAGE_KEY = `kore_todo_${cloudIdentity.userId}`;
+                }
+            } catch (error) {
+                console.log("Auth bypassed - Local execution.");
+            }
+        }
+
+        // --- Data Management ---
+        function getTasks() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        }
+
+        function saveTasks(tasks) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        function generateId() {
+            return 'todo_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        }
+
+        function formatDateLogic(dateStr) {
+            if (!dateStr) return { text: 'No Due Date', class: '' };
+            
+            const due = new Date(dateStr + 'T00:00:00'); // Force local timezone interpretation
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            const diffTime = due - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return { text: `Past Due (${Math.abs(diffDays)}d)`, class: 'past-due' };
+            if (diffDays === 0) return { text: 'Due Today', class: 'today' };
+            if (diffDays === 1) return { text: 'Due Tomorrow', class: '' };
+            return { text: due.toLocaleDateString(), class: '' };
+        }
+
+        // --- Core Functions ---
+        function renderTasks() {
+            const tasks = getTasks();
+            const container = document.getElementById('taskList');
+            container.innerHTML = '';
+
+            // Sort: Incomplete first, then by date (earliest first), then priority
+            tasks.sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                
+                const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+                const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+                if (dateA !== dateB) return dateA - dateB;
+
+                const prioWeight = { 'High': 3, 'Medium': 2, 'Low': 1 };
+                return prioWeight[b.priority] - prioWeight[a.priority];
+            });
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Action Items</h3>
+                        <p>Your workspace is clear. Take a break or add a new task above.</p>
+                    </div>`;
+                return;
+            }
+
+            tasks.forEach(task => {
+                const dateLogic = formatDateLogic(task.dueDate);
+                const dateHtml = task.dueDate ? `<span class="due-date ${dateLogic.class}">🗓️ ${dateLogic.text}</span>` : '';
+                
+                container.innerHTML += `
+                    <div class="task-card ${task.completed ? 'completed' : ''}">
+                        <div class="check-container">
+                            <input type="checkbox" class="custom-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${task.id}')">
+                        </div>
+                        <div class="task-content">
+                            <div class="task-header">
+                                <h3 class="task-title">${escapeHtml(task.title)}</h3>
+                                <button class="delete-btn" onclick="deleteTask('${task.id}')" title="Delete Task">&times;</button>
+                            </div>
+                            <div class="task-meta">
+                                <span class="tag tag-priority-${task.priority}">${task.priority}</span>
+                                ${dateHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.addTask = function() {
+            const titleInput = document.getElementById('newTaskTitle');
+            const dateInput = document.getElementById('newTaskDate');
+            const priorityInput = document.getElementById('newTaskPriority');
+
+            if (!titleInput.value.trim()) return;
+
+            const newTask = {
+                id: generateId(),
+                title: titleInput.value.trim(),
+                dueDate: dateInput.value,
+                priority: priorityInput.value,
+                completed: false,
+                created: new Date().toISOString()
+            };
+
+            const tasks = getTasks();
+            tasks.push(newTask);
+            saveTasks(tasks);
+
+            titleInput.value = '';
+            dateInput.value = '';
+            priorityInput.value = 'Medium';
+            titleInput.focus();
+            
+            renderTasks();
+        }
+
+        window.toggleTask = function(id) {
+            const tasks = getTasks();
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks(tasks);
+                renderTasks();
+            }
+        }
+
+        window.deleteTask = function(id) {
+            let tasks = getTasks();
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks(tasks);
+            renderTasks();
+        }
+
+        window.clearCompleted = function() {
+            let tasks = getTasks();
+            tasks = tasks.filter(t => !t.completed);
+            saveTasks(tasks);
+            renderTasks();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set default date to today for the add panel
+            document.getElementById('newTaskDate').valueAsDate = new Date();
+            
+            await fetchSecureIdentity();
+            renderTasks();
+        });
+    </script>
+</body>
+</html>

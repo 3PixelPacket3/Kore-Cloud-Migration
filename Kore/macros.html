@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Macro Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px; --radius-sm: 8px;
+            --success: #10b981;
+        }
+
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
+
+        /* --- Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
+
+        /* --- Main Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start; }
+        
+        .page-header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; margin-bottom: 8px; }
+        .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
+        .page-subtitle { margin: 8px 0 0 0; font-size: 1rem; color: var(--text-secondary); }
+
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); padding: 24px; position: sticky; top: 100px; }
+        .category-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+        .category-item { padding: 12px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; font-size: 0.95rem; }
+        .category-item:hover { background: #f0f9ff; color: var(--accent-primary); }
+        .category-item.active { background: var(--accent-primary); color: white; }
+
+        /* --- Content Area --- */
+        .content-area { display: flex; flex-direction: column; gap: 24px; }
+        
+        .macro-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; display: none; }
+        .macro-card.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .macro-header { padding: 20px 24px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-app); }
+        .macro-title { margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
+        .macro-tag { font-size: 0.75rem; background: #e2e8f0; padding: 4px 10px; border-radius: 99px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .macro-desc { margin: 12px 0 0 0; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
+        
+        .macro-code-container { padding: 24px; position: relative; background: #1e293b; }
+        .macro-code { background: transparent; color: #e2e8f0; font-family: Consolas, "Courier New", monospace; font-size: 0.9rem; overflow-x: auto; margin: 0; line-height: 1.6; white-space: pre-wrap; }
+        
+        .copy-btn { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+        .copy-btn.copied { background: var(--success); border-color: var(--success); }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); display: none; }
+        
+        /* --- Global Footer --- */
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item active">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Enterprise Script & Macro Library</h2>
+                <p class="page-subtitle">Centralized repository for automation code, templates, and payloads.</p>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <h3 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Categories</h3>
+            <ul class="category-list" id="categoryList">
+                <li class="category-item active" data-filter="all">All Scripts</li>
+                <li class="category-item" data-filter="excel">Excel VBA / Office</li>
+                <li class="category-item" data-filter="python">Python Automation</li>
+                <li class="category-item" data-filter="web">HTML / JavaScript</li>
+                <li class="category-item" data-filter="iseries">iSeries / Power Automate</li>
+            </ul>
+        </aside>
+
+        <div class="content-area" id="macroContainer">
+            
+            <div class="macro-card active" data-category="excel">
+                <div class="macro-header">
+                    <h3 class="macro-title">LOD Data Cleanser <span class="macro-tag">Excel VBA</span></h3>
+                    <p class="macro-desc">Automatically strips hyphens from ZIP codes and formats columns as text to prevent leading zeros from dropping.</p>
+                </div>
+                <div class="macro-code-container">
+                    <button class="copy-btn" onclick="copyCode(this, 'code1')">Copy Code</button>
+                    <pre class="macro-code" id="code1">Sub CleanLODFile()
+    Dim ws As Worksheet
+    Set ws = ActiveSheet
+    
+    ' Format Col L (ZIP Code) as Text
+    ws.Columns("L").NumberFormat = "@"
+    
+    ' Remove Hyphens from Col L
+    ws.Columns("L").Replace What:="-", Replacement:="", LookAt:=xlPart
+    
+    ' Ensure Col B (Customer #) is Text
+    ws.Columns("B").NumberFormat = "@"
+    
+    MsgBox "LOD Cleansing Complete", vbInformation
+End Sub</pre>
+                </div>
+            </div>
+
+            <div class="macro-card active" data-category="python">
+                <div class="macro-header">
+                    <h3 class="macro-title">Azure Table Storage Ingest <span class="macro-tag">Python</span></h3>
+                    <p class="macro-desc">Basic Python script using the Azure SDK to push a JSON payload into the cloud database.</p>
+                </div>
+                <div class="macro-code-container">
+                    <button class="copy-btn" onclick="copyCode(this, 'code2')">Copy Code</button>
+                    <pre class="macro-code" id="code2">from azure.data.tables import TableServiceClient
+import json
+import os
+
+def push_to_azure(data_dict, table_name="KoreLog"):
+    conn_str = os.environ.get("KORE_DB_CONNECTION")
+    service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
+    
+    table_client = service_client.get_table_client(table_name=table_name)
+    
+    entity = {
+        "PartitionKey": "AutoIngest",
+        "RowKey": str(data_dict.get("id", "001")),
+        "Payload": json.dumps(data_dict)
+    }
+    
+    table_client.upsert_entity(entity=entity)
+    print("Payload pushed successfully.")</pre>
+                </div>
+            </div>
+
+            <div class="macro-card active" data-category="web">
+                <div class="macro-header">
+                    <h3 class="macro-title">Fetch Entra ID Profile <span class="macro-tag">JavaScript</span></h3>
+                    <p class="macro-desc">The standard asynchronous function used across Kore to extract user identity from the Azure proxy.</p>
+                </div>
+                <div class="macro-code-container">
+                    <button class="copy-btn" onclick="copyCode(this, 'code3')">Copy Code</button>
+                    <pre class="macro-code" id="code3">async function fetchSecureIdentity() {
+    try {
+        const response = await fetch('/.auth/me');
+        const data = await response.json();
+        
+        if (data.clientPrincipal) {
+            const userId = data.clientPrincipal.userId;
+            const userName = data.clientPrincipal.userDetails;
+            console.log(`Authenticated as: ${userName}`);
+            return { id: userId, name: userName };
+        }
+    } catch (error) {
+        console.warn("Authentication endpoint unreachable. Running locally.");
+        return null;
+    }
+}</pre>
+                </div>
+            </div>
+
+            <div class="macro-card active" data-category="iseries">
+                <div class="macro-header">
+                    <h3 class="macro-title">Automated Key Sequence <span class="macro-tag">Power Automate / VBS</span></h3>
+                    <p class="macro-desc">A standard send-keys loop for repetitive terminal entry. Ensure window focus before execution.</p>
+                </div>
+                <div class="macro-code-container">
+                    <button class="copy-btn" onclick="copyCode(this, 'code4')">Copy Code</button>
+                    <pre class="macro-code" id="code4">Set WshShell = WScript.CreateObject("WScript.Shell")
+WScript.Sleep 2000 ' Wait 2 seconds for focus
+
+' Loop through standard iSeries entry
+For i = 1 To 10
+    WshShell.SendKeys "1NAPR"
+    WshShell.SendKeys "{TAB}"
+    WshShell.SendKeys "O"
+    WshShell.SendKeys "{ENTER}"
+    WScript.Sleep 500 ' Delay to allow terminal response
+Next
+
+MsgBox "Sequence execution finished."</pre>
+                </div>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <h3>No Macros Found</h3>
+                <p>There are no scripts available in this category.</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+
+    <script>
+        // Identity Fetch
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                }
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+            }
+        }
+
+        // Category Filtering
+        const categoryItems = document.querySelectorAll('.category-item');
+        const macroCards = document.querySelectorAll('.macro-card');
+        const emptyState = document.getElementById('emptyState');
+
+        categoryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                categoryItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                const filter = item.getAttribute('data-filter');
+                let count = 0;
+
+                macroCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.classList.add('active');
+                        count++;
+                    } else {
+                        card.classList.remove('active');
+                    }
+                });
+
+                if (count === 0) emptyState.style.display = 'block';
+                else emptyState.style.display = 'none';
+            });
+        });
+
+        // Copy Function
+        function copyCode(btn, codeId) {
+            const textToCopy = document.getElementById(codeId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
+        });
+    </script>
+</body>
+</html>

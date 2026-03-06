@@ -182,15 +182,21 @@
                 const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=todos`);
                 if (res.ok) {
                     const data = await res.json();
-                    if (data.length > 0) { activeTasks = data; renderTasks(); return; }
+                    if (data && data.length > 0) { 
+                        activeTasks = data; 
+                        renderTasks(); 
+                        return; 
+                    }
                 }
             } catch(e) {}
-            activeTasks = JSON.parse(localStorage.getItem(`kore_todo_${cloudIdentity.userId}`)) || [];
+            
+            // Cloud-strict architecture: Removing localStorage fallback.
+            activeTasks = [];
             renderTasks();
         }
 
         async function saveData() {
-            localStorage.setItem(`kore_todo_${cloudIdentity.userId}`, JSON.stringify(activeTasks));
+            // Cloud-strict architecture: Removing localStorage setItem.
             try {
                 await fetch('/api/save_user_data', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },

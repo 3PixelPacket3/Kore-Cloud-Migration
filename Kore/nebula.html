@@ -5,87 +5,501 @@
     <title>Kore | Nebula HTML Forge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+        /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
-            --bg-app: #f8fafc; --bg-surface: #ffffff;
-            --text-main: #0f172a; --text-secondary: #475569;
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --radius-md: 12px; --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
             --success-color: #10b981;
-            --font-editor: 'Inter', system-ui, sans-serif;
+            --font-editor: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
 
-        body { margin: 0; font-family: var(--font-editor); background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
+        body {
+            margin: 0;
+            font-family: var(--font-editor);
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-width: 1024px;
+        }
 
-        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
-        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
-        .kore-logo span { color: var(--accent-primary); }
-        .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
-        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
-        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
-        .nav-item:hover .dropdown-content { display: block; }
-        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
-        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
-        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
+        /* --- Global Header --- */
+        .global-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            height: 100%;
+        }
+        .kore-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .kore-logo span {
+            color: var(--accent-primary);
+        }
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            height: 100%;
+        }
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+            background-color: #f0f9ff;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            background-color: var(--bg-surface);
+            min-width: 260px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            overflow: hidden;
+            z-index: 101;
+        }
+        .nav-item:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: var(--text-secondary);
+            padding: 14px 20px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid var(--bg-app);
+            font-weight: 500;
+        }
+        .dropdown-content a:hover {
+            background-color: #f0f9ff;
+            color: var(--accent-primary);
+            padding-left: 24px;
+            transition: all 0.2s ease;
+        }
+        .user-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-app);
+            padding: 6px 12px;
+            border-radius: 99px;
+            border: 1px solid var(--border-subtle);
+        }
 
-        .main-container { padding: 40px 32px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
-        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 140px; position: relative; margin-bottom: 24px; }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end; }
-        .hero-title { margin: 0; font-size: 1.6rem; font-weight: 700; }
+        /* --- Main Content Layout --- */
+        .main-container {
+            padding: 40px 32px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+        .hero-banner {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
+            height: 140px;
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(15,23,42,0.9), transparent);
+            padding: 24px 30px;
+            box-sizing: border-box;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .hero-title {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .hero-subtitle {
+            margin: 4px 0 0 0;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
 
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
-        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
-        .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); }
-        .input { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; }
+        /* --- Buttons --- */
+        .btn {
+            background-color: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .btn:hover {
+            background-color: var(--bg-app);
+            border-color: var(--text-secondary);
+        }
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            box-shadow: var(--shadow-sm);
+        }
+        .input {
+            padding: 10px 12px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            outline: none;
+            background: var(--bg-surface);
+            color: var(--text-main);
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+        }
         
-        .tabs-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--border-subtle); }
-        .tab-btn { background: transparent; border: none; padding: 12px 24px; font-size: 1rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-        .tab-btn:hover { color: var(--accent-primary); }
-        .tab-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- Nav Tabs (Inner) --- */
+        .tabs-nav {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-subtle);
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: var(--accent-primary);
+        }
+        .tab-btn.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .workspace-grid { display: grid; grid-template-columns: 280px 1fr 1fr; gap: 24px; align-items: start; }
-        .panel-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
-        .panel-title { margin: 0 0 16px 0; font-size: 1.1rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        /* --- Workspace Grid --- */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        .panel-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .panel-title {
+            margin: 0 0 16px 0;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .rail-section { margin-bottom: 24px; }
-        .rail-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .snippet-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .rail-snippet { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); cursor: pointer; transition: all 0.2s; flex-grow: 1; text-align: center;}
-        .rail-snippet:hover { border-color: var(--accent-primary); color: var(--accent-primary); background: #f0f9ff; }
-        .rail-preset-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 8px;}
-        .rail-preset-item { font-size: 0.85rem; padding: 8px 12px; background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
-        .rail-preset-item:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        /* Left Rail (Snippets) */
+        .rail-section {
+            margin-bottom: 24px;
+        }
+        .rail-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .snippet-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .rail-snippet {
+            background: var(--bg-app);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .rail-snippet:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: #f0f9ff;
+        }
+        .rail-preset-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        .rail-preset-item {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            background: var(--bg-app);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .rail-preset-item:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
 
-        .toolbar { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-        .toolbar-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-        .tool-btn { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 6px 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.2s; min-width: 32px; display: flex; justify-content: center; align-items: center;}
-        .tool-btn:hover { background: #f0f9ff; border-color: var(--accent-primary); color: var(--accent-primary); }
-        .tool-select { padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-subtle); font-size: 0.8rem; outline: none; background: var(--bg-surface); font-family: inherit; color: var(--text-main);}
-        .tool-color { width: 30px; height: 30px; padding: 0; border: 1px solid var(--border-subtle); border-radius: 4px; cursor: pointer; background: var(--bg-surface);}
-        .toolbar-divider { width: 1px; height: 24px; background-color: var(--border-subtle); margin: 0 4px; }
+        /* Editor Toolbar */
+        .toolbar {
+            background: var(--bg-app);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .tool-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s;
+            min-width: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .tool-btn:hover {
+            background: #f0f9ff;
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        .tool-select {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            font-size: 0.8rem;
+            outline: none;
+            background: var(--bg-surface);
+            font-family: inherit;
+            color: var(--text-main);
+        }
+        .tool-color {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            cursor: pointer;
+            background: var(--bg-surface);
+        }
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background-color: var(--border-subtle);
+            margin: 0 4px;
+        }
 
-        .editor-container { min-height: 500px; max-height: 700px; overflow-y: auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 32px; outline: none; font-size: 0.95rem; line-height: 1.6; }
-        .editor-container:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
-        .preview-container { min-height: 500px; max-height: 700px; overflow-y: auto; background: #f1f5f9; border: 1px dashed var(--border-subtle); border-radius: var(--radius-sm); padding: 32px; }
+        .editor-container {
+            min-height: 500px;
+            max-height: 700px;
+            overflow-y: auto;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 32px;
+            outline: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .editor-container:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        /* Preview Area */
+        .preview-container {
+            min-height: 500px;
+            max-height: 700px;
+            overflow-y: auto;
+            background: #f1f5f9;
+            border: 1px dashed var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 32px;
+        }
         
-        .item-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
-        .item-row-title { font-weight: 700; font-size: 1rem; color: var(--text-main); margin-bottom: 4px; }
-        .item-row-desc { font-size: 0.85rem; color: var(--text-secondary); }
-        .item-row-actions { display: flex; gap: 8px; }
+        /* Templates Tab */
+        .item-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+        .item-row-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .item-row-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .item-row-actions {
+            display: flex;
+            gap: 8px;
+        }
 
-        .code-output { width: 100%; min-height: 500px; font-family: Consolas, "Courier New", monospace; font-size: 0.85rem; padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: #1e293b; color: #e2e8f0; line-height: 1.5; white-space: pre-wrap; resize: vertical; box-sizing: border-box; margin-top: 16px; }
+        /* HTML Tab */
+        .code-output {
+            width: 100%;
+            min-height: 500px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.85rem;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: #1e293b;
+            color: #e2e8f0;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-top: 16px;
+        }
 
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+        /* Global Footer */
+        .global-footer {
+            background-color: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            padding: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -127,13 +541,14 @@
             <div class="hero-overlay">
                 <div>
                     <h2 class="hero-title">Nebula HTML Forge</h2>
+                    <p class="hero-subtitle">Visual plain-text to Enterprise HTML layout builder.</p>
                 </div>
             </div>
         </section>
 
         <div class="tabs-nav">
             <button class="tab-btn active" data-tab="editor">Editor & Preview</button>
-            <button class="tab-btn" data-tab="templates">Templates</button>
+            <button class="tab-btn" data-tab="templates">Templates (15)</button>
             <button class="tab-btn" data-tab="html">HTML Output</button>
         </div>
 
@@ -190,6 +605,7 @@
                             <button class="tool-btn" data-cmd="underline" title="Underline"><u>U</u></button>
                             <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
                         </div>
+
                         <div class="toolbar-row">
                             <button class="tool-btn" data-cmd="justifyLeft" title="Align Left">⫷</button>
                             <button class="tool-btn" data-cmd="justifyCenter" title="Align Center">≣</button>
@@ -204,6 +620,7 @@
                             <button class="tool-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
                             <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
                         </div>
+
                         <div class="toolbar-row">
                             <button class="tool-btn" data-snippet="box-info" title="Info box">Info Box</button>
                             <button class="tool-btn" data-snippet="box-warn" title="Warning box">Warning</button>
@@ -232,7 +649,7 @@
         <div id="templatesTab" class="tab-panel">
             <div class="workspace-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="panel-card">
-                    <h3 class="panel-title">Global Enterprise Presets</h3>
+                    <h3 class="panel-title">15 Global Enterprise Presets</h3>
                     <ul id="presetList" class="item-list" style="max-height: 600px; overflow-y: auto; padding-right: 12px;"></ul>
                 </div>
                 <div class="panel-card">
@@ -275,7 +692,9 @@
                     cloudIdentity.userName = data.clientPrincipal.userDetails;
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+            }
         }
 
         async function loadCloudData(dataType) {
@@ -292,7 +711,8 @@
         async function saveCloudData(dataType, data) {
             try {
                 await fetch('/api/save_user_data', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
                 });
             } catch(e) {}
@@ -302,23 +722,86 @@
         const previewEl = document.getElementById("preview");
         const htmlOutputEl = document.getElementById("htmlOutput");
 
+        // --- 15 Robust Enterprise Presets Restored ---
         const presets = [
-            { id: "p1", name: "Team Meeting Notes", description: "Agenda and action items.", html: `<h1>📅 Team Sync</h1><p><strong>Date:</strong> [Date]</p><hr><h2>📋 Agenda</h2><ul><li>Topic 1</li></ul><h2>✅ Action Items</h2><ul><li>[ ] Task 1</li></ul>` },
-            { id: "p2", name: "Executive Summary", description: "High-level overview.", html: `<h1>Executive Summary</h1><div class="box box-info"><strong>BLUF:</strong> Project is on track.</div><div class="layout-two-column"><div><h3>Achievements</h3><ul><li>Goal met.</li></ul></div><div><h3>Risks</h3><ul><li>None.</li></ul></div></div>` },
-            { id: "p3", name: "Incident Report", description: "Post-mortem tracking.", html: `<h1>🚨 Incident Report</h1><p><span class="badge">SEV-1</span></p><h2>Details</h2><p>System offline.</p><h2>Mitigation</h2><ul><li>Rebooted server.</li></ul>` }
+            {
+                id: "p1-meeting", name: "1. Team Meeting Notes", description: "Structured agenda, attendees, and action items.",
+                html: `<h1>📅 Team Sync: Weekly Alignment</h1><p><strong>Date:</strong> [Date] | <strong>Lead:</strong> [Name]</p><hr><h2>👥 Attendees</h2><ul><li>[Name] - Present</li><li>[Name] - Absent</li></ul><h2>📋 Agenda Topics</h2><ol><li><strong>Q3 Metrics Review:</strong> Discussed variance in regional sales.</li><li><strong>Project Alpha:</strong> Blocked by IT provisioning.</li></ol><h2>✅ Action Items</h2><ul><li>[ ] John: Follow up with networking team.</li><li>[ ] Sarah: Distribute revised deck by EOD.</li></ul>`
+            },
+            {
+                id: "p2-exec", name: "2. Executive Summary", description: "High-level overview for leadership.",
+                html: `<h1>Executive Summary: Initiative Beta</h1><div class="box box-callout"><strong>BLUF (Bottom Line Up Front):</strong> The initiative is 2 weeks ahead of schedule and under budget by 4%.</div><div class="layout-two-column"><div><h3>Key Achievements</h3><ul><li>Finalized vendor contracts.</li><li>Completed UAT phase.</li></ul></div><div><h3>Current Risks</h3><ul><li>Supply chain delays for Q4.</li></ul></div></div><h2>Financial Overview</h2><table class="kpi-table"><thead><tr><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th></tr></thead><tbody><tr><td>Budget Spent</td><td>$50k</td><td>$48k</td><td>✅ Good</td></tr></tbody></table>`
+            },
+            {
+                id: "p3-incident", name: "3. Incident Report (SEV)", description: "Post-mortem and incident tracking.",
+                html: `<h1>🚨 Incident Report: System Outage</h1><p><span class="badge">SEV-1</span> <span class="tag">Status: RESOLVED</span></p><hr><h2>Incident Details</h2><p><strong>Start Time:</strong> 10:00 AM EST<br><strong>Duration:</strong> 45 minutes<br><strong>Impact:</strong> Core payment gateway offline for NA region.</p><h2>Root Cause Analysis</h2><div class="box box-warn">A misconfigured firewall rule blocked port 443 on the primary load balancer.</div><h2>Mitigation & Next Steps</h2><ul><li>Rolled back configuration to previous stable state.</li><li>Adding automated validation checks to CI/CD pipeline.</li></ul>`
+            },
+            {
+                id: "p4-newsletter", name: "4. Department Newsletter", description: "Visual update with image placeholders.",
+                html: `<h1>📰 The Monthly Pulse - Logistics Dept</h1><div style="background:#e2e8f0; height:150px; display:flex; align-items:center; justify-content:center; border-radius:8px; margin-bottom:20px; color:#475569;">[ Hero Image Placeholder ]</div><div class="layout-two-column"><div><h2>Message from the VP</h2><p>Team, what an incredible month. We processed over 10k units...</p></div><div><h2>Employee Spotlight</h2><div class="profile-card"><h3>Jane Doe</h3><p><em>Logistics Coordinator</em></p><p>Jane broke the record for fewest routing errors this month!</p></div></div></div><div class="box box-info"><strong>Upcoming Event:</strong> Townhall on Friday at 2PM.</div>`
+            },
+            {
+                id: "p5-launch", name: "5. Product Launch Communication", description: "Feature highlights and call to action.",
+                html: `<h1>🚀 Announcing: Kore Enterprise v2.0</h1><p>We are thrilled to announce the rollout of the new cloud infrastructure.</p><div class="spacer-md"></div><h2>What's New?</h2><div class="feature-grid"><div class="feature-card"><h3>Cloud Sync</h3><p>Data now saves directly to Azure Table Storage.</p></div><div class="feature-card"><h3>Entra ID</h3><p>Seamless Microsoft 365 single sign-on.</p></div><div class="feature-card"><h3>Global Hub</h3><p>Centralized documentation pushing.</p></div></div><div class="spacer-md"></div><div class="box box-success" style="text-align:center;"><strong>Ready to try it?</strong> <a href="#">Login to the new Dashboard</a></div>`
+            },
+            {
+                id: "p6-onboarding", name: "6. New Hire Onboarding", description: "Welcome checklist and key resources.",
+                html: `<h1>👋 Welcome to the Team!</h1><p>We are excited to have you on board. Please follow this guide for your first week.</p><h2>Day 1 Checklist</h2><ul><li>[ ] Log into Entra ID portal.</li><li>[ ] Set up your email signature.</li><li>[ ] Review the Employee Handbook.</li></ul><h2>Key Systems</h2><table><thead><tr><th>System</th><th>Purpose</th><th>Access Link</th></tr></thead><tbody><tr><td>Workday</td><td>HR & Payroll</td><td>[Link]</td></tr><tr><td>Kore Hub</td><td>Internal Tools</td><td>[Link]</td></tr></tbody></table>`
+            },
+            {
+                id: "p7-kpi", name: "7. KPI & Metric Dashboard", description: "Data dense tables and mock charts.",
+                html: `<h1>📊 Q2 Performance Metrics</h1><p>Data compiled as of End of Quarter.</p><div class="spacer-sm"></div><div class="layout-two-column"><div><table class="kpi-table"><thead><tr><th>Region</th><th>Revenue</th><th>Growth</th></tr></thead><tbody><tr><td>North America</td><td>$1.2M</td><td>+12%</td></tr><tr><td>EMEA</td><td>$800k</td><td>+5%</td></tr></tbody></table></div><div><h3>Target Attainment</h3><div class="mock-chart"><div class="bar" style="width: 85%; background: var(--success-color);">NA: 85%</div><div class="bar" style="width: 60%; background: #f59e0b;">EMEA: 60%</div></div></div></div>`
+            },
+            {
+                id: "p8-charter", name: "8. Project Charter", description: "Formal project initiation document.",
+                html: `<h1>📄 Project Charter: Database Migration</h1><hr><h2>1. Objective</h2><p>Migrate all legacy SQL databases to Azure Cloud to reduce latency.</p><h2>2. Scope</h2><ul><li><strong>In Scope:</strong> User tables, transaction logs.</li><li><strong>Out of Scope:</strong> Archival cold storage.</li></ul><h2>3. Timeline</h2><ul class="timeline-list"><li><strong>Phase 1:</strong> Architecture Review (Oct 1)</li><li><strong>Phase 2:</strong> Data Transfer (Nov 15)</li><li><strong>Phase 3:</strong> Cutover (Dec 1)</li></ul>`
+            },
+            {
+                id: "p9-handover", name: "9. Shift Handover Log", description: "Critical info for 24/7 operations.",
+                html: `<h1>🔄 Shift Handover Log</h1><p><strong>Shift:</strong> Night (22:00 - 06:00) | <strong>Operator:</strong> D. Smith</p><div class="box box-warn"><strong>Critical Alert:</strong> Server Rack B3 is reporting elevated temperatures. Facilities notified.</div><h2>Pending Tasks for Day Shift</h2><ol><li>Verify backup completion for Database 4.</li><li>Follow up on Ticket #8829 (VIP User Lockout).</li></ol><h2>Completed Tasks</h2><ul><li>Routine patching cycle finished.</li><li>System rebooted successfully at 03:00.</li></ul>`
+            },
+            {
+                id: "p10-proposal", name: "10. Client Proposal", description: "Objective, solution, and pricing.",
+                html: `<h1>💼 Solution Proposal for Acme Corp</h1><p>Prepared by: BradyPLUS Enterprise Solutions</p><div class="spacer-md"></div><h2>Our Understanding</h2><p>Acme Corp requires a streamlined distribution tracking system...</p><h2>The Solution</h2><p>We propose deploying the Kore module tailored for warehouse logistics.</p><h2>Pricing Estimate</h2><table class="pricing-table"><thead><tr><th>Service</th><th>Duration</th><th>Cost</th></tr></thead><tbody><tr><td>Implementation</td><td>One-time</td><td>$5,000</td></tr><tr><td>Licensing</td><td>Annual</td><td>$12,000</td></tr></tbody></table>`
+            },
+            {
+                id: "p11-training", name: "11. SOP / Training Guide", description: "Step-by-step instructions with code blocks.",
+                html: `<h1>📖 SOP: Resetting User Passwords</h1><p>Follow these exact steps when a user is locked out.</p><h2>Prerequisites</h2><ul><li>Active Directory Admin Access.</li><li>Identity Verification (PIN).</li></ul><h2>Procedure</h2><ol><li>Open the Admin Portal.</li><li>Search for the user's Employee ID.</li><li>Run the following script to flush tokens:</li></ol><div class="code-block">Reset-EntraUserToken -ObjectId $UserID<br>Set-EntraUserPassword -ForceChange $true</div>`
+            },
+            {
+                id: "p12-marketing", name: "12. Campaign Plan", description: "Marketing campaign overview.",
+                html: `<h1>🎯 Campaign: Summer Blowout</h1><h2>Overview</h2><p>Targeting B2B clients for end-of-summer surplus.</p><div class="layout-three-column"><div><h3>Channels</h3><ul><li>Email</li><li>LinkedIn</li></ul></div><div><h3>Budget</h3><p>$15,000</p></div><div><h3>Launch</h3><p>Aug 15th</p></div></div><h2>Creative Direction</h2><div class="box box-info">Use the new branding guidelines (Blue/Gold theme).</div>`
+            },
+            {
+                id: "p13-press", name: "13. Press Release", description: "Standard PR format.",
+                html: `<h1>FOR IMMEDIATE RELEASE</h1><p><strong>NEW YORK, NY – March 6, 2026</strong></p><h2>BradyPLUS Announces Revolutionary AI Integration</h2><p>Today, BradyPLUS unveiled Kore, a localized enterprise system...</p><p>"This completely changes how our workforce interacts with data," said the CEO.</p><div class="spacer-md"></div><hr><h3>About the Company</h3><p><span style="font-size:0.85rem; color:#475569;">BradyPLUS is a leading distributor of...</span></p>`
+            },
+            {
+                id: "p14-weekly", name: "14. Weekly Status Update", description: "Brief Friday update format.",
+                html: `<h1>📆 Weekly Status: Web Dev Team</h1><p><strong>Week Ending:</strong> March 6, 2026</p><div class="layout-two-column"><div><h2>✅ Accomplished</h2><ul><li>Deployed Azure Functions backend.</li><li>Migrated Work Tracker to Cloud.</li></ul></div><div><h2>⏭️ Next Week</h2><ul><li>Refactor CSS variables.</li><li>Conduct load testing.</li></ul></div></div><div class="box box-warn"><strong>Blockers:</strong> Still waiting on API keys from vendor for the Maps integration.</div>`
+            },
+            {
+                id: "p15-outage", name: "15. Planned Maintenance Notice", description: "Communication for system downtime.",
+                html: `<h1>⚠️ Notice: Planned System Maintenance</h1><p>Please be advised of an upcoming service window.</p><table class="kpi-table" style="max-width: 500px;"><thead><tr><th>System</th><th>Downtime Window</th></tr></thead><tbody><tr><td>Kore Work Tracker</td><td>Sat 2AM - 4AM EST</td></tr></tbody></table><div class="spacer-sm"></div><h2>What to expect</h2><ul><li>The system will be completely inaccessible.</li><li>Active sessions will be disconnected.</li></ul><p>If you require emergency access to data during this time, please contact the on-call engineer.</p>`
+            }
         ];
 
-        function normalizeHtml(html) { return (!html) ? "" : html.replace(/<script[\s\S]*?<\/script>/gi, ""); }
+        function normalizeHtml(html) { 
+            return (!html) ? "" : html.replace(/<script[\s\S]*?<\/script>/gi, ""); 
+        }
 
         function buildInlineStyledHtml(html) {
             if (!html) return "";
-            const wrapper = document.createElement("div"); wrapper.innerHTML = html;
+            const wrapper = document.createElement("div"); 
+            wrapper.innerHTML = html;
+
             function applyInline(sel, style) {
                 wrapper.querySelectorAll(sel).forEach(el => {
                     const ex = el.getAttribute("style") || "";
                     el.setAttribute("style", ex + (ex && !ex.endsWith(";") ? "; " : "") + style);
                 });
             }
+
             applyInline("h1", "font-weight:700; font-size:1.8rem; margin:0 0 0.5rem; color:#0f172a; font-family:Arial;");
             applyInline("h2", "font-weight:700; font-size:1.4rem; margin:1.2rem 0 0.5rem; color:#0f172a; border-bottom:1px solid #e2e8f0; padding-bottom:5px; font-family:Arial;");
             applyInline("h3", "font-weight:600; font-size:1.15rem; margin:1rem 0 0.4rem; color:#0f172a; font-family:Arial;");
@@ -332,6 +815,7 @@
             applyInline("th, td", "border:1px solid #cbd5e1; padding:8px 12px;");
             applyInline(".layout-two-column", "display:table; width:100%; margin:1rem 0; table-layout: fixed;");
             applyInline(".layout-two-column > div", "display:table-cell; width:50%; padding-right:16px; vertical-align:top;");
+            
             return wrapper.innerHTML;
         }
 
@@ -342,11 +826,22 @@
             htmlOutputEl.value = styled;
             
             if (autosaveTimeout) clearTimeout(autosaveTimeout);
-            autosaveTimeout = setTimeout(() => { saveCloudData('nebula_state', { html: normalized }); }, 1500);
+            autosaveTimeout = setTimeout(() => { 
+                saveCloudData('nebula_state', { html: normalized }); 
+            }, 1500);
         }
 
-        function execCommand(cmd, value = null) { editorEl.focus(); document.execCommand(cmd, false, value); updatePreviewAndHtml(); }
-        function insertHtmlAtCursor(html) { editorEl.focus(); document.execCommand("insertHTML", false, html); updatePreviewAndHtml(); }
+        function execCommand(cmd, value = null) { 
+            editorEl.focus(); 
+            document.execCommand(cmd, false, value); 
+            updatePreviewAndHtml(); 
+        }
+
+        function insertHtmlAtCursor(html) { 
+            editorEl.focus(); 
+            document.execCommand("insertHTML", false, html); 
+            updatePreviewAndHtml(); 
+        }
 
         function insertSnippet(kind) {
             const snippets = {
@@ -357,15 +852,27 @@
                 "badge": '<span class="badge">NEW</span>',
                 "table-standard": `<table><thead><tr><th>Col A</th><th>Col B</th></tr></thead><tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table><p><br></p>`,
                 "two-column": `<div class="layout-two-column"><div><h3>Col A</h3><p>Content</p></div><div><h3>Col B</h3><p>Content</p></div></div><p><br></p>`,
-                "three-column": `<div style="display:table; width:100%; table-layout:fixed;"> <div style="display:table-cell; width:33%;">Col 1</div> <div style="display:table-cell; width:33%;">Col 2</div> <div style="display:table-cell; width:33%;">Col 3</div> </div><p><br></p>`
+                "three-column": `<div style="display:table; width:100%; table-layout:fixed;"> <div style="display:table-cell; width:33%;">Col 1</div> <div style="display:table-cell; width:33%;">Col 2</div> <div style="display:table-cell; width:33%;">Col 3</div> </div><p><br></p>`,
+                "feature-grid": `<div class="feature-grid" style="display:table; width:100%; border-spacing:10px;"><div class="feature-card" style="display:table-cell; padding:16px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px;"><h3>Item 1</h3><p>Detail</p></div><div class="feature-card" style="display:table-cell; padding:16px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px;"><h3>Item 2</h3><p>Detail</p></div></div><p><br></p>`,
+                "cta-strip": `<div class="box box-success" style="text-align:center;"><strong>Action Needed:</strong> <a href="#">Click Here</a></div><p><br></p>`,
+                "timeline": `<ul class="timeline-list" style="list-style:none; padding-left:16px; border-left:3px solid #0ea5e9;"><li><strong>Step 1:</strong> Detail</li><li><strong>Step 2:</strong> Detail</li></ul><p><br></p>`,
+                "profile-card": `<div class="profile-card" style="border:1px solid #e2e8f0; border-radius:8px; padding:16px; text-align:center;"><h3>Name</h3><p><em>Title</em></p><p>Bio here.</p></div><p><br></p>`,
+                "pricing-table": `<table class="pricing-table"><thead><tr><th style="background:#0f172a; color:#fff;">Tier</th><th style="background:#0f172a; color:#fff;">Price</th></tr></thead><tbody><tr><td>Standard</td><td>$100</td></tr></tbody></table><p><br></p>`,
+                "mock-chart": `<div class="mock-chart" style="background:#f8fafc; border:1px solid #e2e8f0; padding:16px;"><div class="bar" style="height:24px; margin-bottom:8px; color:white; font-size:12px; width: 80%; background: #0ea5e9; padding-left:8px;">Metric A: 80</div><div class="bar" style="height:24px; margin-bottom:8px; color:white; font-size:12px; width: 45%; background: #f59e0b; padding-left:8px;">Metric B: 45</div></div><p><br></p>`
             };
             if (snippets[kind]) insertHtmlAtCursor(snippets[kind]);
         }
 
         document.getElementById('toolbar').addEventListener('click', e => {
-            const btn = e.target.closest('.tool-btn'); if (!btn) return;
+            const btn = e.target.closest('.tool-btn'); 
+            if (!btn) return;
+
             if (btn.dataset.cmd) execCommand(btn.dataset.cmd);
-            if (btn.dataset.block) { editorEl.focus(); document.execCommand("formatBlock", false, btn.dataset.block); updatePreviewAndHtml(); }
+            if (btn.dataset.block) { 
+                editorEl.focus(); 
+                document.execCommand("formatBlock", false, btn.dataset.block); 
+                updatePreviewAndHtml(); 
+            }
             if (btn.dataset.snippet) insertSnippet(btn.dataset.snippet);
         });
 
@@ -373,8 +880,10 @@
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                
                 e.target.classList.add('active');
                 document.getElementById(e.target.getAttribute('data-tab') + 'Tab').classList.add('active');
+                
                 if(e.target.getAttribute('data-tab') === 'html') updatePreviewAndHtml();
             });
         });
@@ -382,32 +891,70 @@
         editorEl.addEventListener('input', updatePreviewAndHtml);
 
         document.getElementById('copyHtmlBtn').addEventListener('click', (e) => {
-            htmlOutputEl.select(); document.execCommand('copy');
-            e.target.innerHTML = "✅ Copied!"; setTimeout(() => e.target.innerHTML = "📋 Copy to Clipboard", 2000);
+            htmlOutputEl.select(); 
+            document.execCommand('copy');
+            e.target.innerHTML = "✅ Copied!"; 
+            setTimeout(() => e.target.innerHTML = "📋 Copy to Clipboard", 2000);
         });
 
         function renderTemplates() {
-            document.getElementById('presetList').innerHTML = presets.map(p => `<li class="item-row"><div><div class="item-row-title">${p.name}</div><div class="item-row-desc">${p.description}</div></div><button class="btn btn-primary btn-sm" onclick="loadPreset('${p.id}')">Load</button></li>`).join('');
-            document.getElementById('railPresetList').innerHTML = presets.map(p => `<li class="rail-preset-item" onclick="loadPreset('${p.id}')">${p.name}</li>`).join('');
+            document.getElementById('presetList').innerHTML = presets.map(p => `
+                <li class="item-row">
+                    <div>
+                        <div class="item-row-title">${p.name}</div>
+                        <div class="item-row-desc">${p.description}</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="loadPreset('${p.id}')">Load</button>
+                </li>
+            `).join('');
+            
+            document.getElementById('railPresetList').innerHTML = presets.map(p => `
+                <li class="rail-preset-item" onclick="loadPreset('${p.id}')">${p.name}</li>
+            `).join('');
             
             document.getElementById('customTemplateList').innerHTML = customTemplates.map((t, i) => `
                 <li class="item-row">
                     <div class="item-row-title">${t.name}</div>
-                    <div class="item-row-actions"><button class="btn btn-primary" onclick="loadCustom(${i})">Load</button><button class="btn" onclick="deleteCustom(${i})">Delete</button></div>
+                    <div class="item-row-actions">
+                        <button class="btn btn-primary" onclick="loadCustom(${i})">Load</button>
+                        <button class="btn" onclick="deleteCustom(${i})">Delete</button>
+                    </div>
                 </li>
             `).join('') || '<p style="color: var(--text-secondary); font-size: 0.9rem;">No custom templates saved to your cloud profile.</p>';
         }
 
-        window.loadPreset = function(id) { const p = presets.find(x => x.id === id); if (p) { editorEl.innerHTML = p.html; updatePreviewAndHtml(); document.querySelector('[data-tab="editor"]').click(); } }
-        window.loadCustom = function(idx) { const t = customTemplates[idx]; if (t) { editorEl.innerHTML = t.html; updatePreviewAndHtml(); document.querySelector('[data-tab="editor"]').click(); } }
-        window.deleteCustom = async function(idx) { customTemplates.splice(idx, 1); renderTemplates(); await saveCloudData('nebula_templates', customTemplates); }
+        window.loadPreset = function(id) { 
+            const p = presets.find(x => x.id === id); 
+            if (p) { 
+                editorEl.innerHTML = p.html; 
+                updatePreviewAndHtml(); 
+                document.querySelector('[data-tab="editor"]').click(); 
+            } 
+        }
+
+        window.loadCustom = function(idx) { 
+            const t = customTemplates[idx]; 
+            if (t) { 
+                editorEl.innerHTML = t.html; 
+                updatePreviewAndHtml(); 
+                document.querySelector('[data-tab="editor"]').click(); 
+            } 
+        }
+
+        window.deleteCustom = async function(idx) { 
+            customTemplates.splice(idx, 1); 
+            renderTemplates(); 
+            await saveCloudData('nebula_templates', customTemplates); 
+        }
 
         document.getElementById('saveTemplateBtn').addEventListener('click', async () => {
             const name = document.getElementById('templateNameInput').value.trim() || 'My Layout ' + Date.now();
             customTemplates.push({ name, html: editorEl.innerHTML });
             document.getElementById('templateNameInput').value = '';
             document.getElementById('saveTemplateBtn').innerText = "Saving...";
+            
             await saveCloudData('nebula_templates', customTemplates);
+            
             document.getElementById('saveTemplateBtn').innerText = "Save HTML";
             renderTemplates();
         });
@@ -416,10 +963,14 @@
             await fetchSecureIdentity(); 
             
             const savedState = await loadCloudData('nebula_state');
-            if (savedState && savedState.html) editorEl.innerHTML = savedState.html;
+            if (savedState && savedState.html) {
+                editorEl.innerHTML = savedState.html;
+            }
             
             const savedTemplates = await loadCloudData('nebula_templates');
-            if (savedTemplates && savedTemplates.length > 0) customTemplates = savedTemplates;
+            if (savedTemplates && savedTemplates.length > 0) {
+                customTemplates = savedTemplates;
+            }
             
             renderTemplates();
             updatePreviewAndHtml();

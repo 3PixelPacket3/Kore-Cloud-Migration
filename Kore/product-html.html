@@ -77,6 +77,25 @@
         .code-output { width: 100%; min-height: 250px; font-family: Consolas, "Courier New", monospace; font-size: 0.85rem; padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: #1e293b; color: #e2e8f0; line-height: 1.5; white-space: pre-wrap; resize: vertical; box-sizing: border-box; }
         .code-label { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: block; }
 
+        /* --- Kore Copilot AI Chat --- */
+        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
+        .copilot-trigger:hover { transform: scale(1.05); }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
+        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
+        .chat-msg a:hover { text-decoration: underline; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px; }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
+
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
 </head>
@@ -102,6 +121,7 @@
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
                     </div>
                 </div>
@@ -275,10 +295,40 @@
         </div>
     </main>
 
+    <button class="copilot-trigger" onclick="toggleCopilot()">💬</button>
+    <div class="copilot-window" id="copilotWindow">
+        <div class="copilot-header">
+            <span>🤖 Kore Copilot</span>
+            <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
+        </div>
+        <div class="copilot-messages" id="copilotMessages">
+            <div class="chat-msg bot" id="botWelcomeMsg">Initializing AI matrix...</div>
+        </div>
+        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+            <input type="text" id="copilotInput" placeholder="Message Copilot..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
+
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let profileName = "User";
+        let localTasks = [];
+        let localTickets = [];
+
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
+
         async function fetchSecureIdentity() {
             try {
                 const response = await fetch('/.auth/me');
@@ -289,6 +339,131 @@
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
                 }
             } catch (error) {}
+
+            const profile = await loadCloudData('profile') || {};
+            profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
+            
+            const welcomeMessages = [
+                `Hello, ${profileName}. I am your Kore Copilot. Let me know if you need to pull up a ticket while converting HTML.`,
+                `Welcome back, ${profileName}. I'm synced to your cloud data.`,
+                `Good to see you, ${profileName}. I can navigate the site or look up tickets for you.`
+            ];
+            const botWelcomeMsg = document.getElementById('botWelcomeMsg');
+            if (botWelcomeMsg) {
+                botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+            }
+
+            localTasks = await loadCloudData('todos') || [];
+            try {
+                const res = await fetch('/api/get_work_items'); 
+                if (res.ok) { localTickets = await res.json(); } 
+                else { localTickets = await loadCloudData('work_items') || []; }
+            } catch(e) { localTickets = await loadCloudData('work_items') || []; }
+        }
+
+        // --- Copilot NLP System ---
+        function toggleCopilot() {
+            const win = document.getElementById('copilotWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            if (win.style.display === 'flex') document.getElementById('copilotInput').focus();
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerHTML = text; 
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function isDateToday(dateStr) {
+            if (!dateStr) return false;
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toDateString() === new Date().toDateString();
+        }
+        function isDatePast(dateStr) {
+            if (!dateStr) return false;
+            const d = new Date(dateStr + 'T00:00:00');
+            const today = new Date(); today.setHours(0,0,0,0);
+            return d < today;
+        }
+
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendChatMessage(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = '';
+
+                const ticketMatch = text.match(/tkt-\d+/i);
+                if (ticketMatch) {
+                    const tktId = ticketMatch[0].toUpperCase();
+                    const ticket = localTickets.find(t => t.id === tktId);
+                    if (ticket) {
+                        reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
+                    } else {
+                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
+                    }
+                } 
+                else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
+                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
+                        reply = "Navigating to the Work Tracker now...";
+                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
+                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
+                        reply = "Opening the Enterprise Macro Library...";
+                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
+                    } else if (lower.includes('todo') || lower.includes('task')) {
+                        reply = "Opening your Personal To-Do list...";
+                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
+                    } else if (lower.includes('lod') || lower.includes('validate')) {
+                        reply = "Taking you to the LOD Validation Tool...";
+                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
+                    } else if (lower.includes('password')) {
+                        reply = "Navigating to the Secure Password Generator...";
+                        setTimeout(() => { window.location.href = 'passwords.html'; }, 1000);
+                    } else if (lower.includes('product') || lower.includes('converter') || lower.includes('html')) {
+                        reply = "You are already on the Product HTML Converter, sir.";
+                    } else {
+                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
+                    }
+                } 
+                else if (lower.includes('task') || lower.includes('todo')) {
+                    const active = localTasks.filter(t => !t.completed).length;
+                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
+                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
+                } 
+                else if (lower.includes('ticket') || lower.includes('work')) {
+                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
+                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
+                } 
+                else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+                    const greetings = [
+                        `Hello again, ${profileName}. What are we working on?`,
+                        `Greetings. All systems are green. How can I help?`,
+                        `Hi there, ${profileName}. Let me know if you need to pull up any data.`
+                    ];
+                    reply = greetings[Math.floor(Math.random() * greetings.length)];
+                } 
+                else if (lower.includes('thank')) {
+                    reply = "You are very welcome. Let me know if you need anything else.";
+                }
+                else if (lower.includes('ciao') || lower.includes('bye')) {
+                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
+                    setTimeout(() => { toggleCopilot(); }, 2000);
+                }
+                else {
+                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, search for a specific <b>TKT-1234</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
+                }
+
+                appendChatMessage(reply, 'bot');
+            }, 600);
         }
 
         let bulkRows = []; let bulkRecordMap = {};

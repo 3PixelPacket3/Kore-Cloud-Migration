@@ -162,17 +162,23 @@
                 const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=apps`);
                 if (res.ok) {
                     const data = await res.json();
-                    if (data.length > 0) { activeApps = data; renderApps(); return; }
+                    if (data && data.length > 0) { 
+                        activeApps = data; 
+                        renderApps(); 
+                        return; 
+                    }
                 }
             } catch(e) {}
-            activeApps = JSON.parse(localStorage.getItem(`kore_apps_${cloudIdentity.userId}`)) || [
+            
+            // Cloud-strict architecture: Removed localStorage fallback.
+            activeApps = [
                 { id: 'app_1', name: "BradyPLUS Portal", url: "https://www.bradyplus.com", iconUrl: "" }
             ];
             renderApps();
         }
 
         async function saveData() {
-            localStorage.setItem(`kore_apps_${cloudIdentity.userId}`, JSON.stringify(activeApps));
+            // Cloud-strict architecture: Removed localStorage setItem.
             try {
                 await fetch('/api/save_user_data', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },

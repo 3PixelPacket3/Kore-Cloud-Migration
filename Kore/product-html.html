@@ -7,27 +7,18 @@
     <style>
         /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9;
-            --accent-hover: #0284c7;
-            --bg-app: #f8fafc;
-            --bg-surface: #ffffff;
-            --text-main: #0f172a;
-            --text-secondary: #475569;
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --radius-md: 12px; --radius-sm: 8px;
             --success-color: #10b981;
         }
 
-        body {
-            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-app); color: var(--text-main);
-            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; -webkit-font-smoothing: antialiased; }
 
         /* --- Global Header --- */
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
@@ -41,6 +32,18 @@
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+
+        /* Global Search Infrastructure */
+        .search-container { display: flex; align-items: center; position: relative; }
+        .search-bar { padding: 10px 16px 10px 36px; border: 1px solid var(--border-subtle); border-radius: 99px; width: 260px; background-color: var(--bg-app); font-size: 0.9rem; outline: none; transition: width 0.3s ease; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; }
+        .search-bar:focus { width: 340px; border-color: var(--accent-primary); background-color: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+        .search-dropdown { display: none; position: absolute; top: 50px; right: 0; width: 340px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-md); z-index: 1000; max-height: 400px; overflow-y: auto; }
+        .search-group-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; padding: 12px 16px 4px 16px; letter-spacing: 0.5px; }
+        .search-item { display: block; padding: 10px 16px; text-decoration: none; color: var(--text-main); border-left: 3px solid transparent; }
+        .search-item:hover { background: #f0f9ff; border-left-color: var(--accent-primary); }
+        .search-item-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+        .search-item-sub { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* --- Main Content Layout --- */
         .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
@@ -127,6 +130,13 @@
                 <a href="about.html" class="nav-item">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
+        </div>
+
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+
+        <div class="search-container">
+            <input type="text" id="globalSearchInput" class="search-bar" placeholder="Search Apps, Guides, Tickets...">
+            <div id="globalSearchDropdown" class="search-dropdown"></div>
         </div>
     </header>
 
@@ -381,9 +391,63 @@
         </div>
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Created by Joshua M. Smolak with AI-assisted tooling.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
+        // --- Microsoft Entra ID Integration ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
+                }
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            }
+        }
+
+        // --- Global Search Integration ---
+        (function initGlobalSearch() {
+            const searchInput = document.getElementById('globalSearchInput');
+            const searchDropdown = document.getElementById('globalSearchDropdown');
+            if (!searchInput || !searchDropdown) return;
+
+            document.addEventListener('click', e => {
+                if (!e.target.closest('.search-container')) searchDropdown.style.display = 'none';
+            });
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                if (query.length < 2) { searchDropdown.style.display = 'none'; return; }
+                let resultsHtml = ''; let hasResults = false;
+
+                const apps = JSON.parse(localStorage.getItem(`kore_custom_apps_${cloudIdentity.userId}`)) || [];
+                const matchedApps = apps.filter(a => String(a.name).toLowerCase().includes(query) || String(a.url).toLowerCase().includes(query));
+                if (matchedApps.length > 0) {
+                    hasResults = true; resultsHtml += `<div class="search-group-title">Applications</div>`;
+                    matchedApps.forEach(app => resultsHtml += `<a href="${app.url}" class="search-item" target="_blank"><div class="search-item-title">${app.name}</div><div class="search-item-sub">${app.url}</div></a>`);
+                }
+
+                const guides = JSON.parse(localStorage.getItem('infoPages')) || [];
+                const matchedGuides = guides.filter(g => !g.archived && (String(g.title).toLowerCase().includes(query) || String(g.summary).toLowerCase().includes(query)));
+                if (matchedGuides.length > 0) {
+                    hasResults = true; resultsHtml += `<div class="search-group-title">Info Hub Guides</div>`;
+                    matchedGuides.forEach(g => resultsHtml += `<a href="info-page.html?id=${encodeURIComponent(g.id)}" class="search-item"><div class="search-item-title">${g.title || 'Untitled'}</div><div class="search-item-sub">${g.summary || 'Documentation'}</div></a>`);
+                }
+
+                searchDropdown.innerHTML = hasResults ? resultsHtml : `<div style="padding: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">No local results found.</div>`;
+                searchDropdown.style.display = 'block';
+            });
+        })();
+
         let bulkRows = [];
         let bulkRecordMap = {};
         let singleProductImageDataUri = "";
@@ -1235,10 +1299,10 @@
         }
         function clearDownloadFileIfTyping(){ const url = readVal("downloadUrl"); if (url) { document.getElementById("downloadFile").value = ""; singleDownloadDataUri = ""; } }
 
-        window.onload = function () {
-            // Initial render
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
             generateSingleHtml();
-        };
+        });
     </script>
 </body>
 </html>

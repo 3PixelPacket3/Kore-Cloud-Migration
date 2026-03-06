@@ -5,7 +5,6 @@
     <title>Kore | Nebula HTML Forge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        /* Premium Light Theme Variables */
         :root {
             --accent-primary: #0ea5e9; --accent-hover: #0284c7;
             --bg-app: #f8fafc; --bg-surface: #ffffff;
@@ -15,41 +14,36 @@
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --radius-md: 12px; --radius-sm: 8px;
             --success-color: #10b981;
-            --font-editor: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            --font-editor: 'Inter', system-ui, sans-serif;
         }
 
         body { margin: 0; font-family: var(--font-editor); background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
 
-        /* --- Global Header --- */
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease; cursor: pointer; position: relative; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
         .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
-        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
 
-        /* --- Main Content Layout --- */
         .main-container { padding: 40px 32px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 140px; position: relative; margin-bottom: 24px; }
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
         .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end; }
         .hero-title { margin: 0; font-size: 1.6rem; font-weight: 700; }
-        .hero-subtitle { margin: 4px 0 0 0; font-size: 0.95rem; color: #cbd5e1; }
 
-        /* --- Buttons --- */
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
         .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); }
         .input { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; }
         
-        /* --- Nav Tabs (Inner) --- */
         .tabs-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--border-subtle); }
         .tab-btn { background: transparent; border: none; padding: 12px 24px; font-size: 1rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
         .tab-btn:hover { color: var(--accent-primary); }
@@ -58,12 +52,10 @@
         .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Workspace Grid --- */
         .workspace-grid { display: grid; grid-template-columns: 280px 1fr 1fr; gap: 24px; align-items: start; }
         .panel-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
         .panel-title { margin: 0 0 16px 0; font-size: 1.1rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Left Rail (Snippets) */
         .rail-section { margin-bottom: 24px; }
         .rail-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .snippet-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -73,7 +65,6 @@
         .rail-preset-item { font-size: 0.85rem; padding: 8px 12px; background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
         .rail-preset-item:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
 
-        /* Editor Toolbar */
         .toolbar { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
         .toolbar-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
         .tool-btn { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 6px 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.2s; min-width: 32px; display: flex; justify-content: center; align-items: center;}
@@ -84,21 +75,16 @@
 
         .editor-container { min-height: 500px; max-height: 700px; overflow-y: auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 32px; outline: none; font-size: 0.95rem; line-height: 1.6; }
         .editor-container:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
-
-        /* Preview Area */
         .preview-container { min-height: 500px; max-height: 700px; overflow-y: auto; background: #f1f5f9; border: 1px dashed var(--border-subtle); border-radius: var(--radius-sm); padding: 32px; }
         
-        /* Templates Tab */
         .item-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
         .item-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
         .item-row-title { font-weight: 700; font-size: 1rem; color: var(--text-main); margin-bottom: 4px; }
         .item-row-desc { font-size: 0.85rem; color: var(--text-secondary); }
         .item-row-actions { display: flex; gap: 8px; }
 
-        /* HTML Tab */
         .code-output { width: 100%; min-height: 500px; font-family: Consolas, "Courier New", monospace; font-size: 0.85rem; padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: #1e293b; color: #e2e8f0; line-height: 1.5; white-space: pre-wrap; resize: vertical; box-sizing: border-box; margin-top: 16px; }
 
-        /* Global Footer */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
 </head>
@@ -111,6 +97,8 @@
                 <a href="index.html" class="nav-item">Dashboard</a>
                 <div class="nav-item active">Operations ▼
                     <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
                         <a href="apps.html">Apps</a>
                         <a href="work.html">Work Tracker</a>
                         <a href="passwords.html">Password Generator</a>
@@ -139,14 +127,13 @@
             <div class="hero-overlay">
                 <div>
                     <h2 class="hero-title">Nebula HTML Forge</h2>
-                    <p class="hero-subtitle">Visual plain-text to Enterprise HTML layout builder.</p>
                 </div>
             </div>
         </section>
 
         <div class="tabs-nav">
             <button class="tab-btn active" data-tab="editor">Editor & Preview</button>
-            <button class="tab-btn" data-tab="templates">Templates (15)</button>
+            <button class="tab-btn" data-tab="templates">Templates</button>
             <button class="tab-btn" data-tab="html">HTML Output</button>
         </div>
 
@@ -187,7 +174,6 @@
                                 <option value="'Times New Roman', serif">Times New</option>
                                 <option value="Georgia, serif">Georgia</option>
                                 <option value="'Courier New', monospace">Courier</option>
-                                <option value="Verdana, sans-serif">Verdana</option>
                             </select>
                             <select class="tool-select" id="fontSizeSelect" title="Font Size">
                                 <option value="1">Small</option>
@@ -204,24 +190,20 @@
                             <button class="tool-btn" data-cmd="underline" title="Underline"><u>U</u></button>
                             <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
                         </div>
-
                         <div class="toolbar-row">
                             <button class="tool-btn" data-cmd="justifyLeft" title="Align Left">⫷</button>
                             <button class="tool-btn" data-cmd="justifyCenter" title="Align Center">≣</button>
                             <button class="tool-btn" data-cmd="justifyRight" title="Align Right">⫸</button>
-                            <button class="tool-btn" data-cmd="justifyFull" title="Justify">≡</button>
                             <div class="toolbar-divider"></div>
                             <button class="tool-btn" data-block="h1" title="Heading 1">H1</button>
                             <button class="tool-btn" data-block="h2" title="Heading 2">H2</button>
                             <button class="tool-btn" data-block="h3" title="Heading 3">H3</button>
                             <button class="tool-btn" data-block="p" title="Paragraph">P</button>
                             <button class="tool-btn" data-block="blockquote" title="Quote">❝</button>
-                            <button class="tool-btn" data-custom="inlineCode" title="Inline code">&lt;/&gt;</button>
                             <div class="toolbar-divider"></div>
                             <button class="tool-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
                             <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
                         </div>
-
                         <div class="toolbar-row">
                             <button class="tool-btn" data-snippet="box-info" title="Info box">Info Box</button>
                             <button class="tool-btn" data-snippet="box-warn" title="Warning box">Warning</button>
@@ -229,36 +211,13 @@
                             <button class="tool-btn" data-snippet="box-callout" title="Callout panel">Callout</button>
                             <div class="toolbar-divider"></div>
                             <button class="tool-btn" data-snippet="badge" title="Inline badge">Badge</button>
-                            <button class="tool-btn" data-snippet="tag" title="Monospace tag">Tag</button>
-                            <button class="tool-btn" data-snippet="note" title="Highlighted note">Note</button>
-                            <div class="toolbar-divider"></div>
                             <button class="tool-btn" data-snippet="table-standard" title="Table">Table</button>
-                            <button class="tool-btn" data-snippet="table-kpi" title="KPI Board">KPI Board</button>
-                        </div>
-
-                        <div class="toolbar-row" id="emojiRow">
-                            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Emoji:</span>
-                            <button class="tool-btn emoji-btn" data-emoji="✅">✅</button>
-                            <button class="tool-btn emoji-btn" data-emoji="❌">❌</button>
-                            <button class="tool-btn emoji-btn" data-emoji="⚠️">⚠️</button>
-                            <button class="tool-btn emoji-btn" data-emoji="ℹ️">ℹ️</button>
-                            <button class="tool-btn emoji-btn" data-emoji="⭐">⭐</button>
-                            <button class="tool-btn emoji-btn" data-emoji="🔥">🔥</button>
-                            <button class="tool-btn emoji-btn" data-emoji="🚀">🚀</button>
-                            <button class="tool-btn emoji-btn" data-emoji="💡">💡</button>
-                            <button class="tool-btn emoji-btn" data-emoji="📌">📌</button>
-                            <button class="tool-btn emoji-btn" data-emoji="📊">📊</button>
-                            <button class="tool-btn emoji-btn" data-emoji="📈">📈</button>
-                            <button class="tool-btn emoji-btn" data-emoji="📉">📉</button>
-                            <button class="tool-btn emoji-btn" data-emoji="💼">💼</button>
-                            <button class="tool-btn emoji-btn" data-emoji="📅">📅</button>
-                            <button class="tool-btn emoji-btn" data-emoji="🔒">🔒</button>
                         </div>
                     </div>
 
                     <div id="editor" class="editor-container" contenteditable="true">
                         <h1>Welcome to Nebula HTML Forge</h1>
-                        <p>Start typing here, use the advanced formatting tools, or select a template from the left rail to begin.</p>
+                        <p>Start typing here, use the tools, or select a template.</p>
                     </div>
                 </div>
 
@@ -273,15 +232,15 @@
         <div id="templatesTab" class="tab-panel">
             <div class="workspace-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="panel-card">
-                    <h3 class="panel-title">15 Global Enterprise Presets</h3>
+                    <h3 class="panel-title">Global Enterprise Presets</h3>
                     <ul id="presetList" class="item-list" style="max-height: 600px; overflow-y: auto; padding-right: 12px;"></ul>
                 </div>
                 <div class="panel-card">
-                    <h3 class="panel-title">My Personal Custom Templates</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: -10px;">Saved securely to your Entra ID profile.</p>
+                    <h3 class="panel-title">My Custom Templates</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: -10px;">Saved securely to your Cloud Profile.</p>
                     <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-                        <input type="text" id="templateNameInput" class="input" placeholder="e.g. Weekly Division Update" />
-                        <button id="saveTemplateBtn" class="btn btn-primary" style="white-space: nowrap;">Save Current HTML</button>
+                        <input type="text" id="templateNameInput" class="input" placeholder="e.g. Weekly Update" />
+                        <button id="saveTemplateBtn" class="btn btn-primary" style="white-space: nowrap;">Save HTML</button>
                     </div>
                     <ul id="customTemplateList" class="item-list"></ul>
                 </div>
@@ -294,7 +253,6 @@
                     <span>Generated HTML</span>
                     <button class="btn btn-primary" id="copyHtmlBtn">📋 Copy to Clipboard</button>
                 </div>
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0;">This output uses inline CSS logic to ensure layouts render perfectly in restrictive environments like SharePoint, email clients, and corporate CMSs.</p>
                 <textarea id="htmlOutput" class="code-output" readonly></textarea>
             </div>
         </div>
@@ -304,10 +262,9 @@
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
-        // --- Microsoft Entra ID Security Bridge ---
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
-        let STORAGE_KEY_STATE = "kore_nebula_state_local";
-        let STORAGE_KEY_TEMPLATES = "kore_nebula_templates_local";
+        let customTemplates = [];
+        let autosaveTimeout = null;
 
         async function fetchSecureIdentity() {
             try {
@@ -317,224 +274,101 @@
                     cloudIdentity.userId = data.clientPrincipal.userId;
                     cloudIdentity.userName = data.clientPrincipal.userDetails;
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
-                    
-                    // Secure Storage Keys to this specific user
-                    STORAGE_KEY_STATE = `kore_nebula_state_${cloudIdentity.userId}`;
-                    STORAGE_KEY_TEMPLATES = `kore_nebula_templates_${cloudIdentity.userId}`;
                 }
-            } catch (error) {
-                console.log("Auth bypass - Local execution.");
-            }
+            } catch (error) {}
+        }
+
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        async function saveCloudData(dataType, data) {
+            try {
+                await fetch('/api/save_user_data', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
+                });
+            } catch(e) {}
         }
 
         const editorEl = document.getElementById("editor");
         const previewEl = document.getElementById("preview");
         const htmlOutputEl = document.getElementById("htmlOutput");
-        let autosaveTimeout = null;
 
-        // --- 15 Robust Enterprise Presets ---
         const presets = [
-            {
-                id: "p1-meeting", name: "1. Team Meeting Notes", description: "Structured agenda, attendees, and action items.",
-                html: `<h1>📅 Team Sync: Weekly Alignment</h1><p><strong>Date:</strong> [Date] | <strong>Lead:</strong> [Name]</p><hr><h2>👥 Attendees</h2><ul><li>[Name] - Present</li><li>[Name] - Absent</li></ul><h2>📋 Agenda Topics</h2><ol><li><strong>Q3 Metrics Review:</strong> Discussed variance in regional sales.</li><li><strong>Project Alpha:</strong> Blocked by IT provisioning.</li></ol><h2>✅ Action Items</h2><ul><li>[ ] John: Follow up with networking team.</li><li>[ ] Sarah: Distribute revised deck by EOD.</li></ul>`
-            },
-            {
-                id: "p2-exec", name: "2. Executive Summary", description: "High-level overview for leadership.",
-                html: `<h1>Executive Summary: Initiative Beta</h1><div class="box box-callout"><strong>BLUF (Bottom Line Up Front):</strong> The initiative is 2 weeks ahead of schedule and under budget by 4%.</div><div class="layout-two-column"><div><h3>Key Achievements</h3><ul><li>Finalized vendor contracts.</li><li>Completed UAT phase.</li></ul></div><div><h3>Current Risks</h3><ul><li>Supply chain delays for Q4.</li></ul></div></div><h2>Financial Overview</h2><table class="kpi-table"><thead><tr><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th></tr></thead><tbody><tr><td>Budget Spent</td><td>$50k</td><td>$48k</td><td>✅ Good</td></tr></tbody></table>`
-            },
-            {
-                id: "p3-incident", name: "3. Incident Report (SEV)", description: "Post-mortem and incident tracking.",
-                html: `<h1>🚨 Incident Report: System Outage</h1><p><span class="badge">SEV-1</span> <span class="tag">Status: RESOLVED</span></p><hr><h2>Incident Details</h2><p><strong>Start Time:</strong> 10:00 AM EST<br><strong>Duration:</strong> 45 minutes<br><strong>Impact:</strong> Core payment gateway offline for NA region.</p><h2>Root Cause Analysis</h2><div class="box box-warn">A misconfigured firewall rule blocked port 443 on the primary load balancer.</div><h2>Mitigation & Next Steps</h2><ul><li>Rolled back configuration to previous stable state.</li><li>Adding automated validation checks to CI/CD pipeline.</li></ul>`
-            },
-            {
-                id: "p4-newsletter", name: "4. Department Newsletter", description: "Visual update with image placeholders.",
-                html: `<h1>📰 The Monthly Pulse - Logistics Dept</h1><div style="background:#e2e8f0; height:150px; display:flex; align-items:center; justify-content:center; border-radius:8px; margin-bottom:20px; color:#475569;">[ Hero Image Placeholder ]</div><div class="layout-two-column"><div><h2>Message from the VP</h2><p>Team, what an incredible month. We processed over 10k units...</p></div><div><h2>Employee Spotlight</h2><div class="profile-card"><h3>Jane Doe</h3><p><em>Logistics Coordinator</em></p><p>Jane broke the record for fewest routing errors this month!</p></div></div></div><div class="box box-info"><strong>Upcoming Event:</strong> Townhall on Friday at 2PM.</div>`
-            },
-            {
-                id: "p5-launch", name: "5. Product Launch Communication", description: "Feature highlights and call to action.",
-                html: `<h1>🚀 Announcing: Kore Enterprise v2.0</h1><p>We are thrilled to announce the rollout of the new cloud infrastructure.</p><div class="spacer-md"></div><h2>What's New?</h2><div class="feature-grid"><div class="feature-card"><h3>Cloud Sync</h3><p>Data now saves directly to Azure Table Storage.</p></div><div class="feature-card"><h3>Entra ID</h3><p>Seamless Microsoft 365 single sign-on.</p></div><div class="feature-card"><h3>Global Hub</h3><p>Centralized documentation pushing.</p></div></div><div class="spacer-md"></div><div class="box box-success" style="text-align:center;"><strong>Ready to try it?</strong> <a href="#">Login to the new Dashboard</a></div>`
-            },
-            {
-                id: "p6-onboarding", name: "6. New Hire Onboarding", description: "Welcome checklist and key resources.",
-                html: `<h1>👋 Welcome to the Team!</h1><p>We are excited to have you on board. Please follow this guide for your first week.</p><h2>Day 1 Checklist</h2><ul><li>[ ] Log into Entra ID portal.</li><li>[ ] Set up your email signature.</li><li>[ ] Review the Employee Handbook.</li></ul><h2>Key Systems</h2><table><thead><tr><th>System</th><th>Purpose</th><th>Access Link</th></tr></thead><tbody><tr><td>Workday</td><td>HR & Payroll</td><td>[Link]</td></tr><tr><td>Kore Hub</td><td>Internal Tools</td><td>[Link]</td></tr></tbody></table>`
-            },
-            {
-                id: "p7-kpi", name: "7. KPI & Metric Dashboard", description: "Data dense tables and mock charts.",
-                html: `<h1>📊 Q2 Performance Metrics</h1><p>Data compiled as of End of Quarter.</p><div class="spacer-sm"></div><div class="layout-two-column"><div><table class="kpi-table"><thead><tr><th>Region</th><th>Revenue</th><th>Growth</th></tr></thead><tbody><tr><td>North America</td><td>$1.2M</td><td>+12%</td></tr><tr><td>EMEA</td><td>$800k</td><td>+5%</td></tr></tbody></table></div><div><h3>Target Attainment</h3><div class="mock-chart"><div class="bar" style="width: 85%; background: var(--success-color);">NA: 85%</div><div class="bar" style="width: 60%; background: #f59e0b;">EMEA: 60%</div></div></div></div>`
-            },
-            {
-                id: "p8-charter", name: "8. Project Charter", description: "Formal project initiation document.",
-                html: `<h1>📄 Project Charter: Database Migration</h1><hr><h2>1. Objective</h2><p>Migrate all legacy SQL databases to Azure Cloud to reduce latency.</p><h2>2. Scope</h2><ul><li><strong>In Scope:</strong> User tables, transaction logs.</li><li><strong>Out of Scope:</strong> Archival cold storage.</li></ul><h2>3. Timeline</h2><ul class="timeline-list"><li><strong>Phase 1:</strong> Architecture Review (Oct 1)</li><li><strong>Phase 2:</strong> Data Transfer (Nov 15)</li><li><strong>Phase 3:</strong> Cutover (Dec 1)</li></ul>`
-            },
-            {
-                id: "p9-handover", name: "9. Shift Handover Log", description: "Critical info for 24/7 operations.",
-                html: `<h1>🔄 Shift Handover Log</h1><p><strong>Shift:</strong> Night (22:00 - 06:00) | <strong>Operator:</strong> D. Smith</p><div class="box box-warn"><strong>Critical Alert:</strong> Server Rack B3 is reporting elevated temperatures. Facilities notified.</div><h2>Pending Tasks for Day Shift</h2><ol><li>Verify backup completion for Database 4.</li><li>Follow up on Ticket #8829 (VIP User Lockout).</li></ol><h2>Completed Tasks</h2><ul><li>Routine patching cycle finished.</li><li>System rebooted successfully at 03:00.</li></ul>`
-            },
-            {
-                id: "p10-proposal", name: "10. Client Proposal", description: "Objective, solution, and pricing.",
-                html: `<h1>💼 Solution Proposal for Acme Corp</h1><p>Prepared by: BradyPLUS Enterprise Solutions</p><div class="spacer-md"></div><h2>Our Understanding</h2><p>Acme Corp requires a streamlined distribution tracking system...</p><h2>The Solution</h2><p>We propose deploying the Kore module tailored for warehouse logistics.</p><h2>Pricing Estimate</h2><table class="pricing-table"><thead><tr><th>Service</th><th>Duration</th><th>Cost</th></tr></thead><tbody><tr><td>Implementation</td><td>One-time</td><td>$5,000</td></tr><tr><td>Licensing</td><td>Annual</td><td>$12,000</td></tr></tbody></table>`
-            },
-            {
-                id: "p11-training", name: "11. SOP / Training Guide", description: "Step-by-step instructions with code blocks.",
-                html: `<h1>📖 SOP: Resetting User Passwords</h1><p>Follow these exact steps when a user is locked out.</p><h2>Prerequisites</h2><ul><li>Active Directory Admin Access.</li><li>Identity Verification (PIN).</li></ul><h2>Procedure</h2><ol><li>Open the Admin Portal.</li><li>Search for the user's Employee ID.</li><li>Run the following script to flush tokens:</li></ol><div class="code-block">Reset-EntraUserToken -ObjectId $UserID<br>Set-EntraUserPassword -ForceChange $true</div>`
-            },
-            {
-                id: "p12-marketing", name: "12. Campaign Plan", description: "Marketing campaign overview.",
-                html: `<h1>🎯 Campaign: Summer Blowout</h1><h2>Overview</h2><p>Targeting B2B clients for end-of-summer surplus.</p><div class="layout-three-column"><div><h3>Channels</h3><ul><li>Email</li><li>LinkedIn</li></ul></div><div><h3>Budget</h3><p>$15,000</p></div><div><h3>Launch</h3><p>Aug 15th</p></div></div><h2>Creative Direction</h2><div class="box box-info">Use the new branding guidelines (Blue/Gold theme).</div>`
-            },
-            {
-                id: "p13-press", name: "13. Press Release", description: "Standard PR format.",
-                html: `<h1>FOR IMMEDIATE RELEASE</h1><p><strong>NEW YORK, NY – March 6, 2026</strong></p><h2>BradyPLUS Announces Revolutionary AI Integration</h2><p>Today, BradyPLUS unveiled Kore, a localized enterprise system...</p><p>"This completely changes how our workforce interacts with data," said the CEO.</p><div class="spacer-md"></div><hr><h3>About the Company</h3><p><span style="font-size:0.85rem; color:#475569;">BradyPLUS is a leading distributor of...</span></p>`
-            },
-            {
-                id: "p14-weekly", name: "14. Weekly Status Update", description: "Brief Friday update format.",
-                html: `<h1>📆 Weekly Status: Web Dev Team</h1><p><strong>Week Ending:</strong> March 6, 2026</p><div class="layout-two-column"><div><h2>✅ Accomplished</h2><ul><li>Deployed Azure Functions backend.</li><li>Migrated Work Tracker to Cloud.</li></ul></div><div><h2>⏭️ Next Week</h2><ul><li>Refactor CSS variables.</li><li>Conduct load testing.</li></ul></div></div><div class="box box-warn"><strong>Blockers:</strong> Still waiting on API keys from vendor for the Maps integration.</div>`
-            },
-            {
-                id: "p15-outage", name: "15. Planned Maintenance Notice", description: "Communication for system downtime.",
-                html: `<h1>⚠️ Notice: Planned System Maintenance</h1><p>Please be advised of an upcoming service window.</p><table class="kpi-table" style="max-width: 500px;"><thead><tr><th>System</th><th>Downtime Window</th></tr></thead><tbody><tr><td>Kore Work Tracker</td><td>Sat 2AM - 4AM EST</td></tr></tbody></table><div class="spacer-sm"></div><h2>What to expect</h2><ul><li>The system will be completely inaccessible.</li><li>Active sessions will be disconnected.</li></ul><p>If you require emergency access to data during this time, please contact the on-call engineer.</p>`
-            }
+            { id: "p1", name: "Team Meeting Notes", description: "Agenda and action items.", html: `<h1>📅 Team Sync</h1><p><strong>Date:</strong> [Date]</p><hr><h2>📋 Agenda</h2><ul><li>Topic 1</li></ul><h2>✅ Action Items</h2><ul><li>[ ] Task 1</li></ul>` },
+            { id: "p2", name: "Executive Summary", description: "High-level overview.", html: `<h1>Executive Summary</h1><div class="box box-info"><strong>BLUF:</strong> Project is on track.</div><div class="layout-two-column"><div><h3>Achievements</h3><ul><li>Goal met.</li></ul></div><div><h3>Risks</h3><ul><li>None.</li></ul></div></div>` },
+            { id: "p3", name: "Incident Report", description: "Post-mortem tracking.", html: `<h1>🚨 Incident Report</h1><p><span class="badge">SEV-1</span></p><h2>Details</h2><p>System offline.</p><h2>Mitigation</h2><ul><li>Rebooted server.</li></ul>` }
         ];
 
-        // --- Core Builder & Inline CSS Engine ---
         function normalizeHtml(html) { return (!html) ? "" : html.replace(/<script[\s\S]*?<\/script>/gi, ""); }
 
         function buildInlineStyledHtml(html) {
             if (!html) return "";
-            const wrapper = document.createElement("div");
-            wrapper.innerHTML = html;
-
-            function applyInline(selector, style) {
-                wrapper.querySelectorAll(selector).forEach((el) => {
-                    const existing = el.getAttribute("style") || "";
-                    const sep = existing && !existing.trim().endsWith(";") ? "; " : "";
-                    el.setAttribute("style", existing + sep + style);
+            const wrapper = document.createElement("div"); wrapper.innerHTML = html;
+            function applyInline(sel, style) {
+                wrapper.querySelectorAll(sel).forEach(el => {
+                    const ex = el.getAttribute("style") || "";
+                    el.setAttribute("style", ex + (ex && !ex.endsWith(";") ? "; " : "") + style);
                 });
             }
-
-            // Typography & Formatting
-            applyInline("h1", "font-weight:700; font-size:1.8rem; margin:0 0 0.5rem; color:#0f172a; font-family:Arial, sans-serif;");
-            applyInline("h2", "font-weight:700; font-size:1.4rem; margin:1.2rem 0 0.5rem; color:#0f172a; border-bottom:1px solid #e2e8f0; padding-bottom:5px; font-family:Arial, sans-serif;");
-            applyInline("h3", "font-weight:600; font-size:1.15rem; margin:1rem 0 0.4rem; color:#0f172a; font-family:Arial, sans-serif;");
-            applyInline("p", "margin:0.5rem 0 0.75rem; line-height:1.6; color:#334155; font-family:Arial, sans-serif;");
-            applyInline("ul, ol", "margin:0.5rem 0 0.75rem 1.5rem; padding-left:0; color:#334155; font-family:Arial, sans-serif;");
-            applyInline("li", "margin-bottom:0.3rem;");
-            applyInline("blockquote", "margin:1rem 0; padding:10px 16px; border-left:4px solid #0ea5e9; background:#f0f9ff; color:#334155; font-style:italic; font-family:Arial, sans-serif;");
-            applyInline("hr", "border:0; border-top:1px solid #e2e8f0; margin:1.5rem 0;");
-
-            // Code
-            applyInline("code", "font-family:Consolas, monospace; font-size:0.9em; background:#f1f5f9; color:#0f172a; padding:2px 6px; border-radius:4px; border:1px solid #cbd5e1;");
-            applyInline(".code-block", "margin:1rem 0; padding:12px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-family:Consolas, monospace; font-size:0.9rem; overflow-x:auto; color:#0f172a;");
-
-            // Boxes
-            applyInline(".box", "border-radius:8px; padding:12px 16px; margin:1rem 0; border:1px solid #e2e8f0; background-color:#f8fafc; color:#334155; font-family:Arial, sans-serif;");
+            applyInline("h1", "font-weight:700; font-size:1.8rem; margin:0 0 0.5rem; color:#0f172a; font-family:Arial;");
+            applyInline("h2", "font-weight:700; font-size:1.4rem; margin:1.2rem 0 0.5rem; color:#0f172a; border-bottom:1px solid #e2e8f0; padding-bottom:5px; font-family:Arial;");
+            applyInline("h3", "font-weight:600; font-size:1.15rem; margin:1rem 0 0.4rem; color:#0f172a; font-family:Arial;");
+            applyInline("p", "margin:0.5rem 0 0.75rem; line-height:1.6; color:#334155; font-family:Arial;");
+            applyInline("ul, ol", "margin:0.5rem 0 0.75rem 1.5rem; padding-left:0; color:#334155; font-family:Arial;");
+            applyInline("blockquote", "margin:1rem 0; padding:10px 16px; border-left:4px solid #0ea5e9; background:#f0f9ff; color:#334155; font-style:italic; font-family:Arial;");
+            applyInline(".box", "border-radius:8px; padding:12px 16px; margin:1rem 0; border:1px solid #e2e8f0; background-color:#f8fafc; font-family:Arial;");
             applyInline(".box-info", "border-color:#0ea5e9; background-color:#f0f9ff;");
-            applyInline(".box-warn", "border-color:#f59e0b; background-color:#fffbeb;");
-            applyInline(".box-success", "border-color:#10b981; background-color:#ecfdf5;");
-            applyInline(".box-callout", "border-color:#8b5cf6; background-color:#faf5ff;");
-
-            // Tags & Badges
-            applyInline(".badge", "display:inline-block; border-radius:999px; padding:2px 10px; font-size:0.75rem; font-weight:700; background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1; text-transform:uppercase; font-family:Arial, sans-serif;");
-            applyInline(".tag", "display:inline-block; border-radius:6px; padding:2px 8px; font-size:0.75rem; background:#f1f5f9; border:1px solid #cbd5e1; color:#475569; font-family:Consolas, monospace;");
-            applyInline(".note", "display:inline-block; border-radius:6px; padding:4px 10px; margin:0.5rem 0; background:#fef3c7; border:1px solid #fde68a; color:#92400e; font-family:Arial, sans-serif; font-size:0.85rem; font-weight:600;");
-
-            // Spacers
-            applyInline(".spacer-sm", "height:10px;");
-            applyInline(".spacer-md", "height:20px;");
-
-            // Tables
-            applyInline("table", "width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.9rem; font-family:Arial, sans-serif;");
-            applyInline("th, td", "border:1px solid #cbd5e1; padding:8px 12px; color:#334155;");
-            applyInline("th", "background:#f1f5f9; color:#0f172a; text-align:left; font-weight:700;");
-            applyInline(".kpi-table th", "background:#0ea5e9; color:#ffffff; border-color:#0284c7;");
-            applyInline(".kpi-table td:first-child", "font-weight:700; color:#0f172a; background:#f8fafc;");
-            applyInline(".pricing-table th", "background:#0f172a; color:#ffffff; border-color:#1e293b;");
-
-            // Grids & Advanced Layouts
+            applyInline(".badge", "display:inline-block; border-radius:999px; padding:2px 10px; font-size:0.75rem; font-weight:700; background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1; font-family:Arial;");
+            applyInline("table", "width:100%; border-collapse:collapse; margin:1rem 0; font-family:Arial;");
+            applyInline("th, td", "border:1px solid #cbd5e1; padding:8px 12px;");
             applyInline(".layout-two-column", "display:table; width:100%; margin:1rem 0; table-layout: fixed;");
             applyInline(".layout-two-column > div", "display:table-cell; width:50%; padding-right:16px; vertical-align:top;");
-            applyInline(".layout-three-column", "display:table; width:100%; margin:1rem 0; table-layout: fixed;");
-            applyInline(".layout-three-column > div", "display:table-cell; width:33.3%; padding-right:16px; vertical-align:top;");
-            
-            applyInline(".feature-grid", "display:table; width:100%; border-spacing:10px; border-collapse:separate; margin:1rem 0;");
-            applyInline(".feature-card", "display:table-cell; padding:16px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; vertical-align:top;");
-            
-            applyInline(".profile-card", "border:1px solid #e2e8f0; border-radius:8px; padding:16px; background:#ffffff; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin:1rem 0;");
-            applyInline(".mock-chart", "background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin:1rem 0;");
-            applyInline(".mock-chart .bar", "height:24px; margin-bottom:8px; color:white; font-size:0.75rem; font-weight:bold; padding-left:8px; display:flex; align-items:center; border-radius:4px;");
-            applyInline(".timeline-list", "list-style:none; padding-left:16px; border-left:3px solid #0ea5e9; margin:1rem 0;");
-            applyInline(".timeline-list li", "position:relative; margin-bottom:12px;");
-            
             return wrapper.innerHTML;
         }
 
         function updatePreviewAndHtml() {
             const normalized = normalizeHtml(editorEl.innerHTML);
-            previewEl.innerHTML = buildInlineStyledHtml(normalized);
-            htmlOutputEl.value = buildInlineStyledHtml(normalized);
-            scheduleAutosave(normalized);
-        }
-
-        function scheduleAutosave(html) {
+            const styled = buildInlineStyledHtml(normalized);
+            previewEl.innerHTML = styled;
+            htmlOutputEl.value = styled;
+            
             if (autosaveTimeout) clearTimeout(autosaveTimeout);
-            autosaveTimeout = setTimeout(() => {
-                localStorage.setItem(STORAGE_KEY_STATE, html);
-            }, 1000);
+            autosaveTimeout = setTimeout(() => { saveCloudData('nebula_state', { html: normalized }); }, 1500);
         }
 
-        // --- Interaction Logic ---
-        function execCommand(cmd, value = null) {
-            editorEl.focus();
-            document.execCommand(cmd, false, value);
-            updatePreviewAndHtml();
-        }
-
-        function insertHtmlAtCursor(html) {
-            editorEl.focus();
-            document.execCommand("insertHTML", false, html);
-            updatePreviewAndHtml();
-        }
+        function execCommand(cmd, value = null) { editorEl.focus(); document.execCommand(cmd, false, value); updatePreviewAndHtml(); }
+        function insertHtmlAtCursor(html) { editorEl.focus(); document.execCommand("insertHTML", false, html); updatePreviewAndHtml(); }
 
         function insertSnippet(kind) {
             const snippets = {
-                "box-info": '<div class="box box-info"><strong>Info:</strong> Replace this with your information.</div><p><br></p>',
-                "box-warn": '<div class="box box-warn"><strong>Warning:</strong> Replace this with your warning text.</div><p><br></p>',
-                "box-success": '<div class="box box-success"><strong>Success:</strong> Task completed.</div><p><br></p>',
-                "box-callout": '<div class="box box-callout"><strong>Callout:</strong> Highlight your key message here.</div><p><br></p>',
+                "box-info": '<div class="box box-info"><strong>Info:</strong> Replace text.</div><p><br></p>',
+                "box-warn": '<div class="box box-warn" style="border-color:#f59e0b; background:#fffbeb;"><strong>Warning:</strong> Replace text.</div><p><br></p>',
+                "box-success": '<div class="box box-success" style="border-color:#10b981; background:#ecfdf5;"><strong>Success:</strong> Task completed.</div><p><br></p>',
+                "box-callout": '<div class="box box-callout" style="border-color:#8b5cf6; background:#faf5ff;"><strong>Callout:</strong> Key message.</div><p><br></p>',
                 "badge": '<span class="badge">NEW</span>',
-                "tag": '<span class="tag">ID-1234</span>',
-                "note": '<span class="note">Note: Important tip here.</span>',
                 "table-standard": `<table><thead><tr><th>Col A</th><th>Col B</th></tr></thead><tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table><p><br></p>`,
-                "table-kpi": `<table class="kpi-table"><thead><tr><th>Metric</th><th>Target</th><th>Status</th></tr></thead><tbody><tr><td>Uptime</td><td>99%</td><td>✅ Good</td></tr></tbody></table><p><br></p>`,
                 "two-column": `<div class="layout-two-column"><div><h3>Col A</h3><p>Content</p></div><div><h3>Col B</h3><p>Content</p></div></div><p><br></p>`,
-                "three-column": `<div class="layout-three-column"><div><h3>Col 1</h3><p>Content</p></div><div><h3>Col 2</h3><p>Content</p></div><div><h3>Col 3</h3><p>Content</p></div></div><p><br></p>`,
-                "feature-grid": `<div class="feature-grid"><div class="feature-card"><h3>Item 1</h3><p>Detail</p></div><div class="feature-card"><h3>Item 2</h3><p>Detail</p></div></div><p><br></p>`,
-                "cta-strip": `<div class="box box-success" style="text-align:center;"><strong>Action Needed:</strong> <a href="#">Click Here</a></div><p><br></p>`,
-                "timeline": `<ul class="timeline-list"><li><strong>Step 1:</strong> Detail</li><li><strong>Step 2:</strong> Detail</li></ul><p><br></p>`,
-                "profile-card": `<div class="profile-card"><h3>Name</h3><p><em>Title</em></p><p>Bio or description here.</p></div><p><br></p>`,
-                "pricing-table": `<table class="pricing-table"><thead><tr><th>Tier</th><th>Price</th></tr></thead><tbody><tr><td>Standard</td><td>$100</td></tr></tbody></table><p><br></p>`,
-                "mock-chart": `<div class="mock-chart"><div class="bar" style="width: 80%; background: #0ea5e9;">Metric A: 80</div><div class="bar" style="width: 45%; background: #f59e0b;">Metric B: 45</div></div><p><br></p>`
+                "three-column": `<div style="display:table; width:100%; table-layout:fixed;"> <div style="display:table-cell; width:33%;">Col 1</div> <div style="display:table-cell; width:33%;">Col 2</div> <div style="display:table-cell; width:33%;">Col 3</div> </div><p><br></p>`
             };
             if (snippets[kind]) insertHtmlAtCursor(snippets[kind]);
         }
 
-        // --- Toolbar Handlers ---
-        document.getElementById('fontNameSelect').addEventListener('change', (e) => { execCommand('fontName', e.target.value); });
-        document.getElementById('fontSizeSelect').addEventListener('change', (e) => { execCommand('fontSize', e.target.value); });
-        document.getElementById('textColorSelect').addEventListener('input', (e) => { execCommand('foreColor', e.target.value); });
-        document.getElementById('bgColorSelect').addEventListener('input', (e) => { execCommand('hiliteColor', e.target.value); });
-
         document.getElementById('toolbar').addEventListener('click', e => {
-            const btn = e.target.closest('.tool-btn');
-            if (!btn) return;
+            const btn = e.target.closest('.tool-btn'); if (!btn) return;
             if (btn.dataset.cmd) execCommand(btn.dataset.cmd);
             if (btn.dataset.block) { editorEl.focus(); document.execCommand("formatBlock", false, btn.dataset.block); updatePreviewAndHtml(); }
-            if (btn.dataset.custom === 'inlineCode') { document.execCommand("insertHTML", false, `<code>${window.getSelection().toString()}</code>`); updatePreviewAndHtml(); }
             if (btn.dataset.snippet) insertSnippet(btn.dataset.snippet);
-            if (btn.dataset.emoji) insertHtmlAtCursor(btn.dataset.emoji);
         });
 
-        // --- Tabs ---
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -549,67 +383,43 @@
 
         document.getElementById('copyHtmlBtn').addEventListener('click', (e) => {
             htmlOutputEl.select(); document.execCommand('copy');
-            e.target.innerHTML = "✅ Copied!";
-            setTimeout(() => e.target.innerHTML = "📋 Copy to Clipboard", 2000);
+            e.target.innerHTML = "✅ Copied!"; setTimeout(() => e.target.innerHTML = "📋 Copy to Clipboard", 2000);
         });
 
-        // --- Templates Logic (Partitioned by Identity) ---
-        function getCustomTemplates() { return JSON.parse(localStorage.getItem(STORAGE_KEY_TEMPLATES)) || []; }
-        function saveCustomTemplates(arr) { localStorage.setItem(STORAGE_KEY_TEMPLATES, JSON.stringify(arr)); }
-
         function renderTemplates() {
-            // Render 15 Presets
-            const presetHtml = presets.map(p => `
+            document.getElementById('presetList').innerHTML = presets.map(p => `<li class="item-row"><div><div class="item-row-title">${p.name}</div><div class="item-row-desc">${p.description}</div></div><button class="btn btn-primary btn-sm" onclick="loadPreset('${p.id}')">Load</button></li>`).join('');
+            document.getElementById('railPresetList').innerHTML = presets.map(p => `<li class="rail-preset-item" onclick="loadPreset('${p.id}')">${p.name}</li>`).join('');
+            
+            document.getElementById('customTemplateList').innerHTML = customTemplates.map((t, i) => `
                 <li class="item-row">
-                    <div><div class="item-row-title">${p.name}</div><div class="item-row-desc">${p.description}</div></div>
-                    <button class="btn btn-primary btn-sm" onclick="loadPreset('${p.id}')">Load</button>
+                    <div class="item-row-title">${t.name}</div>
+                    <div class="item-row-actions"><button class="btn btn-primary" onclick="loadCustom(${i})">Load</button><button class="btn" onclick="deleteCustom(${i})">Delete</button></div>
                 </li>
-            `).join('');
-            document.getElementById('presetList').innerHTML = presetHtml;
-
-            const railHtml = presets.map(p => `<li class="rail-preset-item" onclick="loadPreset('${p.id}')">${p.name}</li>`).join('');
-            document.getElementById('railPresetList').innerHTML = railHtml;
-
-            // Render Personal Custom Templates
-            const custom = getCustomTemplates();
-            document.getElementById('customTemplateList').innerHTML = custom.map((t, i) => `
-                <li class="item-row">
-                    <div><div class="item-row-title">${t.name}</div></div>
-                    <div class="item-row-actions">
-                        <button class="btn btn-primary" onclick="loadCustom(${i})">Load</button>
-                        <button class="btn" onclick="deleteCustom(${i})">Delete</button>
-                    </div>
-                </li>
-            `).join('') || '<p style="color: var(--text-secondary); font-size: 0.9rem;">No custom templates saved to your profile.</p>';
+            `).join('') || '<p style="color: var(--text-secondary); font-size: 0.9rem;">No custom templates saved to your cloud profile.</p>';
         }
 
-        window.loadPreset = function(id) {
-            const p = presets.find(x => x.id === id);
-            if (p) { editorEl.innerHTML = p.html; updatePreviewAndHtml(); document.querySelector('[data-tab="editor"]').click(); }
-        }
-        window.loadCustom = function(idx) {
-            const t = getCustomTemplates()[idx];
-            if (t) { editorEl.innerHTML = t.html; updatePreviewAndHtml(); document.querySelector('[data-tab="editor"]').click(); }
-        }
-        window.deleteCustom = function(idx) {
-            const arr = getCustomTemplates(); arr.splice(idx, 1); saveCustomTemplates(arr); renderTemplates();
-        }
+        window.loadPreset = function(id) { const p = presets.find(x => x.id === id); if (p) { editorEl.innerHTML = p.html; updatePreviewAndHtml(); document.querySelector('[data-tab="editor"]').click(); } }
+        window.loadCustom = function(idx) { const t = customTemplates[idx]; if (t) { editorEl.innerHTML = t.html; updatePreviewAndHtml(); document.querySelector('[data-tab="editor"]').click(); } }
+        window.deleteCustom = async function(idx) { customTemplates.splice(idx, 1); renderTemplates(); await saveCloudData('nebula_templates', customTemplates); }
 
-        document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+        document.getElementById('saveTemplateBtn').addEventListener('click', async () => {
             const name = document.getElementById('templateNameInput').value.trim() || 'My Layout ' + Date.now();
-            const arr = getCustomTemplates();
-            arr.push({ name, html: editorEl.innerHTML });
-            saveCustomTemplates(arr);
+            customTemplates.push({ name, html: editorEl.innerHTML });
             document.getElementById('templateNameInput').value = '';
+            document.getElementById('saveTemplateBtn').innerText = "Saving...";
+            await saveCloudData('nebula_templates', customTemplates);
+            document.getElementById('saveTemplateBtn').innerText = "Save HTML";
             renderTemplates();
         });
 
-        // --- Initialization ---
         document.addEventListener('DOMContentLoaded', async () => {
-            await fetchSecureIdentity(); // Lock into Entra ID
+            await fetchSecureIdentity(); 
             
-            const saved = localStorage.getItem(STORAGE_KEY_STATE);
-            if (saved) editorEl.innerHTML = saved;
+            const savedState = await loadCloudData('nebula_state');
+            if (savedState && savedState.html) editorEl.innerHTML = savedState.html;
+            
+            const savedTemplates = await loadCloudData('nebula_templates');
+            if (savedTemplates && savedTemplates.length > 0) customTemplates = savedTemplates;
             
             renderTemplates();
             updatePreviewAndHtml();

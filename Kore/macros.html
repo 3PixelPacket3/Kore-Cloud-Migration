@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Kore | Macro Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
             --accent-primary: #0ea5e9; --accent-hover: #0284c7;
@@ -36,7 +37,7 @@
         .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
         .page-subtitle { margin: 8px 0 0 0; font-size: 1rem; color: var(--text-secondary); }
 
-        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
         .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
         .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); }
@@ -54,7 +55,6 @@
 
         .content-area { display: flex; flex-direction: column; gap: 24px; }
         
-        /* View Mode */
         .macro-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; display: none; }
         .macro-header { padding: 20px 24px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-app); display: flex; justify-content: space-between; align-items: flex-start;}
         .macro-title { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 12px; }
@@ -69,7 +69,6 @@
         .copy-btn:hover { background: rgba(255,255,255,0.2); }
         .copy-btn.copied { background: var(--success); border-color: var(--success); }
 
-        /* Edit Form Mode */
         .editor-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 32px; box-shadow: var(--shadow-sm); display: none; }
         .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
         .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
@@ -121,18 +120,19 @@
                 <h2 class="page-title">Enterprise Macro Library</h2>
                 <p class="page-subtitle">Centralized repository for automation code, templates, and payloads.</p>
             </div>
+            <div>
+                <button class="btn btn-primary" onclick="openEditor()">+ Create New Macro</button>
+            </div>
         </div>
 
         <aside class="sidebar">
-            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openEditor()">+ Create New Macro</button>
-            <h3 style="margin: 16px 0 0 0; font-size: 0.9rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Library Index</h3>
-            <ul class="macro-nav-list" id="macroNavList">
-                </ul>
+            <h3 style="margin: 0; font-size: 0.9rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Library Index</h3>
+            <ul class="macro-nav-list" id="macroNavList"></ul>
         </aside>
 
         <div class="content-area">
             
-            <div id="viewPanel" class="macro-card">
+            <div id="viewPanel" class="macro-card" style="display:block;">
                 <div class="macro-header">
                     <div>
                         <h3 class="macro-title" id="viewTitle">Select a Macro</h3>
@@ -161,8 +161,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Category / Language Tag</label>
-                    <input type="text" id="editCategory" class="input" placeholder="e.g. Excel VBA, Python">
+                    <label class="form-label">Language / Category</label>
+                    <input type="text" id="editCategory" class="input" placeholder="e.g. Excel VBA, Python, HTML">
                 </div>
 
                 <div class="form-group">
@@ -170,8 +170,7 @@
                     <input type="text" id="editDesc" class="input" placeholder="What does this macro do?">
                 </div>
 
-                <div class="code-editor-repeater" id="codeRepeater">
-                    </div>
+                <div class="code-editor-repeater" id="codeRepeater"></div>
                 
                 <button class="btn" type="button" onclick="addCodeBlockForm()" style="margin-bottom: 24px;">+ Add Code Block</button>
 
@@ -203,13 +202,50 @@
             } catch (error) {}
         }
 
-        // --- Data Fetching (Simulating Azure Call with Local Fallback) ---
+        // Generate robust starters if library is empty
+        function seedDefaultMacros() {
+            if (localStorage.getItem('kore_macros_seeded')) return;
+
+            const defaults = [
+                {
+                    id: 'm_1', title: 'LOD Cleanse & Text Format', category: 'Excel VBA', isGlobal: true,
+                    description: 'Removes hyphens from ZIP codes and formats Column B and L as text to prevent leading zeros from dropping during CSV save.',
+                    codes: [{ title: 'VBA Script', code: 'Sub CleanLODFile()\n    Dim ws As Worksheet\n    Set ws = ActiveSheet\n    \n    ws.Columns("L").NumberFormat = "@"\n    ws.Columns("L").Replace What:="-", Replacement:="", LookAt:=xlPart\n    ws.Columns("B").NumberFormat = "@"\n    \n    MsgBox "LOD Cleansing Complete", vbInformation\nEnd Sub' }]
+                },
+                {
+                    id: 'm_2', title: 'Merge Multiple CSVs', category: 'Python', isGlobal: true,
+                    description: 'Uses pandas to scan a folder and combine all CSV files into a single master sheet.',
+                    codes: [{ title: 'Python Script', code: 'import pandas as pd\nimport glob\nimport os\n\npath = r"C:\\Data\\CSVs"\nall_files = glob.glob(os.path.join(path, "*.csv"))\n\ndf_from_each_file = (pd.read_csv(f) for f in all_files)\nconcatenated_df = pd.concat(df_from_each_file, ignore_index=True)\n\nconcatenated_df.to_csv("master_export.csv", index=False)\nprint("Merge complete.")' }]
+                },
+                {
+                    id: 'm_3', title: 'Automated Keystroke Loop', category: 'iSeries VBS', isGlobal: true,
+                    description: 'Standard send-keys loop for repetitive terminal entry. Ensure window focus before execution.',
+                    codes: [{ title: 'VBScript', code: 'Set WshShell = WScript.CreateObject("WScript.Shell")\nWScript.Sleep 2000 \' Wait for focus\n\nFor i = 1 To 10\n    WshShell.SendKeys "1NAPR"\n    WshShell.SendKeys "{TAB}"\n    WshShell.SendKeys "O"\n    WshShell.SendKeys "{ENTER}"\n    WScript.Sleep 500\nNext\n\nMsgBox "Sequence execution finished."' }]
+                },
+                {
+                    id: 'm_4', title: 'Fetch Azure Profile', category: 'JavaScript', isGlobal: true,
+                    description: 'Standard async function to extract Entra ID token and user data from Azure Static Web Apps proxy.',
+                    codes: [{ title: 'JS Async Function', code: 'async function fetchSecureIdentity() {\n    try {\n        const response = await fetch(\'/.auth/me\');\n        const data = await response.json();\n        if (data.clientPrincipal) {\n            return { id: data.clientPrincipal.userId, name: data.clientPrincipal.userDetails };\n        }\n    } catch (error) {\n        console.warn("Auth offline.");\n    }\n}' }]
+                },
+                {
+                    id: 'm_5', title: 'Auto-Fit Excel Columns', category: 'Excel VBA', isGlobal: true,
+                    description: 'Simple quality of life macro to auto-fit all columns and bold the header row.',
+                    codes: [{ title: 'VBA Script', code: 'Sub FormatSheet()\n    Cells.EntireColumn.AutoFit\n    Rows("1:1").Font.Bold = True\n    Rows("1:1").Interior.Color = RGB(220, 230, 240)\nEnd Sub' }]
+                }
+            ];
+
+            localStorage.setItem('kore_macros', JSON.stringify(defaults));
+            localStorage.setItem('kore_macros_seeded', 'true');
+        }
+
         async function loadMacros() {
+            seedDefaultMacros();
+            
             let cloudMacros = [];
             try {
                 const res = await fetch(`/api/get_macros?userId=${cloudIdentity.userId}`);
                 if (res.ok) cloudMacros = await res.json();
-            } catch(e) { console.warn("API Offline. Using local."); }
+            } catch(e) {}
 
             let localMacros = JSON.parse(localStorage.getItem('kore_macros')) || [];
             
@@ -224,10 +260,6 @@
         function renderNav() {
             const list = document.getElementById('macroNavList');
             list.innerHTML = '';
-            if (macrosData.length === 0) {
-                list.innerHTML = '<li style="color:var(--text-secondary); font-size:0.85rem;">No macros available.</li>';
-                return;
-            }
             
             macrosData.sort((a,b) => a.title.localeCompare(b.title)).forEach(m => {
                 const isGlobal = m.isGlobal ? '<span class="tag-global">GLOBAL</span>' : '';
@@ -249,7 +281,7 @@
             const m = macrosData.find(x => x.id === id);
             if (!m) return;
 
-            document.getElementById('viewTitle').innerHTML = `${m.title} <span class="macro-tag">${m.category || 'Script'}</span>`;
+            document.getElementById('viewTitle').innerHTML = `${m.title} <span class="macro-tag">${m.category || 'Code'}</span>`;
             document.getElementById('viewDesc').innerText = m.description || '';
             document.getElementById('editMacroBtn').style.display = 'inline-flex';
             document.getElementById('deleteMacroBtn').style.display = 'inline-flex';
@@ -269,15 +301,12 @@
             }
         }
 
-        // --- Editor Logic ---
         function openEditor(id = null) {
             document.getElementById('viewPanel').style.display = 'none';
             document.getElementById('editorPanel').style.display = 'block';
             document.getElementById('codeRepeater').innerHTML = '';
 
             const globalCheck = document.getElementById('editGlobal');
-            
-            // Admin Check
             globalCheck.addEventListener('change', (e) => {
                 if (e.target.checked && sessionStorage.getItem('kore_admin_unlocked') !== 'true') {
                     const pin = prompt("Admin PIN required to push to Global Workspace:");
@@ -321,7 +350,10 @@
 
         function closeEditor() {
             document.getElementById('editorPanel').style.display = 'none';
-            if (currentMacroId) viewMacro(currentMacroId);
+            if (currentMacroId) {
+                document.getElementById('viewPanel').style.display = 'block';
+                viewMacro(currentMacroId);
+            }
         }
 
         function editCurrentMacro() { if(currentMacroId) openEditor(currentMacroId); }
@@ -347,19 +379,17 @@
                 codes: blocks
             };
 
-            // Local cache save
             const idx = macrosData.findIndex(x => x.id === payload.id);
             if (idx > -1) macrosData[idx] = payload; else macrosData.push(payload);
             localStorage.setItem('kore_macros', JSON.stringify(macrosData));
 
-            // Transmit to Cloud
             try {
                 await fetch('/api/save_macro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-            } catch(e) { console.warn("Cloud offline. Saved locally."); }
+            } catch(e) {}
 
             closeEditor();
             currentMacroId = payload.id;

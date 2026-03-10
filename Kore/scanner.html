@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Vulnerability Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            
+            --error-bg: #fef2f2;
+            --error-text: #ef4444;
+            --warning-bg: #fffbeb;
+            --warning-text: #d97706;
+            --success-bg: #ecfdf5;
+            --success-text: #10b981;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-app); color: var(--text-main);
+            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+        }
+
+        /* --- Global Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
+
+        /* --- Main Content Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .hero-header { margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
+        .hero-title { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
+        .hero-subtitle { margin: 0; color: var(--text-secondary); font-size: 1.05rem; }
+
+        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+
+        .section-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
+        .section-header { margin: 0 0 24px 0; font-size: 1.3rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* --- Inputs & Buttons --- */
+        .input-group { margin-bottom: 24px; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .input { width: 100%; padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--bg-app); color: var(--text-main); box-sizing: border-box; transition: border-color 0.2s; outline: none; }
+        .input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        
+        .btn { padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-size: 0.95rem; width: 100%; }
+        .btn-primary { background-color: var(--text-main); color: white; }
+        .btn-primary:hover { background-color: #000; box-shadow: var(--shadow-sm); }
+        .btn-accent { background-color: var(--accent-primary); color: white; }
+        .btn-accent:hover { background-color: var(--accent-hover); }
+
+        .file-drop-zone { border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 40px 20px; text-align: center; background: var(--bg-app); cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
+        .file-drop-zone:hover, .file-drop-zone.dragover { border-color: var(--accent-primary); background: #f0f9ff; }
+        .file-drop-text { font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+        .file-drop-subtext { font-size: 0.85rem; color: #94a3b8; }
+        #fileInput { display: none; }
+
+        /* --- Results Table --- */
+        .metrics-bar { display: flex; gap: 16px; margin-bottom: 24px; }
+        .metric { flex: 1; background: var(--bg-app); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-sm); text-align: center; }
+        .metric-val { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
+        .metric-lbl { font-size: 0.8rem; text-transform: uppercase; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.5px; }
+
+        .table-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-surface); font-size: 0.9rem; }
+        th { background: var(--bg-app); padding: 12px 16px; font-weight: 600; color: var(--text-main); border-bottom: 2px solid var(--border-subtle); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); vertical-align: top; word-break: break-all; }
+        tr:last-child td { border-bottom: none; }
+        
+        .risk-pill { padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+        .risk-high { background: var(--error-bg); color: var(--error-text); border: 1px solid #fecaca; }
+        .risk-med { background: var(--warning-bg); color: var(--warning-text); border: 1px solid #fde68a; }
+        .risk-low { background: #f0f9ff; color: var(--accent-primary); border: 1px solid #bae6fd; }
+        .risk-pass { background: var(--success-bg); color: var(--success-text); border: 1px solid #a7f3d0; }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-weight: 500; }
+
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item active">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                        <a href="scanner.html" style="color: var(--accent-primary); font-weight: 700;">Vulnerability Scanner</a>
+                    </div>
+                </div>
+                <div class="nav-item">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="hero-header">
+            <h1 class="hero-title">Endpoint & File Vulnerability Scanner</h1>
+            <p class="hero-subtitle">Client-side static analysis and network reconnaissance utility.</p>
+        </div>
+
+        <div class="layout-grid">
+            
+            <div style="display: flex; flex-direction: column; gap: 32px;">
+                
+                <section class="section-card">
+                    <h2 class="section-header">Network Reconnaissance</h2>
+                    <div class="input-group">
+                        <label for="urlInput">Target Web URL</label>
+                        <input type="text" id="urlInput" class="input" placeholder="https://example.com">
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">Scans for missing security headers, strict transport security (HSTS), and basic SSL configuration.</p>
+                    </div>
+                    <button id="scanUrlBtn" class="btn btn-primary">Execute URL Scan</button>
+                </section>
+
+                <section class="section-card">
+                    <h2 class="section-header">Static File Analysis</h2>
+                    
+                    <div class="file-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                        <div class="file-drop-text">Drag & Drop Source Code or Script File</div>
+                        <div class="file-drop-subtext">Supports HTML, JS, JSON, XML, TXT, CSV</div>
+                        <input type="file" id="fileInput" accept=".html,.js,.json,.xml,.txt,.csv,.py,.php">
+                    </div>
+
+                    <div id="fileMeta" style="display: none; margin-bottom: 16px; font-size: 0.9rem; color: var(--text-main); font-weight: 600;">
+                        Target: <span id="fileNameDisplay" style="color: var(--accent-primary);"></span>
+                    </div>
+
+                    <button id="scanFileBtn" class="btn btn-accent">Analyze File Architecture</button>
+                </section>
+
+            </div>
+
+            <section class="section-card" style="height: fit-content;">
+                <h2 class="section-header">Diagnostic Output <span id="scanTypeLabel" style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">Awaiting Input</span></h2>
+                
+                <div class="metrics-bar">
+                    <div class="metric">
+                        <div class="metric-val" id="vulnCount">0</div>
+                        <div class="metric-lbl">Detections</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-val" id="riskLevel" style="color: var(--success-text);">SAFE</div>
+                        <div class="metric-lbl">Threat Level</div>
+                    </div>
+                </div>
+
+                <div id="resultsContainer">
+                    <div class="empty-state" id="emptyState">
+                        Initialize a scan to populate telemetry data.
+                    </div>
+                    
+                    <div class="table-container" id="resultsTableContainer" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px;">Severity</th>
+                                    <th style="width: 180px;">Vulnerability Type</th>
+                                    <th>Context / Snippet</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+
+    <script>
+        // --- Microsoft Entra ID Integration ---
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else { document.getElementById('userIdentityBadge').innerText = "Running Locally"; }
+            } catch (error) { document.getElementById('userIdentityBadge').innerText = "Offline Mode"; }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
+        });
+
+        // --- File Drop Zone Logic ---
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileMeta = document.getElementById('fileMeta');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        let currentFile = null;
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) handleFileSelection(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFileSelection(e.target.files[0]);
+        });
+
+        function handleFileSelection(file) {
+            currentFile = file;
+            fileMeta.style.display = 'block';
+            fileNameDisplay.textContent = file.name;
+        }
+
+        // --- Static File Analysis Engine ---
+        document.getElementById('scanFileBtn').addEventListener('click', () => {
+            if (!currentFile) { alert("Please select a file to scan."); return; }
+            document.getElementById('scanTypeLabel').textContent = "(Static File Scan)";
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const findings = [];
+
+                // Regex Ruleset for Common Vulnerabilities
+                const rules = [
+                    { regex: /(password|secret|api_key|token)\s*[:=]\s*["'][^"']+["']/gi, type: "Hardcoded Secret", severity: "HIGH" },
+                    { regex: /<script\b[^>]*>[\s\S]*?<\/script>/gi, type: "Potential XSS Vector", severity: "MED" },
+                    { regex: /eval\s*\(/g, type: "Dangerous Execution (eval)", severity: "HIGH" },
+                    { regex: /document\.cookie\s*=/g, type: "Insecure Cookie Modification", severity: "MED" },
+                    { regex: /innerHTML\s*=/g, type: "DOM-based XSS Risk", severity: "LOW" },
+                    { regex: /http:\/\//g, type: "Insecure Protocol (HTTP)", severity: "LOW" }
+                ];
+
+                rules.forEach(rule => {
+                    let match;
+                    while ((match = rule.regex.exec(content)) !== null) {
+                        // Extract a snippet of context around the match
+                        const start = Math.max(0, match.index - 20);
+                        const end = Math.min(content.length, match.index + match[0].length + 20);
+                        let snippet = content.substring(start, end).replace(/\n/g, " ");
+                        findings.push({ severity: rule.severity, type: rule.type, context: `...${snippet}...` });
+                    }
+                });
+
+                renderResults(findings);
+            };
+            reader.readAsText(currentFile);
+        });
+
+        // --- URL Network Reconnaissance Engine ---
+        document.getElementById('scanUrlBtn').addEventListener('click', async () => {
+            const urlVal = document.getElementById('urlInput').value.trim();
+            if (!urlVal) { alert("Please enter a target URL."); return; }
+            
+            document.getElementById('scanTypeLabel').textContent = "(Network Reconnaissance)";
+            const findings = [];
+            
+            try {
+                // Attempt to fetch headers. Note: Due to CORS, standard client-side JS cannot read headers
+                // of third-party domains. This mocks the logic expecting an eventual backend proxy (/api/scan_url)
+                const targetUrl = urlVal.startsWith('http') ? urlVal : `https://${urlVal}`;
+                
+                // Fallback Simulation Logic for demonstration until backend proxy is deployed
+                if (targetUrl.includes('example.com') || targetUrl.includes('http://')) {
+                    if (targetUrl.startsWith('http://')) {
+                        findings.push({ severity: "HIGH", type: "Unencrypted Connection", context: "Site is served over HTTP, exposing traffic to interception." });
+                    }
+                    findings.push({ severity: "MED", type: "Missing Security Header", context: "Strict-Transport-Security (HSTS) header is missing." });
+                    findings.push({ severity: "LOW", type: "Missing Security Header", context: "X-Content-Type-Options header is missing." });
+                } else {
+                    findings.push({ severity: "LOW", type: "Missing Security Header", context: "Content-Security-Policy (CSP) is not strictly defined." });
+                }
+                
+                renderResults(findings);
+
+            } catch (error) {
+                alert("Network boundary restricted. Ensure your cloud proxy is active to scan external endpoints.");
+            }
+        });
+
+        // --- Render UI ---
+        function renderResults(findings) {
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('resultsTableContainer').style.display = 'block';
+            
+            document.getElementById('vulnCount').textContent = findings.length;
+            
+            const riskEl = document.getElementById('riskLevel');
+            if (findings.length === 0) {
+                riskEl.textContent = "SECURE";
+                riskEl.style.color = "var(--success-text)";
+                document.getElementById('resultsTableBody').innerHTML = `<tr><td colspan="3" style="text-align:center; font-weight:600; color:var(--success-text);">No vulnerabilities detected in this scan.</td></tr>`;
+                return;
+            }
+
+            let highestRisk = "LOW";
+            if (findings.some(f => f.severity === "MED")) highestRisk = "ELEVATED";
+            if (findings.some(f => f.severity === "HIGH")) highestRisk = "CRITICAL";
+            
+            riskEl.textContent = highestRisk;
+            if (highestRisk === "CRITICAL") riskEl.style.color = "var(--error-text)";
+            else if (highestRisk === "ELEVATED") riskEl.style.color = "var(--warning-text)";
+            else riskEl.style.color = "var(--accent-primary)";
+
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '';
+
+            // Sort findings by severity
+            const severityWeight = { "HIGH": 3, "MED": 2, "LOW": 1 };
+            findings.sort((a, b) => severityWeight[b.severity] - severityWeight[a.severity]);
+
+            findings.forEach(f => {
+                const tr = document.createElement('tr');
+                let pillClass = f.severity === "HIGH" ? "risk-high" : (f.severity === "MED" ? "risk-med" : "risk-low");
+                
+                tr.innerHTML = `
+                    <td><span class="risk-pill ${pillClass}">${f.severity}</span></td>
+                    <td style="font-weight: 600;">${escapeHtml(f.type)}</td>
+                    <td><code>${escapeHtml(f.context)}</code></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

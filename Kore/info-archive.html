@@ -181,7 +181,8 @@
 
         async function loadCloudData(dataType) {
             try {
-                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                // Keep anti-cache query param appended dynamically
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
@@ -216,7 +217,7 @@
 
             localTasks = await loadCloudData('todos') || [];
             try {
-                const res = await fetch('/api/get_work_items'); 
+                const res = await fetch(`/api/get_work_items?_t=${Date.now()}`); 
                 if (res.ok) { localTickets = await res.json(); } 
                 else { localTickets = await loadCloudData('work_items') || []; }
             } catch(e) { localTickets = await loadCloudData('work_items') || []; }
@@ -328,7 +329,8 @@
         // --- Cloud Core Logic ---
         async function loadPages() {
             try {
-                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
+                // Ensure fresh data with a cache buster parameter
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     return Array.isArray(data) ? data : [];
@@ -336,15 +338,6 @@
             } catch (e) {}
             const fallback = await loadCloudData('infoPages');
             return Array.isArray(fallback) ? fallback : [];
-        }
-
-        async function savePages(pages) {
-            try { 
-                await fetch('/api/save_user_data', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'infoPages', data: pages })
-                });
-            } catch (e) {}
         }
 
         function escapeHtml(str) {
@@ -407,21 +400,24 @@
             const ids = getSelectedIds();
             if (!ids.length) return alert("Select at least one page to restore.");
             
-            let changed = false;
+            document.getElementById('restoreBtn').innerText = "Restoring...";
             
+            const promises = [];
             masterPages.forEach(page => {
                 if (page && page.id && ids.includes(page.id)) {
                     page.archived = false;
-                    changed = true;
+                    // Push updated page directly to Info Hub Vault
+                    promises.push(fetch('/api/save_info_page', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(page)
+                    }));
                 }
             });
             
-            if (changed) {
-                document.getElementById('restoreBtn').innerText = "Restoring...";
-                await savePages(masterPages);
-                document.getElementById('restoreBtn').innerText = "Restore Selected";
-                await render();
-            }
+            await Promise.all(promises);
+            document.getElementById('restoreBtn').innerText = "Restore Selected";
+            await render();
         });
 
         document.getElementById('deleteBtn').addEventListener('click', async () => {
@@ -430,14 +426,25 @@
             
             if (!confirm("Permanently delete the selected archived pages? This will wipe the data from the cloud vault and cannot be undone.")) return;
             
-            masterPages = masterPages.filter(page => {
-                if (!page || !page.id) return false;
-                if (ids.includes(page.id) && page.archived) return false; 
-                return true; 
+            document.getElementById('deleteBtn').innerText = "Deleting...";
+
+            const promises = [];
+            masterPages.forEach(page => {
+                if (page && page.id && ids.includes(page.id)) {
+                    // Send explicit delete command to the new backend endpoint
+                    promises.push(fetch('/api/delete_info_page', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: page.id,
+                            authorId: page.authorId || cloudIdentity.userId,
+                            isGlobal: page.isGlobal || false
+                        })
+                    }));
+                }
             });
 
-            document.getElementById('deleteBtn').innerText = "Deleting...";
-            await savePages(masterPages);
+            await Promise.all(promises);
             document.getElementById('deleteBtn').innerText = "Permanently Delete";
             await render();
         });

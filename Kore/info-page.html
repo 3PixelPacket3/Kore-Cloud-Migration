@@ -1,132 +1,370 @@
-<script>
-    let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
-    let currentPageId = null;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Info Hub Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Premium Light Theme Variables */
+        :root {
+            --accent-primary: #0ea5e9;
+            --accent-hover: #0284c7;
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
 
-    async function fetchSecureIdentity() {
-        try {
-            const response = await fetch('/.auth/me');
-            const data = await response.json();
-            if (data.clientPrincipal) {
-                cloudIdentity.userId = data.clientPrincipal.userId;
-                cloudIdentity.userName = data.clientPrincipal.userDetails;
-            }
-        } catch (error) {}
-    }
+        body {
+            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-app); color: var(--text-main);
+            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+        }
 
-    async function fetchPagesFromCloud() {
-        try {
-            const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
-            if (res.ok) {
-                const data = await res.json();
-                if (Array.isArray(data)) return data;
-            }
-        } catch(e) {}
+        /* --- Global Header --- */
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+
+        /* --- Main Layout --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
-        // Fallback to local storage if API fails
-        try {
-            const raw = localStorage.getItem('infoPages');
-            return raw ? JSON.parse(raw) : [];
-        } catch(e) { return []; }
-    }
-
-    function escapeHtml(str) {
-        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-
-    function formatDate(iso) {
-        if (!iso) return 'Unknown';
-        try { return new Date(iso).toLocaleString(); } catch (e) { return iso; }
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        await fetchSecureIdentity();
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
+        .page-title { margin: 0 0 12px 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); }
+        .page-summary { margin: 0; font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; max-width: 800px; }
         
-        const params = new URLSearchParams(window.location.search);
-        currentPageId = params.get('id');
+        .action-btns { display: flex; gap: 12px; }
+        .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
+        .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; }
+        .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-sm); border: none; }
+        .btn-danger { color: #ef4444; border-color: #fca5a5; background: #fef2f2; }
+        .btn-danger:hover { background: #fee2e2; border-color: #ef4444; }
 
-        const errorContainer = document.getElementById('errorContainer');
-        const contentGrid = document.getElementById('contentGrid');
+        /* --- Content Grid --- */
+        .content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; }
+        
+        .content-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 40px; box-shadow: var(--shadow-sm); font-size: 1rem; line-height: 1.6; color: var(--text-main); overflow-x: auto; }
+        .content-card h1, .content-card h2, .content-card h3 { color: var(--text-main); margin-top: 1.5em; margin-bottom: 0.5em; }
+        .content-card h1:first-child, .content-card h2:first-child, .content-card h3:first-child { margin-top: 0; }
+        .content-card a { color: var(--accent-primary); text-decoration: none; font-weight: 500; }
+        .content-card a:hover { text-decoration: underline; }
+        .content-card img { max-width: 100%; height: auto; border-radius: var(--radius-sm); margin: 1em 0; }
+        .content-card blockquote { border-left: 4px solid var(--accent-primary); background: #f0f9ff; padding: 12px 20px; margin: 1em 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .content-card code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
 
-        if (!currentPageId) {
-            errorContainer.style.display = 'block';
-            return;
-        }
+        /* --- Sidebar --- */
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+        .side-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); }
+        .side-title { margin: 0 0 16px 0; font-size: 1.05rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; }
+        
+        .meta-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+        .meta-list li { display: flex; flex-direction: column; gap: 6px; }
+        .meta-label { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-value { font-weight: 500; color: var(--text-main); font-size: 0.95rem; }
+        
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; width: fit-content; }
+        .status-published { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+        .status-draft { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
 
-        const pages = await fetchPagesFromCloud();
-        const page = pages.find(p => p.id === currentPageId && !p.archived);
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { background: #f0f9ff; color: var(--accent-primary); border: 1px solid #bae6fd; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
 
-        if (!page) {
-            errorContainer.style.display = 'block';
-            return;
-        }
+        .attachment-item { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px; }
+        .attachment-item img { width: 100%; border-radius: var(--radius-sm); display: block; border: 1px solid var(--border-subtle); }
+        .attachment-caption { font-size: 0.85rem; color: var(--text-secondary); text-align: center; margin-top: 10px; font-weight: 500; }
+        
+        .link-item { display: block; background: #f0f9ff; color: var(--accent-primary); padding: 12px 16px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 600; border: 1px solid #bae6fd; margin-bottom: 8px; transition: background 0.2s; }
+        .link-item:hover { background: #e0f2fe; }
 
-        // Render Core Content
-        contentGrid.style.display = 'grid';
-        document.getElementById('viewTitle').innerHTML = page.titleHtml || escapeHtml(page.title) || 'Untitled Page';
-        document.getElementById('viewSummary').innerHTML = page.summaryHtml || escapeHtml(page.summary || page.shortDesc || '');
-        document.getElementById('viewContent').innerHTML = page.contentHtml || '';
+        #errorContainer { display: none; text-align: center; padding: 80px 20px; background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
 
-        // Render Meta
-        const statusClass = (page.status || 'draft').toLowerCase() === 'published' ? 'status-published' : 'status-draft';
-        let metaHtml = `
-            <li><span class="meta-label">Status</span><span class="status-badge ${statusClass}">${escapeHtml(page.status || 'Draft')}</span></li>
-            <li><span class="meta-label">Author</span><span class="meta-value">${escapeHtml(page.author || 'Local User')}</span></li>
-            <li><span class="meta-label">Last Updated</span><span class="meta-value">${formatDate(page.updatedAt || page.createdAt)}</span></li>
-        `;
+        /* --- Global Footer --- */
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto; }
+    </style>
+</head>
+<body>
 
-        if (page.tags && page.tags.length > 0) {
-            const tagsHtml = page.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
-            metaHtml += `<li><span class="meta-label">Tags</span><div class="tags-container">${tagsHtml}</div></li>`;
-        }
-        document.getElementById('viewMeta').innerHTML = metaHtml;
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                    </div>
+                </div>
+                <div class="nav-item active">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+    </header>
 
-        // Render Images
-        if (page.images && page.images.length > 0) {
-            document.getElementById('imagesSection').style.display = 'block';
-            const imgContainer = document.getElementById('viewImages');
-            page.images.forEach(img => {
-                if (img.dataUrl) {
-                    const div = document.createElement('div');
-                    div.className = 'attachment-item';
-                    div.innerHTML = `<img src="${img.dataUrl}" alt="Attached Image"><div class="attachment-caption">${escapeHtml(img.caption || '')}</div>`;
-                    imgContainer.appendChild(div);
+    <main class="main-container">
+        
+        <div id="errorContainer">
+            <h2 style="margin-top: 0; font-size: 1.8rem; color: var(--text-main);">Page Not Found</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">This page may have been archived, deleted, or you may lack access permissions.</p>
+            <a href="info-hub.html" class="btn btn-primary">Return to Hub</a>
+        </div>
+
+        <div id="contentGrid" style="display: none;">
+            
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title" id="viewTitle">Loading...</h1>
+                    <p class="page-summary" id="viewSummary"></p>
+                </div>
+                <div class="action-btns">
+                    <button id="editPageBtn" class="btn btn-primary">Edit Page</button>
+                    <button id="archivePageBtn" class="btn btn-danger">Archive</button>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-card" id="viewContent"></div>
+
+                <div class="sidebar">
+                    <div class="side-card">
+                        <h3 class="side-title">Document Information</h3>
+                        <ul class="meta-list" id="viewMeta"></ul>
+                    </div>
+
+                    <div class="side-card" id="linksSection" style="display: none;">
+                        <h3 class="side-title">External Links</h3>
+                        <div id="viewLinks"></div>
+                    </div>
+
+                    <div class="side-card" id="imagesSection" style="display: none;">
+                        <h3 class="side-title">Supporting Images</h3>
+                        <div id="viewImages"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+
+    <script>
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let currentPageId = null;
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                } else {
+                    document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
                 }
-            });
+            } catch (error) {
+                console.log("Auth fetch bypassed - Local execution.");
+                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
+            }
         }
 
-        // Render Links
-        if (page.links && page.links.length > 0) {
-            document.getElementById('linksSection').style.display = 'block';
-            const linkContainer = document.getElementById('viewLinks');
-            page.links.forEach(lnk => {
-                if (lnk.url) {
-                    const a = document.createElement('a');
-                    a.href = lnk.url;
-                    a.target = '_blank';
-                    a.className = 'link-item';
-                    a.textContent = lnk.label || lnk.url;
-                    linkContainer.appendChild(a);
+        // --- Cloud Sync Logic ---
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
                 }
-            });
+            } catch(e) {}
+            return null;
         }
 
-        // Actions
-        document.getElementById('editPageBtn').addEventListener('click', () => {
-            window.location.href = `create-page.html?id=${encodeURIComponent(page.id)}`;
-        });
+        async function saveCloudData(dataType, data) {
+            try {
+                await fetch('/api/save_user_data', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
+                });
+            } catch(e) {}
+        }
 
-        document.getElementById('archivePageBtn').addEventListener('click', async () => {
-            if (confirm('Archive this page? It will be removed from the main Info Hub.')) {
-                page.archived = true;
-                try {
-                    await fetch('/api/save_info_page', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(page)
+        async function fetchPagesFromCloud() {
+            try {
+                // Primary Azure Endpoint
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data)) return data;
+                }
+            } catch(e) {}
+            
+            // Cloud-strict fallback: bypassing localStorage cache
+            const fallback = await loadCloudData('infoPages');
+            return Array.isArray(fallback) ? fallback : [];
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function formatDate(iso) {
+            if (!iso) return 'Unknown';
+            try { return new Date(iso).toLocaleString(); } catch (e) { return iso; }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
+            
+            const params = new URLSearchParams(window.location.search);
+            currentPageId = params.get('id');
+
+            const errorContainer = document.getElementById('errorContainer');
+            const contentGrid = document.getElementById('contentGrid');
+
+            if (!currentPageId) {
+                if (errorContainer) errorContainer.style.display = 'block';
+                return;
+            }
+
+            const pages = await fetchPagesFromCloud();
+            const page = pages.find(p => p.id === currentPageId && !p.archived);
+
+            if (!page) {
+                if (errorContainer) errorContainer.style.display = 'block';
+                return;
+            }
+
+            // Render Core Content
+            if (contentGrid) contentGrid.style.display = 'block';
+            
+            const viewTitle = document.getElementById('viewTitle');
+            if (viewTitle) viewTitle.innerHTML = page.titleHtml || escapeHtml(page.title) || 'Untitled Page';
+            
+            const viewSummary = document.getElementById('viewSummary');
+            if (viewSummary) viewSummary.innerHTML = page.summaryHtml || escapeHtml(page.summary || page.shortDesc || '');
+            
+            const viewContent = document.getElementById('viewContent');
+            if (viewContent) viewContent.innerHTML = page.contentHtml || '';
+
+            // Render Meta
+            const statusClass = (page.status || 'draft').toLowerCase() === 'published' ? 'status-published' : 'status-draft';
+            let metaHtml = `
+                <li><span class="meta-label">Status</span><span class="status-badge ${statusClass}">${escapeHtml(page.status || 'Draft')}</span></li>
+                <li><span class="meta-label">Author</span><span class="meta-value">${escapeHtml(page.author || 'Local User')}</span></li>
+                <li><span class="meta-label">Last Updated</span><span class="meta-value">${formatDate(page.updatedAt || page.createdAt)}</span></li>
+            `;
+
+            if (page.tags && page.tags.length > 0) {
+                const tagsHtml = page.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+                metaHtml += `<li><span class="meta-label">Tags</span><div class="tags-container">${tagsHtml}</div></li>`;
+            }
+            
+            const viewMeta = document.getElementById('viewMeta');
+            if (viewMeta) viewMeta.innerHTML = metaHtml;
+
+            // Render Images
+            if (page.images && page.images.length > 0) {
+                const imagesSection = document.getElementById('imagesSection');
+                if (imagesSection) imagesSection.style.display = 'block';
+                
+                const imgContainer = document.getElementById('viewImages');
+                if (imgContainer) {
+                    page.images.forEach(img => {
+                        if (img.dataUrl) {
+                            const div = document.createElement('div');
+                            div.className = 'attachment-item';
+                            div.innerHTML = `<img src="${img.dataUrl}" alt="Attached Image"><div class="attachment-caption">${escapeHtml(img.caption || '')}</div>`;
+                            imgContainer.appendChild(div);
+                        }
                     });
-                } catch(e) {}
-                window.location.href = 'info-hub.html';
+                }
+            }
+
+            // Render Links
+            if (page.links && page.links.length > 0) {
+                const linksSection = document.getElementById('linksSection');
+                if (linksSection) linksSection.style.display = 'block';
+                
+                const linkContainer = document.getElementById('viewLinks');
+                if (linkContainer) {
+                    page.links.forEach(lnk => {
+                        if (lnk.url) {
+                            const a = document.createElement('a');
+                            a.href = lnk.url;
+                            a.target = '_blank';
+                            a.className = 'link-item';
+                            a.textContent = lnk.label || lnk.url;
+                            linkContainer.appendChild(a);
+                        }
+                    });
+                }
+            }
+
+            // Actions
+            const editBtn = document.getElementById('editPageBtn');
+            if (editBtn) {
+                editBtn.addEventListener('click', () => {
+                    window.location.href = `create-page.html?id=${encodeURIComponent(page.id)}`;
+                });
+            }
+
+            const archiveBtn = document.getElementById('archivePageBtn');
+            if (archiveBtn) {
+                archiveBtn.addEventListener('click', async () => {
+                    if (confirm('Archive this page? It will be removed from the main Info Hub.')) {
+                        page.archived = true;
+                        
+                        let allPages = await fetchPagesFromCloud();
+                        const idx = allPages.findIndex(p => p.id === page.id);
+                        if (idx !== -1) allPages[idx] = page;
+                        else allPages.push(page);
+
+                        try {
+                            await fetch('/api/save_info_page', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(page)
+                            });
+                        } catch(e) {}
+                        
+                        await saveCloudData('infoPages', allPages);
+                        window.location.href = 'info-hub.html';
+                    }
+                });
             }
         });
-    });
-</script>
+    </script>
+</body>
+</html>

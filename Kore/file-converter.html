@@ -143,7 +143,7 @@
             <div class="hero-overlay">
                 <div>
                     <h2 class="hero-title">File to LOAD Converter</h2>
-                    <p class="hero-subtitle">Batch process new user setups into CM-10 Load files instantly.</p>
+                    <p class="hero-subtitle">Batch process new user setups into CM-10 and Web Profile files instantly.</p>
                 </div>
             </div>
         </section>
@@ -157,6 +157,7 @@
                     
                     <select class="form-select" id="converterType">
                         <option value="cm10">New User Setup Iseries JHARD</option>
+                        <option value="web">New User Setup Web JHARD</option>
                     </select>
 
                     <div class="file-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
@@ -165,7 +166,7 @@
                         <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" multiple>
                     </div>
 
-                    <button id="downloadBtn" class="btn btn-primary" style="opacity: 0.5; pointer-events: none;">Download CM-10 Load File</button>
+                    <button id="downloadBtn" class="btn btn-primary" style="opacity: 0.5; pointer-events: none;">Download Data Payload</button>
                     <button id="clearBtn" class="btn btn-danger">Clear Session Data</button>
                 </section>
 
@@ -200,7 +201,7 @@
                             <thead>
                                 <tr>
                                     <th>Status</th>
-                                    <th>Extracted Name</th>
+                                    <th>Target Identity</th>
                                     <th>Cost Center</th>
                                     <th>Source File</th>
                                 </tr>
@@ -243,6 +244,7 @@
         const fileInput = document.getElementById('fileInput');
         const downloadBtn = document.getElementById('downloadBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const converterType = document.getElementById('converterType');
         
         // --- Drag & Drop Handlers ---
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
@@ -282,7 +284,7 @@
                     let extracted = extractUserData(jsonArr);
                     extracted.sourceFile = file.name;
                     
-                    if(extracted.name && extracted.cc) {
+                    if((extracted.businessName || extracted.name) && extracted.cc) {
                         extracted.status = "SUCCESS";
                         successCount++;
                     } else {
@@ -300,8 +302,9 @@
 
         // --- Logic: Data Extraction ---
         function extractUserData(sheetJson) {
-            let data = { name: '', addr: '', city: '', state: '', zip: '', phone: '', cc: '' };
+            let data = { name: '', businessName: '', loyaltyNum: '', userClass: '', email: '', addr: '', city: '', state: '', zip: '', phone: '', cc: '' };
 
+            // Pass 1: Horizontal Headers
             for (let r = 0; r < Math.min(sheetJson.length, 5); r++) {
                 let row = sheetJson[r] || [];
                 for (let c = 0; c < row.length; c++) {
@@ -313,16 +316,25 @@
                         if (val === 'zip code') data.zip = String(sheetJson[r+1][c] || '').trim();
                         if (val === 'telephone #') data.phone = String(sheetJson[r+1][c] || '').trim();
                         if (val === 'cost center') data.cc = String(sheetJson[r+1][c] || '').trim();
+                        if (val === 'business name') data.businessName = String(sheetJson[r+1][c] || '').trim();
+                        if (val === 'loyalty member #') data.loyaltyNum = String(sheetJson[r+1][c] || '').trim();
+                        if (val === 'user class') data.userClass = String(sheetJson[r+1][c] || '').trim();
+                        if (val === 'email address') data.email = String(sheetJson[r+1][c] || '').trim();
                     }
                 }
             }
 
+            // Pass 2: Vertical Layout Fallback
             for(let r = 0; r < sheetJson.length; r++) {
                 let row = sheetJson[r] || [];
                 for(let c = 0; c < row.length; c++) {
                     let val = String(row[c] || '').trim();
                     
                     if (!data.name && val.match(/^Name:\s*(.+)/i)) data.name = val.match(/^Name:\s*(.+)/i)[1].trim();
+                    if (!data.businessName && val.match(/^Business Name:\s*(.+)/i)) data.businessName = val.match(/^Business Name:\s*(.+)/i)[1].trim();
+                    if (!data.loyaltyNum && val.match(/^Loyalty Member(?:ship)?\s*#:\s*(.+)/i)) data.loyaltyNum = val.match(/^Loyalty Member(?:ship)?\s*#:\s*(.+)/i)[1].trim();
+                    if (!data.userClass && val.match(/^Type:\s*(.+)/i)) data.userClass = val.match(/^Type:\s*(.+)/i)[1].trim();
+                    if (!data.email && val.match(/^Email Address:\s*(.+)/i)) data.email = val.match(/^Email Address:\s*(.+)/i)[1].trim();
                     
                     if (!data.addr && val.match(/^Address:\s*(.+)/i)) {
                         let fullAddr = val.match(/^Address:\s*(.+)/i)[1];
@@ -339,88 +351,164 @@
 
             data.phone = data.phone.replace(/\D/g, ''); 
             
-            data.abbrev = '';
+            // Core Fallback Generation for basic first initial + last name
+            data.abbrev_generated = '';
             if (data.name) {
-                let parts = data.name.split(/\s+/);
+                let parts = data.name.trim().split(/\s+/);
                 if (parts.length > 1) {
-                    data.abbrev = (parts[0].charAt(0) + parts[parts.length-1]).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                    data.abbrev_generated = (parts[0].charAt(0) + parts[parts.length-1]).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
                 } else {
-                    data.abbrev = parts[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                    data.abbrev_generated = parts[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
                 }
-                data.abbrev = data.abbrev.substring(0, 15);
+                data.abbrev_generated = data.abbrev_generated.substring(0, 15);
             }
 
             return data;
         }
 
-        // --- Logic: CSV Generation ---
-        downloadBtn.addEventListener('click', () => {
-            if (sessionData.length === 0) return;
-
-            const headers = [
-                "Ship To", "Customer Name (35)", "Address Line 1 (35)", "Address Line 2 (35)", 
-                "Address Line 3 (35)", "City", "State", "Zip", "County", "Country", 
-                "Contact Name (20)", "Phone", "Ext", "Fax", "Abbrev(15)", "EDI", "G/L Code", 
-                "ARA Location #", "ARA Service Type", "Division Code", "Dept 1", "Dept 2", 
-                "Dept 3", "Territory Code", "Cost Center Code", "Field 100", "Cost Center Group", "ERROR CHECK"
-            ];
-
-            let csvContent = headers.join(",") + "\r\n";
-
-            sessionData.forEach((d, index) => {
-                let rowNum = index + 2; 
-                
-                let formula = `=IF(LEN(B${rowNum})>35, "NAME ERROR", IF(LEN(C${rowNum})>35, "ADDRESS 1 ERROR", IF(LEN(D${rowNum})>35, "ADDRESS 2 ERROR", IF(LEN(E${rowNum})>35, "ADDRESS 3 ERROR", IF(LEN(F${rowNum})>21, "CITY ERROR", IF(LEN(G${rowNum})>2, "STATE ERROR", IF(LEN(H${rowNum})>5, "ZIP ERROR", IF(LEN(I${rowNum})>5, "COUNTY ERROR", IF(LEN(J${rowNum})>5, "COUNTRY ERROR", (IF(LEN(K${rowNum})>20, "CONTACT NAME ERROR", IF(LEN(L${rowNum})>12, "PHONE ERROR", IF(LEN(M${rowNum})>4, "EXTENSION ERROR", IF(LEN(N${rowNum})>12, "FAX ERROR", IF(LEN(O${rowNum})>15, "ABBREV ERROR", IF(P${rowNum}<>A${rowNum}, "EDI ERROR", IF(LEN(Q${rowNum})>15, "G/L CODE ERROR", IF(LEN(R${rowNum})>9, "ARA LOCATION ERROR", IF(LEN(S${rowNum})>3, "ARA SERVICE ERROR", IF(LEN(T${rowNum})>3, "DIVISION CODE ERROR", IF(LEN(U${rowNum})>15, "DEPT 1 ERROR", IF(LEN(V${rowNum})>15, "DEPT 2 ERROR", IF(LEN(W${rowNum})>15, "DEPT 3 ERROR", IF(LEN(X${rowNum})>15, "TERRITORY CODE ERROR", IF(LEN(Y${rowNum})>15, "COST CENTER CODE ERROR", IF(LEN(Z${rowNum})>15, "FIELD 100 ERROR", IF(LEN(AA${rowNum})>5, "COST CENTER GROUP ERROR", IF(OR(A${rowNum}="",B${rowNum}= "", C${rowNum}="", D${rowNum}="", E${rowNum}="", F${rowNum}="", G${rowNum}="", H${rowNum}="", I${rowNum}="", J${rowNum}="", K${rowNum}="", L${rowNum}="", M${rowNum}="", N${rowNum}="", O${rowNum}="", P${rowNum}="", Q${rowNum}="", R${rowNum}="", S${rowNum}="", T${rowNum}="", U${rowNum}="", V${rowNum}="", W${rowNum}="",X${rowNum}="", Y${rowNum}="",Z${rowNum}="",AA${rowNum}=""), "EMPTY CELL(S)", "NO ERROR"))))))))))))))))))))))))))))`;
-
-                let rowArray = [
-                    "", // Ship To (Strictly Empty)
-                    d.name,
-                    " ", // Addr 1
-                    d.addr,
-                    " ", // Addr 3
-                    d.city,
-                    d.state,
-                    d.zip,
-                    " ", // County
-                    "US", // Country
-                    d.name,
-                    d.phone,
-                    " ", // Ext
-                    " ", // Fax
-                    d.abbrev,
-                    "", // EDI (Strictly Empty)
-                    " ", // G/L Code
-                    " ", // ARA Loc
-                    " ", // ARA Serv
-                    " ", // Div
-                    " ", // Dept 1
-                    " ", // Dept 2
-                    " ", // Dept 3
-                    " ", // Terr
-                    d.cc, // Cost Center
-                    " ", // F100
-                    " ", // CC Group
-                    formula // Col AB Formula
-                ];
-
-                let formattedRow = rowArray.map(cell => {
-                    let cellStr = String(cell);
-                    if (cellStr.includes(',') || cellStr.includes('"') || cellStr.startsWith('=')) {
-                        cellStr = `"${cellStr.replace(/"/g, '""')}"`;
-                    }
-                    return cellStr;
-                });
-
-                csvContent += formattedRow.join(",") + "\r\n";
-            });
-
+        // --- Logic: Export Generation ---
+        function triggerDownload(csvContent, filename) {
             let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
             let a = document.createElement('a');
             a.href = url;
-            a.download = "CM-10 New Customer Set Up.csv";
+            a.download = filename;
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (sessionData.length === 0) return;
+            const mode = converterType.value;
+
+            if (mode === 'cm10') {
+                const headers = [
+                    "Ship To", "Customer Name (35)", "Address Line 1 (35)", "Address Line 2 (35)", 
+                    "Address Line 3 (35)", "City", "State", "Zip", "County", "Country", 
+                    "Contact Name (20)", "Phone", "Ext", "Fax", "Abbrev(15)", "EDI", "G/L Code", 
+                    "ARA Location #", "ARA Service Type", "Division Code", "Dept 1", "Dept 2", 
+                    "Dept 3", "Territory Code", "Cost Center Code", "Field 100", "Cost Center Group", "ERROR CHECK"
+                ];
+
+                let csvContent = headers.join(",") + "\r\n";
+
+                sessionData.forEach((d, index) => {
+                    let rowNum = index + 2; 
+                    
+                    // Route Logic Based on User Type
+                    let userTypeLower = (d.userClass || '').toLowerCase();
+                    let isContractor = userTypeLower.includes('contractor');
+                    let isDistributor = userTypeLower.includes('distributor');
+
+                    // CM10 Name: Business name for Contractors/Distributors, First/Last for everyone else
+                    let finalCustomerName = (isContractor || isDistributor) ? (d.businessName || d.name) : (d.name || d.businessName);
+                    
+                    // CM10 Abbreviation Routing
+                    let finalAbbrev = "";
+                    if (isContractor) {
+                        finalAbbrev = d.loyaltyNum;
+                    } else if (isDistributor) {
+                        finalAbbrev = (d.businessName || "").replace(/[^a-zA-Z0-9]/g, '').toUpperCase().substring(0, 15);
+                    } else {
+                        finalAbbrev = d.abbrev_generated;
+                    }
+
+                    let formula = `=IF(LEN(B${rowNum})>35, "NAME ERROR", IF(LEN(C${rowNum})>35, "ADDRESS 1 ERROR", IF(LEN(D${rowNum})>35, "ADDRESS 2 ERROR", IF(LEN(E${rowNum})>35, "ADDRESS 3 ERROR", IF(LEN(F${rowNum})>21, "CITY ERROR", IF(LEN(G${rowNum})>2, "STATE ERROR", IF(LEN(H${rowNum})>5, "ZIP ERROR", IF(LEN(I${rowNum})>5, "COUNTY ERROR", IF(LEN(J${rowNum})>5, "COUNTRY ERROR", (IF(LEN(K${rowNum})>20, "CONTACT NAME ERROR", IF(LEN(L${rowNum})>12, "PHONE ERROR", IF(LEN(M${rowNum})>4, "EXTENSION ERROR", IF(LEN(N${rowNum})>12, "FAX ERROR", IF(LEN(O${rowNum})>15, "ABBREV ERROR", IF(P${rowNum}<>A${rowNum}, "EDI ERROR", IF(LEN(Q${rowNum})>15, "G/L CODE ERROR", IF(LEN(R${rowNum})>9, "ARA LOCATION ERROR", IF(LEN(S${rowNum})>3, "ARA SERVICE ERROR", IF(LEN(T${rowNum})>3, "DIVISION CODE ERROR", IF(LEN(U${rowNum})>15, "DEPT 1 ERROR", IF(LEN(V${rowNum})>15, "DEPT 2 ERROR", IF(LEN(W${rowNum})>15, "DEPT 3 ERROR", IF(LEN(X${rowNum})>15, "TERRITORY CODE ERROR", IF(LEN(Y${rowNum})>15, "COST CENTER CODE ERROR", IF(LEN(Z${rowNum})>15, "FIELD 100 ERROR", IF(LEN(AA${rowNum})>5, "COST CENTER GROUP ERROR", IF(OR(A${rowNum}="",B${rowNum}= "", C${rowNum}="", D${rowNum}="", E${rowNum}="", F${rowNum}="", G${rowNum}="", H${rowNum}="", I${rowNum}="", J${rowNum}="", K${rowNum}="", L${rowNum}="", M${rowNum}="", N${rowNum}="", O${rowNum}="", P${rowNum}="", Q${rowNum}="", R${rowNum}="", S${rowNum}="", T${rowNum}="", U${rowNum}="", V${rowNum}="", W${rowNum}="",X${rowNum}="", Y${rowNum}="",Z${rowNum}="",AA${rowNum}=""), "EMPTY CELL(S)", "NO ERROR"))))))))))))))))))))))))))))`;
+
+                    let rowArray = [
+                        "", // Ship To (Strictly Empty)
+                        finalCustomerName,
+                        " ", // Addr 1
+                        d.addr, // Addr 2 mapped to Street
+                        " ", // Addr 3
+                        d.city,
+                        d.state,
+                        d.zip,
+                        " ", // County
+                        "US", // Country
+                        d.name,
+                        d.phone,
+                        " ", // Ext
+                        " ", // Fax
+                        finalAbbrev, 
+                        "", // EDI (Strictly Empty)
+                        " ", // G/L Code
+                        " ", // ARA Loc
+                        " ", // ARA Serv
+                        " ", // Div
+                        " ", // Dept 1
+                        " ", // Dept 2
+                        " ", // Dept 3
+                        " ", // Terr
+                        d.cc, // Cost Center
+                        " ", // F100
+                        " ", // CC Group
+                        formula // Col AB Formula
+                    ];
+
+                    let formattedRow = rowArray.map(cell => {
+                        let cellStr = String(cell);
+                        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.startsWith('=')) {
+                            cellStr = `"${cellStr.replace(/"/g, '""')}"`;
+                        }
+                        return cellStr;
+                    });
+
+                    csvContent += formattedRow.join(",") + "\r\n";
+                });
+                triggerDownload(csvContent, "CM-10 New Customer Set Up.csv");
+
+            } else if (mode === 'web') {
+                const webHeaders = [
+                    "PWBLTO","PWCUST","PWUSERName","PSWORD","PWWEBLVL","ActiveAccount","PWTESTFLG","DaysInactive",
+                    "PWEmergencyShipRight","PWGroupRight","PWUserDefinedField1","PWUserDefinedField2","PWUserDefinedField3",
+                    "PWAlph","PWGroupReportRight","PWBillToReportRight","PWShipToReportRight","PWDefaultReportRight",
+                    "PWCCPaymentRequired","PWBudgetRight","PWSaveCart","PWOrderSubmissionRight","PWAccountApprovalRight",
+                    "PWStatus","PWScheduledOrders","PWProfileRights","PWItemQtyApprovals","PWMaxOrdQty","PWShippingRights",
+                    "PWUserClass","PWMaxOrdDollars","PWAltPriceGroup","PWCustomerPickup","PWOrderingRights","PWGroupApprovalRight",
+                    "PWMaxCartDollars","PWGroupBackShipments","PWCheckout","PWItemApprovalRight","PWBrandsite","PWShipSpeed",
+                    "PWStoreProfileEditRight","PWKittingRights","PWUserLink1","PWUserLink2","PWUserLink3","PWUserLink4",
+                    "PWUserLink5","PWHoldExpeditedOrders","PWPickupOnly","PWScheduledCartApprover","PWEmailApprovalRight",
+                    "PWCostCenterGroup","PWNotes","PWScheduledCartGroupApprovalRight","PWScheduledCartEmailApprovalRight",
+                    "PWAdminAccount","fname","lname","Email","Address","Address2","City","State","Zip","Country",
+                    "Province_territory","Phone","VTuser","VTdefault","CWAltShpTo","CWPOCode","PWExpediteScheduledCart",
+                    "PWPreOrderAccMgrRights","PWPreOrdrMgrGroupApprovalRight","PWPreOrdrMgrEmailApprovalRight","PWLockWndwApplies",
+                    "PWTrackHistory","PWHideBudgets"
+                ];
+
+                let csvContent = webHeaders.join(",") + "\r\n";
+
+                sessionData.forEach((d) => {
+                    let userTypeLower = (d.userClass || '').toLowerCase();
+                    let isContractor = userTypeLower.includes('contractor');
+
+                    // Create an empty array (no spaces) matching header length
+                    let rowArray = new Array(webHeaders.length).fill("");
+                    
+                    // Username logic: Contractor = Loyalty Num | Everyone else = Email
+                    rowArray[webHeaders.indexOf("PWUSERName")] = isContractor ? (d.loyaltyNum || "") : (d.email || "");
+                    rowArray[webHeaders.indexOf("Email")] = isContractor ? "" : (d.email || "");
+
+                    rowArray[webHeaders.indexOf("PSWORD")] = "Hardie-1";
+                    rowArray[webHeaders.indexOf("PWUserClass")] = d.userClass || "";
+                    
+                    // Split Name into fname and lname
+                    let nameParts = (d.name || d.businessName || "").trim().split(/\s+/);
+                    rowArray[webHeaders.indexOf("fname")] = nameParts[0] || "";
+                    rowArray[webHeaders.indexOf("lname")] = nameParts.slice(1).join(" ") || "";
+
+                    let formattedRow = rowArray.map(cell => {
+                        let cellStr = String(cell);
+                        if (cellStr.includes(',') || cellStr.includes('"')) {
+                            cellStr = `"${cellStr.replace(/"/g, '""')}"`;
+                        }
+                        return cellStr;
+                    });
+
+                    csvContent += formattedRow.join(",") + "\r\n";
+                });
+                triggerDownload(csvContent, "User Profiles Setup.csv");
+            }
         });
 
         // --- UI Updates ---
@@ -438,6 +526,7 @@
                 tableContainer.style.display = 'none';
                 downloadBtn.style.opacity = '0.5';
                 downloadBtn.style.pointerEvents = 'none';
+                downloadBtn.innerText = 'Download Data Payload';
                 tbody.innerHTML = '';
                 return;
             }
@@ -446,22 +535,32 @@
             tableContainer.style.display = 'block';
             downloadBtn.style.opacity = '1';
             downloadBtn.style.pointerEvents = 'auto';
+            downloadBtn.innerText = converterType.value === 'cm10' ? 'Download CM-10 Load File' : 'Download Web Profile Load File';
 
             tbody.innerHTML = '';
             sessionData.forEach(d => {
                 const tr = document.createElement('tr');
                 const pillClass = d.status === "SUCCESS" ? "status-success" : "status-error";
-                const errContext = d.status === "ERROR" ? `<br><span style="font-size:0.75rem;color:var(--error-text);">Missing Name or CC</span>` : '';
+                const errContext = d.status === "ERROR" ? `<br><span style="font-size:0.75rem;color:var(--error-text);">Missing Bus. Name or CC</span>` : '';
                 
                 tr.innerHTML = `
                     <td><span class="status-pill ${pillClass}">${d.status}</span>${errContext}</td>
-                    <td style="font-weight: 600;">${escapeHtml(d.name || '—')}</td>
+                    <td style="font-weight: 600;">
+                        ${escapeHtml(d.businessName || d.name || '—')}
+                        <br><span style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">${escapeHtml(d.userClass || 'Unknown Type')}</span>
+                    </td>
                     <td><code style="background: var(--bg-app); padding: 2px 6px; border-radius: 4px;">${escapeHtml(d.cc || '—')}</code></td>
                     <td style="font-size: 0.8rem;">${escapeHtml(d.sourceFile)}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
+
+        converterType.addEventListener('change', () => {
+            if (sessionData.length > 0) {
+                downloadBtn.innerText = converterType.value === 'cm10' ? 'Download CM-10 Load File' : 'Download Web Profile Load File';
+            }
+        });
 
         function escapeHtml(str) {
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

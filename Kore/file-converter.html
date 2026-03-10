@@ -139,7 +139,7 @@
     <main class="main-container">
         
         <section class="hero-banner">
-            <img src="images/FileConverterBanner.jpg" alt="File Converter Converter" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+            <img src="images/FileConverterBanner.jpg" alt="File to LOAD Converter" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
             <div class="hero-overlay">
                 <div>
                     <h2 class="hero-title">File to LOAD Converter</h2>
@@ -156,7 +156,7 @@
                     <h2 class="section-header">Module Configuration</h2>
                     
                     <select class="form-select" id="converterType">
-                        <option value="cm10">New User Setup ➔ CM-10 Load</option>
+                        <option value="cm10">New User Setup Iseries JHARD</option>
                     </select>
 
                     <div class="file-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
@@ -233,7 +233,7 @@
         document.addEventListener('DOMContentLoaded', fetchSecureIdentity);
 
         // --- Core Application State ---
-        let sessionData = []; // Holds all parsed user objects
+        let sessionData = [];
         let totalFilesProcessed = 0;
         let successCount = 0;
         let errorCount = 0;
@@ -262,7 +262,7 @@
 
         // --- File Processing ---
         async function handleFiles(files) {
-            let limit = Math.min(files.length, 100); // Process max 100 per drop
+            let limit = Math.min(files.length, 100);
             for (let i = 0; i < limit; i++) {
                 await parseFile(files[i]);
             }
@@ -302,7 +302,6 @@
         function extractUserData(sheetJson) {
             let data = { name: '', addr: '', city: '', state: '', zip: '', phone: '', cc: '' };
 
-            // Pass 1: Look for Horizontal Headers (Row 1 data typically below Row 0 Headers)
             for (let r = 0; r < Math.min(sheetJson.length, 5); r++) {
                 let row = sheetJson[r] || [];
                 for (let c = 0; c < row.length; c++) {
@@ -318,7 +317,6 @@
                 }
             }
 
-            // Pass 2: Vertical Summary Fallback (Scans entire sheet for key: value text)
             for(let r = 0; r < sheetJson.length; r++) {
                 let row = sheetJson[r] || [];
                 for(let c = 0; c < row.length; c++) {
@@ -326,7 +324,6 @@
                     
                     if (!data.name && val.match(/^Name:\s*(.+)/i)) data.name = val.match(/^Name:\s*(.+)/i)[1].trim();
                     
-                    // If horizontal address failed, parse vertical block
                     if (!data.addr && val.match(/^Address:\s*(.+)/i)) {
                         let fullAddr = val.match(/^Address:\s*(.+)/i)[1];
                         let parts = fullAddr.split(',').map(s => s.trim());
@@ -340,10 +337,8 @@
                 }
             }
 
-            // Cleanup & Formatting
-            data.phone = data.phone.replace(/\D/g, ''); // Strip non-digits
+            data.phone = data.phone.replace(/\D/g, ''); 
             
-            // Generate Abbreviation: First Initial + Last Name (Max 15, Upper)
             data.abbrev = '';
             if (data.name) {
                 let parts = data.name.split(/\s+/);
@@ -362,7 +357,6 @@
         downloadBtn.addEventListener('click', () => {
             if (sessionData.length === 0) return;
 
-            // CM-10 Load Headers
             const headers = [
                 "Ship To", "Customer Name (35)", "Address Line 1 (35)", "Address Line 2 (35)", 
                 "Address Line 3 (35)", "City", "State", "Zip", "County", "Country", 
@@ -374,13 +368,12 @@
             let csvContent = headers.join(",") + "\r\n";
 
             sessionData.forEach((d, index) => {
-                let rowNum = index + 2; // Data starts on row 2
+                let rowNum = index + 2; 
                 
-                // Construct the validation formula dynamically
                 let formula = `=IF(LEN(B${rowNum})>35, "NAME ERROR", IF(LEN(C${rowNum})>35, "ADDRESS 1 ERROR", IF(LEN(D${rowNum})>35, "ADDRESS 2 ERROR", IF(LEN(E${rowNum})>35, "ADDRESS 3 ERROR", IF(LEN(F${rowNum})>21, "CITY ERROR", IF(LEN(G${rowNum})>2, "STATE ERROR", IF(LEN(H${rowNum})>5, "ZIP ERROR", IF(LEN(I${rowNum})>5, "COUNTY ERROR", IF(LEN(J${rowNum})>5, "COUNTRY ERROR", (IF(LEN(K${rowNum})>20, "CONTACT NAME ERROR", IF(LEN(L${rowNum})>12, "PHONE ERROR", IF(LEN(M${rowNum})>4, "EXTENSION ERROR", IF(LEN(N${rowNum})>12, "FAX ERROR", IF(LEN(O${rowNum})>15, "ABBREV ERROR", IF(P${rowNum}<>A${rowNum}, "EDI ERROR", IF(LEN(Q${rowNum})>15, "G/L CODE ERROR", IF(LEN(R${rowNum})>9, "ARA LOCATION ERROR", IF(LEN(S${rowNum})>3, "ARA SERVICE ERROR", IF(LEN(T${rowNum})>3, "DIVISION CODE ERROR", IF(LEN(U${rowNum})>15, "DEPT 1 ERROR", IF(LEN(V${rowNum})>15, "DEPT 2 ERROR", IF(LEN(W${rowNum})>15, "DEPT 3 ERROR", IF(LEN(X${rowNum})>15, "TERRITORY CODE ERROR", IF(LEN(Y${rowNum})>15, "COST CENTER CODE ERROR", IF(LEN(Z${rowNum})>15, "FIELD 100 ERROR", IF(LEN(AA${rowNum})>5, "COST CENTER GROUP ERROR", IF(OR(A${rowNum}="",B${rowNum}= "", C${rowNum}="", D${rowNum}="", E${rowNum}="", F${rowNum}="", G${rowNum}="", H${rowNum}="", I${rowNum}="", J${rowNum}="", K${rowNum}="", L${rowNum}="", M${rowNum}="", N${rowNum}="", O${rowNum}="", P${rowNum}="", Q${rowNum}="", R${rowNum}="", S${rowNum}="", T${rowNum}="", U${rowNum}="", V${rowNum}="", W${rowNum}="",X${rowNum}="", Y${rowNum}="",Z${rowNum}="",AA${rowNum}=""), "EMPTY CELL(S)", "NO ERROR"))))))))))))))))))))))))))))`;
 
                 let rowArray = [
-                    " ", // Ship To
+                    "", // Ship To (Strictly Empty)
                     d.name,
                     " ", // Addr 1
                     d.addr,
@@ -395,7 +388,7 @@
                     " ", // Ext
                     " ", // Fax
                     d.abbrev,
-                    " ", // EDI
+                    "", // EDI (Strictly Empty)
                     " ", // G/L Code
                     " ", // ARA Loc
                     " ", // ARA Serv
@@ -410,7 +403,6 @@
                     formula // Col AB Formula
                 ];
 
-                // Properly escape CSV cells to protect commas and evaluate the formula in Excel
                 let formattedRow = rowArray.map(cell => {
                     let cellStr = String(cell);
                     if (cellStr.includes(',') || cellStr.includes('"') || cellStr.startsWith('=')) {
@@ -422,7 +414,6 @@
                 csvContent += formattedRow.join(",") + "\r\n";
             });
 
-            // Trigger Download
             let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
             let a = document.createElement('a');

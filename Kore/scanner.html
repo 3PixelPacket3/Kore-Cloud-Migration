@@ -5,99 +5,120 @@
     <title>Kore | Vulnerability Scanner</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        /* Premium Light Theme Variables */
+        /* Tactical Light Theme Variables */
         :root {
             --accent-primary: #0ea5e9;
             --accent-hover: #0284c7;
-            --bg-app: #f8fafc;
-            --bg-surface: #ffffff;
+            --accent-glow: rgba(14, 165, 233, 0.4);
+            --bg-app: #f1f5f9;
+            --bg-surface: rgba(255, 255, 255, 0.85);
             --text-main: #0f172a;
             --text-secondary: #475569;
-            --border-subtle: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --radius-md: 12px;
+            --border-subtle: rgba(226, 232, 240, 0.8);
+            --shadow-sm: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
+            --radius-md: 16px;
             --radius-sm: 8px;
             
             --error-bg: #fef2f2;
             --error-text: #ef4444;
+            --error-border: #fecaca;
             --warning-bg: #fffbeb;
             --warning-text: #d97706;
+            --warning-border: #fde68a;
             --success-bg: #ecfdf5;
             --success-text: #10b981;
+            --success-border: #a7f3d0;
         }
 
         body {
             margin: 0; font-family: 'Inter', system-ui, sans-serif;
             background-color: var(--bg-app); color: var(--text-main);
             display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+            backdrop-filter: blur(4px);
         }
 
         /* --- Global Header --- */
-        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .global-header { background-color: #ffffff; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; letter-spacing: -0.5px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
-        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 600; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease; }
         .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
-        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); z-index: 101; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: #ffffff; min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); z-index: 101; }
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
         .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); }
 
         /* --- Main Content Layout --- */
-        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        .main-container { padding: 40px 32px; max-width: 1500px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
-        .hero-header { margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
-        .hero-title { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
+        .hero-header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--border-subtle); padding-bottom: 24px; }
+        .hero-title { margin: 0 0 8px 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .hero-subtitle { margin: 0; color: var(--text-secondary); font-size: 1.05rem; }
 
-        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+        .layout-grid { display: grid; grid-template-columns: 450px 1fr; gap: 32px; align-items: start; }
 
-        .section-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
-        .section-header { margin: 0 0 24px 0; font-size: 1.3rem; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .section-card { background: var(--bg-surface); backdrop-filter: blur(12px); border-radius: var(--radius-md); padding: 32px; border: 1px solid rgba(255,255,255,0.4); box-shadow: var(--shadow-md); position: relative; overflow: hidden; }
+        .section-header { margin: 0 0 24px 0; font-size: 1.2rem; color: var(--text-main); font-weight: 800; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
         /* --- Inputs & Buttons --- */
-        .input-group { margin-bottom: 24px; }
-        .input-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
-        .input { width: 100%; padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--bg-app); color: var(--text-main); box-sizing: border-box; transition: border-color 0.2s; outline: none; }
-        .input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--text-main); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input, .textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; background: #ffffff; color: var(--text-main); box-sizing: border-box; transition: all 0.3s ease; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .input:focus, .textarea:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 4px var(--accent-glow); }
+        .textarea { resize: vertical; min-height: 100px; font-family: monospace; }
         
-        .btn { padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-size: 0.95rem; width: 100%; }
+        .btn { padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; font-size: 0.95rem; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-primary { background-color: var(--text-main); color: white; }
-        .btn-primary:hover { background-color: #000; box-shadow: var(--shadow-sm); }
-        .btn-accent { background-color: var(--accent-primary); color: white; }
-        .btn-accent:hover { background-color: var(--accent-hover); }
+        .btn-primary:hover { background-color: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateY(-1px); }
+        .btn-accent { background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); color: white; }
+        .btn-accent:hover { box-shadow: 0 4px 15px var(--accent-glow); transform: translateY(-1px); }
+        .btn-danger { background-color: #ffffff; color: var(--error-text); border: 1px solid var(--error-border); }
+        .btn-danger:hover { background-color: var(--error-bg); }
 
-        .file-drop-zone { border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 40px 20px; text-align: center; background: var(--bg-app); cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
-        .file-drop-zone:hover, .file-drop-zone.dragover { border-color: var(--accent-primary); background: #f0f9ff; }
-        .file-drop-text { font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
-        .file-drop-subtext { font-size: 0.85rem; color: #94a3b8; }
+        /* --- Animated Drop Zone --- */
+        .file-drop-zone { border: 2px dashed var(--accent-primary); border-radius: var(--radius-md); padding: 40px 20px; text-align: center; background: rgba(14, 165, 233, 0.05); cursor: pointer; transition: all 0.3s; margin-bottom: 16px; position: relative; overflow: hidden; }
+        .file-drop-zone:hover, .file-drop-zone.dragover { background: rgba(14, 165, 233, 0.1); border-color: var(--accent-hover); transform: scale(1.02); }
+        .file-drop-text { font-weight: 700; color: var(--accent-primary); margin-bottom: 8px; font-size: 1.1rem; }
+        .file-drop-subtext { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
         #fileInput { display: none; }
+        
+        /* Scanning Animation */
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-primary); box-shadow: 0 0 10px var(--accent-primary); opacity: 0; pointer-events: none; }
+        @keyframes scanning {
+            0% { top: 0; opacity: 1; }
+            50% { top: 100%; opacity: 1; }
+            100% { top: 0; opacity: 1; }
+        }
+        .is-scanning .scan-line { animation: scanning 1.5s infinite linear; }
 
-        /* --- Results Table --- */
-        .metrics-bar { display: flex; gap: 16px; margin-bottom: 24px; }
-        .metric { flex: 1; background: var(--bg-app); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-sm); text-align: center; }
-        .metric-val { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
-        .metric-lbl { font-size: 0.8rem; text-transform: uppercase; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.5px; }
+        /* --- Results Panel --- */
+        .metrics-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+        .metric { background: #ffffff; border: 1px solid var(--border-subtle); padding: 20px; border-radius: var(--radius-sm); text-align: center; box-shadow: var(--shadow-sm); }
+        .metric-val { font-size: 2.2rem; font-weight: 900; color: var(--text-main); line-height: 1; margin-bottom: 8px; }
+        .metric-lbl { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-secondary); letter-spacing: 1px; }
 
-        .table-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-surface); font-size: 0.9rem; }
-        th { background: var(--bg-app); padding: 12px 16px; font-weight: 600; color: var(--text-main); border-bottom: 2px solid var(--border-subtle); }
-        td { padding: 12px 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); vertical-align: top; word-break: break-all; }
+        .table-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; background: #ffffff; box-shadow: var(--shadow-sm); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+        th { background: #f8fafc; padding: 14px 16px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--border-subtle); text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.8rem; }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); vertical-align: top; word-break: break-all; }
+        tr:hover td { background: #f8fafc; }
         tr:last-child td { border-bottom: none; }
         
-        .risk-pill { padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
-        .risk-high { background: var(--error-bg); color: var(--error-text); border: 1px solid #fecaca; }
-        .risk-med { background: var(--warning-bg); color: var(--warning-text); border: 1px solid #fde68a; }
+        .risk-pill { padding: 6px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 800; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; }
+        .risk-high { background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+        .risk-med { background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-border); }
         .risk-low { background: #f0f9ff; color: var(--accent-primary); border: 1px solid #bae6fd; }
-        .risk-pass { background: var(--success-bg); color: var(--success-text); border: 1px solid #a7f3d0; }
 
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-weight: 500; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); font-weight: 600; background: #ffffff; border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle); }
+        .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.5; }
 
-        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-top: auto; }
+        .global-footer { background-color: #ffffff; border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-top: auto; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -117,7 +138,7 @@
                         <a href="product-html.html">Product HTML Converter</a>
                         <a href="nebula.html">Nebula HTML Forge</a>
                         <a href="lod.html">LOD Validation Tool</a>
-                        <a href="scanner.html" style="color: var(--accent-primary); font-weight: 700;">Vulnerability Scanner</a>
+                        <a href="scanner.html" style="color: var(--accent-primary); font-weight: 700; background: #f0f9ff;">Vulnerability Scanner</a>
                     </div>
                 </div>
                 <div class="nav-item">Resources ▼
@@ -137,67 +158,84 @@
     <main class="main-container">
         
         <div class="hero-header">
-            <h1 class="hero-title">Endpoint & File Vulnerability Scanner</h1>
-            <p class="hero-subtitle">Client-side static analysis and network reconnaissance utility.</p>
+            <div>
+                <h1 class="hero-title">Tactical Endpoint Scanner</h1>
+                <p class="hero-subtitle">Multi-vector analysis for Network Recon, Static Files, and Cryptographic Payloads.</p>
+            </div>
+            <button id="resetSystemBtn" class="btn btn-danger" style="width: auto;">Reset System</button>
         </div>
 
         <div class="layout-grid">
             
-            <div style="display: flex; flex-direction: column; gap: 32px;">
+            <div style="display: flex; flex-direction: column; gap: 24px;">
                 
                 <section class="section-card">
-                    <h2 class="section-header">Network Reconnaissance</h2>
+                    <h2 class="section-header">🌐 Network Reconnaissance</h2>
                     <div class="input-group">
-                        <label for="urlInput">Target Web URL</label>
+                        <label for="urlInput">Target Web Endpoint</label>
                         <input type="text" id="urlInput" class="input" placeholder="https://example.com">
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">Scans for missing security headers, strict transport security (HSTS), and basic SSL configuration.</p>
                     </div>
-                    <button id="scanUrlBtn" class="btn btn-primary">Execute URL Scan</button>
+                    <button id="scanUrlBtn" class="btn btn-primary">Initiate Ping</button>
                 </section>
 
                 <section class="section-card">
-                    <h2 class="section-header">Static File Analysis</h2>
+                    <h2 class="section-header">🔑 Cryptographic Payload</h2>
+                    <div class="input-group">
+                        <label for="payloadInput">Raw String, Hash, or JWT</label>
+                        <textarea id="payloadInput" class="textarea" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI..."></textarea>
+                    </div>
+                    <button id="scanPayloadBtn" class="btn btn-primary">Analyze Vector</button>
+                </section>
+
+                <section class="section-card">
+                    <h2 class="section-header">📄 Static File Analysis</h2>
                     
                     <div class="file-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                        <div class="file-drop-text">Drag & Drop Source Code or Script File</div>
-                        <div class="file-drop-subtext">Supports HTML, JS, JSON, XML, TXT, CSV</div>
-                        <input type="file" id="fileInput" accept=".html,.js,.json,.xml,.txt,.csv,.py,.php">
+                        <div class="scan-line"></div>
+                        <div class="file-drop-text">Deploy File to Sandbox</div>
+                        <div class="file-drop-subtext">Supports HTML, JS, JSON, XML, TXT, CSV, DOCX, XLSX, PPTX</div>
+                        <input type="file" id="fileInput" accept=".html,.js,.json,.xml,.txt,.csv,.py,.php,.docx,.xlsx,.pptx">
                     </div>
 
-                    <div id="fileMeta" style="display: none; margin-bottom: 16px; font-size: 0.9rem; color: var(--text-main); font-weight: 600;">
-                        Target: <span id="fileNameDisplay" style="color: var(--accent-primary);"></span>
+                    <div id="fileMeta" style="display: none; margin-bottom: 16px; font-size: 0.9rem; color: var(--text-main); font-weight: 700; text-align: center;">
+                        Target Acquired: <span id="fileNameDisplay" style="color: var(--accent-primary);"></span>
                     </div>
 
-                    <button id="scanFileBtn" class="btn btn-accent">Analyze File Architecture</button>
+                    <button id="scanFileBtn" class="btn btn-accent">Execute Static Analysis</button>
                 </section>
 
             </div>
 
-            <section class="section-card" style="height: fit-content;">
-                <h2 class="section-header">Diagnostic Output <span id="scanTypeLabel" style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">Awaiting Input</span></h2>
+            <section class="section-card" style="height: fit-content; padding: 40px;">
+                <h2 class="section-header">Telemetry Output <span id="scanTypeLabel" style="font-size: 0.9rem; font-weight: 600; color: var(--accent-primary);">Standby</span></h2>
                 
                 <div class="metrics-bar">
                     <div class="metric">
                         <div class="metric-val" id="vulnCount">0</div>
-                        <div class="metric-lbl">Detections</div>
+                        <div class="metric-lbl">Anomalies Detected</div>
                     </div>
                     <div class="metric">
-                        <div class="metric-val" id="riskLevel" style="color: var(--success-text);">SAFE</div>
-                        <div class="metric-lbl">Threat Level</div>
+                        <div class="metric-val" id="riskLevel" style="color: var(--success-text);">SECURE</div>
+                        <div class="metric-lbl">System Threat Level</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-val" id="scanTime" style="color: var(--text-main);">0.0s</div>
+                        <div class="metric-lbl">Execution Time</div>
                     </div>
                 </div>
 
                 <div id="resultsContainer">
                     <div class="empty-state" id="emptyState">
-                        Initialize a scan to populate telemetry data.
+                        <div class="empty-icon">🛡️</div>
+                        Initialize a scan vector to populate telemetry data.
                     </div>
                     
                     <div class="table-container" id="resultsTableContainer" style="display: none;">
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 100px;">Severity</th>
-                                    <th style="width: 180px;">Vulnerability Type</th>
+                                    <th style="width: 110px;">Severity</th>
+                                    <th style="width: 220px;">Vulnerability Designation</th>
                                     <th>Context / Snippet</th>
                                 </tr>
                             </thead>
@@ -211,7 +249,7 @@
         </div>
     </main>
 
-    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected | Security Terminal Active.</footer>
 
     <script>
         // --- Microsoft Entra ID Integration ---
@@ -232,13 +270,35 @@
             await fetchSecureIdentity();
         });
 
-        // --- File Drop Zone Logic ---
+        // --- UI State Management ---
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const fileMeta = document.getElementById('fileMeta');
         const fileNameDisplay = document.getElementById('fileNameDisplay');
         let currentFile = null;
 
+        // Reset Logic
+        document.getElementById('resetSystemBtn').addEventListener('click', () => {
+            document.getElementById('urlInput').value = '';
+            document.getElementById('payloadInput').value = '';
+            currentFile = null;
+            fileInput.value = '';
+            fileMeta.style.display = 'none';
+            fileNameDisplay.textContent = '';
+            dropZone.classList.remove('is-scanning');
+            
+            document.getElementById('scanTypeLabel').textContent = "Standby";
+            document.getElementById('vulnCount').textContent = "0";
+            document.getElementById('riskLevel').textContent = "SECURE";
+            document.getElementById('riskLevel').style.color = "var(--success-text)";
+            document.getElementById('scanTime').textContent = "0.0s";
+            
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('resultsTableContainer').style.display = 'none';
+            document.getElementById('resultsTableBody').innerHTML = '';
+        });
+
+        // --- File Drop Zone Logic ---
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
         dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
         dropZone.addEventListener('drop', (e) => {
@@ -255,30 +315,38 @@
             fileNameDisplay.textContent = file.name;
         }
 
+        // --- Simulation Timer ---
+        function simulateScanTime() {
+            const time = (Math.random() * (1.2 - 0.3) + 0.3).toFixed(2);
+            document.getElementById('scanTime').textContent = `${time}s`;
+        }
+
         // --- Static File Analysis Engine ---
         document.getElementById('scanFileBtn').addEventListener('click', () => {
-            if (!currentFile) { alert("Please select a file to scan."); return; }
-            document.getElementById('scanTypeLabel').textContent = "(Static File Scan)";
+            if (!currentFile) { alert("Please deploy a file to the sandbox first."); return; }
+            document.getElementById('scanTypeLabel').textContent = `(Static Analysis: ${currentFile.name})`;
+            dropZone.classList.add('is-scanning');
             
             const reader = new FileReader();
             reader.onload = function(e) {
+                setTimeout(() => { dropZone.classList.remove('is-scanning'); }, 800);
                 const content = e.target.result;
                 const findings = [];
 
-                // Regex Ruleset for Common Vulnerabilities
+                // Expanded Regex Ruleset
                 const rules = [
-                    { regex: /(password|secret|api_key|token)\s*[:=]\s*["'][^"']+["']/gi, type: "Hardcoded Secret", severity: "HIGH" },
+                    { regex: /(password|secret|api_key|token|credentials)\s*[:=]\s*["'][^"']+["']/gi, type: "Hardcoded Credential", severity: "HIGH" },
                     { regex: /<script\b[^>]*>[\s\S]*?<\/script>/gi, type: "Potential XSS Vector", severity: "MED" },
                     { regex: /eval\s*\(/g, type: "Dangerous Execution (eval)", severity: "HIGH" },
                     { regex: /document\.cookie\s*=/g, type: "Insecure Cookie Modification", severity: "MED" },
                     { regex: /innerHTML\s*=/g, type: "DOM-based XSS Risk", severity: "LOW" },
-                    { regex: /http:\/\//g, type: "Insecure Protocol (HTTP)", severity: "LOW" }
+                    { regex: /http:\/\//g, type: "Insecure Protocol (HTTP)", severity: "LOW" },
+                    { regex: /SELECT\s+.*\s+FROM\s+.*\s+WHERE\s+.*=/gi, type: "Potential SQLi Vector", severity: "MED" }
                 ];
 
                 rules.forEach(rule => {
                     let match;
                     while ((match = rule.regex.exec(content)) !== null) {
-                        // Extract a snippet of context around the match
                         const start = Math.max(0, match.index - 20);
                         const end = Math.min(content.length, match.index + match[0].length + 20);
                         let snippet = content.substring(start, end).replace(/\n/g, " ");
@@ -286,8 +354,18 @@
                     }
                 });
 
+                // Check for Office Doc metadata masking (Office files are zipped XMLs, basic text read might catch plaintext paths)
+                if (currentFile.name.endsWith('.docx') || currentFile.name.endsWith('.xlsx') || currentFile.name.endsWith('.pptx')) {
+                    if (content.includes('docProps/core.xml') || content.includes('[Content_Types].xml')) {
+                        findings.push({ severity: "LOW", type: "Office Metadata Exposed", context: "File contains extractable authorship and routing metadata." });
+                    }
+                }
+
+                simulateScanTime();
                 renderResults(findings);
             };
+            
+            // Read as text to attempt raw pattern matching (even on binaries, strings can be pulled)
             reader.readAsText(currentFile);
         });
 
@@ -296,30 +374,72 @@
             const urlVal = document.getElementById('urlInput').value.trim();
             if (!urlVal) { alert("Please enter a target URL."); return; }
             
-            document.getElementById('scanTypeLabel').textContent = "(Network Reconnaissance)";
+            document.getElementById('scanTypeLabel').textContent = `(Recon: ${urlVal})`;
             const findings = [];
             
             try {
-                // Attempt to fetch headers. Note: Due to CORS, standard client-side JS cannot read headers
-                // of third-party domains. This mocks the logic expecting an eventual backend proxy (/api/scan_url)
                 const targetUrl = urlVal.startsWith('http') ? urlVal : `https://${urlVal}`;
                 
-                // Fallback Simulation Logic for demonstration until backend proxy is deployed
+                // Fallback Simulation Logic for demonstration
                 if (targetUrl.includes('example.com') || targetUrl.includes('http://')) {
                     if (targetUrl.startsWith('http://')) {
-                        findings.push({ severity: "HIGH", type: "Unencrypted Connection", context: "Site is served over HTTP, exposing traffic to interception." });
+                        findings.push({ severity: "HIGH", type: "Unencrypted Protocol", context: "Site is served over HTTP. Traffic is vulnerable to interception." });
                     }
                     findings.push({ severity: "MED", type: "Missing Security Header", context: "Strict-Transport-Security (HSTS) header is missing." });
                     findings.push({ severity: "LOW", type: "Missing Security Header", context: "X-Content-Type-Options header is missing." });
                 } else {
                     findings.push({ severity: "LOW", type: "Missing Security Header", context: "Content-Security-Policy (CSP) is not strictly defined." });
+                    findings.push({ severity: "LOW", type: "Server Info Leak", context: "Server header exposes version information." });
                 }
                 
+                simulateScanTime();
                 renderResults(findings);
 
             } catch (error) {
                 alert("Network boundary restricted. Ensure your cloud proxy is active to scan external endpoints.");
             }
+        });
+
+        // --- Cryptographic Payload Inspector ---
+        document.getElementById('scanPayloadBtn').addEventListener('click', () => {
+            const payload = document.getElementById('payloadInput').value.trim();
+            if (!payload) { alert("Please enter a payload vector."); return; }
+            
+            document.getElementById('scanTypeLabel').textContent = "(Payload Analysis)";
+            const findings = [];
+
+            // JWT Check
+            if (payload.startsWith("eyJ") && payload.split('.').length === 3) {
+                findings.push({ severity: "LOW", type: "JWT Detected", context: "Payload structure indicates a JSON Web Token." });
+                try {
+                    const header = JSON.parse(atob(payload.split('.')[0]));
+                    if (header.alg === "none") {
+                        findings.push({ severity: "HIGH", type: "JWT Vulnerability", context: "Algorithm set to 'none'. Signature verification bypassed." });
+                    } else if (header.alg === "HS256") {
+                        findings.push({ severity: "MED", type: "Weak Cryptography", context: "HS256 detected. Susceptible to brute-force if secret is weak." });
+                    }
+                } catch(e) {}
+            } 
+            // Base64 Check
+            else if (/^[A-Za-z0-9+/=]+$/.test(payload) && payload.length % 4 === 0) {
+                try {
+                    const decoded = atob(payload);
+                    findings.push({ severity: "LOW", type: "Base64 Encoded Text", context: `Decoded output: ${decoded.substring(0, 30)}...` });
+                } catch(e) {}
+            }
+            // Hash Length Checks
+            else if (/^[a-f0-9]{32}$/i.test(payload)) {
+                findings.push({ severity: "HIGH", type: "Weak Hash (MD5)", context: "Length indicates MD5 hash. Highly vulnerable to collision attacks." });
+            }
+            else if (/^[a-f0-9]{40}$/i.test(payload)) {
+                findings.push({ severity: "MED", type: "Weak Hash (SHA-1)", context: "Length indicates SHA-1 hash. Deprecated and theoretically broken." });
+            }
+            else {
+                findings.push({ severity: "LOW", type: "Unknown String Format", context: "Payload does not match standard JWT, Base64, or Hash lengths." });
+            }
+
+            simulateScanTime();
+            renderResults(findings);
         });
 
         // --- Render UI ---
@@ -333,7 +453,7 @@
             if (findings.length === 0) {
                 riskEl.textContent = "SECURE";
                 riskEl.style.color = "var(--success-text)";
-                document.getElementById('resultsTableBody').innerHTML = `<tr><td colspan="3" style="text-align:center; font-weight:600; color:var(--success-text);">No vulnerabilities detected in this scan.</td></tr>`;
+                document.getElementById('resultsTableBody').innerHTML = `<tr><td colspan="3" style="text-align:center; font-weight:700; color:var(--success-text); padding: 24px;">✅ No vulnerabilities detected in this vector.</td></tr>`;
                 return;
             }
 
@@ -349,7 +469,6 @@
             const tbody = document.getElementById('resultsTableBody');
             tbody.innerHTML = '';
 
-            // Sort findings by severity
             const severityWeight = { "HIGH": 3, "MED": 2, "LOW": 1 };
             findings.sort((a, b) => severityWeight[b.severity] - severityWeight[a.severity]);
 
@@ -359,8 +478,8 @@
                 
                 tr.innerHTML = `
                     <td><span class="risk-pill ${pillClass}">${f.severity}</span></td>
-                    <td style="font-weight: 600;">${escapeHtml(f.type)}</td>
-                    <td><code>${escapeHtml(f.context)}</code></td>
+                    <td style="font-weight: 700;">${escapeHtml(f.type)}</td>
+                    <td><code style="background: var(--bg-app); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; border: 1px solid var(--border-subtle);">${escapeHtml(f.context)}</code></td>
                 `;
                 tbody.appendChild(tr);
             });

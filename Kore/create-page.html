@@ -293,7 +293,7 @@
 
             localTasks = await loadCloudData('todos') || [];
             try {
-                const res = await fetch('/api/get_work_items'); 
+                const res = await fetch(`/api/get_work_items?_t=${Date.now()}`); 
                 if (res.ok) { localTickets = await res.json(); } 
                 else { localTickets = await loadCloudData('work_items') || []; }
             } catch(e) { localTickets = await loadCloudData('work_items') || []; }
@@ -301,7 +301,7 @@
 
         async function loadCloudData(dataType) {
             try {
-                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
@@ -557,7 +557,8 @@
         // --- Azure Cloud Transmission System ---
         async function fetchPagesFromCloud() {
             try {
-                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
+                // Ensure fresh data with a cache buster parameter
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (Array.isArray(data)) return data;

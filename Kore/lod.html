@@ -579,7 +579,7 @@
                     <label for="lodMode">Validation Profile</label>
                     <select id="lodMode" class="form-select">
                         <option value="lod">LOD (Standard Ruleset)</option>
-                        <option value="palod">PALOD (Requires 1NAPR prefix on all POs)</option>
+                        <option value="palod">PALOD (Requires 1NAPR- prefix on all POs)</option>
                     </select>
                 </div>
 
@@ -600,8 +600,7 @@
                 <div class="form-row" style="margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px;">
                     <label>Reference Materials</label>
                     <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                        <a href="data/lod/LOD-Blank-Template.csv" class="btn" download>Blank Template (CSV)</a>
-                        <a href="data/lod/LOD-Rules.docx" class="btn" download>Rules Documentation</a>
+                        <a href="data:text/csv;charset=utf-8,Group%20Code%2CCustomer%20%23%2CItem%20Number%2CQuantity%2CCustomer%20PO%2CName%2CShip-to-Address%201%2CShip-to%20Address%202%2CShip-to%20Address%203%2CCity%2CState%2CZIP%2CCountry%2CContact%20name%2CContact%2COrder%20Type%2CService%20Level%20of%20Shipment%2CAllocation%20Rule%2CCustomer%20In%20Hands%20Date%2COn%20or%20Before%20Indicator%20%28O%20or%20B%29%2CMust%20Ship%20Date%2CAddress%20Over-Ride%2CCarrier%2CShip%20From%20Warehouse%2CGL-Code%2CConfirmation%20Email%2CShip%20Confirmation%20Email%2CSite%0A" class="btn" download="LOD-Blank-Template.csv">Download Blank Template (CSV)</a>
                     </div>
                 </div>
 
@@ -676,8 +675,8 @@
                 <div class="rule-group">
                     <h3>PA & PALOD Strict Logic</h3>
                     <ul>
-                        <li><strong>LOD:</strong> If Order Type is <code>PA</code>, PO must start with <code>1NAPR</code>.</li>
-                        <li><strong>PALOD:</strong> ALL rows require PO to start with <code>1NAPR</code>.</li>
+                        <li><strong>LOD:</strong> If Order Type is <code>PA</code>, PO must start with <code>1NAPR-</code>.</li>
+                        <li><strong>PALOD:</strong> ALL rows require PO to start with <code>1NAPR-</code>.</li>
                         <li><strong>Uniqueness:</strong> Same PO applied to a different address will flag. Max 20 chars.</li>
                     </ul>
                 </div>
@@ -1031,9 +1030,9 @@
 
                         var orderType = val(15);
                         if (mode === 'palod') {
-                            if (v.indexOf('1NAPR') !== 0) addIssue(rowIndex, 4, 'PALOD requires Customer PO to start with 1NAPR.', v);
+                            if (v.indexOf('1NAPR-') !== 0) addIssue(rowIndex, 4, 'PALOD requires Customer PO to start with 1NAPR-.', v);
                         } else {
-                            if (orderType === 'PA' && v.indexOf('1NAPR') !== 0) addIssue(rowIndex, 4, 'PA orders must have Customer PO starting with 1NAPR.', v);
+                            if (orderType === 'PA' && v.indexOf('1NAPR-') !== 0) addIssue(rowIndex, 4, 'PA orders must have Customer PO starting with 1NAPR-.', v);
                         }
 
                         var addrKey = [val(1), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12)].join('|').toUpperCase();

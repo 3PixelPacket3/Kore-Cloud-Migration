@@ -116,7 +116,9 @@ def save_info_page(req: func.HttpRequest) -> func.HttpResponse:
         page_id = req_body.get('id')
         user_id = req_body.get('authorId')
         is_global = req_body.get('isGlobal', False)
+        
         partition_key = "GLOBAL_HUB" if is_global else str(user_id)
+        counterpart_key = str(user_id) if is_global else "GLOBAL_HUB"
         
         conn_str = os.environ.get("KORE_DB_CONNECTION")
         service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
@@ -125,6 +127,13 @@ def save_info_page(req: func.HttpRequest) -> func.HttpResponse:
         except ResourceExistsError: pass 
         
         table_client = service_client.get_table_client(table_name=table_name)
+
+        # 🛡️ GHOST ERADICATION: Actively wipe the counterpart partition to prevent duplicate collisions
+        if page_id and user_id:
+            try:
+                table_client.delete_entity(partition_key=counterpart_key, row_key=str(page_id))
+            except Exception:
+                pass
         
         raw_json = json.dumps(req_body)
         chunks = [raw_json[i:i+30000] for i in range(0, len(raw_json), 30000)]
@@ -151,28 +160,36 @@ def get_info_pages(req: func.HttpRequest) -> func.HttpResponse:
         query = f"PartitionKey eq '{user_id}' or PartitionKey eq 'GLOBAL_HUB'"
         entities = list(table_client.query_entities(query_filter=query))
         
-        pages = []
+        pages_dict = {}
+        
+        # 🛡️ DEDUPLICATION: Map by ID to guarantee the UI only ever gets one authoritative version
         for e in entities:
             if "ChunkCount" in e:
                 raw_json = "".join([e.get(f"RawJSON_{i}", "") for i in range(e["ChunkCount"])])
             else:
                 raw_json = e.get('RawJSON', '{}')
+                
             try:
-                pages.append(json.loads(raw_json))
+                page_data = json.loads(raw_json)
+                p_id = page_data.get('id')
+                if p_id:
+                    # If duplicate exists somehow, Global hierarchy overrides personal.
+                    if p_id in pages_dict:
+                        if e.get('PartitionKey') == 'GLOBAL_HUB':
+                            pages_dict[p_id] = page_data
+                    else:
+                        pages_dict[p_id] = page_data
             except Exception: pass
             
-        return func.HttpResponse(json.dumps(pages), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
+        return func.HttpResponse(json.dumps(list(pages_dict.values())), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
     except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
 
-# NEW: Permanent Delete Endpoint for Info Hub
 @app.route(route="delete_info_page", methods=["POST"])
 def delete_info_page(req: func.HttpRequest) -> func.HttpResponse:
     try:
         req_body = req.get_json()
         page_id = req_body.get('id')
         user_id = req_body.get('authorId')
-        is_global = req_body.get('isGlobal', False)
-        partition_key = "GLOBAL_HUB" if is_global else str(user_id)
         
         if not page_id: return func.HttpResponse("Missing page ID", status_code=400)
         
@@ -180,7 +197,13 @@ def delete_info_page(req: func.HttpRequest) -> func.HttpResponse:
         service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
         table_client = service_client.get_table_client(table_name="KoreInfoHub")
         
-        table_client.delete_entity(partition_key=partition_key, row_key=str(page_id))
+        # 🛡️ TACTICAL WIPE: Blindly strike both potential partitions to ensure total deletion
+        try: table_client.delete_entity(partition_key=str(user_id), row_key=str(page_id))
+        except Exception: pass
+        
+        try: table_client.delete_entity(partition_key="GLOBAL_HUB", row_key=str(page_id))
+        except Exception: pass
+        
         return func.HttpResponse(json.dumps({"status": "deleted"}), mimetype="application/json", status_code=200)
     except Exception as e: return func.HttpResponse(f"Server Error: {str(e)}", status_code=500)
 
@@ -192,7 +215,9 @@ def save_macro(req: func.HttpRequest) -> func.HttpResponse:
         macro_id = req_body.get('id')
         user_id = req_body.get('authorId')
         is_global = req_body.get('isGlobal', False)
+        
         partition_key = "GLOBAL_MACRO" if is_global else str(user_id)
+        counterpart_key = str(user_id) if is_global else "GLOBAL_MACRO"
         
         conn_str = os.environ.get("KORE_DB_CONNECTION")
         service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
@@ -201,6 +226,10 @@ def save_macro(req: func.HttpRequest) -> func.HttpResponse:
         except ResourceExistsError: pass 
         
         table_client = service_client.get_table_client(table_name=table_name)
+
+        if macro_id and user_id:
+            try: table_client.delete_entity(partition_key=counterpart_key, row_key=str(macro_id))
+            except Exception: pass
         
         raw_json = json.dumps(req_body)
         chunks = [raw_json[i:i+30000] for i in range(0, len(raw_json), 30000)]
@@ -226,15 +255,22 @@ def get_macros(req: func.HttpRequest) -> func.HttpResponse:
         query = f"PartitionKey eq '{user_id}' or PartitionKey eq 'GLOBAL_MACRO'"
         entities = list(table_client.query_entities(query_filter=query))
         
-        macros = []
+        macros_dict = {}
         for e in entities:
             if "ChunkCount" in e:
                 raw_json = "".join([e.get(f"RawJSON_{i}", "") for i in range(e["ChunkCount"])])
             else:
                 raw_json = e.get('RawJSON', '{}')
             try:
-                macros.append(json.loads(raw_json))
+                macro_data = json.loads(raw_json)
+                m_id = macro_data.get('id')
+                if m_id:
+                    if m_id in macros_dict:
+                        if e.get('PartitionKey') == 'GLOBAL_MACRO':
+                            macros_dict[m_id] = macro_data
+                    else:
+                        macros_dict[m_id] = macro_data
             except Exception: pass
 
-        return func.HttpResponse(json.dumps(macros), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
+        return func.HttpResponse(json.dumps(list(macros_dict.values())), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
     except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)

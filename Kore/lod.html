@@ -688,7 +688,7 @@
                         <li><strong>Address 1</strong>: Contact/Company (Max 35 chars).</li>
                         <li><strong>Address 2</strong>: Street (Do not combine PO Box & Street).</li>
                         <li><strong>State</strong>: 2-char uppercase (<code>NY</code>).</li>
-                        <li><strong>ZIP</strong>: 5 or 9 digits (hyphens removed).</li>
+                        <li><strong>ZIP</strong>: 4, 5, 8, or 9 digits (accommodating zero cut-off; hyphens removed).</li>
                         <li><strong>Country</strong>: 2-char uppercase (<code>US</code>).</li>
                         <li><strong>Phone</strong>: Exactly 10 digits (no spaces/hyphens).</li>
                     </ul>
@@ -697,7 +697,7 @@
                 <div class="rule-group">
                     <h3>Execution & Logistics</h3>
                     <ul>
-                        <li><strong>In Hands Date</strong>: Format <code>MM.DD.YYYY</code>.</li>
+                        <li><strong>Dates</strong>: Either In Hands or Must Ship required. Format <code>MM.DD.YYYY</code>.</li>
                         <li><strong>Indicator</strong>: Must be <code>O</code> (on) or <code>B</code> (before).</li>
                         <li><strong>Address Over-Ride</strong>: <code>Y</code> or <code>N</code>.</li>
                         <li><strong>Service Level</strong>: Uppercase (<code>NEXT</code>, <code>2DAY</code>).</li>
@@ -1086,8 +1086,11 @@
                         if (!v) { addIssue(rowIndex, 11, 'ZIP is required.', v); return; }
                         var cleaned = String(v).replace(/-/g, '').trim();
                         if (!/^\d+$/.test(cleaned)) { addIssue(rowIndex, 11, 'ZIP must be numeric.', v); return; }
-                        if (cleaned.length === 4 || cleaned.length === 8) cleaned = '0' + cleaned;
-                        if (!(cleaned.length === 5 || cleaned.length === 9)) addIssue(rowIndex, 11, 'ZIP must be 5 or 9 digits.', v);
+                        
+                        // Explicitly allow 4, 5, 8, or 9 digits to account for zero cut-off
+                        if (!(cleaned.length === 4 || cleaned.length === 5 || cleaned.length === 8 || cleaned.length === 9)) {
+                            addIssue(rowIndex, 11, 'ZIP must be 4, 5, 8, or 9 digits.', v);
+                        }
                     })();
                     
                     // 12: Country
@@ -1124,26 +1127,28 @@
                         if (!v || v !== 'O') addIssue(rowIndex, 17, 'Allocation Rule must be "O".', v); 
                     })();
                     
-                    // 18 & 20: Dates
+                    // 18 & 20: Dates (In Hands & Must Ship)
                     (function () {
                         var inHands = val(18), mustShip = val(20);
-                        if (!inHands) { 
-                            if (!mustShip) addIssue(rowIndex, 18, 'Date required.', inHands); 
-                            return; 
+                        
+                        // Check if both are missing
+                        if (!inHands && !mustShip) { 
+                            addIssue(rowIndex, 18, 'Either Customer In Hands Date or Must Ship Date is required.', ''); 
+                        } else {
+                            // Validate formats if present
+                            if (inHands && !/^\d{2}\.\d{2}\.\d{4}$/.test(inHands)) {
+                                addIssue(rowIndex, 18, 'Format must be MM.DD.YYYY.', inHands);
+                            }
+                            if (mustShip && !/^\d{2}\.\d{2}\.\d{4}$/.test(mustShip)) {
+                                addIssue(rowIndex, 20, 'Format must be MM.DD.YYYY.', mustShip);
+                            }
                         }
-                        if (!/^\d{2}\.\d{2}\.\d{4}$/.test(inHands)) addIssue(rowIndex, 18, 'Format must be MM.DD.YYYY.', inHands);
                     })();
                     
                     // 19: Indicator
                     (function () { 
                         var v = val(19); 
                         if (v !== 'O' && v !== 'B') addIssue(rowIndex, 19, 'Indicator must be O or B.', v); 
-                    })();
-                    
-                    // 20: Must Ship Date
-                    (function () { 
-                        var v = val(20); 
-                        if (v && !/^\d{2}\.\d{2}\.\d{4}$/.test(v)) addIssue(rowIndex, 20, 'Format must be MM.DD.YYYY.', v); 
                     })();
                     
                     // 21: Address Over-Ride

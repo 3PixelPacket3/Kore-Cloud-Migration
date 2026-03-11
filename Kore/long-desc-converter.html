@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kore | Long Description Mass Converter</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --accent-primary: #0ea5e9; --accent-hover: #0284c7;
@@ -15,6 +14,7 @@
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --radius-md: 12px; --radius-sm: 8px;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
         }
 
         body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
@@ -40,18 +40,24 @@
         
         /* Stabilized Drag & Drop Zone */
         .upload-zone { 
-            display: block;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
             border: 2px dashed #cbd5e1; 
             border-radius: var(--radius-md); 
-            padding: 40px 20px; 
+            padding: 48px 24px; 
             text-align: center; 
             background: #f8fafc; 
-            transition: all 0.2s ease; 
+            transition: all 0.3s ease; 
             margin-bottom: 24px; 
             cursor: pointer; 
+            position: relative; 
+            overflow: hidden; 
         }
-        .upload-zone.highlight { border-color: var(--accent-primary); background: #f0f9ff; }
-        .upload-icon { width: 48px; height: 48px; color: var(--accent-primary); margin: 0 auto 16px auto; display: block; }
+        .upload-zone.highlight { border-color: var(--accent-primary); background: #f0f9ff; transform: scale(1.01); box-shadow: var(--shadow-sm); }
+        .upload-icon { width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 16px; transition: transform 0.3s ease; display: block; }
+        .upload-zone:hover .upload-icon { transform: translateY(-4px); }
         .upload-zone h3 { margin: 0 0 8px 0; color: var(--text-main); font-size: 1.1rem; pointer-events: none; }
         .upload-zone p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; pointer-events: none; }
         .file-status { margin-top: 16px; display: inline-block; padding: 6px 16px; border-radius: 99px; font-size: 0.85rem; font-weight: 600; background: #e2e8f0; color: var(--text-secondary); pointer-events: none; }
@@ -61,11 +67,11 @@
         /* Buttons */
         .action-row { display: flex; gap: 16px; margin-bottom: 24px; }
         .btn-primary { background: var(--accent-primary); color: white; border: none; padding: 14px 28px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 1rem; flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); box-shadow: var(--shadow-md); }
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
         .btn-primary:disabled { background: var(--border-subtle); color: #94a3b8; cursor: not-allowed; }
 
         /* Terminal Log Area */
-        .terminal-container { background: #0f172a; border-radius: var(--radius-sm); overflow: hidden; display: none; border: 1px solid #334155; }
+        .terminal-container { background: #0f172a; border-radius: var(--radius-sm); overflow: hidden; display: none; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
         .terminal-header { background: #1e293b; padding: 8px 16px; color: #94a3b8; font-size: 0.8rem; font-weight: 600; font-family: monospace; display: flex; justify-content: space-between; border-bottom: 1px solid #334155; }
         .log-area { padding: 16px; height: 200px; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #e2e8f0; line-height: 1.5; }
         .log-area p { margin: 4px 0; }
@@ -117,14 +123,14 @@
                 Long Description Mass Converter
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
-            <p class="panel-desc">Upload your Nasku export (.xlsx or .csv) below. This utility extracts metadata strictly from the description text block, maps columns properly for your standardized LOAD file, and injects regional image encodings seamlessly.</p>
+            <p class="panel-desc">Upload your Nasku CSV export below. This utility extracts metadata strictly from the description text block, maps columns properly for your standardized LOAD file, and injects regional image encodings seamlessly.</p>
             
             <label class="upload-zone" id="dropZone" for="fileInput">
                 <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <h3>Drag & Drop your File here</h3>
-                <p>Accepts .xlsx or .csv formats</p>
+                <h3>Drag & Drop your CSV file here</h3>
+                <p>or click to browse your computer</p>
                 <div id="fileStatus" class="file-status">Awaiting File...</div>
-                <input type="file" id="fileInput" accept=".csv, .xlsx" />
+                <input type="file" id="fileInput" accept=".csv" />
             </label>
 
             <div class="action-row">
@@ -215,135 +221,19 @@
             log(`System input received: ${file.name}`, 'success');
         }
 
+        // Comprehensive list of all possible fields to ensure the extractor stops at the right place
+        const stopWords = "Original Item Number:|Size:|Material:|Language:|Product Line:|Tagline:|Region:|Supersedes:|Product Type:|Use:|Market Segment:|Product Information|Download PDF";
+
         function extractField(text, fieldName) {
-            const regex = new RegExp(fieldName + "\\s*([\\s\\S]*?)(?=(Original Item Number:|Size:|Material:|Language:|Product Line:|Tagline:|Region:|$))", "i");
+            const regex = new RegExp(fieldName + "\\s*([\\s\\S]*?)(?=(" + stopWords + "|$))", "i");
             const match = text.match(regex);
             return match ? match[1].trim() : "";
         }
 
         function extractSummary(text) {
-            const regex = /^(.*?)(?=(Original Item Number:|Size:|Material:|Language:|Product Line:|Tagline:|Region:|$))/i;
+            const regex = new RegExp("^(.*?)(?=(" + stopWords + "|$))", "i");
             const match = text.match(regex);
             return match ? match[1].trim() : text.trim();
-        }
-
-        function executeMapping(data) {
-            log(`Parsing successful. Read ${data.length} entries. Initiating field mapping...`, 'success');
-            
-            let loadData = [];
-            let errCount = 0;
-
-            data.forEach((row, index) => {
-                try {
-                    const nacItem = row["NAC Item Number"] || row["NAC Item Number "] || "";
-                    const longDesc = row["Long Description"] || row["Long Description "] || "";
-                    
-                    if(!longDesc) {
-                        const availableKeys = Object.keys(row).join(", ");
-                        log(`Warning: Row ${index + 1} description missing. Skipping.`, 'warn');
-                        errCount++;
-                        return;
-                    }
-
-                    let summary = extractSummary(longDesc);
-                    let originalItem = extractField(longDesc, "Original Item Number:");
-                    let size = extractField(longDesc, "Size:");
-                    let material = extractField(longDesc, "Material:");
-                    let language = extractField(longDesc, "Language:");
-                    let productLine = extractField(longDesc, "Product Line:");
-                    let tagline = extractField(longDesc, "Tagline:");
-                    let rawRegion = extractField(longDesc, "Region:");
-
-                    let specsLines = [];
-                    if (nacItem) specsLines.push(`NAC Item Number: ${nacItem}`);
-                    if (size) specsLines.push(`Size: ${size}`);
-                    if (material) specsLines.push(`Material: ${material}`);
-
-                    let finalRegion = rawRegion;
-                    let ad_flagUrl = "", ae_flagAlt = "", af_flagSize = "";
-                    
-                    const regLower = rawRegion.toLowerCase();
-                    const hasCanada = regLower.includes('canada') || regLower.includes('canadian');
-                    const hasUS = regLower.includes('us') || regLower.includes('united states') || regLower.includes('america');
-
-                    if (hasCanada && !hasUS) {
-                        ad_flagUrl = CAN_IMG_B64;
-                        ae_flagAlt = "CAN";
-                        af_flagSize = "34";
-                    } 
-
-                    const rowObj = {
-                        "Item Number": originalItem || nacItem,
-                        "Summary": summary,
-                        "Supersedes": "",
-                        "ProductType": "",
-                        "Region": finalRegion,
-                        "Language": language,
-                        "ProductLine": productLine,
-                        "Use": "",
-                        "Segment": "",
-                        "TemplateId": "",
-                        "Badges": "",
-                        "Highlights": tagline,
-                        "UseRedChecks": "",
-                        "Specs": specsLines.join("\n"),
-                        "WhatsIncluded": "",
-                        "Compatibility": "",
-                        "Certifications": "",
-                        "Warnings": "",
-                        "Care": "",
-                        "ShippingReturns": "",
-                        "Warranty": "",
-                        "CTA_Text": "",          
-                        "CTA_Url": "",
-                        "ImageUrl": "",
-                        "ImagePlacement": "",
-                        "ImageAlt": "",
-                        "DownloadLabel": "",
-                        "DownloadUrl": "",
-                        "DownloadPlacement": "",
-                        "FlagUrl": ad_flagUrl,   
-                        "FlagAlt": ae_flagAlt,   
-                        "FlagSize": af_flagSize  
-                    };
-                    
-                    loadData.push(rowObj);
-                } catch (e) {
-                    errCount++;
-                    log(`Row ${index + 1} parsing failure: ${e.message}`, 'error');
-                }
-            });
-
-            if(loadData.length > 0) {
-                log(`Formatting complete. Compiling ${loadData.length} entries into LOAD structure.`, 'success');
-                
-                const columns = ["Item Number","Summary","Supersedes","ProductType","Region","Language","ProductLine","Use","Segment","TemplateId","Badges","Highlights","UseRedChecks","Specs","WhatsIncluded","Compatibility","Certifications","Warnings","Care","ShippingReturns","Warranty","CTA_Text","CTA_Url","ImageUrl","ImagePlacement","ImageAlt","DownloadLabel","DownloadUrl","DownloadPlacement","FlagUrl","FlagAlt","FlagSize"];
-                
-                const finalCsv = Papa.unparse(loadData, { columns: columns });
-                
-                const blob = new Blob([finalCsv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", "Processed_LOAD_File.csv");
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                log("Download triggered successfully.", "success");
-                if (errCount > 0) {
-                    showToast(`Process finished with ${errCount} warnings. See log.`);
-                } else {
-                    showToast("Processing complete. File downloaded.");
-                }
-            } else {
-                log("Process aborted: No usable data recovered.", 'error');
-                showToast("Failed to compile data.");
-            }
-
-            processBtn.disabled = false;
-            processBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Process & Download`;
         }
 
         processBtn.addEventListener('click', () => {
@@ -352,52 +242,143 @@
             processBtn.innerHTML = "Processing...";
             
             const file = fileInput.files[0];
-            const ext = file.name.split('.').pop().toLowerCase();
 
-            if (ext === 'xlsx') {
-                log("Detected Excel Workbook (.xlsx). Engaging SheetJS parser...", "warn");
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, {type: 'array'});
-                        const firstSheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[firstSheetName];
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: 'greedy',
+                transformHeader: function(header) {
+                    return header.replace(/^\uFEFF/, '').trim();
+                },
+                complete: function(results) {
+                    const data = results.data;
+                    log(`Parsing successful. Read ${data.length} entries. Initiating field mapping...`, 'success');
+                    
+                    let loadData = [];
+                    let errCount = 0;
+
+                    data.forEach((row, index) => {
+                        try {
+                            const nacItem = row["NAC Item Number"] || row["NAC Item Number "] || "";
+                            const longDesc = row["Long Description"] || row["Long Description "] || "";
+                            
+                            if(!longDesc) {
+                                log(`Warning: Row ${index + 1} description missing. Skipping.`, 'warn');
+                                errCount++;
+                                return;
+                            }
+
+                            // Extracting ALL specific fields
+                            let summary = extractSummary(longDesc);
+                            let originalItem = extractField(longDesc, "Original Item Number:");
+                            let supersedes = extractField(longDesc, "Supersedes:");
+                            let productType = extractField(longDesc, "Product Type:");
+                            let use = extractField(longDesc, "Use:");
+                            let segment = extractField(longDesc, "Market Segment:");
+                            let size = extractField(longDesc, "Size:");
+                            let material = extractField(longDesc, "Material:");
+                            let language = extractField(longDesc, "Language:");
+                            let productLine = extractField(longDesc, "Product Line:");
+                            let tagline = extractField(longDesc, "Tagline:");
+                            let rawRegion = extractField(longDesc, "Region:");
+
+                            // Specs block strictly limited to physical attributes
+                            let specsLines = [];
+                            if (size) specsLines.push(`Size: ${size}`);
+                            if (material) specsLines.push(`Material: ${material}`);
+
+                            let finalRegion = rawRegion;
+                            let ad_flagUrl = "", ae_flagAlt = "", af_flagSize = "";
+                            
+                            const regLower = rawRegion.toLowerCase();
+                            const hasCanada = regLower.includes('canada') || regLower.includes('canadian');
+                            const hasUS = regLower.includes('us') || regLower.includes('united states') || regLower.includes('america');
+
+                            if (hasCanada && !hasUS) {
+                                ad_flagUrl = CAN_IMG_B64;
+                                ae_flagAlt = "CAN";
+                                af_flagSize = "34";
+                            } 
+
+                            const rowObj = {
+                                "Item Number": originalItem || nacItem,
+                                "Summary": summary,
+                                "Supersedes": supersedes,
+                                "ProductType": productType,
+                                "Region": finalRegion,
+                                "Language": language,
+                                "ProductLine": productLine,
+                                "Use": use,
+                                "Segment": segment,
+                                "TemplateId": "",
+                                "Badges": "",
+                                "Highlights": tagline,
+                                "UseRedChecks": "",
+                                "Specs": specsLines.join("\n"),
+                                "WhatsIncluded": "",
+                                "Compatibility": "",
+                                "Certifications": "",
+                                "Warnings": "",
+                                "Care": "",
+                                "ShippingReturns": "",
+                                "Warranty": "",
+                                "CTA_Text": "",          
+                                "CTA_Url": "",
+                                "ImageUrl": "",
+                                "ImagePlacement": "",
+                                "ImageAlt": "",
+                                "DownloadLabel": "",
+                                "DownloadUrl": "",
+                                "DownloadPlacement": "",
+                                "FlagUrl": ad_flagUrl,   
+                                "FlagAlt": ae_flagAlt,   
+                                "FlagSize": af_flagSize  
+                            };
+                            
+                            loadData.push(rowObj);
+                        } catch (e) {
+                            errCount++;
+                            log(`Row ${index + 1} parsing failure: ${e.message}`, 'error');
+                        }
+                    });
+
+                    if(loadData.length > 0) {
+                        log(`Formatting complete. Compiling ${loadData.length} entries into LOAD structure.`, 'success');
                         
-                        // Convert sheet to array of objects
-                        const jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
-                        executeMapping(jsonData);
-                    } catch (err) {
-                        log(`Excel processing error: ${err.message}`, 'error');
-                        processBtn.disabled = false;
-                        processBtn.innerHTML = "Process & Download";
+                        const columns = ["Item Number","Summary","Supersedes","ProductType","Region","Language","ProductLine","Use","Segment","TemplateId","Badges","Highlights","UseRedChecks","Specs","WhatsIncluded","Compatibility","Certifications","Warnings","Care","ShippingReturns","Warranty","CTA_Text","CTA_Url","ImageUrl","ImagePlacement","ImageAlt","DownloadLabel","DownloadUrl","DownloadPlacement","FlagUrl","FlagAlt","FlagSize"];
+                        
+                        const finalCsv = Papa.unparse(loadData, { columns: columns });
+                        
+                        const blob = new Blob([finalCsv], { type: 'text/csv;charset=utf-8;' });
+                        const link = document.createElement("a");
+                        const url = URL.createObjectURL(blob);
+                        link.setAttribute("href", url);
+                        link.setAttribute("download", "Processed_LOAD_File.csv");
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        log("Download triggered successfully.", "success");
+                        if (errCount > 0) {
+                            showToast(`Process finished with ${errCount} warnings. See log.`);
+                        } else {
+                            showToast("Processing complete. File downloaded.");
+                        }
+                    } else {
+                        log("Process aborted: No usable data recovered.", 'error');
+                        showToast("Failed to compile data.");
                     }
-                };
-                reader.readAsArrayBuffer(file);
-            } 
-            else if (ext === 'csv') {
-                log("Detected CSV file. Engaging PapaParse...", "warn");
-                Papa.parse(file, {
-                    header: true,
-                    skipEmptyLines: 'greedy',
-                    transformHeader: function(header) {
-                        return header.replace(/^\uFEFF/, '').trim();
-                    },
-                    complete: function(results) {
-                        executeMapping(results.data);
-                    },
-                    error: function(err) {
-                        log(`CSV Engine Error: ${err.message}`, 'error');
-                        showToast("Failed to parse file.");
-                        processBtn.disabled = false;
-                        processBtn.innerHTML = "Process & Download";
-                    }
-                });
-            } else {
-                log(`Unsupported file type: .${ext}`, 'error');
-                processBtn.disabled = false;
-                processBtn.innerHTML = "Process & Download";
-            }
+
+                    processBtn.disabled = false;
+                    processBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Process & Download`;
+                },
+                error: function(err) {
+                    log(`CSV Engine Error: ${err.message}`, 'error');
+                    showToast("Failed to parse file.");
+                    processBtn.disabled = false;
+                    processBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Process & Download`;
+                }
+            });
         });
     </script>
 </body>

@@ -117,7 +117,7 @@
                 Long Description Mass Converter
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
-            <p class="panel-desc">Upload your Nasku CSV export below. This utility extracts metadata strictly from the description text block, maps columns properly for your standardized LOAD file, and injects regional image encodings seamlessly.</p>
+            <p class="panel-desc">Upload your Nasku CSV export below. This utility isolates metadata from the description text block, maps columns for your LOAD file, sanitizes regional encodings, and dynamically binds the Canadian flag variables.</p>
             
             <label class="upload-zone" id="dropZone" for="fileInput">
                 <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
@@ -215,21 +215,20 @@
             log(`System input received: ${file.name}`, 'success');
         }
 
-        // Comprehensive Array of ALL possible labels. Ordered to catch specific phrases first.
         const stopWordsArr = [
             "Original Item Number:", "Size:", "Material:", "Language:", "Product Line:", "Tagline:", 
             "Supersedes:", "Replaces:", "Product Type:", "Region:", "Use:", "Market Segment:", "Focus Market:",
-            "Download PDF", ".product-description"
+            "Product Information", "Download PDF", "\\.product-description"
         ];
 
-        // Cleans up any trailing section headers that Nasku occasionally bundles into the data values
         function cleanValue(val) {
             return val.replace(/[\r\n]+\s*Product Information\s*$/i, "")
                       .replace(/[\r\n]+\s*Download PDF\s*$/i, "")
+                      .replace(/¿½|ï¿½/g, "'")
+                      .replace(/®/g, "")
                       .trim();
         }
 
-        // Dynamic regex builder that ignores Nasku's missing spaces between words
         function extractField(text, fieldName) {
             const safeFieldName = fieldName.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
             const regex = new RegExp(safeFieldName + "\\s*([\\s\\S]*?)(?=(" + stopWordsArr.join("|") + "|$))", "i");
@@ -237,7 +236,6 @@
             return match ? cleanValue(match[1]) : "";
         }
 
-        // Extracts everything up to the very first label detected
         function extractSummary(text) {
             const regex = new RegExp("^(.*?)(?=(" + stopWordsArr.join("|") + "|$))", "i");
             const match = text.match(regex);
@@ -254,6 +252,7 @@
             Papa.parse(file, {
                 header: true,
                 skipEmptyLines: 'greedy',
+                encoding: "ISO-8859-1",
                 transformHeader: function(header) {
                     return header.replace(/^\uFEFF/, '').trim();
                 },
@@ -275,10 +274,12 @@
                                 return;
                             }
 
-                            // Extracting ALL specific fields exactly mapped to your LOAD requirements
                             let summary = extractSummary(longDesc);
+                            
                             let originalItem = extractField(longDesc, "Original Item Number:");
-                            let supersedes = extractField(longDesc, "Supersedes:") || extractField(longDesc, "Replaces:");
+                            let extractedSupersedes = extractField(longDesc, "Supersedes:") || extractField(longDesc, "Replaces:");
+                            let finalSupersedes = [extractedSupersedes, originalItem].filter(Boolean).join(", ");
+                            
                             let productType = extractField(longDesc, "Product Type:");
                             let use = extractField(longDesc, "Use:");
                             let segment = extractField(longDesc, "Market Segment:");
@@ -289,13 +290,15 @@
                             let tagline = extractField(longDesc, "Tagline:");
                             let rawRegion = extractField(longDesc, "Region:");
 
-                            // Specs block strictly limited to physical attributes (No Item Numbers)
                             let specsLines = [];
                             if (size) specsLines.push(`Size: ${size}`);
                             if (material) specsLines.push(`Material: ${material}`);
 
                             let finalRegion = rawRegion;
-                            let ad_flagUrl = "", ae_flagAlt = "", af_flagSize = "";
+                            
+                            let ad_flagUrl = "";
+                            let ae_flagAlt = "";
+                            let af_flagSize = "";
                             
                             const regLower = rawRegion.toLowerCase();
                             const hasCanada = regLower.includes('canada') || regLower.includes('canadian');
@@ -308,9 +311,9 @@
                             } 
 
                             const rowObj = {
-                                "Item Number": originalItem || nacItem,
+                                "Item Number": nacItem,
                                 "Summary": summary,
-                                "Supersedes": supersedes,
+                                "Supersedes": finalSupersedes,
                                 "ProductType": productType,
                                 "Region": finalRegion,
                                 "Language": language,
@@ -356,7 +359,7 @@
                         
                         const finalCsv = Papa.unparse(loadData, { columns: columns });
                         
-                        const blob = new Blob([finalCsv], { type: 'text/csv;charset=utf-8;' });
+                        const blob = new Blob(["\uFEFF" + finalCsv], { type: 'text/csv;charset=utf-8;' });
                         const link = document.createElement("a");
                         const url = URL.createObjectURL(blob);
                         link.setAttribute("href", url);

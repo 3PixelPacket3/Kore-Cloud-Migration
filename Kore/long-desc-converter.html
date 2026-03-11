@@ -40,24 +40,18 @@
         
         /* Stabilized Drag & Drop Zone */
         .upload-zone { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
+            display: block;
             border: 2px dashed #cbd5e1; 
             border-radius: var(--radius-md); 
-            padding: 48px 24px; 
+            padding: 40px 20px; 
             text-align: center; 
             background: #f8fafc; 
-            transition: all 0.3s ease; 
+            transition: all 0.2s ease; 
             margin-bottom: 24px; 
             cursor: pointer; 
-            position: relative; 
-            overflow: hidden; 
         }
-        .upload-zone.highlight { border-color: var(--accent-primary); background: #f0f9ff; transform: scale(1.01); box-shadow: var(--shadow-sm); }
-        .upload-icon { width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 16px; transition: transform 0.3s ease; display: block; }
-        .upload-zone:hover .upload-icon { transform: translateY(-4px); }
+        .upload-zone.highlight { border-color: var(--accent-primary); background: #f0f9ff; }
+        .upload-icon { width: 48px; height: 48px; color: var(--accent-primary); margin: 0 auto 16px auto; display: block; }
         .upload-zone h3 { margin: 0 0 8px 0; color: var(--text-main); font-size: 1.1rem; pointer-events: none; }
         .upload-zone p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; pointer-events: none; }
         .file-status { margin-top: 16px; display: inline-block; padding: 6px 16px; border-radius: 99px; font-size: 0.85rem; font-weight: 600; background: #e2e8f0; color: var(--text-secondary); pointer-events: none; }
@@ -67,11 +61,11 @@
         /* Buttons */
         .action-row { display: flex; gap: 16px; margin-bottom: 24px; }
         .btn-primary { background: var(--accent-primary); color: white; border: none; padding: 14px 28px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 1rem; flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); box-shadow: var(--shadow-md); }
         .btn-primary:disabled { background: var(--border-subtle); color: #94a3b8; cursor: not-allowed; }
 
         /* Terminal Log Area */
-        .terminal-container { background: #0f172a; border-radius: var(--radius-sm); overflow: hidden; display: none; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        .terminal-container { background: #0f172a; border-radius: var(--radius-sm); overflow: hidden; display: none; border: 1px solid #334155; }
         .terminal-header { background: #1e293b; padding: 8px 16px; color: #94a3b8; font-size: 0.8rem; font-weight: 600; font-family: monospace; display: flex; justify-content: space-between; border-bottom: 1px solid #334155; }
         .log-area { padding: 16px; height: 200px; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #e2e8f0; line-height: 1.5; }
         .log-area p { margin: 4px 0; }
@@ -221,19 +215,33 @@
             log(`System input received: ${file.name}`, 'success');
         }
 
-        // Comprehensive list of all possible fields to ensure the extractor stops at the right place
-        const stopWords = "Original Item Number:|Size:|Material:|Language:|Product Line:|Tagline:|Region:|Supersedes:|Product Type:|Use:|Market Segment:|Product Information|Download PDF";
+        // Comprehensive Array of ALL possible labels. Ordered to catch specific phrases first.
+        const stopWordsArr = [
+            "Original Item Number:", "Size:", "Material:", "Language:", "Product Line:", "Tagline:", 
+            "Supersedes:", "Replaces:", "Product Type:", "Region:", "Use:", "Market Segment:", "Focus Market:",
+            "Download PDF", ".product-description"
+        ];
 
-        function extractField(text, fieldName) {
-            const regex = new RegExp(fieldName + "\\s*([\\s\\S]*?)(?=(" + stopWords + "|$))", "i");
-            const match = text.match(regex);
-            return match ? match[1].trim() : "";
+        // Cleans up any trailing section headers that Nasku occasionally bundles into the data values
+        function cleanValue(val) {
+            return val.replace(/[\r\n]+\s*Product Information\s*$/i, "")
+                      .replace(/[\r\n]+\s*Download PDF\s*$/i, "")
+                      .trim();
         }
 
-        function extractSummary(text) {
-            const regex = new RegExp("^(.*?)(?=(" + stopWords + "|$))", "i");
+        // Dynamic regex builder that ignores Nasku's missing spaces between words
+        function extractField(text, fieldName) {
+            const safeFieldName = fieldName.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            const regex = new RegExp(safeFieldName + "\\s*([\\s\\S]*?)(?=(" + stopWordsArr.join("|") + "|$))", "i");
             const match = text.match(regex);
-            return match ? match[1].trim() : text.trim();
+            return match ? cleanValue(match[1]) : "";
+        }
+
+        // Extracts everything up to the very first label detected
+        function extractSummary(text) {
+            const regex = new RegExp("^(.*?)(?=(" + stopWordsArr.join("|") + "|$))", "i");
+            const match = text.match(regex);
+            return match ? cleanValue(match[1]) : cleanValue(text);
         }
 
         processBtn.addEventListener('click', () => {
@@ -267,10 +275,10 @@
                                 return;
                             }
 
-                            // Extracting ALL specific fields
+                            // Extracting ALL specific fields exactly mapped to your LOAD requirements
                             let summary = extractSummary(longDesc);
                             let originalItem = extractField(longDesc, "Original Item Number:");
-                            let supersedes = extractField(longDesc, "Supersedes:");
+                            let supersedes = extractField(longDesc, "Supersedes:") || extractField(longDesc, "Replaces:");
                             let productType = extractField(longDesc, "Product Type:");
                             let use = extractField(longDesc, "Use:");
                             let segment = extractField(longDesc, "Market Segment:");
@@ -281,7 +289,7 @@
                             let tagline = extractField(longDesc, "Tagline:");
                             let rawRegion = extractField(longDesc, "Region:");
 
-                            // Specs block strictly limited to physical attributes
+                            // Specs block strictly limited to physical attributes (No Item Numbers)
                             let specsLines = [];
                             if (size) specsLines.push(`Size: ${size}`);
                             if (material) specsLines.push(`Material: ${material}`);

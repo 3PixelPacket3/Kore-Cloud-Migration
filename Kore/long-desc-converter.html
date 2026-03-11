@@ -38,10 +38,25 @@
         .panel-header { font-size: 1.4rem; color: var(--text-main); font-weight: 700; margin: 0 0 12px 0; display: flex; align-items: center; justify-content: space-between; }
         .panel-desc { color: var(--text-secondary); margin-bottom: 32px; line-height: 1.6; font-size: 0.95rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
         
-        /* Enhanced Drag & Drop Zone */
-        .upload-zone { border: 2px dashed #cbd5e1; border-radius: var(--radius-md); padding: 48px 24px; text-align: center; background: #f8fafc; transition: all 0.3s ease; margin-bottom: 24px; cursor: pointer; position: relative; overflow: hidden; }
+        /* Fixed Drag & Drop Zone */
+        .upload-zone { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            border: 2px dashed #cbd5e1; 
+            border-radius: var(--radius-md); 
+            padding: 48px 24px; 
+            text-align: center; 
+            background: #f8fafc; 
+            transition: all 0.3s ease; 
+            margin-bottom: 24px; 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden; 
+        }
         .upload-zone.highlight { border-color: var(--accent-primary); background: #f0f9ff; transform: scale(1.01); box-shadow: var(--shadow-sm); }
-        .upload-icon { width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 16px; transition: transform 0.3s ease; }
+        .upload-icon { width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 16px; transition: transform 0.3s ease; display: block; }
         .upload-zone:hover .upload-icon { transform: translateY(-4px); }
         .upload-zone h3 { margin: 0 0 8px 0; color: var(--text-main); font-size: 1.1rem; pointer-events: none; }
         .upload-zone p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; pointer-events: none; }
@@ -166,7 +181,6 @@
             logArea.scrollTop = logArea.scrollHeight;
         }
 
-        // Drag and drop setup - explicitly preventing default behavior to stop jitter
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
         });
@@ -227,7 +241,11 @@
             
             Papa.parse(file, {
                 header: true,
-                skipEmptyLines: true,
+                skipEmptyLines: 'greedy', // More aggressive empty line skipping
+                transformHeader: function(header) {
+                    // Strips hidden BOM characters and trailing whitespace natively
+                    return header.replace(/^\uFEFF/, '').trim();
+                },
                 complete: function(results) {
                     const data = results.data;
                     log(`Parsing successful. Read ${data.length} entries. Initiating field mapping...`, 'success');
@@ -237,11 +255,15 @@
 
                     data.forEach((row, index) => {
                         try {
+                            // Using our newly sanitized headers
                             const nacItem = row["NAC Item Number"] || "";
                             const longDesc = row["Long Description"] || "";
                             
                             if(!longDesc) {
-                                log(`Warning: Row ${index + 1} empty description block. Skipping.`, 'error');
+                                // Fallback logging to help diagnose if a column header was drastically changed
+                                const availableKeys = Object.keys(row).join(", ");
+                                log(`Warning: Row ${index + 1} description missing. Available columns: [${availableKeys}]. Skipping.`, 'error');
+                                errCount++;
                                 return;
                             }
 
@@ -333,7 +355,7 @@
 
                         log("Download triggered successfully.", "success");
                         if (errCount > 0) {
-                            showToast(`Process finished with ${errCount} errors.`);
+                            showToast(`Process finished with ${errCount} warnings. See log.`);
                         } else {
                             showToast("Processing complete. File downloaded.");
                         }
@@ -342,7 +364,6 @@
                         showToast("Failed to compile data.");
                     }
 
-                    // Reset button state
                     processBtn.disabled = false;
                     processBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Process & Download`;
                 },

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kore | Long Description Mass Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root {
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --radius-md: 12px; --radius-sm: 8px;
+            --danger: #ef4444; --success: #10b981; --warning: #f59e0b;
+        }
+
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
+
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; transition: all 0.2s ease; cursor: pointer; position: relative; }
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        
+        .main-container { padding: 40px 32px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        
+        .panel-card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
+        .panel-header { font-size: 1.25rem; color: var(--text-main); font-weight: 700; margin: 0 0 24px 0; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+        
+        .upload-zone { border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 40px; text-align: center; background: var(--bg-app); transition: all 0.2s; margin-bottom: 24px; cursor: pointer; }
+        .upload-zone:hover { border-color: var(--accent-primary); background: #f0f9ff; }
+        .upload-zone h3 { margin: 0 0 8px 0; color: var(--accent-primary); }
+        .upload-zone p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; }
+        input[type="file"] { display: none; }
+        
+        .btn-primary { background: var(--accent-primary); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 1rem; width: 100%; }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-primary:disabled { background: var(--border-subtle); color: var(--text-secondary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .log-area { background: var(--text-main); color: #f8fafc; padding: 16px; border-radius: var(--radius-sm); height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.85rem; margin-top: 24px; display: none; }
+        .log-area p { margin: 4px 0; }
+        .log-error { color: #fca5a5; }
+        .log-success { color: #6ee7b7; }
+        .log-warn { color: #fcd34d; }
+
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item active">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                        <a href="scanner.html">Vulnerability Scanner</a>
+                        <a href="file-converter.html">File to LOAD Converter</a>
+                        <a href="long-desc-converter.html">Long Description Mass Converter</a>
+                    </div>
+                </div>
+                <div class="nav-item">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-hub.html">Info Hub</a>
+                        <a href="info-archive.html">Archive</a>
+                        <a href="reports.html">Data/Reports</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="panel-card">
+            <h2 class="panel-header">Long Description Mass Converter <span>⚙️</span></h2>
+            
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">Upload your Nasku CSV export. This tool will extract properties directly from the long description text block, enforce the Canadian flag constraints, leave V-AF untouched otherwise, and compile a standardized LOAD file for immediate download.</p>
+            
+            <label class="upload-zone" id="dropZone" for="fileInput">
+                <h3>Click or drag to upload Nasku CSV</h3>
+                <p id="fileNameDisplay">No file selected</p>
+                <input type="file" id="fileInput" accept=".csv" />
+            </label>
+
+            <button id="processBtn" class="btn-primary" disabled>Process & Download LOAD File</button>
+
+            <div class="log-area" id="logArea"></div>
+        </div>
+    </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+
+    <div id="toast" style="position:fixed;bottom:30px;right:30px;background:#0f172a;color:#ffffff;padding:16px 24px;border-radius:8px;font-size:0.95rem;font-weight:500;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:9999;"></div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const processBtn = document.getElementById('processBtn');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const logArea = document.getElementById('logArea');
+        const dropZone = document.getElementById('dropZone');
+        
+        let loadedData = null;
+
+        // Constants for Canadian Flag Mapping
+        const CAN_IMG_B64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT4AAACfCAMAAABX0UX9AAAAkFBMVEXVKx7////TGADrq6nSAADVKRvUIhLTEQDUJRbUIxP65+bUIA7UHQnVJxjTDADUGwX22tjts7DfbWfgc2388O/0z83++vrom5fbU0v99fTYQDbqpaHeZ2Hjf3rdX1jcWFHaUEflj4vvurjkhoL11tXZRj3YOzDyxcP66urnlZHpoJzgcmz44d/WMyfyy8nZSkHM5o6XAAAHpElEQVR4nO2da2OiOhCGExqICgTv1gtWra21a9v//++OWbyBAUKSejaX99O6sJPwbGDIZJgAoFTeE/yn9eSpvV7Fcvik5PBJyeGTksMnJYdPSg6flBw+KTl8UnL4pOTwScnhk5LDJyXV+DodtfYsw5emau3ZhW+I0FCpQbvwpWGodvhZhe8DAYA+VFq0Ct8gBCAcqLRoE74OoSaJSudrEz46+BQPP4vwdVBmEykcfhbh64eZzbCvzqY9+A7obBQdlBm1B18/OBsN1A0/a/BdB5/K4WcNvkVwtRosVFm1BV8X3ZpFXUVmbcG3bN+abS8VmTUUX3F0bVHeLtoWTxBrx1B8g2U+MvDSytttveQOfywFpyKG4usRtL/5WRx8heG3R6jn8N3yIsCLN5efxcGXG36b2APE3by3GmMAfLI6PQJHd4PvOPxG2bHuivgA4LHDd6u3+PivWyid0h/Pd4PveOyZHpmmiB6L3wSbMRVfmsUHQjI/PtowyzTew/GcnE4TDeGbiu9yXZ7nJWzbyfGQsmb+TQlf15Y0aUbUcxiLb8rwFuVCU4cvr3efvxX/XbQVY/ENgnrrZwXCyx/G4ps3uDBv7vAVNGK+rbCFRw5fQcMGvkM88cVYfDDi9h1+JNyIufj63L5DYunIXHyTksnGvZKJw3enHbfvwDuH704f3NM2Ip6zZi4+GHP6Dj8Wb8NgfPnFtXLJLLuZhK9w7j7iayPaV5qxBd832uR+85/qOgufYoG8r8S0ClAPR4Zx35PP9dqhJCoc5+CgtlJu8+ly+I+856KpSg/xJc/CtI7q4dptecL88yVJuxbyLj8ijtdH4mKHh8d85ro9vRs6ay3fcwurgv0Yi5rIlq1kd8fXwYL4tXkwvu5A4ukZPNly+A18dzjCMs1aLOQfT7XyAWYkIOuKbktAj5D3tdW9GyXt25aD1dQF74PId11zJ6dfpbo9vgvfjbi99J8QLiSmjDy7oC3F8ZBiu1pvsbt1dpmjB7AKVb/RdQM0uMRqSufDOZr0Kj+To/0yb6Y+1xNc7d9qPI4z85eT79jLCn/N5rOyCorJsA6pVePlL33v6nix9hKPLzO/uhtYXX34V0m8nOHcV0dmXvoagVuHr6eSXnKPxcNLOvfew1zK1xAeX1cPKWxRGadW5p1HVrz63ZGKsJ746LjjLWelyxKxOb4ppzXOSfe9qiq92HQhntySH60V/T1zXgS5ZTdITX71TIBMeyuDEZVJH7+pgjMBX3200GXZXcX0LrVV3OKnFLN6P/1Vl3eaIxCcY8815Ma5fVCqL52uKD6640KhSa1XSDV3xNUlhUdCNsiQYXfHxxkLVqDQCqCs++MPhFlQp/inrhbb4Ph/Yce/TOHx80Sg1Ko/ea4sPzh5298az0k7oi48/BUhWFSlE+uLjTwGSVUUKkb74muR+y6micI6u+Dp/Hul5/5j13tftI45AsjqFqM+ufqAjvtELetiNe1aAXljp9/rh687IQ8MFZ7XI7H4E6ocPrh863b0KrU0YfTSF7IHz3bPiQvqbvvjgATzUcVCFgFm4SUt8cPz84G57L+xiB3rig/D1sfG+15Ju6IoP9lCDD3bl5JdXedEWH+wmnJnzsgqi8oJh+uKD05+H9N1bVXyprzE+CNNG9R7ERCprlGiND85/+wHoo+oO6I0PjviWwkXV9mq+M9ccHxzOOL8dElHyVveZue74IOz/2gOQ1BfY0B8fnPzOA9BHpcuTRuGDu98IIbQ8nk/bTMAHO1/KQwjRjKu6hhH44HipeNmNcFaHMAOf4hiqj/b1LRqFD26IsgdgTLhrQxiDDx58RQ/AENj4QaqqGCouiYyajg/CVMEDsDQyaj4++RhqRWTUAnxw60nFUNtJwyKmhuGD0zcJfu2fpjVMTcMH4Zfw/et/NW7MPHw8X6GyFTbyGobiE0+5L0+gtwffQSL8RxpvAWUcvr1EynPCO9U1Fx9v2TmWmpeiMw3fqPze9e/+cCfStAKxafhSlt+NQw8jArKc1AABgrAXsDxM440nTMPn5YdWHCSYkJ/BfNc5vlIvIgCi/vHVuLObD94IwVG+WgbwPbvxXT/28NuRR/CsP9nduNNZfPuF0GGzX9ACQVHrArFpFVjD8F3qC2Gw3G+6xTnYJEmKy2fTbe/1OSa4qlaQLfiGyKP3avo0Yi/0zL2SD5s/vp9Sejd7Deuvm4Wvt/jcVYWKj6OvqsR1Z/e5sDpgVaN11KC0IY/swpeGwntisWUXvn6gcGdoKrvwLVstVVvLZrIL33OrrJqSoOzC9xYLxPSqZBe+d198TzGm7MIHfB8oNWgVvnECALsms6iswjclADDrBwvLKny0HKLwdpRMWYWv06yeP4eswkdLwZLyD9QEZBU+uhDSeDmjUlbh+8YA4AZ7wdTLKnw0lC+xKRtDVuGj1bJL6lcLyip8tOCp+F68LFmFj9ask9iQkiGr8NHdd9RG663CR1P/BJL4KmQVPlpst6IMroCswgfCdjtUGm62Ct/ir1RatAqfejl8UnL4pOTwScnhk5LDJyWHT0oOn5QcPik5fFJy+KTk8ElJNb7/AMlVkGZogoZMAAAAAElFTkSuQmCC";
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        }
+
+        function log(msg, type = '') {
+            logArea.style.display = 'block';
+            const p = document.createElement('p');
+            if(type) p.className = `log-${type}`;
+            p.innerText = `> ${msg}`;
+            logArea.appendChild(p);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        // Drag and drop setup
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = "var(--accent-hover)"; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = "var(--border-subtle)"; });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = "var(--border-subtle)";
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect();
+            }
+        });
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect() {
+            if(fileInput.files.length === 0) return;
+            const file = fileInput.files[0];
+            fileNameDisplay.innerText = file.name;
+            processBtn.disabled = false;
+            logArea.innerHTML = '';
+            log(`File loaded: ${file.name}`, 'success');
+        }
+
+        // Regex Extraction Engine
+        function extractField(text, fieldName) {
+            const regex = new RegExp(fieldName + "\\s*([\\s\\S]*?)(?=(Original Item Number:|Size:|Material:|Language:|Product Line:|Tagline:|Region:|$))", "i");
+            const match = text.match(regex);
+            return match ? match[1].trim() : "";
+        }
+
+        function extractSummary(text) {
+            const regex = /^(.*?)(?=(Original Item Number:|Size:|Material:|Language:|Product Line:|Tagline:|Region:|$))/i;
+            const match = text.match(regex);
+            return match ? match[1].trim() : text.trim();
+        }
+
+        processBtn.addEventListener('click', () => {
+            log("Starting processing...", "warn");
+            const file = fileInput.files[0];
+            
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const data = results.data;
+                    log(`Successfully parsed ${data.length} rows. Initiating mapping...`, 'success');
+                    
+                    let loadData = [];
+                    let errCount = 0;
+
+                    data.forEach((row, index) => {
+                        try {
+                            const nacItem = row["NAC Item Number"] || "";
+                            const longDesc = row["Long Description"] || "";
+                            
+                            if(!longDesc) {
+                                log(`Row ${index + 1} empty description. Skipping.`, 'error');
+                                return;
+                            }
+
+                            // Data Extraction Sequence
+                            let summary = extractSummary(longDesc);
+                            let originalItem = extractField(longDesc, "Original Item Number:");
+                            let size = extractField(longDesc, "Size:");
+                            let material = extractField(longDesc, "Material:");
+                            let language = extractField(longDesc, "Language:");
+                            let productLine = extractField(longDesc, "Product Line:");
+                            let tagline = extractField(longDesc, "Tagline:");
+                            let rawRegion = extractField(longDesc, "Region:");
+
+                            // Specs compilation
+                            let specsLines = [];
+                            if (nacItem) specsLines.push(`NAC Item Number: ${nacItem}`);
+                            if (size) specsLines.push(`Size: ${size}`);
+                            if (material) specsLines.push(`Material: ${material}`);
+
+                            // Region Logic (Canadian Exception Protocol)
+                            let finalRegion = rawRegion;
+                            let ad_flagUrl = "", ae_flagAlt = "", af_flagSize = "";
+                            
+                            const regLower = rawRegion.toLowerCase();
+                            const hasCanada = regLower.includes('canada') || regLower.includes('canadian');
+                            const hasUS = regLower.includes('us') || regLower.includes('united states') || regLower.includes('america');
+
+                            if (hasCanada && !hasUS) {
+                                ad_flagUrl = CAN_IMG_B64;
+                                ae_flagAlt = "CAN";
+                                af_flagSize = "34";
+                            } 
+                            // Note: If both Canada and US are true, it rightfully leaves AD-AF blank per your instructions.
+
+                            const rowObj = {
+                                "Item Number": originalItem || nacItem,
+                                "Summary": summary,
+                                "Supersedes": "",
+                                "ProductType": "",
+                                "Region": finalRegion,
+                                "Language": language,
+                                "ProductLine": productLine,
+                                "Use": "",
+                                "Segment": "",
+                                "TemplateId": "",
+                                "Badges": "",
+                                "Highlights": tagline,
+                                "UseRedChecks": "",
+                                "Specs": specsLines.join("\n"),
+                                "WhatsIncluded": "",
+                                "Compatibility": "",
+                                "Certifications": "",
+                                "Warnings": "",
+                                "Care": "",
+                                "ShippingReturns": "",
+                                "Warranty": "",
+                                "CTA_Text": "",          // Col V
+                                "CTA_Url": "",
+                                "ImageUrl": "",
+                                "ImagePlacement": "",
+                                "ImageAlt": "",
+                                "DownloadLabel": "",
+                                "DownloadUrl": "",
+                                "DownloadPlacement": "",
+                                "FlagUrl": ad_flagUrl,   // Col AD
+                                "FlagAlt": ae_flagAlt,   // Col AE
+                                "FlagSize": af_flagSize  // Col AF
+                            };
+                            
+                            loadData.push(rowObj);
+                        } catch (e) {
+                            errCount++;
+                            log(`Row ${index + 1} processing failure: ${e.message}`, 'error');
+                        }
+                    });
+
+                    if(loadData.length > 0) {
+                        log(`Formatting complete. Transferred ${loadData.length} records to LOAD template structure. Compiling CSV...`, 'success');
+                        
+                        // Strict Column Order Enforcement (A through AF)
+                        const columns = ["Item Number","Summary","Supersedes","ProductType","Region","Language","ProductLine","Use","Segment","TemplateId","Badges","Highlights","UseRedChecks","Specs","WhatsIncluded","Compatibility","Certifications","Warnings","Care","ShippingReturns","Warranty","CTA_Text","CTA_Url","ImageUrl","ImagePlacement","ImageAlt","DownloadLabel","DownloadUrl","DownloadPlacement","FlagUrl","FlagAlt","FlagSize"];
+                        
+                        const finalCsv = Papa.unparse(loadData, { columns: columns });
+                        
+                        // Trigger File Download
+                        const blob = new Blob([finalCsv], { type: 'text/csv;charset=utf-8;' });
+                        const link = document.createElement("a");
+                        const url = URL.createObjectURL(blob);
+                        link.setAttribute("href", url);
+                        link.setAttribute("download", "Processed_LOAD_File.csv");
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        if (errCount > 0) {
+                            showToast(`Process finished with ${errCount} errors.`);
+                        } else {
+                            showToast("Processing complete. File downloaded.");
+                        }
+                    } else {
+                        log("No usable data recovered.", 'error');
+                        showToast("Failed to compile data.");
+                    }
+                },
+                error: function(err) {
+                    log(`CSV Reader Error: ${err.message}`, 'error');
+                    showToast("Failed to parse file.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

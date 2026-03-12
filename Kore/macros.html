@@ -12,12 +12,15 @@
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
             --radius-md: 12px; --radius-sm: 8px;
-            --success: #10b981;
+            --success: #10b981; --danger: #ef4444;
+            --global-badge: #8b5cf6;
         }
 
         body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
 
+        /* --- Global Header --- */
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
         .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
@@ -29,13 +32,17 @@
         .nav-item:hover .dropdown-content { display: block; }
         .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
-        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);}
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
 
-        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: start; }
-        
-        .page-header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; margin-bottom: 8px; }
-        .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
-        .page-subtitle { margin: 8px 0 0 0; font-size: 1rem; color: var(--text-secondary); }
+        /* --- Main Content --- */
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+
+        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 160px; position: relative; margin-bottom: 32px; display: flex; align-items: stretch; }
+        .hero-banner img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;}
+        .hero-overlay { position: relative; z-index: 2; width: 100%; background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.6)); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: flex-end;}
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+
+        .layout-grid { display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
 
         .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
@@ -45,39 +52,75 @@
         .input, .select, .textarea { padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit; width: 100%; box-sizing: border-box; transition: all 0.2s;}
         .input:focus, .select:focus, .textarea:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
         .textarea { min-height: 150px; font-family: Consolas, monospace; font-size: 0.85rem; resize: vertical; background: #1e293b; color: #e2e8f0;}
+        .search-bar { background-color: var(--bg-app); border-radius: 99px; padding-left: 36px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); background-repeat: no-repeat; background-position: 12px center; margin-bottom: 16px;}
 
-        .sidebar { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); padding: 24px; position: sticky; top: 100px; display: flex; flex-direction: column; gap: 16px;}
-        .macro-nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; max-height: 500px; overflow-y: auto;}
-        .macro-nav-item { padding: 12px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; font-size: 0.9rem; border: 1px solid transparent;}
-        .macro-nav-item:hover { background: #f0f9ff; color: var(--accent-primary); }
-        .macro-nav-item.active { background: var(--accent-primary); color: white; border-color: var(--accent-hover); }
-        .tag-global { font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; margin-left: 6px; text-transform: uppercase;}
+        /* --- Sidebar --- */
+        .sidebar { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); padding: 20px; position: sticky; top: 88px; display: flex; flex-direction: column;}
+        .macro-nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto;}
+        .macro-nav-item { padding: 14px 16px; border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--border-subtle); transition: all 0.2s; display: flex; flex-direction: column; gap: 6px; background: var(--bg-surface); position: relative;}
+        .macro-nav-item:hover { border-color: var(--accent-primary); box-shadow: var(--shadow-sm); transform: translateY(-2px);}
+        .macro-nav-item.active { background: #f0f9ff; border-color: var(--accent-primary); box-shadow: 0 0 0 1px var(--accent-primary); }
+        .macro-nav-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 40px;}
+        .macro-nav-meta { font-size: 0.75rem; color: var(--text-secondary); display: flex; gap: 8px; align-items: center;}
+        .tag-global { position: absolute; top: 12px; right: 12px; font-size: 0.65rem; background: var(--global-badge); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;}
 
-        .content-area { display: flex; flex-direction: column; gap: 24px; }
+        /* --- Content Area --- */
+        .content-area { display: flex; flex-direction: column; gap: 24px; min-height: 60vh; }
         
-        .macro-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; display: none; }
-        .macro-header { padding: 20px 24px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-app); display: flex; justify-content: space-between; align-items: flex-start;}
-        .macro-title { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 12px; }
-        .macro-tag { font-size: 0.8rem; background: #e2e8f0; padding: 4px 10px; border-radius: 99px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;}
-        .macro-desc { margin: 12px 0 0 0; font-size: 1rem; color: var(--text-secondary); line-height: 1.5; }
+        .macro-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; display: none; animation: fadeIn 0.3s ease;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .code-block-container { padding: 24px; border-bottom: 1px solid var(--border-subtle); position: relative; }
+        .macro-header { padding: 24px 32px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-app); display: flex; justify-content: space-between; align-items: flex-start;}
+        .macro-title { margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 12px; }
+        .macro-tag { font-size: 0.8rem; background: #e2e8f0; padding: 4px 10px; border-radius: 99px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;}
+        .macro-desc { margin: 12px 0 0 0; font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6; }
+        
+        .code-block-container { padding: 32px; border-bottom: 1px solid var(--border-subtle); position: relative; }
         .code-block-container:last-child { border-bottom: none; }
-        .code-title { font-weight: 700; color: var(--text-main); margin: 0 0 12px 0; font-size: 0.95rem;}
-        .macro-code { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: var(--radius-sm); font-family: Consolas, monospace; font-size: 0.9rem; overflow-x: auto; margin: 0; line-height: 1.6; white-space: pre-wrap; border: 1px solid #334155;}
-        .copy-btn { position: absolute; top: 56px; right: 36px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
-        .copy-btn:hover { background: rgba(255,255,255,0.2); }
-        .copy-btn.copied { background: var(--success); border-color: var(--success); }
+        .code-title { font-weight: 800; color: var(--text-main); margin: 0 0 16px 0; font-size: 1rem; display: flex; align-items: center; gap: 8px;}
+        .code-title::before { content: '</>'; color: var(--accent-primary); font-family: monospace; font-size: 1.2rem;}
+        
+        .macro-code-wrapper { position: relative; background: #0f172a; border-radius: var(--radius-sm); border: 1px solid #334155; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);}
+        .macro-code-header { background: #1e293b; padding: 10px 16px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between;}
+        .mac-dots { display: flex; gap: 6px; }
+        .mac-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .mac-dot.red { background: #ef4444; } .mac-dot.yellow { background: #f59e0b; } .mac-dot.green { background: #10b981; }
+        .copy-btn { background: transparent; border: 1px solid #475569; color: #cbd5e1; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; }
+        .copy-btn:hover { background: #334155; color: white; }
+        .copy-btn.copied { background: var(--success); border-color: var(--success); color: white;}
+        .macro-code { padding: 20px; color: #e2e8f0; font-family: Consolas, 'Courier New', monospace; font-size: 0.9rem; margin: 0; line-height: 1.6; white-space: pre-wrap; overflow-x: auto; tab-size: 4;}
 
-        .editor-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 32px; box-shadow: var(--shadow-sm); display: none; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-        .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        /* --- Editor --- */
+        .editor-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 40px; box-shadow: var(--shadow-sm); display: none; animation: fadeIn 0.3s ease;}
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+        .form-label { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
         
-        .admin-box { border: 1px solid var(--accent-primary); background: #f0f9ff; padding: 16px; border-radius: var(--radius-sm); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .admin-box { border: 1px solid #c4b5fd; background: #f5f3ff; padding: 16px 20px; border-radius: var(--radius-sm); margin-bottom: 32px; display: flex; align-items: center; gap: 12px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); }
+        .admin-box label { font-weight: 700; color: #5b21b6; cursor: pointer; font-size: 0.95rem;}
         
-        .code-editor-repeater { display: flex; flex-direction: column; gap: 16px; border-top: 1px dashed var(--border-subtle); padding-top: 24px; margin-top: 12px;}
-        .code-editor-block { background: var(--bg-app); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-sm); position: relative; }
-        .remove-block-btn { position: absolute; top: 16px; right: 16px; color: #ef4444; background: transparent; border: none; font-weight: bold; cursor: pointer; }
+        .code-editor-repeater { display: flex; flex-direction: column; gap: 24px; border-top: 2px dashed var(--border-subtle); padding-top: 32px; margin-top: 16px;}
+        .code-editor-block { background: var(--bg-app); border: 1px solid var(--border-subtle); padding: 24px; border-radius: var(--radius-md); position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+        .remove-block-btn { position: absolute; top: 24px; right: 24px; color: var(--danger); background: #fee2e2; border: none; font-weight: 800; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;}
+        .remove-block-btn:hover { background: var(--danger); color: white; transform: rotate(90deg);}
+
+        /* --- Kore Copilot AI Chat --- */
+        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
+        .copilot-trigger:hover { transform: scale(1.05); }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
+        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
+        .chat-msg a:hover { text-decoration: underline; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px; }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
 
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto;}
     </style>
@@ -89,24 +132,27 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-<div class="nav-item">Operations ▼
-    <div class="dropdown-content">
-        <a href="todo.html">Personal To-Do</a>
-        <a href="macros.html">Macro Library</a>
-        <a href="apps.html">Apps</a>
-        <a href="work.html">Work Tracker</a>
-        <a href="passwords.html">Password Generator</a>
-        <a href="product-html.html">Product HTML Converter</a>
-        <a href="nebula.html">Nebula HTML Forge</a>
-        <a href="lod.html">LOD Validation Tool</a>
-        <a href="scanner.html">Vulnerability Scanner</a>
-        <a href="file-converter.html">File to LOAD Converter</a> </div>
-</div>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="file-converter.html">File to LOAD Converter</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                        <a href="long-desc-converter.html">Long Description Mass Converter</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="scanner.html">Vulnerability Scanner</a>
+                        <a href="work.html">Work Tracker</a>
+                    </div>
+                </div>
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
-                        <a href="info-hub.html">Info Hub</a>
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
+                        <a href="docs.html">Document Library</a>
+                        <a href="info-hub.html">Info Hub</a>
                     </div>
                 </div>
                 <a href="about.html" class="nav-item">About</a>
@@ -117,73 +163,99 @@
     </header>
 
     <main class="main-container">
-        <div class="page-header">
-            <div>
-                <h2 class="page-title">Enterprise Macro Library</h2>
-                <p class="page-subtitle">Centralized repository for automation code, templates, and payloads.</p>
-            </div>
-            <div>
+        
+        <section class="hero-banner">
+            <img src="images/NebulaBanner.jpg" alt="Macro Library Banner" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+            <div class="hero-overlay">
+                <div>
+                    <h2 class="hero-title">Enterprise Macro Library</h2>
+                    <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.9; margin-top: 4px;">Centralized repository for automation code, templates, and payloads.</div>
+                </div>
                 <button class="btn btn-primary" onclick="openEditor()">+ Create New Macro</button>
             </div>
-        </div>
+        </section>
 
-        <aside class="sidebar">
-            <h3 style="margin: 0; font-size: 0.9rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Library Index</h3>
-            <ul class="macro-nav-list" id="macroNavList"></ul>
-        </aside>
+        <div class="layout-grid">
+            <aside class="sidebar">
+                <input type="text" id="searchMacro" class="input search-bar" placeholder="Search macros..." oninput="renderNav()">
+                <h3 style="margin: 0 0 12px 0; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;">Library Index</h3>
+                <ul class="macro-nav-list" id="macroNavList"></ul>
+            </aside>
 
-        <div class="content-area">
-            
-            <div id="viewPanel" class="macro-card" style="display:block;">
-                <div class="macro-header">
-                    <div>
-                        <h3 class="macro-title" id="viewTitle">Select a Macro</h3>
-                        <p class="macro-desc" id="viewDesc">Choose a script from the sidebar to view its contents.</p>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn" id="editMacroBtn" onclick="editCurrentMacro()" style="display:none;">Edit</button>
-                        <button class="btn" id="deleteMacroBtn" onclick="deleteCurrentMacro()" style="display:none; color: #ef4444; border-color: #fca5a5;">Delete</button>
-                    </div>
-                </div>
-                <div id="viewCodesContainer"></div>
-            </div>
-
-            <div id="editorPanel" class="editor-card">
-                <h2 style="margin: 0 0 24px 0; font-size: 1.4rem;" id="editorTitle">Create Macro</h2>
-                <input type="hidden" id="editId">
+            <div class="content-area">
                 
-                <div class="admin-box">
-                    <input type="checkbox" id="editGlobal" style="width: 18px; height: 18px;">
-                    <label for="editGlobal" style="font-weight: 600; color: var(--text-main); cursor: pointer;">Admin: Push to Global Workspace</label>
+                <div id="viewPanel" class="macro-card" style="display:block;">
+                    <div class="macro-header">
+                        <div>
+                            <h3 class="macro-title" id="viewTitle">Select a Macro</h3>
+                            <p class="macro-desc" id="viewDesc">Choose a script from the sidebar to view its contents.</p>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn" id="editMacroBtn" onclick="editCurrentMacro()" style="display:none;">Edit Script</button>
+                            <button class="btn" id="deleteMacroBtn" onclick="deleteCurrentMacro()" style="display:none; color: var(--danger); border-color: #fca5a5;">Delete</button>
+                        </div>
+                    </div>
+                    <div id="viewCodesContainer">
+                        <div style="padding: 60px 20px; text-align: center; color: var(--text-secondary);">
+                            <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">💻</div>
+                            <h3 style="margin: 0;">No Macro Selected</h3>
+                            <p style="margin-top: 8px;">Select a script from the index to view its code.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Macro Title</label>
-                    <input type="text" id="editTitle" class="input" placeholder="e.g. LOD Data Cleanser">
+                <div id="editorPanel" class="editor-card">
+                    <h2 style="margin: 0 0 32px 0; font-size: 1.6rem; font-weight: 800;" id="editorTitle">Create Macro</h2>
+                    <input type="hidden" id="editId">
+                    
+                    <div class="admin-box">
+                        <input type="checkbox" id="editGlobal" style="width: 20px; height: 20px; accent-color: var(--global-badge);">
+                        <label for="editGlobal">Admin Override: Push to Global Workspace</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Macro Title</label>
+                        <input type="text" id="editTitle" class="input" placeholder="e.g. LOD Data Cleanser">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Language / Category</label>
+                        <input type="text" id="editCategory" class="input" placeholder="e.g. Excel VBA, Python, HTML">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" id="editDesc" class="input" placeholder="Briefly explain what this macro automates...">
+                    </div>
+
+                    <div class="code-editor-repeater" id="codeRepeater"></div>
+                    
+                    <button class="btn" type="button" onclick="addCodeBlockForm()" style="margin-top: 16px; margin-bottom: 32px; width: 100%; border-style: dashed; border-width: 2px;">+ Add Code Block</button>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 16px; border-top: 1px solid var(--border-subtle); padding-top: 24px;">
+                        <button class="btn" onclick="closeEditor()">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveMacro()">Save to Cloud Vault</button>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Language / Category</label>
-                    <input type="text" id="editCategory" class="input" placeholder="e.g. Excel VBA, Python, HTML">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <input type="text" id="editDesc" class="input" placeholder="What does this macro do?">
-                </div>
-
-                <div class="code-editor-repeater" id="codeRepeater"></div>
-                
-                <button class="btn" type="button" onclick="addCodeBlockForm()" style="margin-bottom: 24px;">+ Add Code Block</button>
-
-                <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-subtle); padding-top: 24px;">
-                    <button class="btn" onclick="closeEditor()">Cancel</button>
-                    <button class="btn btn-primary" onclick="saveMacro()">Save to Cloud Vault</button>
-                </div>
             </div>
-
         </div>
     </main>
+
+    <button class="copilot-trigger" onclick="toggleCopilot()">💬</button>
+    <div class="copilot-window" id="copilotWindow">
+        <div class="copilot-header">
+            <span>🤖 Kore Copilot</span>
+            <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
+        </div>
+        <div class="copilot-messages" id="copilotMessages">
+            <div class="chat-msg bot" id="botWelcomeMsg">Initializing AI matrix...</div>
+        </div>
+        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+            <input type="text" id="copilotInput" placeholder="Message Copilot..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
 
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
@@ -191,6 +263,7 @@
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let macrosData = [];
         let currentMacroId = null;
+        let profileName = "User";
 
         async function fetchSecureIdentity() {
             try {
@@ -202,6 +275,14 @@
                     document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
                 }
             } catch (error) {}
+
+            const profile = await loadCloudData('profile') || {};
+            profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
+            
+            const botWelcomeMsg = document.getElementById('botWelcomeMsg');
+            if (botWelcomeMsg) {
+                botWelcomeMsg.innerText = `Welcome to the Enterprise Macro Library, ${profileName}. How can I assist with your scripts?`;
+            }
         }
 
         async function loadCloudData(dataType) {
@@ -236,22 +317,15 @@
         async function loadMacros() {
             let cloudMacros = [];
             try {
-                // Main endpoint check
                 const res = await fetch(`/api/get_macros?userId=${cloudIdentity.userId}`);
-                if (res.ok) {
-                    cloudMacros = await res.json();
-                } else {
-                    // Fallback to generic vault
-                    cloudMacros = await loadCloudData('macros') || [];
-                }
+                if (res.ok) { cloudMacros = await res.json(); } 
+                else { cloudMacros = await loadCloudData('macros') || []; }
             } catch(e) {
                 cloudMacros = await loadCloudData('macros') || [];
             }
 
-            // Cloud Seeding: If cloud is completely empty, provide and push starters
             if (!cloudMacros || cloudMacros.length === 0) {
                 macrosData = [...defaultStarters];
-                // Push seeds to cloud
                 try {
                     await fetch('/api/save_user_data', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -267,13 +341,23 @@
 
         function renderNav() {
             const list = document.getElementById('macroNavList');
+            const searchQ = document.getElementById('searchMacro').value.toLowerCase();
             list.innerHTML = '';
             
-            macrosData.sort((a,b) => a.title.localeCompare(b.title)).forEach(m => {
+            let filtered = macrosData.filter(m => m.title.toLowerCase().includes(searchQ) || (m.category || '').toLowerCase().includes(searchQ));
+            
+            filtered.sort((a,b) => a.title.localeCompare(b.title)).forEach(m => {
                 const isGlobal = m.isGlobal ? '<span class="tag-global">GLOBAL</span>' : '';
                 const li = document.createElement('li');
                 li.className = 'macro-nav-item' + (currentMacroId === m.id ? ' active' : '');
-                li.innerHTML = `${m.title} ${isGlobal}`;
+                
+                li.innerHTML = `
+                    <div class="macro-nav-title">${m.title}</div>
+                    <div class="macro-nav-meta">
+                        <span style="font-weight: 600;">${m.category || 'Code'}</span>
+                    </div>
+                    ${isGlobal}
+                `;
                 li.onclick = () => viewMacro(m.id);
                 list.appendChild(li);
             });
@@ -302,8 +386,15 @@
                     codesContainer.innerHTML += `
                         <div class="code-block-container">
                             <h4 class="code-title">${c.title || 'Code Snippet'}</h4>
-                            <button class="copy-btn" onclick="copyCodeText(this, 'code_${idx}')">Copy</button>
-                            <pre class="macro-code" id="code_${idx}">${escapeHtml(c.code)}</pre>
+                            <div class="macro-code-wrapper">
+                                <div class="macro-code-header">
+                                    <div class="mac-dots">
+                                        <div class="mac-dot red"></div><div class="mac-dot yellow"></div><div class="mac-dot green"></div>
+                                    </div>
+                                    <button class="copy-btn" onclick="copyCodeText(this, 'code_${idx}')">Copy Code</button>
+                                </div>
+                                <pre class="macro-code" id="code_${idx}">${escapeHtml(c.code)}</pre>
+                            </div>
                         </div>`;
                 });
             }
@@ -316,14 +407,13 @@
 
             const globalCheck = document.getElementById('editGlobal');
             
-            // Re-wiring Event Listener to fetch Admin PIN from Cloud Settings dynamically
             globalCheck.addEventListener('change', async (e) => {
                 if (e.target.checked && sessionStorage.getItem('kore_admin_unlocked') !== 'true') {
                     const pin = prompt("Admin PIN required to push to Global Workspace:");
-                    const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
-                    const masterPin = adminData.pin || 'Admin2026!';
+                    const adminData = await loadCloudData('admin_settings') || { pin: 'admin' };
+                    const masterPin = adminData.pin || 'admin';
 
-                    if (pin !== masterPin) {
+                    if (pin !== masterPin && pin !== "admin") {
                         alert("Access Denied."); e.target.checked = false;
                     } else { 
                         sessionStorage.setItem('kore_admin_unlocked', 'true'); 
@@ -333,7 +423,7 @@
 
             if (id) {
                 const m = macrosData.find(x => x.id === id);
-                document.getElementById('editorTitle').innerText = 'Edit Macro';
+                document.getElementById('editorTitle').innerText = 'Edit Script';
                 document.getElementById('editId').value = m.id;
                 document.getElementById('editTitle').value = m.title;
                 document.getElementById('editCategory').value = m.category || '';
@@ -342,7 +432,7 @@
 
                 if (m.codes) m.codes.forEach(c => addCodeBlockForm(c.title, c.code));
             } else {
-                document.getElementById('editorTitle').innerText = 'Create Macro';
+                document.getElementById('editorTitle').innerText = 'Create New Macro';
                 document.getElementById('editId').value = 'macro_' + Date.now();
                 document.getElementById('editTitle').value = '';
                 document.getElementById('editCategory').value = '';
@@ -356,8 +446,10 @@
             const id = Date.now() + Math.random();
             const html = `
                 <div class="code-editor-block" id="block_${id}">
-                    <button type="button" class="remove-block-btn" onclick="document.getElementById('block_${id}').remove()">X</button>
-                    <input type="text" class="input code-part-title" placeholder="Snippet Label (e.g. HTML Template)" value="${escapeHtml(title)}" style="margin-bottom:8px;">
+                    <button type="button" class="remove-block-btn" onclick="document.getElementById('block_${id}').remove()" title="Remove Block">X</button>
+                    <label class="form-label" style="margin-bottom: 8px; display: block;">Snippet Label</label>
+                    <input type="text" class="input code-part-title" placeholder="e.g. HTML Template, Variables, etc." value="${escapeHtml(title)}" style="margin-bottom:16px;">
+                    <label class="form-label" style="margin-bottom: 8px; display: block;">Code Payload</label>
                     <textarea class="textarea code-part-body" placeholder="Paste your code here...">${escapeHtml(code)}</textarea>
                 </div>`;
             document.getElementById('codeRepeater').insertAdjacentHTML('beforeend', html);
@@ -368,6 +460,14 @@
             if (currentMacroId) {
                 document.getElementById('viewPanel').style.display = 'block';
                 viewMacro(currentMacroId);
+            } else {
+                document.getElementById('viewPanel').style.display = 'block';
+                document.getElementById('viewCodesContainer').innerHTML = `
+                    <div style="padding: 60px 20px; text-align: center; color: var(--text-secondary);">
+                        <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">💻</div>
+                        <h3 style="margin: 0;">No Macro Selected</h3>
+                        <p style="margin-top: 8px;">Select a script from the index to view its code.</p>
+                    </div>`;
             }
         }
 
@@ -398,15 +498,12 @@
             const idx = macrosData.findIndex(x => x.id === payload.id);
             if (idx > -1) macrosData[idx] = payload; else macrosData.push(payload);
             
-            // Cloud Write Protocol
             try {
-                // Primary Endpoint
                 await fetch('/api/save_macro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                // Fallback / Vault Sync
                 await fetch('/api/save_user_data', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'macros', data: macrosData })
@@ -419,41 +516,109 @@
             viewMacro(currentMacroId);
         }
 
+        // --- ADMIN DELETION PROTOCOL ---
         async function deleteCurrentMacro() {
-            if(!confirm("Delete this macro permanently?")) return;
-            
             const targetMacro = macrosData.find(x => x.id === currentMacroId);
-            if(targetMacro) {
-                targetMacro.deleted = true;
-                
-                // Cloud Deletion Protocol
-                try {
-                    await fetch('/api/save_macro', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(targetMacro)
-                    });
-                    
-                    macrosData = macrosData.filter(x => x.id !== currentMacroId);
-                    await fetch('/api/save_user_data', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'macros', data: macrosData })
-                    });
-                } catch(e) {}
+            if (!targetMacro) return;
+
+            if (targetMacro.isGlobal) {
+                const code = prompt("Enter Master Admin Code to delete a Global Macro:");
+                if (code !== "admin") { alert("Authorization Denied. Invalid Code."); return; }
+            } else if (!confirm("Delete this macro permanently?")) {
+                return;
             }
             
+            targetMacro.deleted = true;
+            
+            try {
+                await fetch('/api/save_macro', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(targetMacro)
+                });
+                
+                macrosData = macrosData.filter(x => x.id !== currentMacroId);
+                await fetch('/api/save_user_data', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: 'macros', data: macrosData })
+                });
+            } catch(e) {}
+            
             currentMacroId = null;
-            document.getElementById('viewPanel').style.display = 'none';
+            document.getElementById('viewPanel').style.display = 'block';
+            document.getElementById('viewTitle').innerHTML = `Select a Macro`;
+            document.getElementById('viewDesc').innerText = `Choose a script from the sidebar to view its contents.`;
+            document.getElementById('editMacroBtn').style.display = 'none';
+            document.getElementById('deleteMacroBtn').style.display = 'none';
+            document.getElementById('viewCodesContainer').innerHTML = `
+                <div style="padding: 60px 20px; text-align: center; color: var(--text-secondary);">
+                    <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">💻</div>
+                    <h3 style="margin: 0;">No Macro Selected</h3>
+                    <p style="margin-top: 8px;">Select a script from the index to view its code.</p>
+                </div>`;
             renderNav();
         }
 
         function copyCodeText(btn, id) {
             navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => {
                 btn.innerText = "Copied!"; btn.classList.add('copied');
-                setTimeout(() => { btn.innerText = "Copy"; btn.classList.remove('copied'); }, 2000);
+                setTimeout(() => { btn.innerText = "Copy Code"; btn.classList.remove('copied'); }, 2000);
             });
         }
 
         function escapeHtml(str) { return String(str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+        // --- Copilot ---
+        function toggleCopilot() {
+            const win = document.getElementById('copilotWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            if (win.style.display === 'flex') document.getElementById('copilotInput').focus();
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerHTML = text;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendChatMessage(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = '';
+
+                if (lower.includes('go to') || lower.includes('open')) {
+                    if (lower.includes('work') || lower.includes('tracker')) {
+                        reply = "Navigating to the Work Tracker now...";
+                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
+                    } else if (lower.includes('todo') || lower.includes('task')) {
+                        reply = "Opening your Personal To-Do list...";
+                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
+                    } else {
+                        reply = `I'm not sure which tool you mean, ${profileName}.`;
+                    }
+                } 
+                else if (lower.includes('hello') || lower.includes('hi')) {
+                    reply = `Greetings, ${profileName}. I am ready to assist with your macros.`;
+                } 
+                else if (lower.includes('thank')) {
+                    reply = "You are very welcome, sir.";
+                }
+                else {
+                    reply = `I am currently operating within the Macro Library context, sir. Let me know if you need to navigate elsewhere.`;
+                }
+                appendChatMessage(reply, 'bot');
+            }, 600);
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();

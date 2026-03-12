@@ -117,14 +117,15 @@
         <a href="nebula.html">Nebula HTML Forge</a>
         <a href="lod.html">LOD Validation Tool</a>
         <a href="scanner.html">Vulnerability Scanner</a>
-        <a href="file-converter.html">File to LOAD Converter</a> </div>
+        <a href="file-converter.html">File to LOAD Converter</a> 
+    </div>
 </div>
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
-                    </div>
+                        <a href="docs.html">Document Library</a> </div>
                 </div>
                 <a href="about.html" class="nav-item">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
@@ -144,12 +145,21 @@
             <div class="filters-group">
                 <div class="filter-item">
                     <label for="templateSelect">HTML Template Format</label>
-                    <select id="templateSelect" class="form-select" style="min-width: 380px;" onchange="generateSingleHtml()">
+                    <select id="templateSelect" class="form-select" style="min-width: 320px;" onchange="generateSingleHtml()">
                         <option value="1">Template 1 — Classic Card (Standard Core)</option>
                         <option value="2">Template 2 — Labeled Grid Panels (Left Rail)</option>
                         <option value="3">Template 3 — Spec Sidebar (Right Rail)</option>
                         <option value="4">Template 4 — Datasheet Blocks (Stacked)</option>
                         <option value="5">Template 5 — Banner + Callouts (3 Boxes)</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="themeColorSelect">Main Template Color</label>
+                    <select id="themeColorSelect" class="form-select" style="min-width: 180px;" onchange="generateSingleHtml()">
+                        <option value="#072872">Navy Blue (#072872)</option>
+                        <option value="#bf0d3e">Crimson Red (#bf0d3e)</option>
+                        <option value="#76777A">Slate Grey (#76777A)</option>
+                        <option value="#ffcd30">Gold (#ffcd30)</option>
                     </select>
                 </div>
             </div>
@@ -362,7 +372,6 @@
             } catch(e) { localTickets = await loadCloudData('work_items') || []; }
         }
 
-        // --- Copilot NLP System ---
         function toggleCopilot() {
             const win = document.getElementById('copilotWindow');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
@@ -527,9 +536,9 @@
             return `<div style="margin-top:12px;text-align:left;"><img src="${src}" alt="${escapeHtml(alt || 'Flag')}" style="width:${px}px;height:auto;border:1px solid #d7dce3;border-radius:6px;display:block;"></div>`;
         }
 
-        function buildDownloadHtml(label, url){
+        function buildDownloadHtml(label, url, tColor){
             if (!label || !url) return "";
-            const aStyle = "display:inline-block;margin-top:10px;background:#0b2b5a;color:#ffffff;text-decoration:none;padding:10px 14px;border-radius:999px;font-weight:900;";
+            const aStyle = `display:inline-block;margin-top:10px;background:${tColor};color:#ffffff;text-decoration:none;padding:10px 14px;border-radius:999px;font-weight:900;`;
             return `<div style="margin-top:10px;"><a href="${escapeHtml(url)}" style="${aStyle}" target="_blank" rel="noopener">${escapeHtml(label)}</a></div>`;
         }
 
@@ -581,7 +590,7 @@
 
         // T1 Classic
         function buildTemplate1Classic(cfg, mode){
-            const { summary, supersedes, productType, region, language, productLine, use, segment, includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment, includeStyle, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml } = cfg;
+            const { themeColor, summary, supersedes, productType, region, language, productLine, use, segment, includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment, includeStyle, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml } = cfg;
 
             const listItems = [];
             if (includeProductType && productType) listItems.push(`<li><strong>Product Type:</strong> ${escapeHtml(productType)}</li>`);
@@ -622,7 +631,7 @@
             if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>\n`;
             if (ctaHtml) html += `${ctaHtml}\n`;
 
-            if (listItems.length > 0) { html += ` <hr>\n <div class="prod-details">\n  <h3 style="margin:0 0 8px 0;color:#1b3a63;">Product Information</h3>\n  <ul style="margin:0;padding-left:18px;">\n   ${listItems.join("\n   ")}\n  </ul>\n </div>\n\n`; }
+            if (listItems.length > 0) { html += ` <hr>\n <div class="prod-details">\n  <h3 style="margin:0 0 8px 0;color:${themeColor};">Product Information</h3>\n  <ul style="margin:0;padding-left:18px;">\n   ${listItems.join("\n   ")}\n  </ul>\n </div>\n\n`; }
 
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
             if (img && (place === "bottom" || place === "all")) html += (mode==="bulk" ? `<div style="height:12px;"></div>${img}` : ` ${img}\n\n`);
@@ -631,19 +640,19 @@
             html += (mode === "bulk") ? `</td></tr></table></td></tr></table>` : `</div>\n\n`;
 
             if (includeStyle && mode !== "bulk") {
-                html += `<style>\n .product-description { font-family: Arial, Helvetica, sans-serif; background: #f7f9fc; padding: 20px; border-radius: 8px; line-height: 1.6; border: 1px solid #d7dce3; margin-top: 20px; }\n .prod-summary { font-size: 1rem; color: #333; }\n .prod-details h3 { margin-bottom: 8px; color: #1b3a63; }\n .prod-details ul { margin: 0; padding-left: 18px; }\n .prod-details li { margin-bottom: 4px; }\n</style>\n`;
+                html += `<style>\n .product-description { font-family: Arial, Helvetica, sans-serif; background: #f7f9fc; padding: 20px; border-radius: 8px; line-height: 1.6; border: 1px solid #d7dce3; margin-top: 20px; }\n .prod-summary { font-size: 1rem; color: #333; }\n .prod-details h3 { margin-bottom: 8px; color: ${themeColor}; }\n .prod-details ul { margin: 0; padding-left: 18px; }\n .prod-details li { margin-bottom: 4px; }\n</style>\n`;
             }
             return html;
         }
 
         // T2 Grid Panels
         function buildTemplate2LabeledPanels(cfg, mode){
-            const { summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
             const place = normalizePlacement(imagePlacement);
             const img = buildImageHtml(imageSrc, imageAlt);
             const outer = `<div style="height:16px;"></div>`;
             const shellStyle = "border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;overflow:hidden;";
-            const railStyle = "width:120px;background:#0b2b5a;color:#ffffff;font-weight:900;font-family:Arial,Helvetica,sans-serif;padding:14px 12px;vertical-align:top;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;";
+            const railStyle = `width:120px;background:${themeColor};color:#ffffff;font-weight:900;font-family:Arial,Helvetica,sans-serif;padding:14px 12px;vertical-align:top;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;`;
             const cellStyle = "padding:14px 14px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;vertical-align:top;";
 
             let html = outer + `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${shellStyle}border-collapse:separate;border-spacing:0;"><tr><td style="${railStyle}">Overview</td><td style="${cellStyle}">`;
@@ -692,7 +701,7 @@
 
         // T3 Sidebar
         function buildTemplate3SpecSidebar(cfg, mode){
-            const { summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
             const place = normalizePlacement(imagePlacement);
             const img = buildImageHtml(imageSrc, imageAlt);
             const shellStyle = "border:1px solid #e5e7eb;border-radius:14px;background:#ffffff;overflow:hidden;";
@@ -720,10 +729,10 @@
             if (img && (place === "bottom" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
             if (flagHtml) html += flagHtml;
             
-            html += `</td><td style="${rightStyle}width:38%;"><div style="font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;color:#0b2b5a;">Quick Specs</div>`;
+            html += `</td><td style="${rightStyle}width:38%;"><div style="font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;color:${themeColor};">Quick Specs</div>`;
             if (specsHtml) html += `<div style="margin-top:10px;">${specsHtml}</div>`;
             if (infoPairs && infoPairs.length){
-                html += `<div style="margin-top:12px;font-weight:900;color:#0b2b5a;">Product Information</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:6px;">`;
+                html += `<div style="margin-top:12px;font-weight:900;color:${themeColor};">Product Information</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:6px;">`;
                 infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;vertical-align:top;width:45%;">${escapeHtml(k)}</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`; });
                 html += `</table>`;
             }
@@ -732,11 +741,11 @@
 
         // T4 Datasheet
         function buildTemplate4Datasheet(cfg, mode){
-            const { summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
             const place = normalizePlacement(imagePlacement);
             const img = buildImageHtml(imageSrc, imageAlt);
             const shellStyle = "border:1px solid #d7dce3;border-radius:10px;background:#ffffff;overflow:hidden;";
-            const headStyle = "background:#0b2b5a;color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:12px 14px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;";
+            const headStyle = `background:${themeColor};color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:12px 14px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;`;
             const bodyStyle = "padding:12px 14px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
 
             let html = `<div style="height:16px;"></div><div style="${shellStyle}"><div style="${headStyle}">Product Details</div><div style="${bodyStyle}">`;
@@ -785,11 +794,11 @@
 
         // T5 Banner
         function buildTemplate5BannerCallouts(cfg, mode){
-            const { summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
             const place = normalizePlacement(imagePlacement);
             const img = buildImageHtml(imageSrc, imageAlt);
             const shellStyle = "border:1px solid #e5e7eb;border-radius:16px;background:#ffffff;overflow:hidden;";
-            const bannerStyle = "background:linear-gradient(90deg,#0b2b5a 0,#1456A8 50%,#00B894 100%);color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:14px 16px;";
+            const bannerStyle = `background:${themeColor};color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:14px 16px;`;
             const bodyStyle = "padding:14px 16px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
             const boxStyle = "border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;padding:10px 12px;";
 
@@ -805,9 +814,9 @@
             const hasA = !!highlightsHtml, hasB = !!specsHtml, hasC = !!includedHtml;
             if (hasA || hasB || hasC){
                 html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;border-spacing:10px 0;margin-top:10px;"><tr>`;
-                html += `<td style="width:33.33%;vertical-align:top;">${hasA ? `<div style="${boxStyle}"><div style="font-weight:900;color:#0b2b5a;margin-bottom:6px;">Highlights</div>${highlightsHtml}</div>` : ""}</td>`;
-                html += `<td style="width:33.33%;vertical-align:top;">${hasB ? `<div style="${boxStyle}"><div style="font-weight:900;color:#0b2b5a;margin-bottom:6px;">Specifications</div>${specsHtml}</div>` : ""}</td>`;
-                html += `<td style="width:33.33%;vertical-align:top;">${hasC ? `<div style="${boxStyle}"><div style="font-weight:900;color:#0b2b5a;margin-bottom:6px;">What’s Included</div>${includedHtml}</div>` : ""}</td>`;
+                html += `<td style="width:33.33%;vertical-align:top;">${hasA ? `<div style="${boxStyle}"><div style="font-weight:900;color:${themeColor};margin-bottom:6px;">Highlights</div>${highlightsHtml}</div>` : ""}</td>`;
+                html += `<td style="width:33.33%;vertical-align:top;">${hasB ? `<div style="${boxStyle}"><div style="font-weight:900;color:${themeColor};margin-bottom:6px;">Specifications</div>${specsHtml}</div>` : ""}</td>`;
+                html += `<td style="width:33.33%;vertical-align:top;">${hasC ? `<div style="${boxStyle}"><div style="font-weight:900;color:${themeColor};margin-bottom:6px;">What’s Included</div>${includedHtml}</div>` : ""}</td>`;
                 html += `</tr></table>`;
             }
 
@@ -815,7 +824,7 @@
             if (img && (place === "middle" || place === "all")) html += `<div style="height:12px;"></div>${img}<div style="height:12px;"></div>`;
 
             if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
-                html += `<div style="margin-top:12px;font-weight:900;color:#0b2b5a;">Additional Notes</div>`;
+                html += `<div style="margin-top:12px;font-weight:900;color:${themeColor};">Additional Notes</div>`;
                 if (compatibilityHtml) html += compatibilityHtml;
                 if (certsHtml) html += certsHtml;
                 if (warningsHtml) html += warningsHtml;
@@ -823,7 +832,7 @@
             }
 
             if (infoPairs && infoPairs.length){
-                html += `<div style="margin-top:12px;font-weight:900;color:#0b2b5a;">Product Information</div><ul style="margin:6px 0 0 0;padding-left:18px;">${infoPairs.map(([k,v]) => `<li><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`;
+                html += `<div style="margin-top:12px;font-weight:900;color:${themeColor};">Product Information</div><ul style="margin:6px 0 0 0;padding-left:18px;">${infoPairs.map(([k,v]) => `<li><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`;
             }
 
             if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
@@ -849,6 +858,7 @@
 
         function generateSingleHtml() {
             const templateId = document.getElementById("templateSelect").value;
+            const themeColor = document.getElementById("themeColorSelect").value || "#072872";
             const summary = readVal("summary");
             const supersedes = readVal("supersedes");
 
@@ -881,7 +891,7 @@
 
             const includeCTA = document.getElementById("includeCTA").checked;
             const ctaText = includeCTA ? readVal("ctaText") : ""; const ctaUrl = includeCTA ? readVal("ctaUrl") : "";
-            const ctaHtml = includeCTA ? buildDownloadHtml(ctaText, ctaUrl) : "";
+            const ctaHtml = includeCTA ? buildDownloadHtml(ctaText, ctaUrl, themeColor) : "";
 
             const imageSrc = getSingleImageSrc();
             const imageAlt = readVal("productImageAlt");
@@ -891,7 +901,7 @@
             const downloadLabel = includeDownload ? readVal("downloadLabel") : "";
             const downloadUrl = includeDownload ? getSingleDownloadUrl() : "";
             const downloadPlacement = includeDownload ? document.getElementById("downloadPlacement").value : "top";
-            const downloadHtml = (includeDownload && downloadLabel && downloadUrl) ? buildDownloadHtml(downloadLabel, downloadUrl) : "";
+            const downloadHtml = (includeDownload && downloadLabel && downloadUrl) ? buildDownloadHtml(downloadLabel, downloadUrl, themeColor) : "";
 
             const flagSrc = getSingleFlagSrc();
             const flagHtml = flagSrc ? buildFlagHtml(flagSrc, readVal("flagAlt"), readVal("flagSize")) : "";
@@ -902,7 +912,7 @@
             );
 
             const cfg = {
-                templateId, summary, supersedes, productType, region, language, productLine, use, segment,
+                templateId, themeColor, summary, supersedes, productType, region, language, productLine, use, segment,
                 includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment,
                 includeStyle: (parseInt(templateId, 10) === 1), imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml,
                 compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml,
@@ -923,9 +933,11 @@
 
             document.getElementById("productImageFile").value = ""; document.getElementById("flagFile").value = ""; document.getElementById("downloadFile").value = "";
             document.getElementById("productImagePlacement").value = "top"; document.getElementById("downloadPlacement").value = "top"; document.getElementById("flagSize").value = "34";
+            document.getElementById("themeColorSelect").value = "#072872";
 
             singleProductImageDataUri = ""; singleFlagDataUri = ""; singleDownloadDataUri = "";
             document.getElementById("output").value = ""; document.getElementById("preview").innerHTML = "";
+            generateSingleHtml();
         }
 
         function copyCode() {
@@ -939,8 +951,8 @@
         }
 
         function downloadTemplate() {
-            const header = ["Item Number","Summary","Supersedes","ProductType","Region","Language","ProductLine","Use","Segment","TemplateId","Badges","Highlights","UseRedChecks","Specs","WhatsIncluded","Compatibility","Certifications","Warnings","Care","ShippingReturns","Warranty","CTA_Text","CTA_Url","ImageUrl","ImagePlacement","ImageAlt","DownloadLabel","DownloadUrl","DownloadPlacement","FlagUrl","FlagAlt","FlagSize"].join(",");
-            const example = ["F-F-TIMBRDRV26", "This six-page flier highlights the system.", "T-F-TMBRDRV23-R", "Flier", "US | Canada", "English", "Fastening Systems", "General Use", "Commercial Construction, OEM", "5", "New", "Durable steel\nEasy install", "TRUE", "Weight: 2.4 lb\nLength: 8 in", "1x bracket\n2x screws", "Compatible with anchors", "RoHS compliant", "Wear eye protection.", "Wipe clean.", "Ships in 2 days.", "1-year warranty", "View Product", "https://example.com/product", "https://example.com/product.jpg", "top", "Product image", "View Spec Sheet", "https://example.com/specs.pdf", "middle", "https://example.com/flags/ca.png", "Made in Canada", "34"].map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
+            const header = ["Item Number","Summary","Supersedes","ProductType","Region","Language","ProductLine","Use","Segment","TemplateId","ThemeColor","Badges","Highlights","UseRedChecks","Specs","WhatsIncluded","Compatibility","Certifications","Warnings","Care","ShippingReturns","Warranty","CTA_Text","CTA_Url","ImageUrl","ImagePlacement","ImageAlt","DownloadLabel","DownloadUrl","DownloadPlacement","FlagUrl","FlagAlt","FlagSize"].join(",");
+            const example = ["F-F-TIMBRDRV26", "This six-page flier highlights the system.", "T-F-TMBRDRV23-R", "Flier", "US | Canada", "English", "Fastening Systems", "General Use", "Commercial Construction, OEM", "5", "#072872", "New", "Durable steel\nEasy install", "TRUE", "Weight: 2.4 lb\nLength: 8 in", "1x bracket\n2x screws", "Compatible with anchors", "RoHS compliant", "Wear eye protection.", "Wipe clean.", "Ships in 2 days.", "1-year warranty", "View Product", "https://example.com/product", "https://example.com/product.jpg", "top", "Product image", "View Spec Sheet", "https://example.com/specs.pdf", "middle", "https://example.com/flags/ca.png", "Made in Canada", "34"].map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
 
             const blob = new Blob([header + "\n" + example + "\n"], { type: "text/csv;charset=utf-8;" });
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "product_descriptions_template.csv";
@@ -1002,6 +1014,7 @@
             bulkRows.forEach((row, index) => {
                 const itemNumber = row["Item Number"] || row["ItemNumber"] || `Item_${index + 1}`;
                 const templateId = parseInt(row["TemplateId"] || document.getElementById("templateSelect").value, 10) || 1;
+                const themeColor = row["ThemeColor"] || document.getElementById("themeColorSelect").value || "#072872";
                 
                 const productType = row["ProductType"] || ""; const region = row["Region"] || ""; const language = row["Language"] || "";
                 const productLine = row["ProductLine"] || ""; const use = row["Use"] || ""; const segment = row["Segment"] || "";
@@ -1016,8 +1029,8 @@
                 const warningsHtml = row["Warnings"] ? buildTextSection("Warnings / Safety", row["Warnings"]) : "";
                 const careHtml = row["Care"] ? buildTextSection("Care / Maintenance", row["Care"]) : "";
 
-                const ctaHtml = (row["CTA_Text"] && row["CTA_Url"]) ? buildDownloadHtml(row["CTA_Text"], row["CTA_Url"]) : "";
-                const downloadHtml = (row["DownloadLabel"] && row["DownloadUrl"]) ? buildDownloadHtml(row["DownloadLabel"], row["DownloadUrl"]) : "";
+                const ctaHtml = (row["CTA_Text"] && row["CTA_Url"]) ? buildDownloadHtml(row["CTA_Text"], row["CTA_Url"], themeColor) : "";
+                const downloadHtml = (row["DownloadLabel"] && row["DownloadUrl"]) ? buildDownloadHtml(row["DownloadLabel"], row["DownloadUrl"], themeColor) : "";
                 const flagHtml = row["FlagUrl"] ? buildFlagHtml(row["FlagUrl"], row["FlagAlt"], row["FlagSize"] || "34") : "";
 
                 const infoPairs = buildInfoPairsFromOriginalFields(
@@ -1026,7 +1039,7 @@
                 );
 
                 const cfg = {
-                    templateId, summary: row["Summary"] || "", supersedes: row["Supersedes"] || "", 
+                    templateId, themeColor, summary: row["Summary"] || "", supersedes: row["Supersedes"] || "", 
                     productType, region, language, productLine, use, segment,
                     includeProductType: !!productType, includeRegion: !!region, includeLanguage: !!language, includeProductLine: !!productLine, includeUse: !!use, includeSegment: !!segment, includeStyle: false,
                     imageSrc: row["ImageUrl"] || "", imageAlt: row["ImageAlt"] || "", imagePlacement: normalizePlacement(row["ImagePlacement"]),
@@ -1046,12 +1059,12 @@
             status.style.color = "var(--success-color)";
         }
 
-        function handleProductImageFile(event){ const file = event.target.files[0]; if (!file) { singleProductImageDataUri = ""; return; } const reader = new FileReader(); reader.onload = function(e){ singleProductImageDataUri = e.target.result; document.getElementById("productImageUrl").value = ""; }; reader.readAsDataURL(file); }
-        function clearProductImageFileIfTyping(){ if (readVal("productImageUrl")) { document.getElementById("productImageFile").value = ""; singleProductImageDataUri = ""; } }
-        function handleFlagFile(event){ const file = event.target.files[0]; if (!file) { singleFlagDataUri = ""; return; } const reader = new FileReader(); reader.onload = function(e){ singleFlagDataUri = e.target.result; document.getElementById("flagUrl").value = ""; }; reader.readAsDataURL(file); }
-        function clearFlagFileIfTyping(){ if (readVal("flagUrl")) { document.getElementById("flagFile").value = ""; singleFlagDataUri = ""; } }
-        function handleDownloadFile(event){ const file = event.target.files[0]; if (!file) { singleDownloadDataUri = ""; return; } const reader = new FileReader(); reader.onload = function(e){ singleDownloadDataUri = e.target.result; document.getElementById("downloadUrl").value = ""; }; reader.readAsDataURL(file); }
-        function clearDownloadFileIfTyping(){ if (readVal("downloadUrl")) { document.getElementById("downloadFile").value = ""; singleDownloadDataUri = ""; } }
+        function handleProductImageFile(event){ const file = event.target.files[0]; if (!file) { singleProductImageDataUri = ""; return; } const reader = new FileReader(); reader.onload = function(e){ singleProductImageDataUri = e.target.result; document.getElementById("productImageUrl").value = ""; generateSingleHtml(); }; reader.readAsDataURL(file); }
+        function clearProductImageFileIfTyping(){ if (readVal("productImageUrl")) { document.getElementById("productImageFile").value = ""; singleProductImageDataUri = ""; generateSingleHtml(); } }
+        function handleFlagFile(event){ const file = event.target.files[0]; if (!file) { singleFlagDataUri = ""; return; } const reader = new FileReader(); reader.onload = function(e){ singleFlagDataUri = e.target.result; document.getElementById("flagUrl").value = ""; generateSingleHtml(); }; reader.readAsDataURL(file); }
+        function clearFlagFileIfTyping(){ if (readVal("flagUrl")) { document.getElementById("flagFile").value = ""; singleFlagDataUri = ""; generateSingleHtml(); } }
+        function handleDownloadFile(event){ const file = event.target.files[0]; if (!file) { singleDownloadDataUri = ""; return; } const reader = new FileReader(); reader.onload = function(e){ singleDownloadDataUri = e.target.result; document.getElementById("downloadUrl").value = ""; generateSingleHtml(); }; reader.readAsDataURL(file); }
+        function clearDownloadFileIfTyping(){ if (readVal("downloadUrl")) { document.getElementById("downloadFile").value = ""; singleDownloadDataUri = ""; generateSingleHtml(); } }
 
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity(); generateSingleHtml();

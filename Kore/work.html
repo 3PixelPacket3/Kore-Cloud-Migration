@@ -73,16 +73,20 @@
         .form-label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
         
         .task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-        .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-app); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
-        .task-item-left { display: flex; align-items: center; gap: 12px; }
-        .task-item.done .task-text { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
-        .task-text { font-size: 0.9rem; font-weight: 500; }
+        .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-app); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); cursor: grab; transition: box-shadow 0.2s, opacity 0.2s; }
+        .task-item:active { cursor: grabbing; }
+        .task-item.dragging { opacity: 0.5; box-shadow: var(--shadow-md); background: var(--bg-surface); }
+        .drag-handle { color: var(--text-secondary); padding-right: 8px; font-size: 1.2rem; user-select: none; cursor: grab; }
+        .task-edit-input { flex-grow: 1; border: none; background: transparent; font-size: 0.9rem; font-family: inherit; color: var(--text-main); outline: none; padding: 4px; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+        .task-edit-input:focus { border-bottom-color: var(--accent-primary); }
+        .task-item.done .task-edit-input { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
         .delete-task-btn { background: transparent; border: none; color: #ef4444; cursor: pointer; font-weight: bold; font-size: 1rem; }
 
         .editor-container { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
-        .editor-toolbar { background: var(--bg-app); border-bottom: 1px solid var(--border-subtle); padding: 8px; display: flex; gap: 8px; }
+        .editor-toolbar { background: var(--bg-app); border-bottom: 1px solid var(--border-subtle); padding: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         .editor-btn { background: transparent; border: 1px solid transparent; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; color: var(--text-secondary); transition: all 0.2s; }
         .editor-btn:hover { background: #e2e8f0; color: var(--text-main); }
+        .toolbar-divider { width: 1px; background: var(--border-subtle); margin: 0 4px; display: inline-block; height: 20px; vertical-align: middle; }
         .editor-content { min-height: 250px; padding: 16px; background: var(--bg-surface); outline: none; font-size: 0.95rem; line-height: 1.6; }
         
         .form-actions { display: flex; justify-content: space-between; align-items: center; }
@@ -98,25 +102,27 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-<div class="nav-item">Operations ▼
-    <div class="dropdown-content">
-        <a href="todo.html">Personal To-Do</a>
-        <a href="macros.html">Macro Library</a>
-        <a href="apps.html">Apps</a>
-        <a href="work.html">Work Tracker</a>
-        <a href="passwords.html">Password Generator</a>
-        <a href="product-html.html">Product HTML Converter</a>
-        <a href="nebula.html">Nebula HTML Forge</a>
-        <a href="lod.html">LOD Validation Tool</a>
-        <a href="scanner.html">Vulnerability Scanner</a>
-        <a href="file-converter.html">File to LOAD Converter</a> </div>
-</div>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="apps.html">Apps</a>
+                        <a href="work.html">Work Tracker</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                        <a href="scanner.html">Vulnerability Scanner</a>
+                        <a href="file-converter.html">File to LOAD Converter</a>
+                        <a href="long-desc-converter.html">Long Description Mass Converter</a>
+                    </div>
+                </div>
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-hub.html">Info Hub</a>
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
-                    </div>
+                        <a href="docs.html">Document Library</a> </div>
                 </div>
                 <a href="about.html" class="nav-item">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
@@ -256,9 +262,15 @@
                     <label class="form-label">Notes & Details</label>
                     <div class="editor-container">
                         <div class="editor-toolbar">
-                            <button class="editor-btn" type="button" onclick="formatDoc('bold')">B</button>
-                            <button class="editor-btn" type="button" onclick="formatDoc('italic')" style="font-style:italic;">I</button>
-                            <button class="editor-btn" type="button" onclick="formatDoc('insertUnorderedList')">• List</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('bold')" title="Bold"><b>B</b></button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('italic')" title="Italic"><i>I</i></button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('underline')" title="Underline"><u>U</u></button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                            <div class="toolbar-divider"></div>
+                            <button class="editor-btn" type="button" onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
+                            <button class="editor-btn" type="button" onclick="formatDoc('insertOrderedList')" title="Numbered List">1. List</button>
+                            <div class="toolbar-divider"></div>
+                            <button class="editor-btn" type="button" onclick="formatDoc('removeFormat')" title="Clear Formatting">⌫ Clear</button>
                         </div>
                         <div id="reqNotes" class="editor-content" contenteditable="true"></div>
                     </div>
@@ -277,6 +289,8 @@
         </div>
 
     </main>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
@@ -325,11 +339,8 @@
             const typeOpts = config.types.map(t => `<option value="${t}">${t}</option>`).join('');
             const allocOpts = config.allocations.map(a => `<option value="${a}">${a}</option>`).join('');
 
-            // Form Dropdowns
             document.getElementById('reqType').innerHTML = `<option value="Unassigned">Select Type...</option>` + typeOpts;
             document.getElementById('reqAllocation').innerHTML = `<option value="Unassigned">Select Account...</option>` + allocOpts;
-
-            // Filter Dropdowns
             document.getElementById('filterType').innerHTML += typeOpts;
             document.getElementById('filterAllocation').innerHTML += allocOpts;
         }
@@ -346,7 +357,6 @@
                 masterWorkItems = await loadCloudData('work_items') || [];
             }
             
-            // Load Saved User Filters
             const savedFilters = await loadCloudData('work_filters');
             if (savedFilters) {
                 if (savedFilters.status) document.getElementById('filterStatus').value = savedFilters.status;
@@ -371,7 +381,6 @@
 
         function updateFilters() {
             renderTable();
-            // Fire off a background save of the filter state
             const filters = {
                 status: document.getElementById('filterStatus').value,
                 priority: document.getElementById('filterPriority').value,
@@ -438,22 +447,59 @@
             });
         }
 
+        // --- UPDATED DRAG, DROP, AND EDIT CHECKLIST LOGIC ---
         function renderChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
             
             activeChecklist.forEach((task, index) => {
                 container.innerHTML += `
-                    <div class="task-item ${task.done ? 'done' : ''}">
-                        <div class="task-item-left">
+                    <div class="task-item ${task.done ? 'done' : ''}" draggable="true" ondragstart="dragStart(event, ${index})" ondragover="dragOver(event)" ondrop="drop(event, ${index})" ondragend="dragEnd(event)">
+                        <div class="task-item-left" style="flex-grow: 1; display: flex; align-items: center;">
+                            <span class="drag-handle">⋮⋮</span>
                             <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleChecklistItem(${index})">
-                            <span class="task-text">${task.text}</span>
+                            <input type="text" class="task-edit-input" value="${task.text.replace(/"/g, '&quot;')}" onchange="updateChecklistText(${index}, this.value)">
                         </div>
                         <button class="delete-task-btn" onclick="removeChecklistItem(${index})">&times;</button>
                     </div>
                 `;
             });
         }
+
+        let draggedTaskIndex = null;
+
+        window.updateChecklistText = function(index, newText) {
+            if(newText.trim() === '') {
+                removeChecklistItem(index); 
+            } else {
+                activeChecklist[index].text = newText.trim();
+            }
+        };
+
+        window.dragStart = function(event, index) {
+            draggedTaskIndex = index;
+            event.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => event.target.classList.add('dragging'), 0);
+        };
+
+        window.dragOver = function(event) {
+            event.preventDefault(); 
+            event.dataTransfer.dropEffect = 'move';
+        };
+
+        window.drop = function(event, targetIndex) {
+            event.preventDefault();
+            if (draggedTaskIndex !== null && draggedTaskIndex !== targetIndex) {
+                const draggedItem = activeChecklist.splice(draggedTaskIndex, 1)[0];
+                activeChecklist.splice(targetIndex, 0, draggedItem);
+                renderChecklist();
+            }
+        };
+
+        window.dragEnd = function(event) {
+            event.target.classList.remove('dragging');
+            draggedTaskIndex = null;
+        };
 
         window.addChecklistItem = function() {
             const input = document.getElementById('newTaskInput');
@@ -540,7 +586,6 @@
                 deleted: false
             };
 
-            // Post to specific endpoint if available
             try {
                 await fetch('/api/save_work_item', {
                     method: 'POST',
@@ -549,11 +594,9 @@
                 });
             } catch (err) {}
 
-            // Update State Matrix
             const idx = masterWorkItems.findIndex(i => i.id === payload.id);
             if (idx > -1) { masterWorkItems[idx] = payload; } else { masterWorkItems.push(payload); }
             
-            // Backup to generic cloud endpoint to ensure persistence if the main API is down
             await saveCloudData('work_items', masterWorkItems);
 
             btn.innerText = "Save & Transmit to Cloud"; btn.disabled = false;
@@ -579,7 +622,6 @@
                         });
                     } catch (err) {}
                     
-                    // Backup the deletion to the generic cloud store
                     await saveCloudData('work_items', masterWorkItems);
                 }
 

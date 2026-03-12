@@ -218,80 +218,75 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function handleCopilotSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('copilotInput');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            appendChatMessage(text, 'user');
-            input.value = '';
+        // Optimized Intent-Based Copilot Logic
+function handleCopilotSubmit(e) {
+    e.preventDefault();
+    const input = document.getElementById('copilotInput');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    appendChatMessage(text, 'user');
+    input.value = '';
 
-            setTimeout(() => {
-                const lower = text.toLowerCase();
-                let reply = `I am operating within the Archive context, sir. Use the buttons above to process the selected files.`;
-                appendChatMessage(reply, 'bot');
-            }, 600);
-        }
+    setTimeout(() => {
+        const lower = text.toLowerCase();
+        let reply = '';
 
-        // --- Cloud Core Logic ---
-        async function loadPages() {
-            try {
-                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    return Array.isArray(data) ? data : [];
-                }
-            } catch (e) {}
-            const fallback = await loadCloudData('infoPages');
-            return Array.isArray(fallback) ? fallback : [];
-        }
-
-        function escapeHtml(str) { return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
-        function stripTags(html) { return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
-        function formatDate(iso) { try { return new Date(iso).toLocaleDateString(); } catch(e) { return iso; } }
-
-        async function render() {
-            const listEl = document.getElementById("archiveList");
-            const emptyEl = document.getElementById("emptyState");
-            const selectAllCb = document.getElementById("selectAllCb");
-            
-            listEl.innerHTML = "<div style='padding: 20px; color: var(--text-secondary); font-weight: 600;'>Loading securely from Cloud Vault...</div>";
-            selectAllCb.checked = false;
-
-            masterPages = await loadPages();
-            const archivedPages = masterPages.filter(p => p && p.archived);
-
-            if (!archivedPages.length) {
-                listEl.style.display = "none";
-                emptyEl.style.display = "block";
-                return;
+        // 1. TICKET SEARCH (Regex)
+        const ticketMatch = text.match(/tkt-\d+/i);
+        if (ticketMatch) {
+            const tktId = ticketMatch[0].toUpperCase();
+            const ticket = localTickets.find(t => t.id === tktId);
+            if (ticket) {
+                reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
+            } else {
+                reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
             }
-
-            listEl.innerHTML = "";
-            emptyEl.style.display = "none";
-            listEl.style.display = "flex";
-
-            archivedPages.forEach(page => {
-                const titleText = stripTags(page.titleHtml || page.title || "Untitled Page");
-                const dateText = formatDate(page.updatedAt || page.createdAt);
-                const globalBadge = page.isGlobal ? `<span class="tag-global">🌐 GLOBAL</span>` : '';
-                
-                const div = document.createElement("div");
-                div.className = "archive-item";
-                div.innerHTML = `
-                    <input type="checkbox" class="custom-checkbox item-cb" value="${escapeHtml(page.id)}">
-                    <div class="item-details">
-                        <div>
-                            ${globalBadge}
-                            <h3 class="item-title">${escapeHtml(titleText)}</h3>
-                        </div>
-                        <p class="item-meta">Archived/Updated: ${dateText} | ID: ${escapeHtml(page.id)}</p>
-                    </div>
-                `;
-                listEl.appendChild(div);
-            });
+        } 
+        // 2. DOCUMENT VAULT INTEGRATION
+        else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
+            // Logic to pull from a combinedVault if globally accessible
+            reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
         }
+        // 3. ARCHIVE & RESTORATION
+        else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
+            reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
+        }
+        // 4. WORK & TASK SUMMARIES
+        else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
+            const activeTasks = localTasks.filter(t => !t.completed).length;
+            const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
+            reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
+        } 
+        // 5. NAVIGATION (Enhanced)
+        else if (lower.includes('go to') || lower.includes('open')) {
+            const destination = lower.replace('go to', '').replace('open', '').trim();
+            const routes = {
+                'work': 'work.html', 'tracker': 'work.html',
+                'hub': 'info-hub.html', 'info': 'info-hub.html',
+                'docs': 'docs.html', 'library': 'docs.html',
+                'archive': 'info-archive.html',
+                'macro': 'macros.html', 'todo': 'todo.html'
+            };
+            
+            let found = false;
+            for (let key in routes) {
+                if (destination.includes(key)) {
+                    reply = `Navigating to ${key}...`;
+                    setTimeout(() => { window.location.href = routes[key]; }, 800);
+                    found = true; break;
+                }
+            }
+            if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
+        }
+        // 6. PERSONALITY / FALLBACK
+        else {
+            reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
+        }
+
+        appendChatMessage(reply, 'bot');
+    }, 600);
+}
 
         function getSelectedIds() {
             const checkboxes = document.querySelectorAll(".item-cb:checked");

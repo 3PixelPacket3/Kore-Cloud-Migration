@@ -771,56 +771,75 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function handleCopilotSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('copilotInput');
-            const text = input.value.trim();
-            if (!text) return;
+// Optimized Intent-Based Copilot Logic
+function handleCopilotSubmit(e) {
+    e.preventDefault();
+    const input = document.getElementById('copilotInput');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    appendChatMessage(text, 'user');
+    input.value = '';
+
+    setTimeout(() => {
+        const lower = text.toLowerCase();
+        let reply = '';
+
+        // 1. TICKET SEARCH (Regex)
+        const ticketMatch = text.match(/tkt-\d+/i);
+        if (ticketMatch) {
+            const tktId = ticketMatch[0].toUpperCase();
+            const ticket = localTickets.find(t => t.id === tktId);
+            if (ticket) {
+                reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
+            } else {
+                reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
+            }
+        } 
+        // 2. DOCUMENT VAULT INTEGRATION
+        else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
+            // Logic to pull from a combinedVault if globally accessible
+            reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
+        }
+        // 3. ARCHIVE & RESTORATION
+        else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
+            reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
+        }
+        // 4. WORK & TASK SUMMARIES
+        else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
+            const activeTasks = localTasks.filter(t => !t.completed).length;
+            const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
+            reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
+        } 
+        // 5. NAVIGATION (Enhanced)
+        else if (lower.includes('go to') || lower.includes('open')) {
+            const destination = lower.replace('go to', '').replace('open', '').trim();
+            const routes = {
+                'work': 'work.html', 'tracker': 'work.html',
+                'hub': 'info-hub.html', 'info': 'info-hub.html',
+                'docs': 'docs.html', 'library': 'docs.html',
+                'archive': 'info-archive.html',
+                'macro': 'macros.html', 'todo': 'todo.html'
+            };
             
-            appendChatMessage(text, 'user');
-            input.value = '';
+            let found = false;
+            for (let key in routes) {
+                if (destination.includes(key)) {
+                    reply = `Navigating to ${key}...`;
+                    setTimeout(() => { window.location.href = routes[key]; }, 800);
+                    found = true; break;
+                }
+            }
+            if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
+        }
+        // 6. PERSONALITY / FALLBACK
+        else {
+            reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
+        }
 
-            setTimeout(() => {
-                const lower = text.toLowerCase();
-                let reply = '';
-
-                // 1. Ticket Search Regex
-                const ticketMatch = text.match(/tkt-\d+/i);
-                if (ticketMatch) {
-                    const tktId = ticketMatch[0].toUpperCase();
-                    const ticket = localTickets.find(t => t.id === tktId);
-                    if (ticket) {
-                        reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
-                    } else {
-                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
-                    }
-                } 
-                // 2. Navigation
-                else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
-                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
-                        reply = "Navigating to the Work Tracker now...";
-                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
-                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
-                        reply = "Opening the Enterprise Macro Library...";
-                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
-                    } else if (lower.includes('lod') || lower.includes('validate')) {
-                        reply = "Taking you to the LOD Validation Tool...";
-                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
-                    } else if (lower.includes('todo') || lower.includes('task')) {
-                        reply = "Opening your Personal To-Do list...";
-                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
-                    } else if (lower.includes('password')) {
-                        reply = "Navigating to the Secure Password Generator...";
-                        setTimeout(() => { window.location.href = 'passwords.html'; }, 1000);
-                    } else if (lower.includes('hub') || lower.includes('info')) {
-                        reply = "You are already on the Info Hub, sir.";
-                    } else if (lower.includes('report') || lower.includes('data')) {
-                        reply = "Opening Data & Reports...";
-                        setTimeout(() => { window.location.href = 'reports.html'; }, 1000);
-                    } else {
-                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
-                    }
-                } 
+        appendChatMessage(reply, 'bot');
+    }, 600);
+}
                 // 3. Summaries
                 else if (lower.includes('task') || lower.includes('todo')) {
                     const active = localTasks.filter(t => !t.completed).length;

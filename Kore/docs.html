@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kore | Document Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
+            --border-subtle: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+            --radius-md: 12px; --radius-sm: 8px;
+            --danger: #ef4444; --success: #10b981;
+        }
+
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
+
+        .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; gap: 8px; }
+        .kore-logo span { color: var(--accent-primary); }
+        .nav-menu { display: flex; gap: 8px; height: 100%; }
+        .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease;}
+        .nav-item:hover, .nav-item.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background-color: #f0f9ff; }
+        .dropdown-content { display: none; position: absolute; top: 64px; left: 0; background-color: var(--bg-surface); min-width: 260px; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle); border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; z-index: 101; }
+        .nav-item:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--text-secondary); padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid var(--bg-app); font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
+        .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
+
+        .main-container { padding: 40px 32px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
+
+        .hero-banner { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); height: 160px; position: relative; margin-bottom: 24px; display: flex; align-items: stretch; }
+        .hero-banner img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;}
+        .hero-overlay { position: relative; z-index: 2; width: 100%; background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.6)); padding: 24px 30px; box-sizing: border-box; color: white; display: flex; justify-content: space-between; align-items: center;}
+        .hero-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+        
+        .storage-tracker { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); padding: 12px 20px; width: 300px; backdrop-filter: blur(4px); }
+        .storage-text { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #f8fafc; }
+        .storage-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.3); border-radius: 99px; overflow: hidden; }
+        .storage-bar-fill { height: 100%; background: var(--success); width: 0%; transition: width 0.5s ease; }
+        .storage-bar-fill.warning { background: #f59e0b; }
+        .storage-bar-fill.danger { background: var(--danger); }
+
+        .library-controls { display: grid; grid-template-columns: 1fr 340px; gap: 24px; margin-bottom: 24px; align-items: start; }
+        
+        .upload-zone { background: var(--bg-surface); border: 2px dashed var(--accent-primary); border-radius: var(--radius-md); padding: 40px 20px; text-align: center; transition: all 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; box-sizing: border-box;}
+        .upload-zone:hover, .upload-zone.dragover { background: #f0f9ff; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
+        .upload-icon { font-size: 2.8rem; color: var(--accent-primary); margin-bottom: 12px; }
+        .upload-text { font-weight: 700; color: var(--text-main); margin-bottom: 4px; font-size: 1.1rem; }
+        .upload-subtext { font-size: 0.85rem; color: var(--text-secondary); }
+        #fileInput { display: none; }
+
+        .filters-panel { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); padding: 20px; display: flex; flex-direction: column; gap: 16px; height: 100%; box-sizing: border-box;}
+        .filter-row { display: flex; gap: 12px; align-items: center; }
+        .search-bar { flex-grow: 1; padding: 10px 16px; border: 1px solid var(--border-subtle); border-radius: 99px; font-size: 0.9rem; outline: none; background: var(--bg-app); transition: all 0.2s; }
+        .search-bar:focus { border-color: var(--accent-primary); background: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .select-filter { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-app); color: var(--text-main); cursor: pointer; flex-grow: 1; }
+
+        .view-toggles { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+        .view-btn { background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+        .view-btn.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+
+        /* Grid View (Default) */
+        .doc-container.grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .doc-container.grid-view .doc-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; display: flex; flex-direction: column; position: relative; }
+        .doc-container.grid-view .doc-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); }
+        .doc-container.grid-view .doc-icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; cursor: pointer; }
+        .doc-container.grid-view .doc-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-container.grid-view .doc-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .doc-container.grid-view .doc-actions { display: flex; gap: 8px; border-top: 1px solid var(--border-subtle); padding-top: 16px; margin-top: auto; }
+
+        /* List View */
+        .doc-container.list-view { display: flex; flex-direction: column; gap: 12px; }
+        .doc-container.list-view .doc-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; display: flex; align-items: center; justify-content: space-between; }
+        .doc-container.list-view .doc-card:hover { border-color: var(--accent-primary); }
+        .doc-container.list-view .doc-icon-wrapper { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 16px; cursor: pointer; flex-shrink: 0;}
+        .doc-container.list-view .doc-info-group { display: flex; align-items: center; flex-grow: 1; overflow: hidden;}
+        .doc-container.list-view .doc-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 24px;}
+        .doc-container.list-view .doc-meta { font-size: 0.85rem; color: var(--text-secondary); display: flex; gap: 32px; margin-right: 24px; white-space: nowrap; flex-shrink: 0;}
+        .doc-container.list-view .doc-actions { display: flex; gap: 12px; border-left: 1px solid var(--border-subtle); padding-left: 24px; flex-shrink: 0;}
+
+        /* Icon Colors */
+        .doc-type-pdf { background: #fee2e2; color: #ef4444; }
+        .doc-type-image { background: #dcfce7; color: #10b981; }
+        .doc-type-word { background: #e0e7ff; color: #4f46e5; }
+        .doc-type-excel { background: #dcfce7; color: #16a34a; }
+        .doc-type-archive { background: #fef3c7; color: #d97706; }
+        .doc-type-code { background: #f3f4f6; color: #4b5563; }
+        .doc-type-default { background: #f1f5f9; color: #64748b; }
+
+        .btn-action { padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: center; border: 1px solid transparent; transition: all 0.2s; background: var(--bg-app); color: var(--text-main); }
+        .grid-view .btn-action { flex-grow: 1; }
+        .btn-action:hover { background: #e2e8f0; }
+        .btn-download { background: #f0f9ff; color: var(--accent-primary); border-color: #bae6fd; }
+        .btn-download:hover { background: var(--accent-primary); color: white; }
+        .btn-delete { color: var(--danger); background: transparent; }
+        .btn-delete:hover { background: #fee2e2; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); grid-column: 1 / -1; background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
+        
+        /* Overlays */
+        .system-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px); }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--border-subtle); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Image Preview Modal */
+        .preview-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 40px; box-sizing: border-box; cursor: zoom-out;}
+        .preview-modal img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-sm); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .preview-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; font-weight: bold; }
+
+        /* Copilot Trigger */
+        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
+        .copilot-trigger:hover { transform: scale(1.05); }
+        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
+        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
+        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
+        .chat-msg a:hover { text-decoration: underline; }
+        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px; }
+        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
+        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
+
+        .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <div class="header-left">
+            <h1 class="kore-logo">Kore<span>.</span></h1>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Dashboard</a>
+                <div class="nav-item">Operations ▼
+                    <div class="dropdown-content">
+                        <a href="apps.html">Apps</a>
+                        <a href="file-converter.html">File to LOAD Converter</a>
+                        <a href="lod.html">LOD Validation Tool</a>
+                        <a href="long-desc-converter.html">Long Description Mass Converter</a>
+                        <a href="macros.html">Macro Library</a>
+                        <a href="nebula.html">Nebula HTML Forge</a>
+                        <a href="passwords.html">Password Generator</a>
+                        <a href="todo.html">Personal To-Do</a>
+                        <a href="product-html.html">Product HTML Converter</a>
+                        <a href="scanner.html">Vulnerability Scanner</a>
+                        <a href="work.html">Work Tracker</a>
+                    </div>
+                </div>
+                <div class="nav-item active">Resources ▼
+                    <div class="dropdown-content">
+                        <a href="info-archive.html">Archive</a>
+                        <a href="reports.html">Data/Reports</a>
+                        <a href="docs.html">Document Library</a>
+                        <a href="info-hub.html">Info Hub</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item">About</a>
+                <a href="settings.html" class="nav-item">Settings</a>
+            </nav>
+        </div>
+        <div id="userIdentityBadge" class="user-badge">Authenticating...</div>
+    </header>
+
+    <div class="system-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <h3 id="overlayText" style="color: var(--text-main);">Encrypting & Saving to Vault...</h3>
+    </div>
+
+    <div class="preview-modal" id="imagePreviewModal" onclick="closePreview()">
+        <div class="preview-close">&times;</div>
+        <img id="previewImgSrc" src="" alt="File Preview">
+    </div>
+
+    <main class="main-container">
+        
+        <section class="hero-banner">
+            <img src="images/InfoHubBanner.jpg" alt="Document Library Banner" onerror="this.src=''; this.style.backgroundColor='#0ea5e9';">
+            <div class="hero-overlay">
+                <div>
+                    <h2 class="hero-title">Enterprise Document Vault</h2>
+                    <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.9; margin-top: 4px;" id="fileCountDisplay">0 Files Stored</div>
+                </div>
+                <div class="storage-tracker">
+                    <div class="storage-text">
+                        <span>Vault Capacity</span>
+                        <span id="storageStats">0 MB / 50 MB</span>
+                    </div>
+                    <div class="storage-bar-bg">
+                        <div class="storage-bar-fill" id="storageProgressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="library-controls">
+            <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Drag & Drop Files Here</div>
+                <div class="upload-subtext">or click to browse your computer</div>
+                <input type="file" id="fileInput" multiple onchange="handleFilesSelected(event)">
+            </div>
+
+            <div class="filters-panel">
+                <div class="filter-row">
+                    <input type="text" class="search-bar" id="searchDocs" placeholder="Search by filename..." oninput="renderLibrary()">
+                </div>
+                <div class="filter-row">
+                    <select class="select-filter" id="filterType" onchange="renderLibrary()">
+                        <option value="all">All File Types</option>
+                        <option value="pdf">PDF Documents</option>
+                        <option value="image">Images</option>
+                        <option value="doc">Word / Text</option>
+                        <option value="sheet">Spreadsheets</option>
+                        <option value="archive">Archives (ZIP/RAR)</option>
+                        <option value="code">Code Snippets</option>
+                    </select>
+                    <select class="select-filter" id="sortOrder" onchange="renderLibrary()">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                        <option value="name_desc">Name (Z-A)</option>
+                        <option value="size_desc">Largest Size</option>
+                        <option value="size_asc">Smallest Size</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-toggles">
+            <button class="view-btn active" id="btnGrid" onclick="setLibraryView('grid')">▦ Grid View</button>
+            <button class="view-btn" id="btnList" onclick="setLibraryView('list')">☰ List View</button>
+        </div>
+
+        <div class="doc-container grid-view" id="libraryContainer">
+            </div>
+
+    </main>
+
+    <button class="copilot-trigger" onclick="toggleCopilot()">💬</button>
+    <div class="copilot-window" id="copilotWindow">
+        <div class="copilot-header">
+            <span>🤖 Kore Copilot</span>
+            <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
+        </div>
+        <div class="copilot-messages" id="copilotMessages">
+            <div class="chat-msg bot" id="botWelcomeMsg">Initializing AI matrix...</div>
+        </div>
+        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
+            <input type="text" id="copilotInput" placeholder="Message Copilot..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
+
+    <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
+
+    <script>
+        let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
+        let documentVault = []; 
+        let currentView = 'grid';
+        const MAX_STORAGE_MB = 50; 
+
+        async function fetchSecureIdentity() {
+            try {
+                const response = await fetch('/.auth/me');
+                const data = await response.json();
+                if (data.clientPrincipal) {
+                    cloudIdentity.userId = data.clientPrincipal.userId;
+                    cloudIdentity.userName = data.clientPrincipal.userDetails;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                }
+            } catch (error) {}
+        }
+
+        async function loadCloudData(dataType) {
+            try {
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        async function saveCloudData(dataType, data) {
+            try {
+                await fetch('/api/save_user_data', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
+                });
+            } catch(e) {
+                console.error("Cloud Save Error:", e);
+                alert("Warning: Storage sync failed. You may be exceeding size limits.");
+            }
+        }
+
+        // --- Drag and Drop Logic ---
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files); });
+        function handleFilesSelected(event) { if (event.target.files.length) processFiles(event.target.files); }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        function getFileTypeCategory(mime, filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (mime.includes('pdf') || ext === 'pdf') return 'pdf';
+            if (mime.includes('image') || ['jpg','jpeg','png','gif','svg','webp'].includes(ext)) return 'image';
+            if (mime.includes('word') || mime.includes('document') || ['doc','docx','txt','rtf'].includes(ext)) return 'doc';
+            if (mime.includes('excel') || mime.includes('spreadsheet') || ['xls','xlsx','csv'].includes(ext)) return 'sheet';
+            if (mime.includes('zip') || mime.includes('compressed') || ['zip','rar','7z','tar'].includes(ext)) return 'archive';
+            if (['html','css','js','py','json','xml'].includes(ext)) return 'code';
+            return 'default';
+        }
+
+        function getFileIcon(category) {
+            switch(category) {
+                case 'pdf': return '📄';
+                case 'image': return '🖼️';
+                case 'doc': return '📝';
+                case 'sheet': return '📊';
+                case 'archive': return '🗜️';
+                case 'code': return '⌨️';
+                default: return '📁';
+            }
+        }
+
+        async function processFiles(files) {
+            const overlay = document.getElementById('loadingOverlay');
+            document.getElementById('overlayText').innerText = "Encrypting & Saving to Vault...";
+            overlay.style.display = 'flex';
+
+            let updated = false;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const base64Data = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+
+                const newDoc = {
+                    id: 'DOC-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                    name: file.name,
+                    sizeRaw: file.size,
+                    sizeStr: formatBytes(file.size),
+                    mimeType: file.type || 'application/octet-stream',
+                    category: getFileTypeCategory(file.type, file.name),
+                    uploadDate: new Date().toISOString(),
+                    dataUri: base64Data
+                };
+
+                documentVault.push(newDoc);
+                updated = true;
+            }
+
+            if (updated) {
+                await saveCloudData('document_library', documentVault);
+                updateStorageTracker();
+                renderLibrary();
+            }
+
+            document.getElementById('fileInput').value = '';
+            overlay.style.display = 'none';
+        }
+
+        function triggerDownload(docId) {
+            const doc = documentVault.find(d => d.id === docId);
+            if (!doc) return;
+            const link = document.createElement("a");
+            link.href = doc.dataUri; link.download = doc.name;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
+        function previewImage(docId) {
+            const doc = documentVault.find(d => d.id === docId);
+            if (doc && doc.category === 'image') {
+                document.getElementById('previewImgSrc').src = doc.dataUri;
+                document.getElementById('imagePreviewModal').style.display = 'flex';
+            }
+        }
+
+        function closePreview() {
+            document.getElementById('imagePreviewModal').style.display = 'none';
+            document.getElementById('previewImgSrc').src = '';
+        }
+
+        async function deleteDocument(docId) {
+            if (confirm("Are you certain you wish to delete this document from the vault?")) {
+                const overlay = document.getElementById('loadingOverlay');
+                document.getElementById('overlayText').innerText = "Removing from Vault...";
+                overlay.style.display = 'flex';
+
+                documentVault = documentVault.filter(d => d.id !== docId);
+                await saveCloudData('document_library', documentVault);
+                
+                updateStorageTracker();
+                renderLibrary();
+                overlay.style.display = 'none';
+            }
+        }
+
+        function updateStorageTracker() {
+            let totalBytes = 0;
+            documentVault.forEach(doc => totalBytes += doc.sizeRaw);
+            const totalMB = (totalBytes / (1024 * 1024)).toFixed(2);
+            let percent = (totalMB / MAX_STORAGE_MB) * 100;
+            if (percent > 100) percent = 100;
+
+            document.getElementById('storageStats').innerText = `${totalMB} MB / ${MAX_STORAGE_MB} MB`;
+            
+            const bar = document.getElementById('storageProgressBar');
+            bar.style.width = `${percent}%`;
+            bar.className = 'storage-bar-fill';
+            if (percent > 85) bar.classList.add('danger');
+            else if (percent > 65) bar.classList.add('warning');
+            
+            document.getElementById('fileCountDisplay').innerText = `${documentVault.length} Files Stored`;
+        }
+
+        function setLibraryView(view) {
+            currentView = view;
+            document.getElementById('btnGrid').classList.toggle('active', view === 'grid');
+            document.getElementById('btnList').classList.toggle('active', view === 'list');
+            
+            const container = document.getElementById('libraryContainer');
+            container.className = `doc-container ${view}-view`;
+        }
+
+        function renderLibrary() {
+            const container = document.getElementById('libraryContainer');
+            container.innerHTML = '';
+
+            const searchQ = document.getElementById('searchDocs').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+            const sortOrder = document.getElementById('sortOrder').value;
+
+            let filteredDocs = documentVault.filter(doc => {
+                const matchSearch = doc.name.toLowerCase().includes(searchQ);
+                const matchType = (filterType === 'all') || (doc.category === filterType);
+                return matchSearch && matchType;
+            });
+
+            filteredDocs.sort((a, b) => {
+                switch(sortOrder) {
+                    case 'newest': return new Date(b.uploadDate) - new Date(a.uploadDate);
+                    case 'oldest': return new Date(a.uploadDate) - new Date(b.uploadDate);
+                    case 'name_asc': return a.name.localeCompare(b.name);
+                    case 'name_desc': return b.name.localeCompare(a.name);
+                    case 'size_desc': return b.sizeRaw - a.sizeRaw;
+                    case 'size_asc': return a.sizeRaw - b.sizeRaw;
+                    default: return 0;
+                }
+            });
+
+            if (filteredDocs.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No documents found.</h3><p>Upload files or adjust your filters.</p></div>`;
+                return;
+            }
+
+            filteredDocs.forEach(doc => {
+                const dDate = new Date(doc.uploadDate).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
+                const clickAction = doc.category === 'image' ? `onclick="previewImage('${doc.id}')" title="Click to Preview"` : '';
+                
+                container.innerHTML += `
+                    <div class="doc-card">
+                        <div class="doc-info-group">
+                            <div class="doc-icon-wrapper doc-type-${doc.category}" ${clickAction}>
+                                ${getFileIcon(doc.category)}
+                            </div>
+                            <div class="doc-title" title="${doc.name}">${doc.name}</div>
+                        </div>
+                        <div class="doc-meta">
+                            <span style="font-weight: 600;">${doc.sizeStr}</span>
+                            <span>${dDate}</span>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="btn-action btn-download" onclick="triggerDownload('${doc.id}')">⬇️ Download</button>
+                            <button class="btn-action btn-delete" onclick="deleteDocument('${doc.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleCopilot() {
+            const win = document.getElementById('copilotWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            if (win.style.display === 'flex') document.getElementById('copilotInput').focus();
+        }
+
+        function appendChatMessage(text, sender) {
+            const container = document.getElementById('copilotMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${sender}`;
+            msg.innerHTML = text;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
+            appendChatMessage(text, 'user');
+            input.value = '';
+            
+            setTimeout(() => {
+                appendChatMessage(`I am currently operating within the Document Vault context, sir. Let me know if you need system diagnostics.`, 'bot');
+            }, 600);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchSecureIdentity();
+            documentVault = await loadCloudData('document_library') || [];
+            updateStorageTracker();
+            setLibraryView('grid');
+            renderLibrary();
+        });
+    </script>
+</body>
+</html>

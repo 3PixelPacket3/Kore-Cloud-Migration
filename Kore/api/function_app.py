@@ -302,4 +302,4 @@ def get_macros(req: func.HttpRequest) -> func.HttpResponse:
             except Exception: pass
 
         return func.HttpResponse(json.dumps(list(macros_dict.values())), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
-    except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
+    except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS) 

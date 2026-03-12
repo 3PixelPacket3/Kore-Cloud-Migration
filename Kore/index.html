@@ -153,14 +153,26 @@
                     <div class="qa-grid" id="qa-container"></div>
                 </section>
 
-                <section class="intel-grid">
-                    <div class="panel-card">
-                        <h3 class="panel-header">📋 Active Tickets</h3>
-                        <div id="workIntel" class="intel-list"></div>
+                <section>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 class="panel-header" style="border: none; margin: 0; padding: 0;">Operational Intel</h3>
+                        <select id="dashboardDateFilter" onchange="renderIntelWidgets()" style="padding: 6px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.85rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit;">
+                            <option value="today" selected>Today & Past Due</option>
+                            <option value="tomorrow">Tomorrow</option>
+                            <option value="week">Next 7 Days</option>
+                            <option value="all">All Active</option>
+                        </select>
                     </div>
-                    <div class="panel-card">
-                        <h3 class="panel-header">📌 Personal Tasks</h3>
-                        <div id="todoIntel" class="intel-list"></div>
+
+                    <div class="intel-grid">
+                        <div class="panel-card">
+                            <h3 class="panel-header">📋 Active Tickets</h3>
+                            <div id="workIntel" class="intel-list"></div>
+                        </div>
+                        <div class="panel-card">
+                            <h3 class="panel-header">📌 Personal Tasks</h3>
+                            <div id="todoIntel" class="intel-list"></div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -208,7 +220,7 @@
                     if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
                 }
             } catch(e) {}
-            return null; // Local caching removed per strict backend constraints
+            return null;
         }
 
         async function fetchSecureIdentity() {
@@ -228,7 +240,6 @@
             
             document.getElementById('greeting-title').textContent = `Welcome back, ${profileName}`;
             
-            // Personalized AI Greeting
             const welcomeMessages = [
                 `Hello, ${profileName}. I am your Kore Copilot. How can I assist you today?`,
                 `Welcome back, ${profileName}. I'm synced to your cloud data. Need me to find anything?`,
@@ -247,18 +258,6 @@
             }
         }
 
-        function isDateToday(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toDateString() === new Date().toDateString();
-        }
-        function isDatePast(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            return d < today;
-        }
-
         async function loadDashboardData() {
             localTasks = await loadCloudData('todos') || [];
             
@@ -273,44 +272,91 @@
                 localTickets = await loadCloudData('work_items') || [];
             }
 
-            // Work Intel
-            const wContainer = document.getElementById('workIntel');
-            let wHtml = ''; let wCount = 0;
-            localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').forEach(item => {
-                if (wCount >= 5) return; 
-                if (isDatePast(item.dueDate)) {
-                    wHtml += `<a href="work.html" style="text-decoration:none;"><div class="intel-item danger"><div class="intel-title">${item.title}</div><div class="intel-meta"><span>${item.id}</span><span style="color:var(--danger); font-weight:600;">Past Due</span></div></div></a>`;
-                    wCount++;
-                } else if (isDateToday(item.dueDate)) {
-                    wHtml += `<a href="work.html" style="text-decoration:none;"><div class="intel-item warning"><div class="intel-title">${item.title}</div><div class="intel-meta"><span>${item.id}</span><span style="color:var(--warning); font-weight:600;">Due Today</span></div></div></a>`;
-                    wCount++;
-                }
-            });
-            wContainer.innerHTML = wCount === 0 ? '<div class="intel-empty">All caught up.</div>' : wHtml;
-
-            // To-Do Intel
-            const tContainer = document.getElementById('todoIntel');
-            const activeTasks = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate)));
-            activeTasks.sort((a,b) => { const p={'High':3,'Medium':2,'Low':1}; return p[b.priority] - p[a.priority]; });
-            if (activeTasks.length === 0) { tContainer.innerHTML = '<div class="intel-empty">No tasks active.</div>'; }
-            else {
-                let tHtml = '';
-                activeTasks.slice(0, 5).forEach(t => {
-                    const borderClass = isDatePast(t.dueDate) ? 'danger' : 'active';
-                    const dateLabel = isDatePast(t.dueDate) ? 'Past Due' : 'Today';
-                    tHtml += `<a href="todo.html" style="text-decoration:none;"><div class="intel-item ${borderClass}"><div class="intel-title">${t.title}</div><div class="intel-meta"><span>${t.priority}</span><span style="font-weight:600;">${dateLabel}</span></div></div></a>`;
-                });
-                tContainer.innerHTML = tHtml;
-            }
-
-            // Shortcuts
             let shortcuts = await loadCloudData('shortcuts') || [];
             if(shortcuts.length === 0) shortcuts = [ { title: "Apps", url: "apps.html", icon: "🚀" }, { title: "Work Tracker", url: "work.html", icon: "📋" }, { title: "Macro Library", url: "macros.html", icon: "💻" } ];
             document.getElementById('qa-container').innerHTML = shortcuts.map(link => `<a href="${link.url}" class="qa-btn" target="${link.url.startsWith('http') ? '_blank' : '_self'}"><span class="qa-icon">${link.icon || "🔗"}</span>${link.title}</a>`).join('');
             
-            // Cloud Synchronization for Bulletin
             const adminData = await loadCloudData('admin_settings') || {};
             document.getElementById('global-message-text').textContent = adminData.bulletin || "Welcome to Kore. All systems online.";
+
+            renderIntelWidgets();
+        }
+
+        function renderIntelWidgets() {
+            const timeframe = document.getElementById('dashboardDateFilter').value;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const isDateMatch = (dateStr) => {
+                if (!dateStr) return timeframe === 'all';
+                const d = new Date(dateStr + 'T00:00:00');
+                const diffTime = Math.round((d - today) / (1000 * 60 * 60 * 24));
+
+                switch (timeframe) {
+                    case 'today': return diffTime <= 0; // Today and past due
+                    case 'tomorrow': return diffTime === 1;
+                    case 'week': return diffTime >= 0 && diffTime <= 7;
+                    case 'all': return true;
+                    default: return true;
+                }
+            };
+
+            const getRelativeDateLabel = (dateStr) => {
+                if (!dateStr) return '--';
+                const d = new Date(dateStr + 'T00:00:00');
+                const diffTime = Math.round((d - today) / (1000 * 60 * 60 * 24));
+                
+                if (diffTime < 0) return 'Past Due';
+                if (diffTime === 0) return 'Today';
+                if (diffTime === 1) return 'Tomorrow';
+                if (diffTime > 1 && diffTime <= 7) return d.toLocaleDateString('en-US', {weekday: 'short'});
+                return d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+            };
+            
+            const getBorderClass = (dateStr) => {
+                if (!dateStr) return 'active';
+                const d = new Date(dateStr + 'T00:00:00');
+                const diffTime = Math.round((d - today) / (1000 * 60 * 60 * 24));
+                
+                if (diffTime < 0) return 'danger';
+                if (diffTime === 0) return 'warning';
+                return 'active';
+            };
+
+            // Calculate Intel for Tickets
+            const wContainer = document.getElementById('workIntel');
+            let wHtml = ''; let wCount = 0;
+            
+            const activeTicketsFiltered = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed' && isDateMatch(i.dueDate));
+            activeTicketsFiltered.sort((a, b) => new Date(a.dueDate || '2099-01-01') - new Date(b.dueDate || '2099-01-01'));
+
+            activeTicketsFiltered.forEach(item => {
+                if (wCount >= 5) return; 
+                const borderClass = getBorderClass(item.dueDate);
+                const dateLabel = getRelativeDateLabel(item.dueDate);
+                const colorMap = { 'danger': 'var(--danger)', 'warning': 'var(--warning)', 'active': 'var(--accent-primary)' };
+                
+                wHtml += `<a href="work.html" style="text-decoration:none;"><div class="intel-item ${borderClass}"><div class="intel-title">${item.title}</div><div class="intel-meta"><span>${item.id}</span><span style="color:${colorMap[borderClass]}; font-weight:600;">${dateLabel}</span></div></div></a>`;
+                wCount++;
+            });
+            wContainer.innerHTML = wCount === 0 ? '<div class="intel-empty">All clear for this timeframe.</div>' : wHtml;
+
+            // Calculate Intel for Tasks
+            const tContainer = document.getElementById('todoIntel');
+            const activeTasksFiltered = localTasks.filter(t => !t.completed && isDateMatch(t.dueDate));
+            activeTasksFiltered.sort((a,b) => { const p={'High':3,'Medium':2,'Low':1}; return p[b.priority] - p[a.priority]; });
+            
+            if (activeTasksFiltered.length === 0) { 
+                tContainer.innerHTML = '<div class="intel-empty">No tasks active.</div>'; 
+            } else {
+                let tHtml = '';
+                activeTasksFiltered.slice(0, 5).forEach(t => {
+                    const borderClass = getBorderClass(t.dueDate);
+                    const dateLabel = getRelativeDateLabel(t.dueDate);
+                    tHtml += `<a href="todo.html" style="text-decoration:none;"><div class="intel-item ${borderClass}"><div class="intel-title">${t.title}</div><div class="intel-meta"><span>${t.priority}</span><span style="font-weight:600;">${dateLabel}</span></div></div></a>`;
+                });
+                tContainer.innerHTML = tHtml;
+            }
         }
 
         // --- Advanced AI NLP Simulation ---
@@ -324,7 +370,7 @@
             const container = document.getElementById('copilotMessages');
             const msg = document.createElement('div');
             msg.className = `chat-msg ${sender}`;
-            msg.innerHTML = text; // Allow HTML links
+            msg.innerHTML = text;
             container.appendChild(msg);
             container.scrollTop = container.scrollHeight;
         }
@@ -342,7 +388,6 @@
                 const lower = text.toLowerCase();
                 let reply = '';
 
-                // Intent: Navigation
                 if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
                     if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
                         reply = "Navigating to the Work Tracker now...";
@@ -363,21 +408,18 @@
                         reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
                     }
                 } 
-                // Intent: Status / Summaries
                 else if (lower.includes('task') || lower.includes('todo')) {
                     const active = localTasks.filter(t => !t.completed).length;
-                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
+                    const due = localTasks.filter(t => !t.completed && isDateMatch(t.dueDate)).length;
+                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them match your current dashboard timeframe. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
                 } 
                 else if (lower.includes('ticket') || lower.includes('work')) {
                     const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
                     reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
                 } 
-                // Intent: Search Simulation
                 else if (lower.includes('search for') || lower.includes('find')) {
                     reply = `To search the entire platform for a specific term, please use the Global Search bar located at the top right of your screen. It checks your Apps, Guides, and Tickets instantly.`;
                 }
-                // Intent: Casual Conversation
                 else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
                     const greetings = [
                         `Hello again, ${profileName}. What are we working on?`,
@@ -393,7 +435,6 @@
                     reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
                     setTimeout(() => { toggleCopilot(); }, 2000);
                 }
-                // Fallback
                 else {
                     reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, count your open <b>tickets</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
                 }
@@ -405,7 +446,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();
             updateClock();
-            setInterval(updateClock, 1000); // Activated live clock pulse
+            setInterval(updateClock, 1000); 
             await loadDashboardData();
         });
     </script>

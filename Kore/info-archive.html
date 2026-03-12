@@ -7,29 +7,21 @@
     <style>
         /* Premium Light Theme Variables */
         :root {
-            --accent-primary: #0ea5e9;
-            --accent-hover: #0284c7;
-            --bg-app: #f8fafc;
-            --bg-surface: #ffffff;
-            --text-main: #0f172a;
-            --text-secondary: #475569;
+            --accent-primary: #0ea5e9; --accent-hover: #0284c7;
+            --bg-app: #f8fafc; --bg-surface: #ffffff;
+            --text-main: #0f172a; --text-secondary: #475569;
             --border-subtle: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --radius-md: 12px; --radius-sm: 8px;
         }
 
-        body {
-            margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-app); color: var(--text-main);
-            display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px;
-        }
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
 
-        /* --- Global Header --- */
+        /* Global Header */
         .global-header { background-color: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; box-shadow: var(--shadow-sm); flex-shrink: 0; position: sticky; top: 0; z-index: 100;}
         .header-left { display: flex; align-items: center; gap: 40px; height: 100%; }
-        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .kore-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px; }
         .kore-logo span { color: var(--accent-primary); }
         .nav-menu { display: flex; gap: 8px; height: 100%; }
         .nav-item { text-decoration: none; color: var(--text-secondary); padding: 0 16px; display: flex; align-items: center; height: 100%; font-weight: 500; font-size: 0.95rem; border-bottom: 3px solid transparent; cursor: pointer; position: relative; transition: all 0.2s ease; }
@@ -40,14 +32,13 @@
         .dropdown-content a:hover { background-color: #f0f9ff; color: var(--accent-primary); padding-left: 24px; transition: all 0.2s ease; }
         .user-badge { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-app); padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border-subtle); margin-left: auto; margin-right: 24px;}
 
-        /* --- Main Layout --- */
+        /* Main Layout */
         .main-container { padding: 40px 32px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; flex-grow: 1; }
         
         .page-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 24px; }
         .page-title { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
         .page-subtitle { margin: 0; font-size: 1rem; color: var(--text-secondary); }
 
-        /* --- Toolbar --- */
         .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: var(--bg-surface); padding: 16px 24px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
         
         .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
@@ -57,21 +48,21 @@
         .btn-danger { color: #ef4444; border-color: #fca5a5; background: #fef2f2; }
         .btn-danger:hover { background: #fee2e2; border-color: #ef4444; }
 
-        /* --- Archive List --- */
         .archive-list { display: flex; flex-direction: column; gap: 12px; }
-        
         .archive-item { display: flex; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 16px 24px; border-radius: var(--radius-sm); gap: 20px; transition: background 0.2s; }
         .archive-item:hover { background: #f0f9ff; border-color: #bae6fd; }
         
         .custom-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent-primary); flex-shrink: 0; }
         
-        .item-details { flex-grow: 1; min-width: 0; }
+        .item-details { flex-grow: 1; min-width: 0; display: flex; align-items: center; gap: 12px;}
         .item-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .item-meta { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+        
+        .tag-global { background: #fef2f2; color: #ef4444; border: 1px solid #fca5a5; padding: 2px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; display: inline-block;}
 
         .empty-state { text-align: center; padding: 60px 20px; background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); font-weight: 500; font-size: 1.1rem; }
 
-        /* --- Kore Copilot AI Chat --- */
+        /* Copilot Chat */
         .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
         .copilot-trigger:hover { transform: scale(1.05); }
         .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
@@ -90,13 +81,12 @@
         .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
 
-        /* --- Global Footer --- */
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; margin-top: auto; }
     </style>
 </head>
 <body>
 
-<header class="global-header">
+    <header class="global-header">
         <div class="header-left">
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
@@ -118,7 +108,7 @@
                     </div>
                 </div>
                 
-                <div class="nav-item">Resources ▼
+                <div class="nav-item active">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
@@ -152,12 +142,8 @@
             </div>
         </div>
 
-        <div id="archiveList" class="archive-list">
-            </div>
-        
-        <div id="emptyState" class="empty-state" style="display: none;">
-            No archived pages found.
-        </div>
+        <div id="archiveList" class="archive-list"></div>
+        <div id="emptyState" class="empty-state" style="display: none;">No archived pages found.</div>
 
     </main>
 
@@ -187,7 +173,6 @@
 
         async function loadCloudData(dataType) {
             try {
-                // Keep anti-cache query param appended dynamically
                 const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -211,22 +196,10 @@
             const profile = await loadCloudData('profile') || {};
             profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
             
-            const welcomeMessages = [
-                `Hello, ${profileName}. I am your Kore Copilot. Assisting with the Archive.`,
-                `Welcome back, ${profileName}. I'm synced to your cloud data.`,
-                `Good to see you, ${profileName}. Let me know if you need to pull up any tickets.`
-            ];
             const botWelcomeMsg = document.getElementById('botWelcomeMsg');
             if (botWelcomeMsg) {
-                botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+                botWelcomeMsg.innerText = `Hello, ${profileName}. I am synced to the Archive matrix. Be careful when permanently deleting data.`;
             }
-
-            localTasks = await loadCloudData('todos') || [];
-            try {
-                const res = await fetch(`/api/get_work_items?_t=${Date.now()}`); 
-                if (res.ok) { localTickets = await res.json(); } 
-                else { localTickets = await loadCloudData('work_items') || []; }
-            } catch(e) { localTickets = await loadCloudData('work_items') || []; }
         }
 
         // --- Copilot NLP System ---
@@ -245,18 +218,6 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function isDateToday(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toDateString() === new Date().toDateString();
-        }
-        function isDatePast(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            return d < today;
-        }
-
         function handleCopilotSubmit(e) {
             e.preventDefault();
             const input = document.getElementById('copilotInput');
@@ -268,66 +229,7 @@
 
             setTimeout(() => {
                 const lower = text.toLowerCase();
-                let reply = '';
-
-                const ticketMatch = text.match(/tkt-\d+/i);
-                if (ticketMatch) {
-                    const tktId = ticketMatch[0].toUpperCase();
-                    const ticket = localTickets.find(t => t.id === tktId);
-                    if (ticket) {
-                        reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
-                    } else {
-                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
-                    }
-                } 
-                else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
-                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
-                        reply = "Navigating to the Work Tracker now...";
-                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
-                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
-                        reply = "Opening the Enterprise Macro Library...";
-                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
-                    } else if (lower.includes('todo') || lower.includes('task')) {
-                        reply = "Opening your Personal To-Do list...";
-                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
-                    } else if (lower.includes('lod') || lower.includes('validate')) {
-                        reply = "Taking you to the LOD Validation Tool...";
-                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
-                    } else if (lower.includes('hub') || lower.includes('info')) {
-                        reply = "Navigating to the Info Hub...";
-                        setTimeout(() => { window.location.href = 'info-hub.html'; }, 1000);
-                    } else {
-                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
-                    }
-                } 
-                else if (lower.includes('task') || lower.includes('todo')) {
-                    const active = localTasks.filter(t => !t.completed).length;
-                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
-                } 
-                else if (lower.includes('ticket') || lower.includes('work')) {
-                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
-                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
-                } 
-                else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-                    const greetings = [
-                        `Hello again, ${profileName}. What are we working on?`,
-                        `Greetings. All systems are green. How can I help?`,
-                        `Hi there, ${profileName}. Let me know if you need to pull up any data.`
-                    ];
-                    reply = greetings[Math.floor(Math.random() * greetings.length)];
-                } 
-                else if (lower.includes('thank')) {
-                    reply = "You are very welcome. Let me know if you need anything else.";
-                }
-                else if (lower.includes('ciao') || lower.includes('bye')) {
-                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
-                    setTimeout(() => { toggleCopilot(); }, 2000);
-                }
-                else {
-                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, search for a specific <b>TKT-1234</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
-                }
-
+                let reply = `I am operating within the Archive context, sir. Use the buttons above to process the selected files.`;
                 appendChatMessage(reply, 'bot');
             }, 600);
         }
@@ -335,7 +237,6 @@
         // --- Cloud Core Logic ---
         async function loadPages() {
             try {
-                // Ensure fresh data with a cache buster parameter
                 const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -346,9 +247,7 @@
             return Array.isArray(fallback) ? fallback : [];
         }
 
-        function escapeHtml(str) {
-            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-        }
+        function escapeHtml(str) { return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
         function stripTags(html) { return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
         function formatDate(iso) { try { return new Date(iso).toLocaleDateString(); } catch(e) { return iso; } }
 
@@ -376,13 +275,17 @@
             archivedPages.forEach(page => {
                 const titleText = stripTags(page.titleHtml || page.title || "Untitled Page");
                 const dateText = formatDate(page.updatedAt || page.createdAt);
+                const globalBadge = page.isGlobal ? `<span class="tag-global">🌐 GLOBAL</span>` : '';
                 
                 const div = document.createElement("div");
                 div.className = "archive-item";
                 div.innerHTML = `
                     <input type="checkbox" class="custom-checkbox item-cb" value="${escapeHtml(page.id)}">
                     <div class="item-details">
-                        <h3 class="item-title">${escapeHtml(titleText)}</h3>
+                        <div>
+                            ${globalBadge}
+                            <h3 class="item-title">${escapeHtml(titleText)}</h3>
+                        </div>
                         <p class="item-meta">Archived/Updated: ${dateText} | ID: ${escapeHtml(page.id)}</p>
                     </div>
                 `;
@@ -402,17 +305,29 @@
             document.querySelectorAll('.item-cb').forEach(cb => cb.checked = isChecked);
         });
 
+        // RESTORE LOGIC
         document.getElementById('restoreBtn').addEventListener('click', async () => {
             const ids = getSelectedIds();
             if (!ids.length) return alert("Select at least one page to restore.");
             
+            const selectedPages = masterPages.filter(p => p && p.id && ids.includes(p.id));
+            const hasGlobal = selectedPages.some(p => p.isGlobal);
+
+            // Admin lock for restoring a Global page
+            if (hasGlobal) {
+                const code = prompt("🔒 Enter Master Admin Code to restore Global pages to the Info Hub:");
+                if (code !== "admin") {
+                    alert("Authorization Denied. Invalid Code.");
+                    return;
+                }
+            }
+
             document.getElementById('restoreBtn').innerText = "Restoring...";
             
             const promises = [];
             masterPages.forEach(page => {
                 if (page && page.id && ids.includes(page.id)) {
                     page.archived = false;
-                    // Push updated page directly to Info Hub Vault
                     promises.push(fetch('/api/save_info_page', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -426,18 +341,30 @@
             await render();
         });
 
+        // PERMANENT DELETE LOGIC
         document.getElementById('deleteBtn').addEventListener('click', async () => {
             const ids = getSelectedIds();
             if (!ids.length) return alert("Select at least one page to delete.");
             
-            if (!confirm("Permanently delete the selected archived pages? This will wipe the data from the cloud vault and cannot be undone.")) return;
+            const selectedPages = masterPages.filter(p => p && p.id && ids.includes(p.id));
+            const hasGlobal = selectedPages.some(p => p.isGlobal);
+
+            // Admin lock for permanently deleting a Global page
+            if (hasGlobal) {
+                const code = prompt("🔒 Enter Master Admin Code to permanently wipe Global pages from the cloud:");
+                if (code !== "admin") {
+                    alert("Authorization Denied. Invalid Code.");
+                    return;
+                }
+            } else if (!confirm("Permanently delete the selected archived pages? This will wipe the data from the cloud vault and cannot be undone.")) {
+                return;
+            }
             
             document.getElementById('deleteBtn').innerText = "Deleting...";
 
             const promises = [];
             masterPages.forEach(page => {
                 if (page && page.id && ids.includes(page.id)) {
-                    // Send explicit delete command to the new backend endpoint
                     promises.push(fetch('/api/delete_info_page', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

@@ -83,6 +83,7 @@
 
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
         .tag { background: #f0f9ff; color: var(--accent-primary); border: 1px solid #bae6fd; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .tag-global { background: #fef2f2; color: #ef4444; border-color: #fca5a5; }
 
         .attachment-item { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px; }
         .attachment-item img { width: 100%; border-radius: var(--radius-sm); display: block; border: 1px solid var(--border-subtle); }
@@ -99,7 +100,7 @@
 </head>
 <body>
 
-<header class="global-header">
+    <header class="global-header">
         <div class="header-left">
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
@@ -121,7 +122,7 @@
                     </div>
                 </div>
                 
-                <div class="nav-item">Resources ▼
+                <div class="nav-item active">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
@@ -154,7 +155,7 @@
                 </div>
                 <div class="action-btns">
                     <button id="editPageBtn" class="btn btn-primary">Edit Page</button>
-                    <button id="archivePageBtn" class="btn btn-danger">Archive</button>
+                    <button id="archivePageBtn" class="btn btn-danger">Archive (Delete)</button>
                 </div>
             </div>
 
@@ -200,10 +201,7 @@
                 } else {
                     document.getElementById('userIdentityBadge').innerText = "Running Locally (Unauthenticated)";
                 }
-            } catch (error) {
-                console.log("Auth fetch bypassed - Local execution.");
-                document.getElementById('userIdentityBadge').innerText = "System Admin Offline Mode";
-            }
+            } catch (error) {}
         }
 
         // --- Cloud Sync Logic ---
@@ -229,15 +227,12 @@
 
         async function fetchPagesFromCloud() {
             try {
-                // Primary Azure Endpoint
                 const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (Array.isArray(data)) return data;
                 }
             } catch(e) {}
-            
-            // Cloud-strict fallback: bypassing localStorage cache
             const fallback = await loadCloudData('infoPages');
             return Array.isArray(fallback) ? fallback : [];
         }
@@ -293,6 +288,10 @@
                 <li><span class="meta-label">Last Updated</span><span class="meta-value">${formatDate(page.updatedAt || page.createdAt)}</span></li>
             `;
 
+            if (page.isGlobal) {
+                metaHtml += `<li><span class="meta-label">Scope</span><span class="tag tag-global" style="width: fit-content;">🌐 GLOBAL</span></li>`;
+            }
+
             if (page.tags && page.tags.length > 0) {
                 const tagsHtml = page.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
                 metaHtml += `<li><span class="meta-label">Tags</span><div class="tags-container">${tagsHtml}</div></li>`;
@@ -347,28 +346,39 @@
                 });
             }
 
+            // --- MASTER ADMIN DELETION PROTOCOL ---
             const archiveBtn = document.getElementById('archivePageBtn');
             if (archiveBtn) {
                 archiveBtn.addEventListener('click', async () => {
-                    if (confirm('Archive this page? It will be removed from the main Info Hub.')) {
-                        page.archived = true;
-                        
-                        let allPages = await fetchPagesFromCloud();
-                        const idx = allPages.findIndex(p => p.id === page.id);
-                        if (idx !== -1) allPages[idx] = page;
-                        else allPages.push(page);
-
-                        try {
-                            await fetch('/api/save_info_page', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(page)
-                            });
-                        } catch(e) {}
-                        
-                        await saveCloudData('infoPages', allPages);
-                        window.location.href = 'info-hub.html';
+                    
+                    if (page.isGlobal) {
+                        const code = prompt("🔒 Enter Master Admin Code to delete a Global Info Hub page:");
+                        if (code !== "admin") {
+                            alert("Authorization Denied. Invalid Code.");
+                            return;
+                        }
+                    } else if (!confirm('Archive this personal page? It will be removed from the main Info Hub.')) {
+                        return;
                     }
+
+                    archiveBtn.innerText = "Archiving...";
+                    page.archived = true;
+                    
+                    try {
+                        await fetch('/api/delete_info_page', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: page.id, authorId: page.authorId })
+                        });
+                    } catch(e) {}
+                    
+                    // Fallback to update local/vault cache state
+                    let allPages = await fetchPagesFromCloud();
+                    const idx = allPages.findIndex(p => p.id === page.id);
+                    if (idx !== -1) allPages[idx].archived = true;
+                    await saveCloudData('infoPages', allPages);
+                    
+                    window.location.href = 'info-hub.html';
                 });
             }
         });

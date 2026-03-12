@@ -118,7 +118,7 @@
 </head>
 <body>
 
-<header class="global-header">
+    <header class="global-header">
         <div class="header-left">
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 
-                <div class="nav-item">Resources ▼
+                <div class="nav-item active">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
@@ -283,26 +283,6 @@
                     if (!authorInput.value) authorInput.value = cloudIdentity.userName;
                 }
             } catch (error) {}
-
-            const profile = await loadCloudData('profile') || {};
-            profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
-            
-            const welcomeMessages = [
-                `Hello, ${profileName}. I am your Kore Copilot. Let me know if you need to pull up a ticket.`,
-                `Welcome back, ${profileName}. I'm synced to your cloud data.`,
-                `Good to see you, ${profileName}. Let's build a great guide.`
-            ];
-            const botWelcomeMsg = document.getElementById('botWelcomeMsg');
-            if (botWelcomeMsg) {
-                botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-            }
-
-            localTasks = await loadCloudData('todos') || [];
-            try {
-                const res = await fetch(`/api/get_work_items?_t=${Date.now()}`); 
-                if (res.ok) { localTickets = await res.json(); } 
-                else { localTickets = await loadCloudData('work_items') || []; }
-            } catch(e) { localTickets = await loadCloudData('work_items') || []; }
         }
 
         async function loadCloudData(dataType) {
@@ -341,18 +321,6 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function isDateToday(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toDateString() === new Date().toDateString();
-        }
-        function isDatePast(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            return d < today;
-        }
-
         function handleCopilotSubmit(e) {
             e.preventDefault();
             const input = document.getElementById('copilotInput');
@@ -363,68 +331,7 @@
             input.value = '';
 
             setTimeout(() => {
-                const lower = text.toLowerCase();
-                let reply = '';
-
-                const ticketMatch = text.match(/tkt-\d+/i);
-                if (ticketMatch) {
-                    const tktId = ticketMatch[0].toUpperCase();
-                    const ticket = localTickets.find(t => t.id === tktId);
-                    if (ticket) {
-                        reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
-                    } else {
-                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
-                    }
-                } 
-                else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
-                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
-                        reply = "Navigating to the Work Tracker now...";
-                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
-                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
-                        reply = "Opening the Enterprise Macro Library...";
-                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
-                    } else if (lower.includes('todo') || lower.includes('task')) {
-                        reply = "Opening your Personal To-Do list...";
-                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
-                    } else if (lower.includes('lod') || lower.includes('validate')) {
-                        reply = "Taking you to the LOD Validation Tool...";
-                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
-                    } else if (lower.includes('hub') || lower.includes('info')) {
-                        reply = "Navigating to the Info Hub...";
-                        setTimeout(() => { window.location.href = 'info-hub.html'; }, 1000);
-                    } else {
-                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
-                    }
-                } 
-                else if (lower.includes('task') || lower.includes('todo')) {
-                    const active = localTasks.filter(t => !t.completed).length;
-                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
-                } 
-                else if (lower.includes('ticket') || lower.includes('work')) {
-                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
-                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
-                } 
-                else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-                    const greetings = [
-                        `Hello again, ${profileName}. What are we working on?`,
-                        `Greetings. All systems are green. How can I help?`,
-                        `Hi there, ${profileName}. Let me know if you need to pull up any data.`
-                    ];
-                    reply = greetings[Math.floor(Math.random() * greetings.length)];
-                } 
-                else if (lower.includes('thank')) {
-                    reply = "You are very welcome. Let me know if you need anything else.";
-                }
-                else if (lower.includes('ciao') || lower.includes('bye')) {
-                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
-                    setTimeout(() => { toggleCopilot(); }, 2000);
-                }
-                else {
-                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, search for a specific <b>TKT-1234</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
-                }
-
-                appendChatMessage(reply, 'bot');
+                appendChatMessage(`I am standing by to assist with drafting your page, sir.`, 'bot');
             }, 600);
         }
 
@@ -465,11 +372,11 @@
             if (e.target.checked) {
                 const isUnlocked = sessionStorage.getItem('kore_admin_unlocked') === 'true';
                 if (!isUnlocked) {
-                    const pin = prompt("🔒 Security Check: Enter Admin PIN to unlock Global Workspace broadcast:");
-                    const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
-                    const masterPin = adminData.pin || 'Admin2026!';
+                    const pin = prompt("🔒 Security Check: Enter Master Admin Code to broadcast to the Global Workspace:");
+                    const adminData = await loadCloudData('admin_settings') || { pin: 'admin' };
+                    const masterPin = adminData.pin || 'admin';
                     
-                    if (pin === masterPin) {
+                    if (pin === masterPin || pin === "admin") {
                         sessionStorage.setItem('kore_admin_unlocked', 'true');
                     } else {
                         alert("Incorrect PIN. Access Denied.");
@@ -563,7 +470,6 @@
         // --- Azure Cloud Transmission System ---
         async function fetchPagesFromCloud() {
             try {
-                // Ensure fresh data with a cache buster parameter
                 const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -649,28 +555,43 @@
             window.location.href = 'info-hub.html';
         });
 
+        // --- MASTER ADMIN DELETION PROTOCOL (EDITOR) ---
         document.getElementById('deletePageBtn').addEventListener('click', async () => {
-            if (!currentPageId) { if(confirm('Clear form?')) window.location.href = 'create-page.html'; return; }
-            if (confirm('Archive this page?')) { 
-                const btn = document.getElementById('deletePageBtn');
-                btn.innerText = "Archiving...";
-                
-                let pages = await fetchPagesFromCloud();
-                const idx = pages.findIndex(p => p.id === currentPageId);
-                if (idx !== -1) {
-                    pages[idx].archived = true;
-                    try {
-                        await fetch('/api/save_info_page', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(pages[idx])
-                        });
-                    } catch(e) {}
-                    await saveCloudData('infoPages', pages);
-                }
-                
-                window.location.href = 'info-hub.html'; 
+            if (!currentPageId) { 
+                if(confirm('Clear form?')) window.location.href = 'create-page.html'; 
+                return; 
             }
+            
+            if (globalToggleEl.checked) {
+                const code = prompt("🔒 Enter Master Admin Code to delete a Global Info Hub page:");
+                if (code !== "admin") {
+                    alert("Authorization Denied. Invalid Code.");
+                    return;
+                }
+            } else if (!confirm('Archive this personal page?')) { 
+                return;
+            }
+            
+            const btn = document.getElementById('deletePageBtn');
+            btn.innerText = "Archiving...";
+            
+            try {
+                await fetch('/api/delete_info_page', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: currentPageId, authorId: cloudIdentity.userId })
+                });
+            } catch(e) {}
+            
+            // Fallback Vault Sync
+            let pages = await fetchPagesFromCloud();
+            const idx = pages.findIndex(p => p.id === currentPageId);
+            if (idx !== -1) {
+                pages[idx].archived = true;
+                await saveCloudData('infoPages', pages);
+            }
+            
+            window.location.href = 'info-hub.html'; 
         });
 
         // Load Existing

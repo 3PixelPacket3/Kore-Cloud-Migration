@@ -108,6 +108,35 @@ def save_work_item(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(json.dumps({"status": "success"}), mimetype="application/json", status_code=200)
     except Exception as e: return func.HttpResponse(f"Server Error: {str(e)}", status_code=500)
 
+@app.route(route="get_work_items", methods=["GET"])
+def get_work_items(req: func.HttpRequest) -> func.HttpResponse:
+    try:
+        conn_str = os.environ.get("KORE_DB_CONNECTION")
+        service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
+        table_client = service_client.get_table_client(table_name="KoreWorkTracker")
+        
+        # All tickets are saved under this PartitionKey in save_work_item
+        query = "PartitionKey eq 'WorkTicket'"
+        entities = list(table_client.query_entities(query_filter=query))
+        
+        work_items = []
+        for e in entities:
+            # Reassemble chunked data to support large payloads
+            if "ChunkCount" in e:
+                raw_json = "".join([e.get(f"RawJSON_{i}", "") for i in range(e["ChunkCount"])])
+            else:
+                raw_json = e.get('RawJSON', '{}')
+                
+            try:
+                item_data = json.loads(raw_json)
+                work_items.append(item_data)
+            except Exception:
+                pass
+                
+        return func.HttpResponse(json.dumps(work_items), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
+    except Exception as e: 
+        return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
+
 # --- 3. Info Hub Vault ---
 @app.route(route="save_info_page", methods=["POST"])
 def save_info_page(req: func.HttpRequest) -> func.HttpResponse:

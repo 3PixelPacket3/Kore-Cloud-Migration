@@ -353,7 +353,12 @@
                     
                     if (page.isGlobal) {
                         const code = prompt("🔒 Enter Master Admin Code to delete a Global Info Hub page:");
-                        if (code !== "admin") {
+                        
+                        // DYNAMIC ADMIN CODE FIX
+                        const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                        const masterPin = adminData.pin || 'Admin2026!';
+                        
+                        if (code !== masterPin) {
                             alert("Authorization Denied. Invalid Code.");
                             return;
                         }
@@ -364,11 +369,12 @@
                     archiveBtn.innerText = "Archiving...";
                     page.archived = true;
                     
+                    // FIX: Save page as archived instead of deleting the file physically
                     try {
-                        await fetch('/api/delete_info_page', {
+                        await fetch('/api/save_info_page', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id: page.id, authorId: page.authorId })
+                            body: JSON.stringify(page)
                         });
                     } catch(e) {}
                     
@@ -376,6 +382,8 @@
                     let allPages = await fetchPagesFromCloud();
                     const idx = allPages.findIndex(p => p.id === page.id);
                     if (idx !== -1) allPages[idx].archived = true;
+                    else allPages.push(page); // Ensure it's in the list
+                    
                     await saveCloudData('infoPages', allPages);
                     
                     window.location.href = 'info-hub.html';

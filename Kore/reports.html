@@ -171,7 +171,7 @@
                     </div>
                 </div>
                 
-                <div class="nav-item">Resources ▼
+                <div class="nav-item active">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-archive.html">Archive</a>
                         <a href="reports.html">Data/Reports</a>
@@ -402,13 +402,15 @@
         }
 
         function summarise(items) {
-            const summary = { total: items.length, open: 0, completed: 0, overdue: 0, byStatus: {}, byPriority: {}, byType: {}, byAccount: {} };
+            const summary = { total: 0, open: 0, completed: 0, overdue: 0, byStatus: {}, byPriority: {}, byType: {}, byAccount: {} };
             items.forEach((item) => {
-                if (item.deleted) return; // ignore deleted
+                // FIXED: Filter out both deleted and archived tickets from all reports
+                if (item.deleted || item.archived) return; 
+
                 const status = String(item.status || "Open");
                 const priority = String(item.priority || "Medium");
                 const type = String(item.type || "Unassigned");
-                const account = String(item.allocation || "Unassigned"); // Updated to match new work form variable name
+                const account = String(item.allocation || "Unassigned"); 
 
                 if (isOpen(item)) summary.open++;
                 if (isCompleted(item)) summary.completed++;
@@ -419,8 +421,8 @@
                 summary.byType[type] = (summary.byType[type] || 0) + 1;
                 summary.byAccount[account] = (summary.byAccount[account] || 0) + 1;
             });
-            // fix total to not include deleted
-            summary.total = items.filter(i => !i.deleted).length;
+            // Accurately set the true total skipping hidden data
+            summary.total = items.filter(i => !i.deleted && !i.archived).length;
             return summary;
         }
 
@@ -433,7 +435,8 @@
             
             items.forEach(function (item) {
                 try {
-                    if (!item || isCompleted(item) || item.deleted) return;
+                    // FIXED: Ignore archived tickets for the aging graph as well
+                    if (!item || isCompleted(item) || item.deleted || item.archived) return;
 
                     const createdRaw = item.created || item.createdAt;
                     if (!createdRaw) return;
@@ -589,7 +592,7 @@
                     types.forEach(function (label) {
                         var total = 0, open = 0, completed = 0;
                         items.forEach(function (item) {
-                            if (item.deleted || String(item.type || "Unassigned") !== label) return;
+                            if (item.deleted || item.archived || String(item.type || "Unassigned") !== label) return;
                             total++; if (isOpen(item)) open++; if (isCompleted(item)) completed++;
                         });
                         var tr = document.createElement("tr"); tr.innerHTML = "<td>" + label + "</td><td>" + total + "</td><td>" + open + "</td><td>" + completed + "</td>";
@@ -609,7 +612,7 @@
                     accounts.forEach(function (label) {
                         var totalA = 0, openA = 0, completedA = 0;
                         items.forEach(function (item) {
-                            if (item.deleted || String(item.allocation || "Unassigned") !== label) return;
+                            if (item.deleted || item.archived || String(item.allocation || "Unassigned") !== label) return;
                             totalA++; if (isOpen(item)) openA++; if (isCompleted(item)) completedA++;
                         });
                         var trA = document.createElement("tr"); trA.innerHTML = "<td>" + label + "</td><td>" + totalA + "</td><td>" + openA + "</td><td>" + completedA + "</td>";
@@ -657,7 +660,8 @@
 
         document.getElementById("exportWorkCsvBtn").addEventListener("click", () => {
             const rows = [["Ticket ID", "Title", "Type", "Account", "Priority", "Status", "Requestor", "Created", "Due", "Notes"]];
-            masterWorkItems.filter(i => !i.deleted).forEach(i => {
+            // FIXED: Ignore archived tickets for the full export as well
+            masterWorkItems.filter(i => !i.deleted && !i.archived).forEach(i => {
                 rows.push([i.id, i.title, i.type, i.allocation, i.priority, i.status, i.authorEmail, i.created, i.dueDate, String(i.notes).replace(/<[^>]+>/g, ' ')]);
             });
             downloadCsv(`Kore_Full_Export_${new Date().toISOString().split('T')[0]}.csv`, rows);
@@ -711,7 +715,7 @@
                 const ticketMatch = text.match(/tkt-\d+/i);
                 if (ticketMatch) {
                     const tktId = ticketMatch[0].toUpperCase();
-                    const ticket = masterWorkItems.find(t => t.id === tktId && !t.deleted);
+                    const ticket = masterWorkItems.find(t => t.id === tktId && !t.deleted && !t.archived);
                     if (ticket) {
                         reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
                     } else {

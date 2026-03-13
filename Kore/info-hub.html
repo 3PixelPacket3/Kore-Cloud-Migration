@@ -580,7 +580,7 @@
         // --- Data Fetching Helper ---
         async function loadCloudData(dataType) {
             try {
-                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
+                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
@@ -589,20 +589,39 @@
             return null;
         }
 
-        // --- 2. Data Fetching (Cloud Strict) ---
-        async function fetchPages() {
+        // --- 2. Data Fetching (MERGED VAULT LOGIC) ---
+        async function fetchAllPages() {
+            let allPages = [];
+            
+            // 1. Specific Table Vault
             try {
-                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}`);
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
-                    const cloudPages = await res.json();
-                    masterPagesList = cloudPages.filter(p => !p.archived);
-                } else {
-                    masterPagesList = [];
+                    const data = await res.json();
+                    if (Array.isArray(data)) allPages = [...data];
                 }
-            } catch (e) {
-                console.warn("Cloud vault unreachable.");
-                masterPagesList = [];
+            } catch(e) {
+                console.warn("Primary info hub table offline.");
             }
+            
+            // 2. Fallback User Data Vault (Prevents data loss)
+            try {
+                const fallback = await loadCloudData('infoPages');
+                if (fallback && Array.isArray(fallback)) {
+                    fallback.forEach(fbPage => {
+                        if (!allPages.find(p => p.id === fbPage.id)) {
+                            allPages.push(fbPage);
+                        }
+                    });
+                }
+            } catch(e) {}
+            
+            return allPages;
+        }
+
+        async function fetchPages() {
+            const allPages = await fetchAllPages();
+            masterPagesList = allPages.filter(p => !p.archived);
             renderTable();
         }
 
@@ -771,90 +790,67 @@
             container.scrollTop = container.scrollHeight;
         }
 
-// Optimized Intent-Based Copilot Logic
-function handleCopilotSubmit(e) {
-    e.preventDefault();
-    const input = document.getElementById('copilotInput');
-    const text = input.value.trim();
-    if (!text) return;
-    
-    appendChatMessage(text, 'user');
-    input.value = '';
-
-    setTimeout(() => {
-        const lower = text.toLowerCase();
-        let reply = '';
-
-        // 1. TICKET SEARCH (Regex)
-        const ticketMatch = text.match(/tkt-\d+/i);
-        if (ticketMatch) {
-            const tktId = ticketMatch[0].toUpperCase();
-            const ticket = localTickets.find(t => t.id === tktId);
-            if (ticket) {
-                reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
-            } else {
-                reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
-            }
-        } 
-        // 2. DOCUMENT VAULT INTEGRATION
-        else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
-            // Logic to pull from a combinedVault if globally accessible
-            reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
-        }
-        // 3. ARCHIVE & RESTORATION
-        else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
-            reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
-        }
-        // 4. WORK & TASK SUMMARIES
-        else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
-            const activeTasks = localTasks.filter(t => !t.completed).length;
-            const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
-            reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
-        } 
-        // 5. NAVIGATION (Enhanced)
-        else if (lower.includes('go to') || lower.includes('open')) {
-            const destination = lower.replace('go to', '').replace('open', '').trim();
-            const routes = {
-                'work': 'work.html', 'tracker': 'work.html',
-                'hub': 'info-hub.html', 'info': 'info-hub.html',
-                'docs': 'docs.html', 'library': 'docs.html',
-                'archive': 'info-archive.html',
-                'macro': 'macros.html', 'todo': 'todo.html'
-            };
+        // Optimized Intent-Based Copilot Logic
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
             
-            let found = false;
-            for (let key in routes) {
-                if (destination.includes(key)) {
-                    reply = `Navigating to ${key}...`;
-                    setTimeout(() => { window.location.href = routes[key]; }, 800);
-                    found = true; break;
-                }
-            }
-            if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
-        }
-        // 6. PERSONALITY / FALLBACK
-        else {
-            reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
-        }
+            appendChatMessage(text, 'user');
+            input.value = '';
 
-        appendChatMessage(reply, 'bot');
-    }, 600);
-}
-                // 3. Summaries
-                else if (lower.includes('task') || lower.includes('todo')) {
-                    const active = localTasks.filter(t => !t.completed).length;
-                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = '';
+
+                // 1. TICKET SEARCH (Regex)
+                const ticketMatch = text.match(/tkt-\d+/i);
+                if (ticketMatch) {
+                    const tktId = ticketMatch[0].toUpperCase();
+                    const ticket = localTickets.find(t => t.id === tktId);
+                    if (ticket) {
+                        reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
+                    } else {
+                        reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
+                    }
                 } 
-                else if (lower.includes('ticket') || lower.includes('work')) {
-                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
-                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
-                } 
-                // 4. Search Suggestion
-                else if (lower.includes('search for') || lower.includes('find')) {
-                    reply = `To search the entire platform for a specific term, please use the Global Search bar located at the top of your screen. It checks your Apps, Guides, and Tickets instantly.`;
+                // 2. DOCUMENT VAULT INTEGRATION
+                else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
+                    reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
                 }
-                // 5. Casual Conversation
+                // 3. ARCHIVE & RESTORATION
+                else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
+                    reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
+                }
+                // 4. WORK & TASK SUMMARIES
+                else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
+                    const activeTasks = localTasks.filter(t => !t.completed).length;
+                    const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
+                    reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
+                } 
+                // 5. NAVIGATION (Enhanced)
+                else if (lower.includes('go to') || lower.includes('open')) {
+                    const destination = lower.replace('go to', '').replace('open', '').trim();
+                    const routes = {
+                        'work': 'work.html', 'tracker': 'work.html',
+                        'hub': 'info-hub.html', 'info': 'info-hub.html',
+                        'docs': 'docs.html', 'library': 'docs.html',
+                        'archive': 'info-archive.html',
+                        'macro': 'macros.html', 'todo': 'todo.html'
+                    };
+                    
+                    let found = false;
+                    for (let key in routes) {
+                        if (destination.includes(key)) {
+                            reply = `Navigating to ${key}...`;
+                            setTimeout(() => { window.location.href = routes[key]; }, 800);
+                            found = true; break;
+                        }
+                    }
+                    if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
+                }
+                // 6. Casual Conversation
                 else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
                     const greetings = [
                         `Hello again, ${profileName}. What are we working on?`,
@@ -870,9 +866,9 @@ function handleCopilotSubmit(e) {
                     reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
                     setTimeout(() => { toggleCopilot(); }, 2000);
                 }
-                // Fallback
+                // 7. PERSONALITY / FALLBACK
                 else {
-                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, search for a specific <b>TKT-1234</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
+                    reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
                 }
 
                 appendChatMessage(reply, 'bot');

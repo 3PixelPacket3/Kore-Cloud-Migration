@@ -219,74 +219,126 @@
         }
 
         // Optimized Intent-Based Copilot Logic
-function handleCopilotSubmit(e) {
-    e.preventDefault();
-    const input = document.getElementById('copilotInput');
-    const text = input.value.trim();
-    if (!text) return;
-    
-    appendChatMessage(text, 'user');
-    input.value = '';
-
-    setTimeout(() => {
-        const lower = text.toLowerCase();
-        let reply = '';
-
-        // 1. TICKET SEARCH (Regex)
-        const ticketMatch = text.match(/tkt-\d+/i);
-        if (ticketMatch) {
-            const tktId = ticketMatch[0].toUpperCase();
-            const ticket = localTickets.find(t => t.id === tktId);
-            if (ticket) {
-                reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
-            } else {
-                reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
-            }
-        } 
-        // 2. DOCUMENT VAULT INTEGRATION
-        else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
-            // Logic to pull from a combinedVault if globally accessible
-            reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
-        }
-        // 3. ARCHIVE & RESTORATION
-        else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
-            reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
-        }
-        // 4. WORK & TASK SUMMARIES
-        else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
-            const activeTasks = localTasks.filter(t => !t.completed).length;
-            const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
-            reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
-        } 
-        // 5. NAVIGATION (Enhanced)
-        else if (lower.includes('go to') || lower.includes('open')) {
-            const destination = lower.replace('go to', '').replace('open', '').trim();
-            const routes = {
-                'work': 'work.html', 'tracker': 'work.html',
-                'hub': 'info-hub.html', 'info': 'info-hub.html',
-                'docs': 'docs.html', 'library': 'docs.html',
-                'archive': 'info-archive.html',
-                'macro': 'macros.html', 'todo': 'todo.html'
-            };
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
             
-            let found = false;
-            for (let key in routes) {
-                if (destination.includes(key)) {
-                    reply = `Navigating to ${key}...`;
-                    setTimeout(() => { window.location.href = routes[key]; }, 800);
-                    found = true; break;
+            appendChatMessage(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = '';
+
+                // 1. TICKET SEARCH (Regex)
+                const ticketMatch = text.match(/tkt-\d+/i);
+                if (ticketMatch) {
+                    const tktId = ticketMatch[0].toUpperCase();
+                    const ticket = localTickets.find(t => t.id === tktId);
+                    if (ticket) {
+                        reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
+                    } else {
+                        reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
+                    }
+                } 
+                // 2. DOCUMENT VAULT INTEGRATION
+                else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
+                    // Logic to pull from a combinedVault if globally accessible
+                    reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
                 }
-            }
-            if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
-        }
-        // 6. PERSONALITY / FALLBACK
-        else {
-            reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
+                // 3. ARCHIVE & RESTORATION
+                else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
+                    reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
+                }
+                // 4. WORK & TASK SUMMARIES
+                else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
+                    const activeTasks = localTasks.filter(t => !t.completed).length;
+                    const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
+                    reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
+                } 
+                // 5. NAVIGATION (Enhanced)
+                else if (lower.includes('go to') || lower.includes('open')) {
+                    const destination = lower.replace('go to', '').replace('open', '').trim();
+                    const routes = {
+                        'work': 'work.html', 'tracker': 'work.html',
+                        'hub': 'info-hub.html', 'info': 'info-hub.html',
+                        'docs': 'docs.html', 'library': 'docs.html',
+                        'archive': 'info-archive.html',
+                        'macro': 'macros.html', 'todo': 'todo.html'
+                    };
+                    
+                    let found = false;
+                    for (let key in routes) {
+                        if (destination.includes(key)) {
+                            reply = `Navigating to ${key}...`;
+                            setTimeout(() => { window.location.href = routes[key]; }, 800);
+                            found = true; break;
+                        }
+                    }
+                    if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
+                }
+                // 6. PERSONALITY / FALLBACK
+                else {
+                    reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
+                }
+
+                appendChatMessage(reply, 'bot');
+            }, 600);
         }
 
-        appendChatMessage(reply, 'bot');
-    }, 600);
-}
+        async function fetchPages() {
+            try {
+                // Pull fresh from the Vault
+                const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
+                if (res.ok) {
+                    const cloudPages = await res.json();
+                    // Filter down to ONLY archived pages
+                    masterPages = cloudPages.filter(p => p.archived === true);
+                } else {
+                    masterPages = [];
+                }
+            } catch (e) {
+                console.warn("Cloud vault unreachable.");
+                masterPages = [];
+            }
+        }
+
+        async function render() {
+            await fetchPages();
+            const listEl = document.getElementById('archiveList');
+            const emptyEl = document.getElementById('emptyState');
+            listEl.innerHTML = '';
+            
+            if (!masterPages || masterPages.length === 0) {
+                listEl.style.display = 'none';
+                emptyEl.style.display = 'block';
+                return;
+            }
+            
+            listEl.style.display = 'flex';
+            emptyEl.style.display = 'none';
+            
+            masterPages.forEach(page => {
+                const titleText = String(page.titleHtml || page.title || 'Untitled Page').replace(/<[^>]+>/g, '').trim();
+                const globalTag = page.isGlobal ? `<span class="tag-global">Global Workspace</span>` : '';
+                
+                const item = document.createElement('div');
+                item.className = 'archive-item';
+                item.innerHTML = `
+                    <input type="checkbox" class="custom-checkbox item-cb" value="${page.id}">
+                    <div class="item-details">
+                        <div style="display: flex; flex-direction: column;">
+                            ${globalTag}
+                            <h4 class="item-title">${titleText}</h4>
+                            <p class="item-meta">Archived on: ${page.updatedAt ? new Date(page.updatedAt).toLocaleDateString() : 'Unknown'} • By: ${page.author || 'System'}</p>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
 
         function getSelectedIds() {
             const checkboxes = document.querySelectorAll(".item-cb:checked");

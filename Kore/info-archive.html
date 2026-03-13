@@ -181,6 +181,16 @@
             } catch(e) {}
             return null;
         }
+        
+        async function saveCloudData(dataType, data) {
+            try {
+                await fetch('/api/save_user_data', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: cloudIdentity.userId, dataType: dataType, data: data })
+                });
+            } catch(e) {}
+        }
 
         async function fetchSecureIdentity() {
             try {
@@ -218,7 +228,6 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Optimized Intent-Based Copilot Logic
         function handleCopilotSubmit(e) {
             e.preventDefault();
             const input = document.getElementById('copilotInput');
@@ -232,7 +241,6 @@
                 const lower = text.toLowerCase();
                 let reply = '';
 
-                // 1. TICKET SEARCH (Regex)
                 const ticketMatch = text.match(/tkt-\d+/i);
                 if (ticketMatch) {
                     const tktId = ticketMatch[0].toUpperCase();
@@ -243,21 +251,17 @@
                         reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
                     }
                 } 
-                // 2. DOCUMENT VAULT INTEGRATION
                 else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
                     reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
                 }
-                // 3. ARCHIVE & RESTORATION
                 else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
                     reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
                 }
-                // 4. WORK & TASK SUMMARIES
                 else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
                     const activeTasks = localTasks.filter(t => !t.completed).length;
                     const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
                     reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
                 } 
-                // 5. NAVIGATION (Enhanced)
                 else if (lower.includes('go to') || lower.includes('open')) {
                     const destination = lower.replace('go to', '').replace('open', '').trim();
                     const routes = {
@@ -278,7 +282,6 @@
                     }
                     if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
                 }
-                // 6. PERSONALITY / FALLBACK
                 else {
                     reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
                 }
@@ -287,25 +290,40 @@
             }, 600);
         }
 
-        async function fetchPages() {
+        // --- MERGED DATA ENGINE (To match Info Hub exactly) ---
+        async function fetchAllPages() {
+            let allPages = [];
+            
+            // 1. Specific Table Vault
             try {
-                // Pull fresh from the Vault
                 const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
-                    const cloudPages = await res.json();
-                    // Filter down to ONLY archived pages
-                    masterPages = cloudPages.filter(p => p.archived === true);
-                } else {
-                    masterPages = [];
+                    const data = await res.json();
+                    if (Array.isArray(data)) allPages = [...data];
                 }
-            } catch (e) {
-                console.warn("Cloud vault unreachable.");
-                masterPages = [];
-            }
+            } catch(e) {}
+            
+            // 2. Fallback User Data Vault
+            try {
+                const fallback = await loadCloudData('infoPages');
+                if (fallback && Array.isArray(fallback)) {
+                    fallback.forEach(fbPage => {
+                        if (!allPages.find(p => p.id === fbPage.id)) {
+                            allPages.push(fbPage);
+                        }
+                    });
+                }
+            } catch(e) {}
+            
+            return allPages;
         }
 
         async function render() {
-            await fetchPages();
+            const allPages = await fetchAllPages();
+            
+            // Robust Boolean Check (Catches standard booleans and stringified "true")
+            masterPages = allPages.filter(p => p.archived === true || String(p.archived).toLowerCase() === 'true');
+            
             const listEl = document.getElementById('archiveList');
             const emptyEl = document.getElementById('emptyState');
             listEl.innerHTML = '';
@@ -356,14 +374,13 @@
             const ids = getSelectedIds();
             if (!ids.length) return alert("Select at least one page to restore.");
             
+            let allPages = await fetchAllPages();
             const selectedPages = masterPages.filter(p => p && p.id && ids.includes(p.id));
             const hasGlobal = selectedPages.some(p => p.isGlobal);
 
             // Admin lock for restoring a Global page
             if (hasGlobal) {
                 const code = prompt("🔒 Enter Master Admin Code to restore Global pages to the Info Hub:");
-                
-                // DYNAMIC ADMIN CODE FIX
                 const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
                 const masterPin = adminData.pin || 'Admin2026!';
 
@@ -376,18 +393,26 @@
             document.getElementById('restoreBtn').innerText = "Restoring...";
             
             const promises = [];
-            masterPages.forEach(page => {
-                if (page && page.id && ids.includes(page.id)) {
-                    page.archived = false;
-                    promises.push(fetch('/api/save_info_page', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(page)
-                    }));
-                }
+            selectedPages.forEach(page => {
+                page.archived = false;
+                
+                // Update Fallback Array
+                const idx = allPages.findIndex(p => p.id === page.id);
+                if(idx > -1) allPages[idx].archived = false;
+
+                // Sync specific API
+                promises.push(fetch('/api/save_info_page', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(page)
+                }));
             });
             
-            await Promise.all(promises);
+            try { await Promise.all(promises); } catch(e) {}
+            
+            // Sync Fallback Vault
+            try { await saveCloudData('infoPages', allPages); } catch(e) {}
+            
             document.getElementById('restoreBtn').innerText = "Restore Selected";
             await render();
         });
@@ -397,14 +422,13 @@
             const ids = getSelectedIds();
             if (!ids.length) return alert("Select at least one page to delete.");
             
+            let allPages = await fetchAllPages();
             const selectedPages = masterPages.filter(p => p && p.id && ids.includes(p.id));
             const hasGlobal = selectedPages.some(p => p.isGlobal);
 
             // Admin lock for permanently deleting a Global page
             if (hasGlobal) {
                 const code = prompt("🔒 Enter Master Admin Code to permanently wipe Global pages from the cloud:");
-                
-                // DYNAMIC ADMIN CODE FIX
                 const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
                 const masterPin = adminData.pin || 'Admin2026!';
 
@@ -419,21 +443,26 @@
             document.getElementById('deleteBtn').innerText = "Deleting...";
 
             const promises = [];
-            masterPages.forEach(page => {
-                if (page && page.id && ids.includes(page.id)) {
-                    promises.push(fetch('/api/delete_info_page', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            id: page.id,
-                            authorId: page.authorId || cloudIdentity.userId,
-                            isGlobal: page.isGlobal || false
-                        })
-                    }));
-                }
+            selectedPages.forEach(page => {
+                // Update Fallback Array
+                allPages = allPages.filter(p => p.id !== page.id);
+
+                promises.push(fetch('/api/delete_info_page', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: page.id,
+                        authorId: page.authorId || cloudIdentity.userId,
+                        isGlobal: page.isGlobal || false
+                    })
+                }));
             });
 
-            await Promise.all(promises);
+            try { await Promise.all(promises); } catch(e) {}
+            
+            // Sync Fallback Vault
+            try { await saveCloudData('infoPages', allPages); } catch(e) {}
+
             document.getElementById('deleteBtn').innerText = "Permanently Delete";
             await render();
         });

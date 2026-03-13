@@ -373,10 +373,12 @@
                 const isUnlocked = sessionStorage.getItem('kore_admin_unlocked') === 'true';
                 if (!isUnlocked) {
                     const pin = prompt("🔒 Security Check: Enter Master Admin Code to broadcast to the Global Workspace:");
-                    const adminData = await loadCloudData('admin_settings') || { pin: 'admin' };
-                    const masterPin = adminData.pin || 'admin';
                     
-                    if (pin === masterPin || pin === "admin") {
+                    // FIXED: Dynamic Admin Pin Sync
+                    const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                    const masterPin = adminData.pin || 'Admin2026!';
+                    
+                    if (pin === masterPin) {
                         sessionStorage.setItem('kore_admin_unlocked', 'true');
                     } else {
                         alert("Incorrect PIN. Access Denied.");
@@ -584,7 +586,12 @@
             
             if (globalToggleEl.checked) {
                 const code = prompt("🔒 Enter Master Admin Code to archive a Global Info Hub page:");
-                if (code !== "admin") {
+                
+                // FIXED: Dynamic Admin Pin Sync
+                const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                const masterPin = adminData.pin || 'Admin2026!';
+
+                if (code !== masterPin) {
                     alert("Authorization Denied. Invalid Code.");
                     return;
                 }
@@ -595,6 +602,7 @@
             const btn = document.getElementById('deletePageBtn');
             btn.innerText = "Archiving...";
             
+            // FIX: Set archived = true and transmit (rather than wiping record)
             const page = await buildPagePayload(currentStatus);
             page.archived = true;
             await transmitToCloud(page);

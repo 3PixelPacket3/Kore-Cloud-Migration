@@ -563,7 +563,7 @@
             }
             
             if (globalToggleEl.checked) {
-                const code = prompt("🔒 Enter Master Admin Code to delete a Global Info Hub page:");
+                const code = prompt("🔒 Enter Master Admin Code to archive a Global Info Hub page:");
                 if (code !== "admin") {
                     alert("Authorization Denied. Invalid Code.");
                     return;
@@ -575,21 +575,9 @@
             const btn = document.getElementById('deletePageBtn');
             btn.innerText = "Archiving...";
             
-            try {
-                await fetch('/api/delete_info_page', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: currentPageId, authorId: cloudIdentity.userId })
-                });
-            } catch(e) {}
-            
-            // Fallback Vault Sync
-            let pages = await fetchPagesFromCloud();
-            const idx = pages.findIndex(p => p.id === currentPageId);
-            if (idx !== -1) {
-                pages[idx].archived = true;
-                await saveCloudData('infoPages', pages);
-            }
+            const page = await buildPagePayload(currentStatus);
+            page.archived = true;
+            await transmitToCloud(page);
             
             window.location.href = 'info-hub.html'; 
         });

@@ -467,24 +467,43 @@
         linksContainer.addEventListener('click', e => { if (e.target.classList.contains('lnk-rm')) { links.splice(e.target.dataset.idx, 1); renderLinks(); markDirty(); }});
         linksContainer.addEventListener('input', e => { if (e.target.tagName === 'INPUT') { links[e.target.dataset.idx][e.target.dataset.type] = e.target.value; markDirty(); }});
 
-        // --- Azure Cloud Transmission System ---
-        async function fetchPagesFromCloud() {
+        // --- Azure Cloud Transmission System & Merged Data Logic ---
+        async function fetchAllPages() {
+            let allPages = [];
+            
+            // 1. Specific Table Vault
             try {
                 const res = await fetch(`/api/get_info_pages?userId=${cloudIdentity.userId}&_t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
-                    if (Array.isArray(data)) return data;
+                    if (Array.isArray(data)) allPages = [...data];
                 }
             } catch(e) {}
-            const fallback = await loadCloudData('infoPages');
-            return Array.isArray(fallback) ? fallback : [];
+            
+            // 2. Fallback User Data Vault (Prevents data loss during saves)
+            try {
+                const fallback = await loadCloudData('infoPages');
+                if (fallback && Array.isArray(fallback)) {
+                    fallback.forEach(fbPage => {
+                        if (!allPages.find(p => p.id === fbPage.id)) {
+                            allPages.push(fbPage);
+                        }
+                    });
+                }
+            } catch(e) {}
+            
+            return allPages;
         }
 
         async function transmitToCloud(payload) {
-            let pages = await fetchPagesFromCloud();
-            const idx = pages.findIndex(p => p.id === payload.id);
-            if (idx > -1) pages[idx] = payload; else pages.push(payload);
+            // First merge all existing pages to guarantee zero data loss
+            let pages = await fetchAllPages();
             
+            const idx = pages.findIndex(p => p.id === payload.id);
+            if (idx > -1) pages[idx] = payload; 
+            else pages.push(payload);
+            
+            // Attempt Specific Database Save
             try {
                 await fetch('/api/save_info_page', {
                     method: 'POST',
@@ -495,6 +514,7 @@
                 console.warn("Primary endpoint offline. Relying on vault sync.");
             }
             
+            // Attempt Fallback Vault Save (Crucial for retaining older history)
             try {
                 await saveCloudData('infoPages', pages);
             } catch(e) {}
@@ -504,7 +524,7 @@
             const nowIso = new Date().toISOString();
             let createdAt = nowIso;
             if (currentPageId) {
-                const pages = await fetchPagesFromCloud();
+                const pages = await fetchAllPages();
                 const existing = pages.find(p => p.id === currentPageId);
                 if (existing && existing.createdAt) createdAt = existing.createdAt;
             } else { 
@@ -590,7 +610,7 @@
             const id = params.get('id');
             
             if (id) {
-                const pages = await fetchPagesFromCloud();
+                const pages = await fetchAllPages();
                 const existing = pages.find(p => p.id === id);
                 if (existing) {
                     currentPageId = existing.id;

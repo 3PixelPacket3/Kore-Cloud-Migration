@@ -245,7 +245,6 @@
                 } 
                 // 2. DOCUMENT VAULT INTEGRATION
                 else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
-                    // Logic to pull from a combinedVault if globally accessible
                     reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
                 }
                 // 3. ARCHIVE & RESTORATION
@@ -363,7 +362,12 @@
             // Admin lock for restoring a Global page
             if (hasGlobal) {
                 const code = prompt("🔒 Enter Master Admin Code to restore Global pages to the Info Hub:");
-                if (code !== "admin") {
+                
+                // DYNAMIC ADMIN CODE FIX
+                const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                const masterPin = adminData.pin || 'Admin2026!';
+
+                if (code !== masterPin) {
                     alert("Authorization Denied. Invalid Code.");
                     return;
                 }
@@ -399,7 +403,12 @@
             // Admin lock for permanently deleting a Global page
             if (hasGlobal) {
                 const code = prompt("🔒 Enter Master Admin Code to permanently wipe Global pages from the cloud:");
-                if (code !== "admin") {
+                
+                // DYNAMIC ADMIN CODE FIX
+                const adminData = await loadCloudData('admin_settings') || { pin: 'Admin2026!' };
+                const masterPin = adminData.pin || 'Admin2026!';
+
+                if (code !== masterPin) {
                     alert("Authorization Denied. Invalid Code.");
                     return;
                 }

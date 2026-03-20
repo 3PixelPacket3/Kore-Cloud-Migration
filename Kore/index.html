@@ -110,6 +110,7 @@
                         <a href="apps.html">Apps</a>
                         <a href="file-converter.html">File to LOAD Converter</a>
                         <a href="lod.html">LOD Validation Tool</a>
+                        <a href="long-desc-converter.html">Long Description Mass Converter</a>
                         <a href="macros.html">Macro Library</a>
                         <a href="nebula.html">Nebula HTML Forge</a>
                         <a href="passwords.html">Password Generator</a>
@@ -277,21 +278,30 @@
             renderIntelWidgets();
         }
 
-        async function loadQuickReports() {
-            // This function fetches data to simulate a quick view of the Reports page
+        function loadQuickReports() {
             const container = document.getElementById('quickReports');
             
-            // Mocking the data fetch for top-level enterprise metrics
-            const reports = await loadCloudData('reports_overview') || [
-                { title: "Weekly Ticket Resolution", value: "92%", status: "success" },
-                { title: "Pending LOD Validations", value: "14", status: "warning" },
-                { title: "System Uptime", value: "99.98%", status: "active" }
-            ];
-
-            if (!reports || reports.length === 0) {
-                container.innerHTML = '<div class="intel-empty">No active reports generated.</div>';
-                return;
+            // Dynamically Calculate Ticket Resolution Rate
+            let ticketResRate = "0%";
+            if (localTickets && localTickets.length > 0) {
+                const validTickets = localTickets.filter(t => !t.archived && !t.deleted);
+                const completedTix = validTickets.filter(t => t.status === 'Completed').length;
+                if (validTickets.length > 0) {
+                    ticketResRate = Math.round((completedTix / validTickets.length) * 100) + "%";
+                }
             }
+
+            // Dynamically Calculate Pending Tasks
+            let pendingTasks = 0;
+            if (localTasks && localTasks.length > 0) {
+                pendingTasks = localTasks.filter(t => !t.completed).length;
+            }
+
+            const reports = [
+                { title: "Personal Ticket Resolution", value: ticketResRate, status: "success" },
+                { title: "Active Pending Tasks", value: pendingTasks.toString(), status: "warning" },
+                { title: "Vault Storage Status", value: "Optimal", status: "active" }
+            ];
 
             let html = '';
             reports.forEach(r => {
@@ -314,7 +324,8 @@
             localTasks = await loadCloudData('todos') || [];
             
             try {
-                const res = await fetch('/api/get_work_items');
+                // Secure data isolation applied to the fetch call here:
+                const res = await fetch('/api/get_work_items?userId=' + cloudIdentity.userId);
                 if (res.ok) {
                     localTickets = await res.json();
                 } else {
@@ -338,7 +349,7 @@
             }
 
             renderIntelWidgets();
-            loadQuickReports();
+            loadQuickReports(); // Load reports after data arrays are populated
         }
 
         function renderIntelWidgets() {

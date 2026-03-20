@@ -37,10 +37,10 @@
         .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); padding: 24px 30px; box-sizing: border-box; color: white; }
         .hero-title { margin: 0; font-size: 1.6rem; font-weight: 700; }
 
-        .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
-        .filters-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+        .toolbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); }
+        .filters-group { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
         .filter-item { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
-        .actions-group { display: flex; gap: 12px; }
+        .actions-group { display: flex; gap: 12px; align-items: flex-end; }
 
         .btn { background-color: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .btn:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
@@ -77,24 +77,8 @@
         .code-output { width: 100%; min-height: 250px; font-family: Consolas, "Courier New", monospace; font-size: 0.85rem; padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: #1e293b; color: #e2e8f0; line-height: 1.5; white-space: pre-wrap; resize: vertical; box-sizing: border-box; }
         .code-label { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: block; }
 
-        /* --- Kore Copilot AI Chat --- */
-        .copilot-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 1000; transition: transform 0.2s; border: none; }
-        .copilot-trigger:hover { transform: scale(1.05); }
-        .copilot-window { position: fixed; bottom: 105px; right: 30px; width: 380px; height: 550px; background: var(--bg-surface); border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border-subtle); display: none; flex-direction: column; z-index: 1000; overflow: hidden; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .copilot-header { background: var(--accent-primary); color: white; padding: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .copilot-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
-        .copilot-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--bg-app); scroll-behavior: smooth; }
-        .chat-msg { padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
-        .chat-msg.bot { background: var(--bg-surface); border: 1px solid var(--border-subtle); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
-        .chat-msg.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-msg a { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
-        .chat-msg a:hover { text-decoration: underline; }
-        .copilot-input-area { display: flex; border-top: 1px solid var(--border-subtle); padding: 16px; background: var(--bg-surface); align-items: center; gap: 12px; }
-        .copilot-input-area input { flex-grow: 1; border: 1px solid var(--border-subtle); border-radius: 99px; padding: 12px 16px; outline: none; font-size: 0.95rem; transition: all 0.2s; }
-        .copilot-input-area input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
-        .copilot-input-area button { background: var(--accent-primary); border: none; color: white; font-weight: 700; cursor: pointer; height: 40px; width: 40px; border-radius: 50%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .copilot-input-area button:hover { background: var(--accent-hover); transform: scale(1.05); }
+        .color-target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--bg-app); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
+        .color-target-grid label { font-weight: 500; font-size: 0.8rem; margin: 0; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-main);}
 
         .global-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); padding: 24px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; font-weight: 500; }
     </style>
@@ -106,7 +90,6 @@
             <h1 class="kore-logo">Kore<span>.</span></h1>
             <nav class="nav-menu">
                 <a href="index.html" class="nav-item">Dashboard</a>
-                
                 <div class="nav-item">Operations ▼
                     <div class="dropdown-content">
                         <a href="apps.html">Apps</a>
@@ -122,7 +105,6 @@
                         <a href="work.html">Work Tracker</a>
                     </div>
                 </div>
-                
                 <div class="nav-item">Resources ▼
                     <div class="dropdown-content">
                         <a href="info-archive.html">Archive</a>
@@ -131,7 +113,6 @@
                         <a href="info-hub.html">Info Hub</a>
                     </div>
                 </div>
-                
                 <a href="about.html" class="nav-item">About</a>
                 <a href="settings.html" class="nav-item">Settings</a>
             </nav>
@@ -156,16 +137,35 @@
                         <option value="3">Template 3 — Spec Sidebar (Right Rail)</option>
                         <option value="4">Template 4 — Datasheet Blocks (Stacked)</option>
                         <option value="5">Template 5 — Banner + Callouts (3 Boxes)</option>
+                        <option value="6">Template 6 — Minimalist Clean (Whitespace Focus)</option>
+                        <option value="7">Template 7 — High-Contrast Dark Mode</option>
+                        <option value="8">Template 8 — E-Commerce Centric (Gallery Style)</option>
+                        <option value="9">Template 9 — Technical Manual (Tabular Density)</option>
+                        <option value="10">Template 10 — Modern Two-Tone (Alternating)</option>
                     </select>
                 </div>
                 <div class="filter-item">
-                    <label for="themeColorSelect">Main Template Color</label>
+                    <label for="themeColorSelect">Base Theme Color</label>
                     <select id="themeColorSelect" class="form-select" style="min-width: 180px;" onchange="generateSingleHtml()">
                         <option value="#072872">Navy Blue (#072872)</option>
                         <option value="#bf0d3e">Crimson Red (#bf0d3e)</option>
                         <option value="#76777A">Slate Grey (#76777A)</option>
                         <option value="#ffcd30">Gold (#ffcd30)</option>
+                        <option value="#0ea5e9">Kore Blue (#0ea5e9)</option>
+                        <option value="#10b981">Emerald Green (#10b981)</option>
+                        <option value="#8b5cf6">Deep Purple (#8b5cf6)</option>
+                        <option value="#f97316">Sunset Orange (#f97316)</option>
+                        <option value="#1f2937">Midnight Black (#1f2937)</option>
                     </select>
+                </div>
+                <div class="filter-item">
+                    <label>Apply Color To:</label>
+                    <div class="color-target-grid">
+                        <label><input type="checkbox" id="colorHeadings" checked onchange="generateSingleHtml()"> Headings</label>
+                        <label><input type="checkbox" id="colorBanners" checked onchange="generateSingleHtml()"> Banners</label>
+                        <label><input type="checkbox" id="colorButtons" checked onchange="generateSingleHtml()"> Buttons/Links</label>
+                        <label><input type="checkbox" id="colorBorders" checked onchange="generateSingleHtml()"> Borders</label>
+                    </div>
                 </div>
             </div>
             <div class="actions-group">
@@ -290,7 +290,7 @@
                     </details>
 
                     <div class="actions-group" style="margin-top: 24px;">
-                        <button type="button" class="btn btn-primary" onclick="generateSingleHtml()">⚙️ Generate Output</button>
+                        <button type="button" class="btn btn-primary" onclick="generateSingleHtml()" style="padding: 14px 24px; font-size: 1rem;">⚙️ Generate Output</button>
                         <button type="button" class="btn" onclick="resetForm()">Clear Form</button>
                     </div>
                 </div>
@@ -311,174 +311,19 @@
         </div>
     </main>
 
-    <button class="copilot-trigger" onclick="toggleCopilot()">💬</button>
-    <div class="copilot-window" id="copilotWindow">
-        <div class="copilot-header">
-            <span>🤖 Kore Copilot</span>
-            <button class="copilot-close" onclick="toggleCopilot()">&times;</button>
-        </div>
-        <div class="copilot-messages" id="copilotMessages">
-            <div class="chat-msg bot" id="botWelcomeMsg">Initializing AI matrix...</div>
-        </div>
-        <form class="copilot-input-area" onsubmit="handleCopilotSubmit(event)">
-            <input type="text" id="copilotInput" placeholder="Message Copilot..." autocomplete="off">
-            <button type="submit">➤</button>
-        </form>
-    </div>
-
     <footer class="global-footer">&copy; 2026 Kore | Enterprise Cloud Vault Connected.</footer>
 
     <script>
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
-        let profileName = "User";
-        let localTasks = [];
-        let localTickets = [];
-
-        async function loadCloudData(dataType) {
-            try {
-                const res = await fetch(`/api/get_user_data?userId=${cloudIdentity.userId}&dataType=${dataType}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && (Object.keys(data).length > 0 || data.length > 0)) return data;
-                }
-            } catch(e) {}
-            return null;
-        }
 
         async function fetchSecureIdentity() {
             try {
                 const response = await fetch('/.auth/me');
                 const data = await response.json();
                 if (data.clientPrincipal) {
-                    cloudIdentity.userId = data.clientPrincipal.userId;
-                    cloudIdentity.userName = data.clientPrincipal.userDetails;
-                    document.getElementById('userIdentityBadge').innerText = `👤 ${cloudIdentity.userName}`;
+                    document.getElementById('userIdentityBadge').innerText = `👤 ${data.clientPrincipal.userDetails}`;
                 }
             } catch (error) {}
-
-            const profile = await loadCloudData('profile') || {};
-            profileName = profile.name || cloudIdentity.userName.split('@')[0] || "User";
-            
-            const welcomeMessages = [
-                `Hello, ${profileName}. I am your Kore Copilot. Let me know if you need to pull up a ticket while converting HTML.`,
-                `Welcome back, ${profileName}. I'm synced to your cloud data.`,
-                `Good to see you, ${profileName}. I can navigate the site or look up tickets for you.`
-            ];
-            const botWelcomeMsg = document.getElementById('botWelcomeMsg');
-            if (botWelcomeMsg) {
-                botWelcomeMsg.innerText = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-            }
-
-            localTasks = await loadCloudData('todos') || [];
-            try {
-                const res = await fetch('/api/get_work_items'); 
-                if (res.ok) { localTickets = await res.json(); } 
-                else { localTickets = await loadCloudData('work_items') || []; }
-            } catch(e) { localTickets = await loadCloudData('work_items') || []; }
-        }
-
-        function toggleCopilot() {
-            const win = document.getElementById('copilotWindow');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-            if (win.style.display === 'flex') document.getElementById('copilotInput').focus();
-        }
-
-        function appendChatMessage(text, sender) {
-            const container = document.getElementById('copilotMessages');
-            const msg = document.createElement('div');
-            msg.className = `chat-msg ${sender}`;
-            msg.innerHTML = text; 
-            container.appendChild(msg);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function isDateToday(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toDateString() === new Date().toDateString();
-        }
-        function isDatePast(dateStr) {
-            if (!dateStr) return false;
-            const d = new Date(dateStr + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            return d < today;
-        }
-
-        function handleCopilotSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('copilotInput');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            appendChatMessage(text, 'user');
-            input.value = '';
-
-            setTimeout(() => {
-                const lower = text.toLowerCase();
-                let reply = '';
-
-                const ticketMatch = text.match(/tkt-\d+/i);
-                if (ticketMatch) {
-                    const tktId = ticketMatch[0].toUpperCase();
-                    const ticket = localTickets.find(t => t.id === tktId);
-                    if (ticket) {
-                        reply = `Here is what I found for <b>${ticket.id}</b>:<br><br><b>Title:</b> ${escapeHtml(ticket.title)}<br><b>Status:</b> ${ticket.status}<br><b>Priority:</b> ${ticket.priority}<br><b>Due:</b> ${ticket.dueDate ? ticket.dueDate : 'None'}<br><br><a href="work.html">Open Work Tracker</a>`;
-                    } else {
-                        reply = `I searched the database but could not find a ticket matching <b>${tktId}</b>. It may be archived or deleted.`;
-                    }
-                } 
-                else if (lower.includes('go to') || lower.includes('open') || lower.includes('take me to')) {
-                    if (lower.includes('work') || lower.includes('tracker') || lower.includes('ticket')) {
-                        reply = "Navigating to the Work Tracker now...";
-                        setTimeout(() => { window.location.href = 'work.html'; }, 1000);
-                    } else if (lower.includes('macro') || lower.includes('script') || lower.includes('code')) {
-                        reply = "Opening the Enterprise Macro Library...";
-                        setTimeout(() => { window.location.href = 'macros.html'; }, 1000);
-                    } else if (lower.includes('todo') || lower.includes('task')) {
-                        reply = "Opening your Personal To-Do list...";
-                        setTimeout(() => { window.location.href = 'todo.html'; }, 1000);
-                    } else if (lower.includes('lod') || lower.includes('validate')) {
-                        reply = "Taking you to the LOD Validation Tool...";
-                        setTimeout(() => { window.location.href = 'lod.html'; }, 1000);
-                    } else if (lower.includes('password')) {
-                        reply = "Navigating to the Secure Password Generator...";
-                        setTimeout(() => { window.location.href = 'passwords.html'; }, 1000);
-                    } else if (lower.includes('product') || lower.includes('converter') || lower.includes('html')) {
-                        reply = "You are already on the Product HTML Converter, sir.";
-                    } else {
-                        reply = `I'm not sure which tool you mean, ${profileName}. Try specifying "Work Tracker", "Macros", or "To-Do".`;
-                    }
-                } 
-                else if (lower.includes('task') || lower.includes('todo')) {
-                    const active = localTasks.filter(t => !t.completed).length;
-                    const due = localTasks.filter(t => !t.completed && (isDateToday(t.dueDate) || isDatePast(t.dueDate))).length;
-                    reply = `You currently have <b>${active} active tasks</b>. <br><br>${due} of them require your attention today. Shall I <a href="todo.html">open the To-Do list</a> for you?`;
-                } 
-                else if (lower.includes('ticket') || lower.includes('work')) {
-                    const active = localTickets.filter(i => !i.archived && !i.deleted && i.status !== 'Completed').length;
-                    reply = `There are currently <b>${active} open tickets</b> in your Work Queue. <a href="work.html">Click here to view them.</a>`;
-                } 
-                else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-                    const greetings = [
-                        `Hello again, ${profileName}. What are we working on?`,
-                        `Greetings. All systems are green. How can I help?`,
-                        `Hi there, ${profileName}. Let me know if you need to pull up any data.`
-                    ];
-                    reply = greetings[Math.floor(Math.random() * greetings.length)];
-                } 
-                else if (lower.includes('thank')) {
-                    reply = "You are very welcome. Let me know if you need anything else.";
-                }
-                else if (lower.includes('ciao') || lower.includes('bye')) {
-                    reply = "Understood. Shutting down active visual protocols. Have a good day, sir.";
-                    setTimeout(() => { toggleCopilot(); }, 2000);
-                }
-                else {
-                    reply = `I'm sorry, I didn't quite catch that. As your AI Copilot, I can give you a status update on your <b>tasks</b>, search for a specific <b>TKT-1234</b>, or <b>navigate</b> you to any tool in the system. What would you like to do?`;
-                }
-
-                appendChatMessage(reply, 'bot');
-            }, 600);
         }
 
         let bulkRows = []; let bulkRecordMap = {};
@@ -502,35 +347,39 @@
 
         function linesToList(text){ if (!text) return []; return String(text).split(/\r?\n/).map(s => s.trim()).filter(Boolean); }
         
+        // --- FIXED: Resilient Specifications Parser ---
         function parseKeyValueLines(text){
             const rows = [];
             linesToList(text).forEach(line => {
                 const idx = line.indexOf(":");
                 if (idx !== -1) {
-                    const k = line.slice(0, idx).trim(); const v = line.slice(idx+1).trim();
-                    if (k && v) rows.push([k, v]);
+                    rows.push([line.slice(0, idx).trim(), line.slice(idx+1).trim()]);
+                } else {
+                    // Fallback if the user forgets the colon
+                    rows.push([line.trim(), ""]); 
                 }
             });
             return rows;
         }
 
         function normalizePlacement(p){ const v = (p || "").toLowerCase().trim(); return (v === "top" || v === "middle" || v === "bottom" || v === "all") ? v : "top"; }
-        
-        function scrubArtifacts(s){
-            if (!s) return s;
-            return String(s).replace(/\\n/g, "\n").replace(/\\r/g, "\r");
-        }
+        function scrubArtifacts(s){ return !s ? s : String(s).replace(/\\n/g, "\n").replace(/\\r/g, "\r"); }
 
-        function buildBadgesHtml(badges){
+        // Component Builders
+        function buildBadgesHtml(badges, themeColor, cfg){
             const items = Array.isArray(badges) ? badges : String(badges || "").split(",").map(s => s.trim()).filter(Boolean);
             if (!items.length) return "";
-            const badgeStyle = "display:inline-block;border:1px solid #d1d5db;border-radius:999px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;line-height:1.2;background:#eef2ff;color:#111827;";
+            const cBg = cfg.colorBanners ? `${themeColor}15` : '#eef2ff';
+            const cText = cfg.colorBanners ? themeColor : '#111827';
+            const cBorder = cfg.colorBorders ? `${themeColor}40` : '#d1d5db';
+            const badgeStyle = `display:inline-block;border:1px solid ${cBorder};border-radius:999px;padding:3px 9px;margin:0 6px 6px 0;font-size:12px;line-height:1.2;background:${cBg};color:${cText};font-weight:700;`;
             return `<div style="margin:0 0 10px 0;">${items.map(b => `<span style="${badgeStyle}">${escapeHtml(b)}</span>`).join("")}</div>`;
         }
 
-        function buildImageHtml(src, alt){
+        function buildImageHtml(src, alt, cfg){
             if (!src) return "";
-            const style = "width:100%;max-width:640px;height:auto;border-radius:10px;border:1px solid #d7dce3;display:block;";
+            const bColor = cfg.colorBorders ? cfg.themeColor : '#d7dce3';
+            const style = `width:100%;max-width:640px;height:auto;border-radius:10px;border:1px solid ${bColor};display:block;`;
             return `<img src="${src}" alt="${escapeHtml(alt || 'Image')}" style="${style}">`;
         }
 
@@ -541,34 +390,40 @@
             return `<div style="margin-top:12px;text-align:left;"><img src="${src}" alt="${escapeHtml(alt || 'Flag')}" style="width:${px}px;height:auto;border:1px solid #d7dce3;border-radius:6px;display:block;"></div>`;
         }
 
-        function buildDownloadHtml(label, url, tColor){
+        function buildDownloadHtml(label, url, themeColor, cfg, isCTA=false){
             if (!label || !url) return "";
-            const aStyle = `display:inline-block;margin-top:10px;background:${tColor};color:#ffffff;text-decoration:none;padding:10px 14px;border-radius:999px;font-weight:900;`;
-            return `<div style="margin-top:10px;"><a href="${escapeHtml(url)}" style="${aStyle}" target="_blank" rel="noopener">${escapeHtml(label)}</a></div>`;
+            const bg = cfg.colorButtons ? themeColor : (isCTA ? '#10b981' : '#0f172a');
+            const aStyle = `display:inline-block;margin-top:10px;background:${bg};color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:6px;font-weight:900;text-align:center;`;
+            return `<div style="margin-top:10px;"><a href="${escapeHtml(url)}" style="${aStyle}" target="_blank" rel="noopener">${isCTA ? '🚀 ' : '📄 '}${escapeHtml(label)}</a></div>`;
         }
 
-        function buildHighlightsHtml(highlights, useRedChecks){
+        function buildHighlightsHtml(highlights, useRedChecks, themeColor, cfg){
             const items = Array.isArray(highlights) ? highlights : linesToList(highlights);
             if (!items.length) return "";
             const check = useRedChecks ? `<span style="color:#dc2626;font-weight:900;margin-right:8px;">&#10003;</span>` : `<span style="color:#16a34a;font-weight:900;margin-right:8px;">&#10003;</span>`;
-            return `<div style="margin:10px 0 0 0;"><div style="font-weight:900;color:#111827;margin:0 0 6px 0;">Highlights</div><ul style="margin:0;padding:0;">${items.map(t => `<li style="margin:0 0 6px 0;list-style:none;">${check}${escapeHtml(t)}</li>`).join("")}</ul></div>`;
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+            return `<div style="margin:10px 0 0 0;"><div style="font-weight:900;color:${hColor};margin:0 0 6px 0;font-size:16px;">Highlights</div><ul style="margin:0;padding:0;">${items.map(t => `<li style="margin:0 0 6px 0;list-style:none;">${check}${escapeHtml(t)}</li>`).join("")}</ul></div>`;
         }
 
-        function buildSpecsHtml(specPairs){
+        function buildSpecsHtml(specPairs, themeColor, cfg){
             const pairs = Array.isArray(specPairs) ? specPairs : parseKeyValueLines(specPairs);
             if (!pairs.length) return "";
-            return `<div style="margin:12px 0 0 0;"><div style="font-weight:900;color:#111827;margin:0 0 6px 0;">Specifications</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #e5e7eb;border-radius:10px;border-collapse:separate;border-spacing:0;background:#ffffff;">${pairs.map(([k,v], i) => `<tr style="${i===0 ? "" : "border-top:1px solid #e5e7eb;"}"><td style="padding:8px 10px;font-weight:800;color:#111827;width:42%;vertical-align:top;background:#f8fafc;">${escapeHtml(k)}</td><td style="padding:8px 10px;color:#111827;vertical-align:top;">${escapeHtml(v)}</td></tr>`).join("")}</table></div>`;
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+            const bColor = cfg.colorBorders ? themeColor : '#e5e7eb';
+            return `<div style="margin:12px 0 0 0;"><div style="font-weight:900;color:${hColor};margin:0 0 6px 0;font-size:16px;">Specifications</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${bColor};border-radius:8px;border-collapse:separate;border-spacing:0;background:#ffffff;">${pairs.map(([k,v], i) => `<tr style="${i===0 ? "" : `border-top:1px solid ${bColor};`}"><td style="padding:8px 10px;font-weight:800;color:#111827;width:42%;vertical-align:top;background:#f8fafc;border-bottom:${i===pairs.length-1?'none':`1px solid ${bColor}`};">${escapeHtml(k)}</td><td style="padding:8px 10px;color:#111827;vertical-align:top;border-bottom:${i===pairs.length-1?'none':`1px solid ${bColor}`};">${escapeHtml(v)}</td></tr>`).join("")}</table></div>`;
         }
 
-        function buildBulletsSection(title, bullets){
+        function buildBulletsSection(title, bullets, themeColor, cfg){
             const items = Array.isArray(bullets) ? bullets : linesToList(bullets);
             if (!items.length) return "";
-            return `<div style="margin:12px 0 0 0;"><div style="font-weight:900;color:#111827;margin:0 0 6px 0;">${escapeHtml(title)}</div><ul style="margin:0;padding-left:18px;">${items.map(t => `<li style="margin:0 0 6px 0;">${escapeHtml(t)}</li>`).join("")}</ul></div>`;
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+            return `<div style="margin:12px 0 0 0;"><div style="font-weight:900;color:${hColor};margin:0 0 6px 0;font-size:16px;">${escapeHtml(title)}</div><ul style="margin:0;padding-left:18px;">${items.map(t => `<li style="margin:0 0 6px 0;">${escapeHtml(t)}</li>`).join("")}</ul></div>`;
         }
 
-        function buildTextSection(title, text){
+        function buildTextSection(title, text, themeColor, cfg){
             if (!text) return "";
-            return `<div style="margin:12px 0 0 0;"><div style="font-weight:900;color:#111827;margin:0 0 6px 0;">${escapeHtml(title)}</div><div style="color:#111827;">${escapeHtml(text).replace(/\r?\n/g, "<br>")}</div></div>`;
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+            return `<div style="margin:12px 0 0 0;"><div style="font-weight:900;color:${hColor};margin:0 0 6px 0;font-size:16px;">${escapeHtml(title)}</div><div style="color:#111827;line-height:1.6;">${escapeHtml(text).replace(/\r?\n/g, "<br>")}</div></div>`;
         }
 
         function buildInfoPairsFromOriginalFields(flags, vals){
@@ -585,82 +440,50 @@
         function getSingleImageSrc(){ if (!document.getElementById("includeProductImage").checked) return ""; return readVal("productImageUrl") || singleProductImageDataUri || ""; }
         function getSingleFlagSrc(){ if (!document.getElementById("includeFlag").checked) return ""; return readVal("flagUrl") || singleFlagDataUri || ""; }
         function getSingleDownloadUrl(){ if (!document.getElementById("includeDownload").checked) return ""; return readVal("downloadUrl") || singleDownloadDataUri || ""; }
+        function buildPlacedBlockHtml(blockHtml, placement, slot){ if (!blockHtml) return ""; const p = normalizePlacement(placement); if (p === "all" || p === slot) return blockHtml; return ""; }
 
-        function buildPlacedBlockHtml(blockHtml, placement, slot){
-            if (!blockHtml) return "";
-            const p = normalizePlacement(placement);
-            if (p === "all" || p === slot) return blockHtml;
-            return "";
-        }
+        // --- Templates ---
+        function buildTemplate1Classic(cfg){
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml, infoPairs } = cfg;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const bColor = cfg.colorBorders ? themeColor : '#d7dce3';
 
-        // T1 Classic
-        function buildTemplate1Classic(cfg, mode){
-            const { themeColor, summary, supersedes, productType, region, language, productLine, use, segment, includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment, includeStyle, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml } = cfg;
-
-            const listItems = [];
-            if (includeProductType && productType) listItems.push(`<li><strong>Product Type:</strong> ${escapeHtml(productType)}</li>`);
-            if (includeRegion && region) listItems.push(`<li><strong>Region:</strong> ${escapeHtml(region)}</li>`);
-            if (includeLanguage && language) listItems.push(`<li><strong>Language:</strong> ${escapeHtml(language)}</li>`);
-            if (includeProductLine && productLine) listItems.push(`<li><strong>Product Line:</strong> ${escapeHtml(productLine)}</li>`);
-            if (includeUse && use) listItems.push(`<li><strong>Use:</strong> ${escapeHtml(use)}</li>`);
-            if (includeSegment && segment) listItems.push(`<li><strong>Market Segment:</strong> ${escapeHtml(segment)}</li>`);
-
-            const img = buildImageHtml(imageSrc, imageAlt);
-            const place = normalizePlacement(imagePlacement);
-
-            let html = (mode === "bulk")
-            ? `<div style="height:20px;"></div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;border-spacing:0;border:1px solid #d7dce3;border-radius:8px;background:#f7f9fc;"><tr><td style="font-family: Arial, Helvetica, sans-serif; line-height:1.6; color:#111827; padding:20px;">`
-            : `<div class="product-description">\n\n`;
-
-            if (img && (place === "top" || place === "all")) html += (mode==="bulk" ? `${img}<div style="height:12px;"></div>` : ` ${img}\n\n`);
+            let html = `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111827;padding:20px;border:1px solid ${bColor};border-radius:8px;background:#f7f9fc;">\n`;
+            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:12px;"></div>`;
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
-            if (badgesHtml) html += (mode==="bulk" ? badgesHtml : ` ${badgesHtml}\n`);
+            if (badgesHtml) html += badgesHtml;
 
-            html += ` <p class="prod-summary">\n`;
-            html += summary ? `  ${escapeHtml(summary).replace(/\r?\n/g, "<br>")}\n` : `  \n`;
-            if (supersedes) html += `  <br><br>\n  <em>Supersedes: ${escapeHtml(supersedes)}</em>\n`;
-            html += ` </p>\n\n`;
+            html += `<div style="font-size:15px;margin-bottom:12px;">${summary ? escapeHtml(summary).replace(/\r?\n/g, "<br>") : ""}</div>`;
+            if (supersedes) html += `<div style="margin-bottom:12px;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
 
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
-            if (img && (place === "middle" || place === "all")) html += (mode==="bulk" ? `<div style="height:12px;"></div>${img}<div style="height:12px;"></div>` : ` ${img}\n\n`);
+            if (img && (place === "middle" || place === "all")) html += `<div style="height:12px;"></div>${img}<div style="height:12px;"></div>`;
 
-            if (highlightsHtml) html += `${highlightsHtml}\n`;
-            if (specsHtml) html += `${specsHtml}\n`;
-            if (includedHtml) html += `${includedHtml}\n`;
-            if (compatibilityHtml) html += `${compatibilityHtml}\n`;
-            if (certsHtml) html += `${certsHtml}\n`;
-            if (warningsHtml) html += `${warningsHtml}\n`;
-            if (careHtml) html += `${careHtml}\n`;
+            if (highlightsHtml) html += highlightsHtml; if (specsHtml) html += specsHtml; if (includedHtml) html += includedHtml;
+            if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
 
-            if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>\n`;
-            if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>\n`;
-            if (ctaHtml) html += `${ctaHtml}\n`;
+            if (shippingReturns) html += `<div style="margin-top:16px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+            if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+            if (ctaHtml) html += ctaHtml;
 
-            if (listItems.length > 0) { html += ` <hr>\n <div class="prod-details">\n  <h3 style="margin:0 0 8px 0;color:${themeColor};">Product Information</h3>\n  <ul style="margin:0;padding-left:18px;">\n   ${listItems.join("\n   ")}\n  </ul>\n </div>\n\n`; }
+            if (infoPairs && infoPairs.length) { html += `<hr style="border:0;border-top:1px solid ${bColor};margin:20px 0;"><h3 style="margin:0 0 10px 0;color:${cfg.colorHeadings?themeColor:'#111827'};">Product Information</h3><ul style="margin:0;padding-left:18px;">${infoPairs.map(([k,v])=>`<li><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`; }
 
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
-            if (img && (place === "bottom" || place === "all")) html += (mode==="bulk" ? `<div style="height:12px;"></div>${img}` : ` ${img}\n\n`);
+            if (img && (place === "bottom" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
             if (flagHtml) html += flagHtml;
-
-            html += (mode === "bulk") ? `</td></tr></table></td></tr></table>` : `</div>\n\n`;
-
-            if (includeStyle && mode !== "bulk") {
-                html += `<style>\n .product-description { font-family: Arial, Helvetica, sans-serif; background: #f7f9fc; padding: 20px; border-radius: 8px; line-height: 1.6; border: 1px solid #d7dce3; margin-top: 20px; }\n .prod-summary { font-size: 1rem; color: #333; }\n .prod-details h3 { margin-bottom: 8px; color: ${themeColor}; }\n .prod-details ul { margin: 0; padding-left: 18px; }\n .prod-details li { margin-bottom: 4px; }\n</style>\n`;
-            }
-            return html;
+            return html + `</div>`;
         }
 
-        // T2 Grid Panels
-        function buildTemplate2LabeledPanels(cfg, mode){
+        function buildTemplate2LabeledPanels(cfg){
             const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
-            const place = normalizePlacement(imagePlacement);
-            const img = buildImageHtml(imageSrc, imageAlt);
-            const outer = `<div style="height:16px;"></div>`;
-            const shellStyle = "border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;overflow:hidden;";
-            const railStyle = `width:120px;background:${themeColor};color:#ffffff;font-weight:900;font-family:Arial,Helvetica,sans-serif;padding:14px 12px;vertical-align:top;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;`;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const bColor = cfg.colorBorders ? themeColor : '#e5e7eb';
+            const railBg = cfg.colorBanners ? themeColor : '#111827';
+            const shellStyle = `border:1px solid ${bColor};border-radius:12px;background:#ffffff;overflow:hidden;`;
+            const railStyle = `width:120px;background:${railBg};color:#ffffff;font-weight:900;font-family:Arial,Helvetica,sans-serif;padding:14px 12px;vertical-align:top;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;`;
             const cellStyle = "padding:14px 14px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;vertical-align:top;";
 
-            let html = outer + `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${shellStyle}border-collapse:separate;border-spacing:0;"><tr><td style="${railStyle}">Overview</td><td style="${cellStyle}">`;
+            let html = `<div style="height:16px;"></div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${shellStyle}border-collapse:separate;border-spacing:0;"><tr><td style="${railStyle}">Overview</td><td style="${cellStyle}">`;
             if (badgesHtml) html += badgesHtml;
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
             if (img && (place === "top" || place === "all")) html += `${img}<div style="height:10px;"></div>`;
@@ -668,90 +491,81 @@
             if (supersedes) html += `<div style="margin-top:8px;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
             html += `</td></tr>`;
 
-            if (highlightsHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Features</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${highlightsHtml}</td></tr>`;
-            if (downloadHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Download</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle") || downloadHtml}</td></tr>`;
-            if (img && (place === "middle" || place === "all")) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Image</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${img}</td></tr>`;
-            if (specsHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Specs</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${specsHtml}</td></tr>`;
-            if (includedHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">In Box</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${includedHtml}</td></tr>`;
+            const bTop = `border-top:1px solid ${bColor};`;
+            if (highlightsHtml) html += `<tr><td style="${railStyle}${bTop}">Features</td><td style="${cellStyle}${bTop}">${highlightsHtml}</td></tr>`;
+            if (downloadHtml) { const dMid = buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle"); if (dMid) html += `<tr><td style="${railStyle}${bTop}">Download</td><td style="${cellStyle}${bTop}">${dMid}</td></tr>`; }
+            if (img && (place === "middle" || place === "all")) html += `<tr><td style="${railStyle}${bTop}">Image</td><td style="${cellStyle}${bTop}">${img}</td></tr>`;
+            if (specsHtml) html += `<tr><td style="${railStyle}${bTop}">Specs</td><td style="${cellStyle}${bTop}">${specsHtml}</td></tr>`;
+            if (includedHtml) html += `<tr><td style="${railStyle}${bTop}">In Box</td><td style="${cellStyle}${bTop}">${includedHtml}</td></tr>`;
             
             if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
-                html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Notes</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">`;
-                if (compatibilityHtml) html += compatibilityHtml;
-                if (certsHtml) html += certsHtml;
-                if (warningsHtml) html += warningsHtml;
-                if (careHtml) html += careHtml;
+                html += `<tr><td style="${railStyle}${bTop}">Notes</td><td style="${cellStyle}${bTop}">`;
+                if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
                 html += `</td></tr>`;
             }
-
             if (infoPairs && infoPairs.length){
-                html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Info</td><td style="${cellStyle}border-top:1px solid #e5e7eb;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">`;
+                html += `<tr><td style="${railStyle}${bTop}">Info</td><td style="${cellStyle}${bTop}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">`;
                 infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;width:34%;vertical-align:top;">${escapeHtml(k)}:</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`; });
                 html += `</table></td></tr>`;
             }
-
             if (shippingReturns || warranty || ctaHtml){
-                html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">Policy</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">`;
+                html += `<tr><td style="${railStyle}${bTop}">Policy</td><td style="${cellStyle}${bTop}">`;
                 if (shippingReturns) html += `<div><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
                 if (warranty) html += `<div style="margin-top:6px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
                 if (ctaHtml) html += ctaHtml;
                 html += `</td></tr>`;
             }
-
-            if (downloadHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;"> </td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom") || ""}</td></tr>`;
-            if (img && (place === "bottom" || place === "all")) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;">More</td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${img}</td></tr>`;
-            if (flagHtml) html += `<tr><td style="${railStyle}border-top:1px solid #e5e7eb;"> </td><td style="${cellStyle}border-top:1px solid #e5e7eb;">${flagHtml}</td></tr>`;
+            if (downloadHtml) { const dBot = buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom"); if (dBot) html += `<tr><td style="${railStyle}${bTop}">Action</td><td style="${cellStyle}${bTop}">${dBot}</td></tr>`; }
+            if (img && (place === "bottom" || place === "all")) html += `<tr><td style="${railStyle}${bTop}">More</td><td style="${cellStyle}${bTop}">${img}</td></tr>`;
+            if (flagHtml) html += `<tr><td style="${railStyle}${bTop}">Origin</td><td style="${cellStyle}${bTop}">${flagHtml}</td></tr>`;
 
             return html + `</table>`;
         }
 
-        // T3 Sidebar
-        function buildTemplate3SpecSidebar(cfg, mode){
+        function buildTemplate3SpecSidebar(cfg){
             const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
-            const place = normalizePlacement(imagePlacement);
-            const img = buildImageHtml(imageSrc, imageAlt);
-            const shellStyle = "border:1px solid #e5e7eb;border-radius:14px;background:#ffffff;overflow:hidden;";
-            const leftStyle = "padding:16px 16px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;vertical-align:top;";
-            const rightStyle = "padding:16px 14px;background:#f8fafc;border-left:1px solid #e5e7eb;vertical-align:top;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.5;";
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const bColor = cfg.colorBorders ? themeColor : '#e5e7eb';
+            const shellStyle = `border:1px solid ${bColor};border-radius:14px;background:#ffffff;overflow:hidden;`;
+            const leftStyle = "padding:20px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;vertical-align:top;";
+            const rightStyle = `padding:20px;background:#f8fafc;border-left:1px solid ${bColor};vertical-align:top;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.5;`;
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
 
             let html = `<div style="height:16px;"></div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${shellStyle}border-collapse:separate;border-spacing:0;"><tr><td style="${leftStyle}">`;
             if (badgesHtml) html += badgesHtml;
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
-            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:10px;"></div>`;
-            if (summary) html += `<div style="font-size:14px;margin:0 0 10px 0;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
-            if (supersedes) html += `<div style="margin:0 0 10px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
-            if (highlightsHtml) html += highlightsHtml;
-            if (includedHtml) html += includedHtml;
-            if (compatibilityHtml) html += compatibilityHtml;
-            if (certsHtml) html += certsHtml;
-            if (warningsHtml) html += warningsHtml;
-            if (careHtml) html += careHtml;
-            if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:14px;"></div>`;
+            if (summary) html += `<div style="font-size:15px;margin:0 0 12px 0;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
+            if (supersedes) html += `<div style="margin:0 0 12px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+            if (highlightsHtml) html += highlightsHtml; if (includedHtml) html += includedHtml;
+            if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
+            if (shippingReturns) html += `<div style="margin-top:16px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
             if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
             if (ctaHtml) html += ctaHtml;
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
-            if (img && (place === "middle" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
+            if (img && (place === "middle" || place === "all")) html += `<div style="height:14px;"></div>${img}`;
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
-            if (img && (place === "bottom" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
+            if (img && (place === "bottom" || place === "all")) html += `<div style="height:14px;"></div>${img}`;
             if (flagHtml) html += flagHtml;
             
-            html += `</td><td style="${rightStyle}width:38%;"><div style="font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;color:${themeColor};">Quick Specs</div>`;
+            html += `</td><td style="${rightStyle}width:38%;"><div style="font-weight:900;letter-spacing:0.05em;text-transform:uppercase;font-size:13px;color:${hColor};">Quick Specs</div>`;
             if (specsHtml) html += `<div style="margin-top:10px;">${specsHtml}</div>`;
             if (infoPairs && infoPairs.length){
-                html += `<div style="margin-top:12px;font-weight:900;color:${themeColor};">Product Information</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:6px;">`;
-                infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;vertical-align:top;width:45%;">${escapeHtml(k)}</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`; });
+                html += `<div style="margin-top:20px;font-weight:900;color:${hColor};letter-spacing:0.05em;text-transform:uppercase;font-size:13px;">Information</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:8px;">`;
+                infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:6px 10px 6px 0;font-weight:800;vertical-align:top;width:45%;border-bottom:1px solid ${bColor};">${escapeHtml(k)}</td><td style="padding:6px 0;vertical-align:top;border-bottom:1px solid ${bColor};">${escapeHtml(v)}</td></tr>`; });
                 html += `</table>`;
             }
             return html + `</td></tr></table>`;
         }
 
-        // T4 Datasheet
-        function buildTemplate4Datasheet(cfg, mode){
+        function buildTemplate4Datasheet(cfg){
             const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
-            const place = normalizePlacement(imagePlacement);
-            const img = buildImageHtml(imageSrc, imageAlt);
-            const shellStyle = "border:1px solid #d7dce3;border-radius:10px;background:#ffffff;overflow:hidden;";
-            const headStyle = `background:${themeColor};color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:12px 14px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;`;
-            const bodyStyle = "padding:12px 14px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const bColor = cfg.colorBorders ? themeColor : '#d7dce3';
+            const shellStyle = `border:1px solid ${bColor};border-radius:10px;background:#ffffff;overflow:hidden;`;
+            const headBg = cfg.colorBanners ? themeColor : '#1f2937';
+            const headStyle = `background:${headBg};color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:12px 16px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;font-size:13px;`;
+            const bodyStyle = "padding:16px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
 
             let html = `<div style="height:16px;"></div><div style="${shellStyle}"><div style="${headStyle}">Product Details</div><div style="${bodyStyle}">`;
             if (badgesHtml) html += badgesHtml;
@@ -760,27 +574,22 @@
             if (supersedes) html += `<div style="margin:0 0 10px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
             html += `</div>`;
 
-            if (img && (place === "top" || place === "all")) html += `<div style="${headStyle}">Image</div><div style="${bodyStyle}">${img}</div>`;
-            if (downloadHtml) html += `<div style="${headStyle}">Download</div><div style="${bodyStyle}">${buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle") || downloadHtml}</div>`;
+            if (img && (place === "top" || place === "all")) html += `<div style="${headStyle}">Media</div><div style="${bodyStyle}">${img}</div>`;
+            if (downloadHtml) { const dMid = buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle"); if (dMid) html += `<div style="${headStyle}">Download</div><div style="${bodyStyle}">${dMid}</div>`; }
             if (highlightsHtml) html += `<div style="${headStyle}">Highlights</div><div style="${bodyStyle}">${highlightsHtml}</div>`;
             if (specsHtml) html += `<div style="${headStyle}">Specifications</div><div style="${bodyStyle}">${specsHtml}</div>`;
             if (includedHtml) html += `<div style="${headStyle}">What’s Included</div><div style="${bodyStyle}">${includedHtml}</div>`;
 
             if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
                 html += `<div style="${headStyle}">Additional Notes</div><div style="${bodyStyle}">`;
-                if (compatibilityHtml) html += compatibilityHtml;
-                if (certsHtml) html += certsHtml;
-                if (warningsHtml) html += warningsHtml;
-                if (careHtml) html += careHtml;
+                if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
                 html += `</div>`;
             }
-
             if (infoPairs && infoPairs.length){
                 html += `<div style="${headStyle}">Product Information</div><div style="${bodyStyle}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">`;
-                infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:4px 10px 4px 0;font-weight:800;vertical-align:top;width:40%;">${escapeHtml(k)}</td><td style="padding:4px 0;vertical-align:top;">${escapeHtml(v)}</td></tr>`; });
+                infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:6px 10px 6px 0;font-weight:800;vertical-align:top;width:40%;border-bottom:1px solid #f1f5f9;">${escapeHtml(k)}</td><td style="padding:6px 0;vertical-align:top;border-bottom:1px solid #f1f5f9;">${escapeHtml(v)}</td></tr>`; });
                 html += `</table></div>`;
             }
-
             if (shippingReturns || warranty || ctaHtml){
                 html += `<div style="${headStyle}">Shipping / Warranty</div><div style="${bodyStyle}">`;
                 if (shippingReturns) html += `<div><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
@@ -788,7 +597,6 @@
                 if (ctaHtml) html += ctaHtml;
                 html += `</div>`;
             }
-
             if (downloadHtml) { const b = buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom"); if (b) html += `<div style="${bodyStyle}">${b}</div>`; }
             if (img && (place === "middle" || place === "all")) html += `<div style="${headStyle}">Additional Image</div><div style="${bodyStyle}">${img}</div>`;
             if (img && (place === "bottom" || place === "all")) html += `<div style="${headStyle}">More</div><div style="${bodyStyle}">${img}</div>`;
@@ -797,76 +605,339 @@
             return html + `</div>`;
         }
 
-        // T5 Banner
-        function buildTemplate5BannerCallouts(cfg, mode){
+        function buildTemplate5BannerCallouts(cfg){
             const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
-            const place = normalizePlacement(imagePlacement);
-            const img = buildImageHtml(imageSrc, imageAlt);
-            const shellStyle = "border:1px solid #e5e7eb;border-radius:16px;background:#ffffff;overflow:hidden;";
-            const bannerStyle = `background:${themeColor};color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:14px 16px;`;
-            const bodyStyle = "padding:14px 16px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
-            const boxStyle = "border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;padding:10px 12px;";
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const bColor = cfg.colorBorders ? themeColor : '#e5e7eb';
+            const shellStyle = `border:1px solid ${bColor};border-radius:16px;background:#ffffff;overflow:hidden;`;
+            const bannerBg = cfg.colorBanners ? themeColor : '#0f172a';
+            const bannerStyle = `background:${bannerBg};color:#ffffff;font-family:Arial,Helvetica,sans-serif;padding:16px 20px;`;
+            const bodyStyle = "padding:16px 20px;font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.6;";
+            const boxStyle = `border:1px solid ${bColor};border-radius:12px;background:#f8fafc;padding:14px;`;
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
 
-            let html = `<div style="height:16px;"></div><div style="${shellStyle}"><div style="${bannerStyle}"><div style="font-weight:900;font-size:14px;letter-spacing:0.05em;text-transform:uppercase;">Product Overview</div>`;
-            if (badgesHtml) html += `<div style="margin-top:8px;">${badgesHtml}</div>`;
+            let html = `<div style="height:16px;"></div><div style="${shellStyle}"><div style="${bannerStyle}"><div style="font-weight:900;font-size:16px;letter-spacing:0.05em;text-transform:uppercase;">Product Overview</div>`;
+            if (badgesHtml) html += `<div style="margin-top:10px;">${badgesHtml}</div>`;
             html += `</div><div style="${bodyStyle}">`;
 
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
-            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:12px;"></div>`;
-            if (summary) html += `<div style="margin:0 0 10px 0;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
-            if (supersedes) html += `<div style="margin:0 0 10px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:16px;"></div>`;
+            if (summary) html += `<div style="margin:0 0 12px 0;font-size:15px;">${escapeHtml(summary).replace(/\r?\n/g,"<br>")}</div>`;
+            if (supersedes) html += `<div style="margin:0 0 12px 0;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
 
             const hasA = !!highlightsHtml, hasB = !!specsHtml, hasC = !!includedHtml;
             if (hasA || hasB || hasC){
-                html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;border-spacing:10px 0;margin-top:10px;"><tr>`;
-                html += `<td style="width:33.33%;vertical-align:top;">${hasA ? `<div style="${boxStyle}"><div style="font-weight:900;color:${themeColor};margin-bottom:6px;">Highlights</div>${highlightsHtml}</div>` : ""}</td>`;
-                html += `<td style="width:33.33%;vertical-align:top;">${hasB ? `<div style="${boxStyle}"><div style="font-weight:900;color:${themeColor};margin-bottom:6px;">Specifications</div>${specsHtml}</div>` : ""}</td>`;
-                html += `<td style="width:33.33%;vertical-align:top;">${hasC ? `<div style="${boxStyle}"><div style="font-weight:900;color:${themeColor};margin-bottom:6px;">What’s Included</div>${includedHtml}</div>` : ""}</td>`;
+                html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;border-spacing:12px 0;margin-top:16px;"><tr>`;
+                html += `<td style="width:33.33%;vertical-align:top;padding:0;">${hasA ? `<div style="${boxStyle}">${highlightsHtml}</div>` : ""}</td>`;
+                html += `<td style="width:33.33%;vertical-align:top;padding:0;">${hasB ? `<div style="${boxStyle}">${specsHtml}</div>` : ""}</td>`;
+                html += `<td style="width:33.33%;vertical-align:top;padding:0;">${hasC ? `<div style="${boxStyle}">${includedHtml}</div>` : ""}</td>`;
                 html += `</tr></table>`;
             }
 
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
-            if (img && (place === "middle" || place === "all")) html += `<div style="height:12px;"></div>${img}<div style="height:12px;"></div>`;
+            if (img && (place === "middle" || place === "all")) html += `<div style="height:16px;"></div>${img}<div style="height:16px;"></div>`;
 
             if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
-                html += `<div style="margin-top:12px;font-weight:900;color:${themeColor};">Additional Notes</div>`;
-                if (compatibilityHtml) html += compatibilityHtml;
-                if (certsHtml) html += certsHtml;
-                if (warningsHtml) html += warningsHtml;
-                if (careHtml) html += careHtml;
+                html += `<div style="margin-top:20px;font-weight:900;color:${hColor};font-size:16px;">Additional Notes</div>`;
+                if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
             }
-
             if (infoPairs && infoPairs.length){
-                html += `<div style="margin-top:12px;font-weight:900;color:${themeColor};">Product Information</div><ul style="margin:6px 0 0 0;padding-left:18px;">${infoPairs.map(([k,v]) => `<li><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`;
+                html += `<div style="margin-top:20px;font-weight:900;color:${hColor};font-size:16px;">Product Information</div><ul style="margin:8px 0 0 0;padding-left:20px;">${infoPairs.map(([k,v]) => `<li style="margin-bottom:6px;"><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`;
             }
-
-            if (shippingReturns) html += `<div style="margin-top:12px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+            if (shippingReturns) html += `<div style="margin-top:20px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
             if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
             if (ctaHtml) html += ctaHtml;
             if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
-            if (img && (place === "bottom" || place === "all")) html += `<div style="height:12px;"></div>${img}`;
+            if (img && (place === "bottom" || place === "all")) html += `<div style="height:16px;"></div>${img}`;
             if (flagHtml) html += flagHtml;
 
             return html + `</div></div>`;
         }
 
+        // T6 Minimalist Clean
+        function buildTemplate6Minimal(cfg){
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, infoPairs, flagHtml } = cfg;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+            
+            let html = `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.7;color:#374151;padding:40px 20px;max-width:800px;margin:0 auto;background:#ffffff;">\n`;
+            if (badgesHtml) html += badgesHtml;
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:24px;"></div>`;
+            
+            if (summary) html += `<p style="font-size:18px;color:#111827;font-weight:300;margin:0 0 16px 0;line-height:1.8;">${escapeHtml(summary).replace(/\r?\n/g, "<br>")}</p>`;
+            if (supersedes) html += `<p style="color:#6b7280;font-size:13px;margin:0 0 24px 0;">Supersedes: ${escapeHtml(supersedes)}</p>`;
+            
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
+            if (img && (place === "middle" || place === "all")) html += `<div style="height:24px;"></div>${img}<div style="height:24px;"></div>`;
+
+            if (highlightsHtml) html += `<div style="margin-top:32px;">${highlightsHtml}</div>`;
+            if (specsHtml) html += `<div style="margin-top:32px;">${specsHtml}</div>`;
+            if (includedHtml) html += `<div style="margin-top:32px;">${includedHtml}</div>`;
+            
+            if (compatibilityHtml || certsHtml || warningsHtml || careHtml){
+                html += `<div style="margin-top:32px;border-top:1px solid #f3f4f6;padding-top:24px;">`;
+                if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
+                html += `</div>`;
+            }
+
+            if (infoPairs && infoPairs.length) { 
+                html += `<div style="margin-top:32px;border-top:1px solid #f3f4f6;padding-top:24px;"><h3 style="margin:0 0 16px 0;color:${hColor};font-size:16px;">Information</h3><table style="width:100%;font-size:14px;">${infoPairs.map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f9fafb;color:#6b7280;width:40%;">${escapeHtml(k)}</td><td style="padding:8px 0;border-bottom:1px solid #f9fafb;font-weight:600;color:#111827;">${escapeHtml(v)}</td></tr>`).join("")}</table></div>`; 
+            }
+
+            if (shippingReturns || warranty) {
+                html += `<div style="margin-top:32px;padding:24px;background:#f9fafb;border-radius:8px;">`;
+                if (shippingReturns) html += `<div style="margin-bottom:8px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+                if (warranty) html += `<div><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+                html += `</div>`;
+            }
+            if (ctaHtml) html += `<div style="margin-top:24px;">${ctaHtml}</div>`;
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
+            if (img && (place === "bottom" || place === "all")) html += `<div style="height:24px;"></div>${img}`;
+            if (flagHtml) html += flagHtml;
+            return html + `</div>`;
+        }
+
+        // T7 High Contrast Dark
+        function buildTemplate7Dark(cfg){
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml, infoPairs } = cfg;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg); const place = normalizePlacement(imagePlacement);
+            const hColor = cfg.colorHeadings ? themeColor : '#f9fafb';
+            const bColor = cfg.colorBorders ? themeColor : '#374151';
+
+            let html = `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#d1d5db;padding:32px;border:1px solid ${bColor};border-radius:12px;background:#111827;">\n`;
+            if (img && (place === "top" || place === "all")) html += `${img}<div style="height:16px;"></div>`;
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "top");
+            if (badgesHtml) html += badgesHtml;
+
+            html += `<div style="font-size:16px;color:#f3f4f6;margin-bottom:16px;">${summary ? escapeHtml(summary).replace(/\r?\n/g, "<br>") : ""}</div>`;
+            if (supersedes) html += `<div style="margin-bottom:16px;color:#9ca3af;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "middle");
+            if (img && (place === "middle" || place === "all")) html += `<div style="height:16px;"></div>${img}<div style="height:16px;"></div>`;
+
+            // Force dark mode styling for nested builders by manipulating the html string (simplified approach for this tool)
+            let modifiedHighlights = highlightsHtml.replace(/color:#111827/g, `color:${hColor}`);
+            let modifiedSpecs = specsHtml.replace(/color:#111827/g, `color:${hColor}`).replace(/background:#f8fafc/g, "background:#1f2937").replace(/background:#ffffff/g, "background:#111827").replace(/border-color:#e5e7eb/g, `border-color:${bColor}`);
+            let modifiedIncluded = includedHtml.replace(/color:#111827/g, `color:${hColor}`);
+            
+            if (modifiedHighlights) html += modifiedHighlights; if (modifiedSpecs) html += modifiedSpecs; if (modifiedIncluded) html += modifiedIncluded;
+            
+            if (compatibilityHtml) html += compatibilityHtml.replace(/color:#111827/g, `color:${hColor}`);
+            if (certsHtml) html += certsHtml.replace(/color:#111827/g, `color:${hColor}`);
+            if (warningsHtml) html += warningsHtml.replace(/color:#111827/g, `color:${hColor}`);
+            if (careHtml) html += careHtml.replace(/color:#111827/g, `color:${hColor}`);
+
+            if (shippingReturns) html += `<div style="margin-top:20px;color:#f3f4f6;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+            if (warranty) html += `<div style="margin-top:8px;color:#f3f4f6;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+            if (ctaHtml) html += ctaHtml;
+
+            if (infoPairs && infoPairs.length) { html += `<hr style="border:0;border-top:1px solid ${bColor};margin:24px 0;"><h3 style="margin:0 0 12px 0;color:${hColor};">Product Information</h3><ul style="margin:0;padding-left:18px;color:#d1d5db;">${infoPairs.map(([k,v])=>`<li><strong style="color:#f9fafb;">${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`; }
+
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, downloadPlacement, "bottom");
+            if (img && (place === "bottom" || place === "all")) html += `<div style="height:16px;"></div>${img}`;
+            if (flagHtml) html += flagHtml;
+            return html + `</div>`;
+        }
+
+        // T8 E-Commerce
+        function buildTemplate8Ecommerce(cfg){
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml, infoPairs } = cfg;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg);
+            const bColor = cfg.colorBorders ? themeColor : '#e5e7eb';
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+
+            let html = `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#374151;padding:0;">\n`;
+            
+            // Top Section Split
+            html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>`;
+            html += `<td style="width:45%;vertical-align:top;padding-right:24px;">`;
+            if (badgesHtml) html += badgesHtml;
+            if (img) html += img; else html += `<div style="background:#f3f4f6;width:100%;height:300px;border-radius:8px;border:1px dashed #d1d5db;display:flex;align-items:center;justify-content:center;color:#9ca3af;">[ Product Image ]</div>`;
+            html += `</td><td style="width:55%;vertical-align:top;">`;
+            
+            if (summary) html += `<div style="font-size:16px;color:#111827;font-weight:500;margin-bottom:16px;line-height:1.5;">${escapeHtml(summary).replace(/\r?\n/g, "<br>")}</div>`;
+            if (supersedes) html += `<div style="margin-bottom:16px;color:#6b7280;font-size:13px;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+            
+            if (highlightsHtml) html += `<div style="margin-bottom:24px;">${highlightsHtml}</div>`;
+            if (ctaHtml) html += `<div style="margin-bottom:16px;">${ctaHtml}</div>`;
+            if (downloadHtml) html += buildPlacedBlockHtml(downloadHtml, "all", "all"); // Just put it here
+            if (flagHtml) html += flagHtml;
+
+            html += `</td></tr></table>`;
+
+            // Bottom Section Tabs-style
+            html += `<div style="margin-top:40px;border-top:2px solid ${bColor};padding-top:24px;">`;
+            
+            if (specsHtml || infoPairs.length) {
+                html += `<div style="margin-bottom:32px;"><h3 style="color:${hColor};margin:0 0 16px 0;">Technical Details</h3>`;
+                if (specsHtml) html += specsHtml;
+                if (infoPairs && infoPairs.length){
+                    html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:16px;border:1px solid ${bColor};border-radius:8px;background:#f9fafb;">`;
+                    infoPairs.forEach(([k,v])=>{ html += `<tr><td style="padding:10px 14px;font-weight:700;width:30%;border-bottom:1px solid ${bColor};">${escapeHtml(k)}</td><td style="padding:10px 14px;border-bottom:1px solid ${bColor};background:#ffffff;">${escapeHtml(v)}</td></tr>`; });
+                    html += `</table>`;
+                }
+                html += `</div>`;
+            }
+
+            if (includedHtml || compatibilityHtml || certsHtml || warningsHtml || careHtml) {
+                html += `<div style="margin-bottom:32px;"><h3 style="color:${hColor};margin:0 0 16px 0;">Additional Information</h3>`;
+                if (includedHtml) html += includedHtml;
+                if (compatibilityHtml) html += compatibilityHtml; if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
+                html += `</div>`;
+            }
+
+            if (shippingReturns || warranty) {
+                html += `<div style="background:#f8fafc;border:1px solid ${bColor};border-radius:8px;padding:20px;">`;
+                if (shippingReturns) html += `<div style="margin-bottom:8px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+                if (warranty) html += `<div><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+                html += `</div>`;
+            }
+
+            return html + `</div></div>`;
+        }
+
+        // T9 Technical Tabular
+        function buildTemplate9Tabular(cfg){
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml, infoPairs } = cfg;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg);
+            const bColor = cfg.colorBorders ? themeColor : '#d1d5db';
+            const hColor = cfg.colorHeadings ? themeColor : '#111827';
+            const headBg = cfg.colorBanners ? themeColor : '#f3f4f6';
+            const headText = cfg.colorBanners ? '#ffffff' : '#111827';
+
+            let html = `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#111827;padding:0;">\n`;
+            if (badgesHtml) html += badgesHtml;
+            
+            html += `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:2px solid ${bColor};">`;
+            
+            // Header Row
+            html += `<tr><td colspan="2" style="background:${headBg};color:${headText};padding:12px 16px;font-weight:900;font-size:16px;text-transform:uppercase;">Product Specification Sheet</td></tr>`;
+
+            // Top Info
+            html += `<tr><td colspan="2" style="padding:16px;border-bottom:1px solid ${bColor};">`;
+            if (img) html += `<div style="float:right;width:150px;margin-left:16px;">${img}</div>`;
+            if (summary) html += `<div style="font-size:14px;margin-bottom:12px;">${escapeHtml(summary).replace(/\r?\n/g, "<br>")}</div>`;
+            if (supersedes) html += `<div style="font-size:12px;color:#475569;"><strong>Supersedes:</strong> ${escapeHtml(supersedes)}</div>`;
+            if (ctaHtml || downloadHtml) html += `<div style="margin-top:16px;display:flex;gap:10px;">${ctaHtml||""} ${buildPlacedBlockHtml(downloadHtml, "all", "all")||""}</div>`;
+            html += `<div style="clear:both;"></div></td></tr>`;
+
+            // Data Rows
+            if (infoPairs && infoPairs.length) {
+                html += `<tr><td style="width:25%;padding:12px 16px;font-weight:700;background:#f9fafb;border-bottom:1px solid ${bColor};border-right:1px solid ${bColor};">Classification</td><td style="padding:12px 16px;border-bottom:1px solid ${bColor};">`;
+                html += infoPairs.map(([k,v]) => `<strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}`).join(" | ");
+                html += `</td></tr>`;
+            }
+
+            if (highlightsHtml) {
+                html += `<tr><td style="width:25%;padding:12px 16px;font-weight:700;background:#f9fafb;border-bottom:1px solid ${bColor};border-right:1px solid ${bColor};vertical-align:top;">Key Features</td><td style="padding:12px 16px;border-bottom:1px solid ${bColor};">${highlightsHtml}</td></tr>`;
+            }
+
+            if (specsHtml) {
+                html += `<tr><td style="width:25%;padding:12px 16px;font-weight:700;background:#f9fafb;border-bottom:1px solid ${bColor};border-right:1px solid ${bColor};vertical-align:top;">Specifications</td><td style="padding:12px 16px;border-bottom:1px solid ${bColor};">${specsHtml}</td></tr>`;
+            }
+
+            if (includedHtml || compatibilityHtml) {
+                html += `<tr><td style="width:25%;padding:12px 16px;font-weight:700;background:#f9fafb;border-bottom:1px solid ${bColor};border-right:1px solid ${bColor};vertical-align:top;">Integration</td><td style="padding:12px 16px;border-bottom:1px solid ${bColor};">`;
+                if (includedHtml) html += includedHtml; if (compatibilityHtml) html += compatibilityHtml;
+                html += `</td></tr>`;
+            }
+
+            if (certsHtml || warningsHtml || careHtml) {
+                html += `<tr><td style="width:25%;padding:12px 16px;font-weight:700;background:#f9fafb;border-bottom:1px solid ${bColor};border-right:1px solid ${bColor};vertical-align:top;">Compliance & Safety</td><td style="padding:12px 16px;border-bottom:1px solid ${bColor};">`;
+                if (certsHtml) html += certsHtml; if (warningsHtml) html += warningsHtml; if (careHtml) html += careHtml;
+                html += `</td></tr>`;
+            }
+
+            if (shippingReturns || warranty || flagHtml) {
+                html += `<tr><td style="width:25%;padding:12px 16px;font-weight:700;background:#f9fafb;border-right:1px solid ${bColor};vertical-align:top;">Logistics & Policy</td><td style="padding:12px 16px;">`;
+                if (shippingReturns) html += `<div style="margin-bottom:8px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+                if (warranty) html += `<div style="margin-bottom:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+                if (flagHtml) html += flagHtml;
+                html += `</td></tr>`;
+            }
+
+            return html + `</table></div>`;
+        }
+
+        // T10 Two Tone
+        function buildTemplate10TwoTone(cfg){
+            const { themeColor, summary, supersedes, imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml, compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml, downloadHtml, downloadPlacement, flagHtml, infoPairs } = cfg;
+            const img = buildImageHtml(imageSrc, imageAlt, cfg);
+            const bColor = cfg.colorBorders ? themeColor : '#e5e7eb';
+            const hColor = cfg.colorHeadings ? themeColor : '#0f172a';
+
+            let html = `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#334155;border:1px solid ${bColor};border-radius:16px;overflow:hidden;">\n`;
+            
+            // Block 1: White
+            html += `<div style="background:#ffffff;padding:32px;">`;
+            if (badgesHtml) html += badgesHtml;
+            if (img) html += `${img}<div style="height:24px;"></div>`;
+            if (summary) html += `<div style="font-size:18px;color:#0f172a;font-weight:600;margin-bottom:16px;line-height:1.5;">${escapeHtml(summary).replace(/\r?\n/g, "<br>")}</div>`;
+            if (supersedes) html += `<div style="color:#64748b;font-size:14px;margin-bottom:16px;"><em>Supersedes: ${escapeHtml(supersedes)}</em></div>`;
+            if (ctaHtml || downloadHtml) html += `<div style="display:flex;gap:12px;">${ctaHtml||""} ${buildPlacedBlockHtml(downloadHtml, "all", "all")||""}</div>`;
+            html += `</div>`;
+
+            // Block 2: Tinted
+            if (highlightsHtml || specsHtml) {
+                html += `<div style="background:#f8fafc;padding:32px;border-top:1px solid ${bColor};">`;
+                if (highlightsHtml) html += highlightsHtml;
+                if (specsHtml) html += `<div style="margin-top:24px;">${specsHtml}</div>`;
+                html += `</div>`;
+            }
+
+            // Block 3: White
+            if (includedHtml || compatibilityHtml || certsHtml || infoPairs.length) {
+                html += `<div style="background:#ffffff;padding:32px;border-top:1px solid ${bColor};">`;
+                if (includedHtml) html += includedHtml;
+                if (compatibilityHtml) html += compatibilityHtml;
+                if (certsHtml) html += certsHtml;
+                if (infoPairs && infoPairs.length){
+                    html += `<div style="margin-top:24px;font-weight:900;color:${hColor};font-size:16px;">Product Information</div><ul style="margin:12px 0 0 0;padding-left:20px;">${infoPairs.map(([k,v]) => `<li style="margin-bottom:8px;"><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</li>`).join("")}</ul>`;
+                }
+                html += `</div>`;
+            }
+
+            // Block 4: Tinted
+            if (warningsHtml || careHtml || shippingReturns || warranty || flagHtml) {
+                html += `<div style="background:#f8fafc;padding:32px;border-top:1px solid ${bColor};">`;
+                if (warningsHtml) html += warningsHtml;
+                if (careHtml) html += careHtml;
+                if (shippingReturns) html += `<div style="margin-top:16px;"><strong>Shipping/Returns:</strong> ${escapeHtml(shippingReturns).replace(/\r?\n/g,"<br>")}</div>`;
+                if (warranty) html += `<div style="margin-top:8px;"><strong>Warranty:</strong> ${escapeHtml(warranty)}</div>`;
+                if (flagHtml) html += flagHtml;
+                html += `</div>`;
+            }
+
+            return html + `</div>`;
+        }
+
+        // --- Master Builder Engine ---
         function buildHtml(cfg, mode){
             const t = parseInt(cfg.templateId || 1, 10);
             let html = "";
-            if (t === 1) html = buildTemplate1Classic(cfg, mode);
-            else if (t === 2) html = buildTemplate2LabeledPanels(cfg, mode);
-            else if (t === 3) html = buildTemplate3SpecSidebar(cfg, mode);
-            else if (t === 4) html = buildTemplate4Datasheet(cfg, mode);
-            else html = buildTemplate5BannerCallouts(cfg, mode);
+            if (t === 1) html = buildTemplate1Classic(cfg);
+            else if (t === 2) html = buildTemplate2LabeledPanels(cfg);
+            else if (t === 3) html = buildTemplate3SpecSidebar(cfg);
+            else if (t === 4) html = buildTemplate4Datasheet(cfg);
+            else if (t === 5) html = buildTemplate5BannerCallouts(cfg);
+            else if (t === 6) html = buildTemplate6Minimal(cfg);
+            else if (t === 7) html = buildTemplate7Dark(cfg);
+            else if (t === 8) html = buildTemplate8Ecommerce(cfg);
+            else if (t === 9) html = buildTemplate9Tabular(cfg);
+            else html = buildTemplate10TwoTone(cfg);
             return scrubArtifacts(html);
         }
 
         function generateSingleHtml() {
             const templateId = document.getElementById("templateSelect").value;
             const themeColor = document.getElementById("themeColorSelect").value || "#072872";
-            const summary = readVal("summary");
-            const supersedes = readVal("supersedes");
+            const colorHeadings = document.getElementById("colorHeadings").checked;
+            const colorBanners = document.getElementById("colorBanners").checked;
+            const colorButtons = document.getElementById("colorButtons").checked;
+            const colorBorders = document.getElementById("colorBorders").checked;
 
+            const summary = readVal("summary"); const supersedes = readVal("supersedes");
             const includeProductType = document.getElementById("includeProductType").checked; const productType = readVal("productType");
             const includeRegion = document.getElementById("includeRegion").checked; const region = readVal("region");
             const includeLanguage = document.getElementById("includeLanguage").checked; const language = readVal("language");
@@ -874,29 +945,31 @@
             const includeUse = document.getElementById("includeUse").checked; const use = readVal("use");
             const includeSegment = document.getElementById("includeSegment").checked; const segment = readVal("segment");
 
+            const cfgBase = { colorHeadings, colorBanners, colorButtons, colorBorders };
+
             const includeBadges = document.getElementById("includeBadges").checked;
-            const badgesHtml = includeBadges ? buildBadgesHtml(readVal("badges")) : "";
+            const badgesHtml = includeBadges ? buildBadgesHtml(readVal("badges"), themeColor, cfgBase) : "";
 
             const includeHighlights = document.getElementById("includeHighlights").checked;
-            const highlightsHtml = includeHighlights ? buildHighlightsHtml(document.getElementById("highlights").value || "", document.getElementById("useRedChecks").checked) : "";
+            const highlightsHtml = includeHighlights ? buildHighlightsHtml(document.getElementById("highlights").value || "", document.getElementById("useRedChecks").checked, themeColor, cfgBase) : "";
 
             const includeSpecs = document.getElementById("includeSpecs").checked;
-            const specsHtml = includeSpecs ? buildSpecsHtml(document.getElementById("specs").value || "") : "";
+            const specsHtml = includeSpecs ? buildSpecsHtml(document.getElementById("specs").value || "", themeColor, cfgBase) : "";
 
             const includeWhatsIncluded = document.getElementById("includeWhatsIncluded").checked;
-            const includedHtml = includeWhatsIncluded ? buildBulletsSection("What’s Included", document.getElementById("whatsIncluded").value || "") : "";
+            const includedHtml = includeWhatsIncluded ? buildBulletsSection("What’s Included", document.getElementById("whatsIncluded").value || "", themeColor, cfgBase) : "";
 
-            const compatibilityHtml = document.getElementById("includeCompatibility").checked ? buildTextSection("Compatibility / Works With", document.getElementById("compatibility").value || "") : "";
-            const certsHtml = document.getElementById("includeCerts").checked ? buildBulletsSection("Certifications / Compliance", document.getElementById("certs").value || "") : "";
-            const warningsHtml = document.getElementById("includeWarnings").checked ? buildTextSection("Warnings / Safety", document.getElementById("warnings").value || "") : "";
-            const careHtml = document.getElementById("includeCare").checked ? buildTextSection("Care / Maintenance", document.getElementById("care").value || "") : "";
+            const compatibilityHtml = document.getElementById("includeCompatibility").checked ? buildTextSection("Compatibility / Works With", document.getElementById("compatibility").value || "", themeColor, cfgBase) : "";
+            const certsHtml = document.getElementById("includeCerts").checked ? buildBulletsSection("Certifications / Compliance", document.getElementById("certs").value || "", themeColor, cfgBase) : "";
+            const warningsHtml = document.getElementById("includeWarnings").checked ? buildTextSection("Warnings / Safety", document.getElementById("warnings").value || "", themeColor, cfgBase) : "";
+            const careHtml = document.getElementById("includeCare").checked ? buildTextSection("Care / Maintenance", document.getElementById("care").value || "", themeColor, cfgBase) : "";
 
             const shippingReturns = document.getElementById("includeShippingReturns").checked ? readVal("shippingReturns") : "";
             const warranty = document.getElementById("includeWarranty").checked ? readVal("warranty") : "";
 
             const includeCTA = document.getElementById("includeCTA").checked;
             const ctaText = includeCTA ? readVal("ctaText") : ""; const ctaUrl = includeCTA ? readVal("ctaUrl") : "";
-            const ctaHtml = includeCTA ? buildDownloadHtml(ctaText, ctaUrl, themeColor) : "";
+            const ctaHtml = includeCTA ? buildDownloadHtml(ctaText, ctaUrl, themeColor, cfgBase, true) : "";
 
             const imageSrc = getSingleImageSrc();
             const imageAlt = readVal("productImageAlt");
@@ -906,7 +979,7 @@
             const downloadLabel = includeDownload ? readVal("downloadLabel") : "";
             const downloadUrl = includeDownload ? getSingleDownloadUrl() : "";
             const downloadPlacement = includeDownload ? document.getElementById("downloadPlacement").value : "top";
-            const downloadHtml = (includeDownload && downloadLabel && downloadUrl) ? buildDownloadHtml(downloadLabel, downloadUrl, themeColor) : "";
+            const downloadHtml = (includeDownload && downloadLabel && downloadUrl) ? buildDownloadHtml(downloadLabel, downloadUrl, themeColor, cfgBase, false) : "";
 
             const flagSrc = getSingleFlagSrc();
             const flagHtml = flagSrc ? buildFlagHtml(flagSrc, readVal("flagAlt"), readVal("flagSize")) : "";
@@ -917,7 +990,7 @@
             );
 
             const cfg = {
-                templateId, themeColor, summary, supersedes, productType, region, language, productLine, use, segment,
+                ...cfgBase, templateId, themeColor, summary, supersedes, productType, region, language, productLine, use, segment,
                 includeProductType, includeRegion, includeLanguage, includeProductLine, includeUse, includeSegment,
                 includeStyle: (parseInt(templateId, 10) === 1), imageSrc, imageAlt, imagePlacement, badgesHtml, highlightsHtml, specsHtml, includedHtml,
                 compatibilityHtml, certsHtml, warningsHtml, careHtml, shippingReturns, warranty, ctaHtml,
@@ -933,12 +1006,12 @@
             const ids = ["summary","supersedes","productType","region","language","productLine","use","segment","badges","highlights","specs","whatsIncluded","compatibility","certs","warnings","care","shippingReturns","warranty","ctaText","ctaUrl","productImageUrl","productImageAlt","flagUrl","flagAlt","flagSize","downloadLabel","downloadUrl"];
             ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
 
-            const checks = [ ["includeProductType", true],["includeRegion", true],["includeLanguage", true],["includeProductLine", true],["includeUse", true],["includeSegment", true], ["includeBadges", false],["includeHighlights", false],["includeSpecs", false],["includeWhatsIncluded", false], ["includeCompatibility", false],["includeCerts", false],["includeWarnings", false],["includeCare", false], ["includeShippingReturns", false],["includeWarranty", false],["includeCTA", false], ["includeProductImage", false],["includeFlag", false],["includeDownload", false],["useRedChecks", true] ];
+            const checks = [ ["includeProductType", true],["includeRegion", true],["includeLanguage", true],["includeProductLine", true],["includeUse", true],["includeSegment", true], ["includeBadges", false],["includeHighlights", false],["includeSpecs", false],["includeWhatsIncluded", false], ["includeCompatibility", false],["includeCerts", false],["includeWarnings", false],["includeCare", false], ["includeShippingReturns", false],["includeWarranty", false],["includeCTA", false], ["includeProductImage", false],["includeFlag", false],["includeDownload", false],["useRedChecks", true], ["colorHeadings", true], ["colorBanners", true], ["colorButtons", true], ["colorBorders", true] ];
             checks.forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.checked = val; });
 
             document.getElementById("productImageFile").value = ""; document.getElementById("flagFile").value = ""; document.getElementById("downloadFile").value = "";
             document.getElementById("productImagePlacement").value = "top"; document.getElementById("downloadPlacement").value = "top"; document.getElementById("flagSize").value = "34";
-            document.getElementById("themeColorSelect").value = "#072872";
+            document.getElementById("themeColorSelect").value = "#072872"; document.getElementById("templateSelect").value = "1";
 
             singleProductImageDataUri = ""; singleFlagDataUri = ""; singleDownloadDataUri = "";
             document.getElementById("output").value = ""; document.getElementById("preview").innerHTML = "";
@@ -1015,6 +1088,12 @@
             const status = document.getElementById("bulkStatus");
             if (!bulkRows || bulkRows.length === 0) { status.textContent = "No data loaded."; return; }
 
+            const colorHeadings = document.getElementById("colorHeadings").checked;
+            const colorBanners = document.getElementById("colorBanners").checked;
+            const colorButtons = document.getElementById("colorButtons").checked;
+            const colorBorders = document.getElementById("colorBorders").checked;
+            const cfgBase = { colorHeadings, colorBanners, colorButtons, colorBorders };
+
             const lines = ["Item Number,GeneratedHtml"];
             bulkRows.forEach((row, index) => {
                 const itemNumber = row["Item Number"] || row["ItemNumber"] || `Item_${index + 1}`;
@@ -1024,18 +1103,18 @@
                 const productType = row["ProductType"] || ""; const region = row["Region"] || ""; const language = row["Language"] || "";
                 const productLine = row["ProductLine"] || ""; const use = row["Use"] || ""; const segment = row["Segment"] || "";
 
-                const badgesHtml = row["Badges"] ? buildBadgesHtml(row["Badges"]) : "";
-                const highlightsHtml = row["Highlights"] ? buildHighlightsHtml(row["Highlights"], truthyCsv(row["UseRedChecks"] || "true")) : "";
-                const specsHtml = row["Specs"] ? buildSpecsHtml(row["Specs"]) : "";
-                const includedHtml = row["WhatsIncluded"] ? buildBulletsSection("What’s Included", row["WhatsIncluded"]) : "";
+                const badgesHtml = row["Badges"] ? buildBadgesHtml(row["Badges"], themeColor, cfgBase) : "";
+                const highlightsHtml = row["Highlights"] ? buildHighlightsHtml(row["Highlights"], truthyCsv(row["UseRedChecks"] || "true"), themeColor, cfgBase) : "";
+                const specsHtml = row["Specs"] ? buildSpecsHtml(row["Specs"], themeColor, cfgBase) : "";
+                const includedHtml = row["WhatsIncluded"] ? buildBulletsSection("What’s Included", row["WhatsIncluded"], themeColor, cfgBase) : "";
                 
-                const compatibilityHtml = row["Compatibility"] ? buildTextSection("Compatibility / Works With", row["Compatibility"]) : "";
-                const certsHtml = row["Certifications"] ? buildBulletsSection("Certifications / Compliance", row["Certifications"]) : "";
-                const warningsHtml = row["Warnings"] ? buildTextSection("Warnings / Safety", row["Warnings"]) : "";
-                const careHtml = row["Care"] ? buildTextSection("Care / Maintenance", row["Care"]) : "";
+                const compatibilityHtml = row["Compatibility"] ? buildTextSection("Compatibility / Works With", row["Compatibility"], themeColor, cfgBase) : "";
+                const certsHtml = row["Certifications"] ? buildBulletsSection("Certifications / Compliance", row["Certifications"], themeColor, cfgBase) : "";
+                const warningsHtml = row["Warnings"] ? buildTextSection("Warnings / Safety", row["Warnings"], themeColor, cfgBase) : "";
+                const careHtml = row["Care"] ? buildTextSection("Care / Maintenance", row["Care"], themeColor, cfgBase) : "";
 
-                const ctaHtml = (row["CTA_Text"] && row["CTA_Url"]) ? buildDownloadHtml(row["CTA_Text"], row["CTA_Url"], themeColor) : "";
-                const downloadHtml = (row["DownloadLabel"] && row["DownloadUrl"]) ? buildDownloadHtml(row["DownloadLabel"], row["DownloadUrl"], themeColor) : "";
+                const ctaHtml = (row["CTA_Text"] && row["CTA_Url"]) ? buildDownloadHtml(row["CTA_Text"], row["CTA_Url"], themeColor, cfgBase, true) : "";
+                const downloadHtml = (row["DownloadLabel"] && row["DownloadUrl"]) ? buildDownloadHtml(row["DownloadLabel"], row["DownloadUrl"], themeColor, cfgBase, false) : "";
                 const flagHtml = row["FlagUrl"] ? buildFlagHtml(row["FlagUrl"], row["FlagAlt"], row["FlagSize"] || "34") : "";
 
                 const infoPairs = buildInfoPairsFromOriginalFields(
@@ -1044,7 +1123,7 @@
                 );
 
                 const cfg = {
-                    templateId, themeColor, summary: row["Summary"] || "", supersedes: row["Supersedes"] || "", 
+                    ...cfgBase, templateId, themeColor, summary: row["Summary"] || "", supersedes: row["Supersedes"] || "", 
                     productType, region, language, productLine, use, segment,
                     includeProductType: !!productType, includeRegion: !!region, includeLanguage: !!language, includeProductLine: !!productLine, includeUse: !!use, includeSegment: !!segment, includeStyle: false,
                     imageSrc: row["ImageUrl"] || "", imageAlt: row["ImageAlt"] || "", imagePlacement: normalizePlacement(row["ImagePlacement"]),

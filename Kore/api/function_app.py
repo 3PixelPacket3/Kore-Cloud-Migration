@@ -78,12 +78,17 @@ def get_user_data(req: func.HttpRequest) -> func.HttpResponse:
     except Exception:
         return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
 
-# --- 2. Work Tracker Vault ---
+# --- 2. Work Tracker Vault (DATA ISOLATION PATCH APPLIED) ---
 @app.route(route="save_work_item", methods=["POST"])
 def save_work_item(req: func.HttpRequest) -> func.HttpResponse:
     try:
         req_body = req.get_json()
         ticket_id = req_body.get('id')
+        user_id = req_body.get('authorId') # Extract the secure user ID
+        
+        if not user_id or not ticket_id:
+            return func.HttpResponse("Missing User or Ticket ID.", status_code=400)
+
         conn_str = os.environ.get("KORE_DB_CONNECTION")
         service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
         table_name = "KoreWorkTracker"
@@ -95,7 +100,7 @@ def save_work_item(req: func.HttpRequest) -> func.HttpResponse:
         raw_json = json.dumps(req_body)
         chunks = [raw_json[i:i+30000] for i in range(0, len(raw_json), 30000)]
         entity = {
-            "PartitionKey": "WorkTicket", 
+            "PartitionKey": str(user_id), # 🛡️ FIX: Partition strictly by User ID
             "RowKey": str(ticket_id), 
             "Title": req_body.get('title', 'Untitled'), 
             "Status": req_body.get('status', 'Pending'),
@@ -111,17 +116,20 @@ def save_work_item(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="get_work_items", methods=["GET"])
 def get_work_items(req: func.HttpRequest) -> func.HttpResponse:
     try:
+        user_id = req.params.get('userId') # Require User ID in the request
+        if not user_id:
+            return func.HttpResponse("Missing User ID", status_code=400, headers=NO_CACHE_HEADERS)
+
         conn_str = os.environ.get("KORE_DB_CONNECTION")
         service_client = TableServiceClient.from_connection_string(conn_str=conn_str)
         table_client = service_client.get_table_client(table_name="KoreWorkTracker")
         
-        # All tickets are saved under this PartitionKey in save_work_item
-        query = "PartitionKey eq 'WorkTicket'"
+        # 🛡️ FIX: Query only the partition matching the authenticated User ID
+        query = f"PartitionKey eq '{user_id}'"
         entities = list(table_client.query_entities(query_filter=query))
         
         work_items = []
         for e in entities:
-            # Reassemble chunked data to support large payloads
             if "ChunkCount" in e:
                 raw_json = "".join([e.get(f"RawJSON_{i}", "") for i in range(e["ChunkCount"])])
             else:
@@ -302,4 +310,4 @@ def get_macros(req: func.HttpRequest) -> func.HttpResponse:
             except Exception: pass
 
         return func.HttpResponse(json.dumps(list(macros_dict.values())), mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)
-    except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS) 
+    except Exception: return func.HttpResponse("[]", mimetype="application/json", status_code=200, headers=NO_CACHE_HEADERS)

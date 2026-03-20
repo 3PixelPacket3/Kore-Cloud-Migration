@@ -133,6 +133,7 @@
                         <a href="apps.html">Apps</a>
                         <a href="file-converter.html">File to LOAD Converter</a>
                         <a href="lod.html">LOD Validation Tool</a>
+                        <a href="long-desc-converter.html">Long Description Mass Converter</a>
                         <a href="macros.html">Macro Library</a>
                         <a href="nebula.html">Nebula HTML Forge</a>
                         <a href="passwords.html">Password Generator</a>
@@ -316,7 +317,7 @@
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let activeChecklist = [];
         let masterWorkItems = [];
-        let currentTrackerView = 'lines'; // Default Layout
+        let currentTrackerView = 'lines'; 
 
         async function fetchSecureIdentity() {
             try {
@@ -368,7 +369,8 @@
 
         async function fetchWorkItems() {
             try {
-                const res = await fetch('/api/get_work_items'); 
+                // UPDATE: Securely pass userId to the backend for complete data isolation.
+                const res = await fetch('/api/get_work_items?userId=' + cloudIdentity.userId); 
                 if (res.ok) {
                     masterWorkItems = await res.json();
                 } else {
@@ -425,7 +427,6 @@
             saveCloudData('work_filters', filters);
         }
 
-        // --- DYNAMIC RENDERER FOR MULTIPLE VIEWS ---
         function renderTable() {
             const container = document.getElementById('dynamic-tracker-container');
             container.innerHTML = '';

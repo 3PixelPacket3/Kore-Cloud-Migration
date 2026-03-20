@@ -57,16 +57,23 @@
         .upload-subtext { font-size: 0.85rem; color: var(--text-secondary); }
         #fileInput { display: none; }
         
-        .global-push-toggle { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
+        .controls-row { display: flex; gap: 12px; }
+        .global-push-toggle { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: var(--shadow-sm); flex-grow: 1; }
         .global-push-toggle input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--global-badge); }
         .global-push-toggle span { font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
+        
+        .btn-primary { background-color: var(--accent-primary); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem;}
+        .btn-primary:hover { background-color: var(--accent-hover); box-shadow: var(--shadow-hover); }
 
         .filters-panel { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); padding: 20px; display: flex; flex-direction: column; gap: 16px; height: 100%; box-sizing: border-box; overflow: hidden; }
         .filter-row { display: flex; gap: 12px; align-items: center; width: 100%; box-sizing: border-box; }
         .search-bar { flex-grow: 1; padding: 10px 16px; border: 1px solid var(--border-subtle); border-radius: 99px; font-size: 0.9rem; outline: none; background: var(--bg-app); transition: all 0.2s; box-sizing: border-box; width: 100%; }
         .search-bar:focus { border-color: var(--accent-primary); background: var(--bg-surface); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
-        /* FIX: Strict border-box sizing prevents dropdowns from bleeding over the edge */
         .select-filter { padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--bg-app); color: var(--text-main); cursor: pointer; flex-grow: 1; box-sizing: border-box; width: 50%; max-width: 100%; }
+
+        .breadcrumb-container { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-weight: 600; color: var(--text-secondary); font-size: 0.95rem; }
+        .breadcrumb-link { cursor: pointer; color: var(--accent-primary); transition: color 0.2s; }
+        .breadcrumb-link:hover { color: var(--accent-hover); text-decoration: underline; }
 
         .view-toggles { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
         .view-btn { background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
@@ -76,7 +83,7 @@
         .doc-container.grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
         .doc-container.grid-view .doc-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; display: flex; flex-direction: column; position: relative; }
         .doc-container.grid-view .doc-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--accent-primary); }
-        .doc-container.grid-view .doc-icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; cursor: pointer; }
+        .doc-container.grid-view .doc-icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; }
         .doc-container.grid-view .doc-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .doc-container.grid-view .doc-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .doc-container.grid-view .doc-actions { display: flex; gap: 8px; border-top: 1px solid var(--border-subtle); padding-top: 16px; margin-top: auto; }
@@ -85,13 +92,14 @@
         .doc-container.list-view { display: flex; flex-direction: column; gap: 12px; }
         .doc-container.list-view .doc-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.2s ease; display: flex; align-items: center; justify-content: space-between; position: relative;}
         .doc-container.list-view .doc-card:hover { border-color: var(--accent-primary); }
-        .doc-container.list-view .doc-icon-wrapper { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 16px; cursor: pointer; flex-shrink: 0;}
+        .doc-container.list-view .doc-icon-wrapper { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 16px; flex-shrink: 0;}
         .doc-container.list-view .doc-info-group { display: flex; align-items: center; flex-grow: 1; overflow: hidden;}
         .doc-container.list-view .doc-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 24px;}
         .doc-container.list-view .doc-meta { font-size: 0.85rem; color: var(--text-secondary); display: flex; gap: 32px; margin-right: 24px; white-space: nowrap; flex-shrink: 0;}
         .doc-container.list-view .doc-actions { display: flex; gap: 12px; border-left: 1px solid var(--border-subtle); padding-left: 24px; flex-shrink: 0;}
 
         /* Icon Colors */
+        .doc-type-folder { background: #fef08a; color: #ca8a04; }
         .doc-type-pdf { background: #fee2e2; color: #ef4444; }
         .doc-type-image { background: #dcfce7; color: #10b981; }
         .doc-type-word { background: #e0e7ff; color: #4f46e5; }
@@ -200,10 +208,13 @@
                     <div class="upload-subtext">or click to browse your computer</div>
                     <input type="file" id="fileInput" multiple onchange="handleFilesSelected(event)">
                 </div>
-                <label class="global-push-toggle">
-                    <input type="checkbox" id="isGlobalDoc">
-                    <span>🌐 Push to Global Enterprise Vault</span>
-                </label>
+                <div class="controls-row">
+                    <label class="global-push-toggle">
+                        <input type="checkbox" id="isGlobalDoc">
+                        <span>🌐 Push to Global</span>
+                    </label>
+                    <button class="btn-primary" onclick="createFolder()">➕ New Folder</button>
+                </div>
             </div>
 
             <div class="filters-panel">
@@ -213,6 +224,7 @@
                 <div class="filter-row">
                     <select class="select-filter" id="filterType" onchange="renderLibrary()">
                         <option value="all">All File Types</option>
+                        <option value="folder">Folders</option>
                         <option value="pdf">PDF Documents</option>
                         <option value="image">Images</option>
                         <option value="doc">Word / Text</option>
@@ -232,13 +244,18 @@
             </div>
         </div>
 
-        <div class="view-toggles">
-            <button class="view-btn active" id="btnGrid" onclick="setLibraryView('grid')">▦ Grid View</button>
-            <button class="view-btn" id="btnList" onclick="setLibraryView('list')">☰ List View</button>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div class="breadcrumb-container" id="breadcrumbNav">
+                <span class="breadcrumb-link" onclick="navigateToFolder(null)">Vault Root</span>
+            </div>
+            <div class="view-toggles">
+                <button class="view-btn active" id="btnGrid" onclick="setLibraryView('grid')">▦ Grid View</button>
+                <button class="view-btn" id="btnList" onclick="setLibraryView('list')">☰ List View</button>
+            </div>
         </div>
 
         <div class="doc-container grid-view" id="libraryContainer">
-            </div>
+        </div>
 
     </main>
 
@@ -250,6 +267,7 @@
         let globalVault = [];
         let combinedVault = [];
         let currentView = 'grid';
+        let currentFolderId = null;
         const MAX_STORAGE_MB = 50; 
 
         async function fetchSecureIdentity() {
@@ -311,6 +329,7 @@
 
         function getFileTypeCategory(mime, filename) {
             const ext = filename.split('.').pop().toLowerCase();
+            if (mime === 'folder' || ext === 'folder') return 'folder';
             if (mime.includes('pdf') || ext === 'pdf') return 'pdf';
             if (mime.includes('image') || ['jpg','jpeg','png','gif','svg','webp'].includes(ext)) return 'image';
             if (mime.includes('word') || mime.includes('document') || ['doc','docx','txt','rtf'].includes(ext)) return 'doc';
@@ -322,13 +341,14 @@
 
         function getFileIcon(category) {
             switch(category) {
+                case 'folder': return '📁';
                 case 'pdf': return '📄';
                 case 'image': return '🖼️';
                 case 'doc': return '📝';
                 case 'sheet': return '📊';
                 case 'archive': return '🗜️';
                 case 'code': return '⌨️';
-                default: return '📁';
+                default: return '🗎';
             }
         }
 
@@ -338,35 +358,39 @@
             overlay.style.display = 'flex';
 
             const isGlobal = document.getElementById('isGlobalDoc').checked;
-            let updated = false;
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const base64Data = await new Promise((resolve) => {
+            
+            // Resolve all files in parallel to prevent loop collisions and lost documents
+            const readPromises = Array.from(files).map(file => {
+                return new Promise((resolve) => {
                     const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onload = (e) => resolve({ file, base64: e.target.result });
                     reader.readAsDataURL(file);
                 });
+            });
 
+            const fileResults = await Promise.all(readPromises);
+
+            fileResults.forEach(({file, base64}) => {
+                const uniqueId = 'DOC-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
                 const newDoc = {
-                    id: 'DOC-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                    id: uniqueId,
                     name: file.name,
                     sizeRaw: file.size,
                     sizeStr: formatBytes(file.size),
                     mimeType: file.type || 'application/octet-stream',
                     category: getFileTypeCategory(file.type, file.name),
                     uploadDate: new Date().toISOString(),
-                    dataUri: base64Data,
+                    dataUri: base64,
                     isGlobal: isGlobal,
-                    authorId: cloudIdentity.userId
+                    authorId: cloudIdentity.userId,
+                    parentId: currentFolderId 
                 };
 
                 if (isGlobal) { globalVault.push(newDoc); } 
                 else { personalVault.push(newDoc); }
-                updated = true;
-            }
+            });
 
-            if (updated) {
+            if (fileResults.length > 0) {
                 if (isGlobal) { await saveCloudDataAs('GLOBAL_DOCS', 'document_library', globalVault); } 
                 else { await saveCloudDataAs(cloudIdentity.userId, 'document_library', personalVault); }
                 
@@ -379,15 +403,62 @@
             overlay.style.display = 'none';
         }
 
-        function triggerDownload(docId) {
+        async function createFolder() {
+            const name = prompt("Enter new folder name:");
+            if (!name || name.trim() === '') return;
+
+            const isGlobal = document.getElementById('isGlobalDoc').checked;
+            const uniqueId = 'FOLD-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
+            
+            const newFolder = {
+                id: uniqueId,
+                name: name.trim(),
+                sizeRaw: 0,
+                sizeStr: '--',
+                mimeType: 'folder',
+                category: 'folder',
+                uploadDate: new Date().toISOString(),
+                dataUri: '',
+                isGlobal: isGlobal,
+                authorId: cloudIdentity.userId,
+                parentId: currentFolderId
+            };
+
+            if (isGlobal) { 
+                globalVault.push(newFolder); 
+                await saveCloudDataAs('GLOBAL_DOCS', 'document_library', globalVault); 
+            } else { 
+                personalVault.push(newFolder); 
+                await saveCloudDataAs(cloudIdentity.userId, 'document_library', personalVault); 
+            }
+
+            combinedVault = [...globalVault, ...personalVault];
+            renderLibrary();
+        }
+
+        function navigateToFolder(folderId) {
+            currentFolderId = folderId;
+            renderLibrary();
+        }
+
+        function navigateUp() {
+            if (!currentFolderId) return;
+            const current = combinedVault.find(d => d.id === currentFolderId);
+            currentFolderId = current ? (current.parentId || null) : null;
+            renderLibrary();
+        }
+
+        function triggerDownload(docId, event) {
+            if (event) event.stopPropagation();
             const doc = combinedVault.find(d => d.id === docId);
-            if (!doc) return;
+            if (!doc || doc.category === 'folder') return;
             const link = document.createElement("a");
             link.href = doc.dataUri; link.download = doc.name;
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
-        function previewImage(docId) {
+        function previewImage(docId, event) {
+            if (event) event.stopPropagation();
             const doc = combinedVault.find(d => d.id === docId);
             if (doc && doc.category === 'image') {
                 document.getElementById('previewImgSrc').src = doc.dataUri;
@@ -400,14 +471,29 @@
             document.getElementById('previewImgSrc').src = '';
         }
 
-        async function deleteDocument(docId) {
+        function getIdsToDelete(targetId, vault) {
+            let ids = [targetId];
+            const children = vault.filter(d => d.parentId === targetId);
+            children.forEach(c => {
+                ids = ids.concat(getIdsToDelete(c.id, vault));
+            });
+            return ids;
+        }
+
+        async function deleteDocument(docId, event) {
+            if (event) event.stopPropagation();
             const doc = combinedVault.find(d => d.id === docId);
             if (!doc) return;
 
+            const isFolder = doc.category === 'folder';
+            const warningMsg = isFolder 
+                ? `Delete folder "${doc.name}" AND all of its contents?` 
+                : `Are you certain you wish to delete this document from your vault?`;
+
             if (doc.isGlobal) {
-                const code = prompt("Enter Master Admin Code to delete a Global Document:");
+                const code = prompt(`Enter Master Admin Code to delete Global ${isFolder ? 'Folder' : 'Document'}:`);
                 if (code !== "admin") { alert("Authorization Denied. Invalid Code."); return; }
-            } else if (!confirm("Are you certain you wish to delete this document from your personal vault?")) {
+            } else if (!confirm(warningMsg)) {
                 return;
             }
 
@@ -415,11 +501,13 @@
             document.getElementById('overlayText').innerText = "Removing from Vault...";
             overlay.style.display = 'flex';
 
+            const idsToRemove = getIdsToDelete(docId, combinedVault);
+
             if (doc.isGlobal) {
-                globalVault = globalVault.filter(d => d.id !== docId);
+                globalVault = globalVault.filter(d => !idsToRemove.includes(d.id));
                 await saveCloudDataAs('GLOBAL_DOCS', 'document_library', globalVault);
             } else {
-                personalVault = personalVault.filter(d => d.id !== docId);
+                personalVault = personalVault.filter(d => !idsToRemove.includes(d.id));
                 await saveCloudDataAs(cloudIdentity.userId, 'document_library', personalVault);
             }
             
@@ -449,7 +537,7 @@
             if (percent > 85) bar.classList.add('danger');
             else if (percent > 65) bar.classList.add('warning');
             
-            document.getElementById('fileCountDisplay').innerText = `${combinedVault.length} Files Displayed`;
+            document.getElementById('fileCountDisplay').innerText = `${combinedVault.length} Vault Assets`;
         }
 
         function setLibraryView(view) {
@@ -460,9 +548,28 @@
             container.className = `doc-container ${view}-view`;
         }
 
+        function updateBreadcrumbs() {
+            const nav = document.getElementById('breadcrumbNav');
+            let html = `<span class="breadcrumb-link" onclick="navigateToFolder(null)">Vault Root</span>`;
+            
+            if (currentFolderId) {
+                let path = [];
+                let current = combinedVault.find(d => d.id === currentFolderId);
+                while (current) {
+                    path.unshift(current);
+                    current = combinedVault.find(d => d.id === current.parentId);
+                }
+                path.forEach(folder => {
+                    html += ` <span>/</span> <span class="breadcrumb-link" onclick="navigateToFolder('${folder.id}')">${folder.name}</span>`;
+                });
+            }
+            nav.innerHTML = html;
+        }
+
         function renderLibrary() {
             const container = document.getElementById('libraryContainer');
             container.innerHTML = '';
+            updateBreadcrumbs();
 
             const searchQ = document.getElementById('searchDocs').value.toLowerCase();
             const filterType = document.getElementById('filterType').value;
@@ -471,10 +578,18 @@
             let filteredDocs = combinedVault.filter(doc => {
                 const matchSearch = doc.name.toLowerCase().includes(searchQ);
                 const matchType = (filterType === 'all') || (doc.category === filterType);
-                return matchSearch && matchType;
+                // If searching, ignore folder structure to show all matches. Otherwise, enforce folder bounds.
+                const matchFolder = searchQ ? true : ((doc.parentId || null) === currentFolderId);
+                return matchSearch && matchType && matchFolder;
             });
 
             filteredDocs.sort((a, b) => {
+                // Always keep folders at the top unless actively sorting by size
+                if (sortOrder !== 'size_desc' && sortOrder !== 'size_asc') {
+                    if (a.category === 'folder' && b.category !== 'folder') return -1;
+                    if (a.category !== 'folder' && b.category === 'folder') return 1;
+                }
+
                 switch(sortOrder) {
                     case 'newest': return new Date(b.uploadDate) - new Date(a.uploadDate);
                     case 'oldest': return new Date(a.uploadDate) - new Date(b.uploadDate);
@@ -486,32 +601,59 @@
                 }
             });
 
-            if (filteredDocs.length === 0) {
+            // Render 'Go Up' card if inside a folder and not searching
+            if (currentFolderId && !searchQ) {
+                container.innerHTML += `
+                    <div class="doc-card" onclick="navigateUp()" style="cursor:pointer; border-style: dashed;">
+                        <div class="doc-info-group">
+                            <div class="doc-icon-wrapper doc-type-default" style="cursor: pointer;">⤴️</div>
+                            <div class="doc-title" style="cursor: pointer;">... Go Up</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (filteredDocs.length === 0 && !currentFolderId) {
                 container.innerHTML = `<div class="empty-state"><h3>No documents found.</h3><p>Upload files or adjust your filters.</p></div>`;
                 return;
             }
 
             filteredDocs.forEach(doc => {
                 const dDate = new Date(doc.uploadDate).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
-                const clickAction = doc.category === 'image' ? `onclick="previewImage('${doc.id}')" title="Click to Preview"` : '';
                 const globalBadge = doc.isGlobal ? `<div class="global-badge">Global</div>` : '';
+                
+                let clickAttr = '';
+                let cursorStyle = '';
+                let actionsHtml = '';
+
+                if (doc.category === 'folder') {
+                    clickAttr = `onclick="navigateToFolder('${doc.id}')" title="Open Folder"`;
+                    cursorStyle = `cursor: pointer;`;
+                    actionsHtml = `<button class="btn-action btn-delete" onclick="deleteDocument('${doc.id}', event)">Delete</button>`;
+                } else {
+                    clickAttr = doc.category === 'image' ? `onclick="previewImage('${doc.id}', event)" title="Click to Preview"` : '';
+                    cursorStyle = doc.category === 'image' ? `cursor: pointer;` : ``;
+                    actionsHtml = `
+                        <button class="btn-action btn-download" onclick="triggerDownload('${doc.id}', event)">⬇️ Download</button>
+                        <button class="btn-action btn-delete" onclick="deleteDocument('${doc.id}', event)">Delete</button>
+                    `;
+                }
 
                 container.innerHTML += `
                     <div class="doc-card">
                         ${globalBadge}
                         <div class="doc-info-group">
-                            <div class="doc-icon-wrapper doc-type-${doc.category}" ${clickAction}>
+                            <div class="doc-icon-wrapper doc-type-${doc.category}" ${clickAttr} style="${cursorStyle}">
                                 ${getFileIcon(doc.category)}
                             </div>
-                            <div class="doc-title" title="${doc.name}">${doc.name}</div>
+                            <div class="doc-title" title="${doc.name}" ${clickAttr} style="${cursorStyle}">${doc.name}</div>
                         </div>
                         <div class="doc-meta">
                             <span style="font-weight: 600;">${doc.sizeStr}</span>
                             <span>${dDate}</span>
                         </div>
                         <div class="doc-actions">
-                            <button class="btn-action btn-download" onclick="triggerDownload('${doc.id}')">⬇️ Download</button>
-                            <button class="btn-action btn-delete" onclick="deleteDocument('${doc.id}')">Delete</button>
+                            ${actionsHtml}
                         </div>
                     </div>
                 `;

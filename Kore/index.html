@@ -14,7 +14,7 @@
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
             --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
             --radius-md: 12px; --radius-sm: 8px;
-            --danger: #ef4444; --warning: #f59e0b;
+            --danger: #ef4444; --warning: #f59e0b; --success: #10b981;
         }
 
         body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-app); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; min-width: 1024px; }
@@ -57,10 +57,12 @@
         .qa-icon { font-size: 1.4rem; }
 
         .intel-list { display: flex; flex-direction: column; gap: 12px; }
-        .intel-item { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; border-left: 4px solid var(--border-subtle); }
+        .intel-item { background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; border-left: 4px solid var(--border-subtle); transition: transform 0.2s ease; }
+        .intel-item:hover { transform: translateX(4px); }
         .intel-item.danger { border-left-color: var(--danger); }
         .intel-item.warning { border-left-color: var(--warning); }
         .intel-item.active { border-left-color: var(--accent-primary); }
+        .intel-item.success { border-left-color: var(--success); }
         .intel-title { font-weight: 600; font-size: 0.95rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .intel-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; }
         .intel-empty { text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 20px; background: var(--bg-app); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle); }
@@ -158,7 +160,7 @@
                 <section>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <h3 class="panel-header" style="border: none; margin: 0; padding: 0;">Operational Intel</h3>
-                        <select id="dashboardDateFilter" onchange="renderIntelWidgets()" style="padding: 6px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.85rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit;">
+                        <select id="dashboardDateFilter" onchange="handleIntelFilterChange()" style="padding: 6px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.85rem; outline: none; background: var(--bg-surface); color: var(--text-main); font-family: inherit;">
                             <option value="today" selected>Today & Past Due</option>
                             <option value="tomorrow">Tomorrow</option>
                             <option value="week">Next 7 Days</option>
@@ -185,6 +187,15 @@
                         <span><div class="pulse-dot"></div> System Bulletin</span>
                     </h3>
                     <p id="global-message-text" style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);">Connecting to server...</p>
+                </div>
+
+                <div class="panel-card" style="margin-top: 8px;">
+                    <h3 class="panel-header" style="border: none; padding: 0; margin-bottom: 16px;">
+                        📊 Reports Overview
+                    </h3>
+                    <div id="quickReports" class="intel-list">
+                        <div class="intel-empty">Loading report metrics...</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -260,6 +271,46 @@
             }
         }
 
+        function handleIntelFilterChange() {
+            // Save filter state directly to local storage to maintain stagnation across refreshes
+            const selectedFilter = document.getElementById('dashboardDateFilter').value;
+            localStorage.setItem('kore_intel_filter_state', selectedFilter);
+            renderIntelWidgets();
+        }
+
+        async function loadQuickReports() {
+            // This function fetches data to simulate a quick view of the Reports page
+            const container = document.getElementById('quickReports');
+            
+            // Mocking the data fetch for top-level enterprise metrics
+            const reports = await loadCloudData('reports_overview') || [
+                { title: "Weekly Ticket Resolution", value: "92%", status: "success" },
+                { title: "Pending LOD Validations", value: "14", status: "warning" },
+                { title: "System Uptime", value: "99.98%", status: "active" }
+            ];
+
+            if (!reports || reports.length === 0) {
+                container.innerHTML = '<div class="intel-empty">No active reports generated.</div>';
+                return;
+            }
+
+            let html = '';
+            reports.forEach(r => {
+                const colorMap = { 'danger': 'var(--danger)', 'warning': 'var(--warning)', 'active': 'var(--accent-primary)', 'success': 'var(--success)' };
+                html += `
+                    <a href="reports.html" style="text-decoration:none;">
+                        <div class="intel-item ${r.status}">
+                            <div class="intel-title">${r.title}</div>
+                            <div class="intel-meta">
+                                <span style="color: ${colorMap[r.status] || 'inherit'}; font-weight: 600;">${r.value}</span>
+                                <span>View Data ➔</span>
+                            </div>
+                        </div>
+                    </a>`;
+            });
+            container.innerHTML = html;
+        }
+
         async function loadDashboardData() {
             localTasks = await loadCloudData('todos') || [];
             
@@ -281,7 +332,14 @@
             const adminData = await loadCloudData('admin_settings') || {};
             document.getElementById('global-message-text').textContent = adminData.bulletin || "Welcome to Kore. All systems online.";
 
+            // Apply persistent filter state if it exists
+            const savedFilter = localStorage.getItem('kore_intel_filter_state');
+            if (savedFilter) {
+                document.getElementById('dashboardDateFilter').value = savedFilter;
+            }
+
             renderIntelWidgets();
+            loadQuickReports();
         }
 
         function renderIntelWidgets() {
@@ -377,74 +435,73 @@
             container.scrollTop = container.scrollHeight;
         }
 
-function handleCopilotSubmit(e) {
-    e.preventDefault();
-    const input = document.getElementById('copilotInput');
-    const text = input.value.trim();
-    if (!text) return;
-    
-    appendChatMessage(text, 'user');
-    input.value = '';
-
-    setTimeout(() => {
-        const lower = text.toLowerCase();
-        let reply = '';
-
-        // 1. TICKET SEARCH (Regex)
-        const ticketMatch = text.match(/tkt-\d+/i);
-        if (ticketMatch) {
-            const tktId = ticketMatch[0].toUpperCase();
-            const ticket = localTickets.find(t => t.id === tktId);
-            if (ticket) {
-                reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
-            } else {
-                reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
-            }
-        } 
-        // 2. DOCUMENT VAULT INTEGRATION
-        else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
-            // Logic to pull from a combinedVault if globally accessible
-            reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
-        }
-        // 3. ARCHIVE & RESTORATION
-        else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
-            reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
-        }
-        // 4. WORK & TASK SUMMARIES
-        else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
-            const activeTasks = localTasks.filter(t => !t.completed).length;
-            const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
-            reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
-        } 
-        // 5. NAVIGATION (Enhanced)
-        else if (lower.includes('go to') || lower.includes('open')) {
-            const destination = lower.replace('go to', '').replace('open', '').trim();
-            const routes = {
-                'work': 'work.html', 'tracker': 'work.html',
-                'hub': 'info-hub.html', 'info': 'info-hub.html',
-                'docs': 'docs.html', 'library': 'docs.html',
-                'archive': 'info-archive.html',
-                'macro': 'macros.html', 'todo': 'todo.html'
-            };
+        function handleCopilotSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('copilotInput');
+            const text = input.value.trim();
+            if (!text) return;
             
-            let found = false;
-            for (let key in routes) {
-                if (destination.includes(key)) {
-                    reply = `Navigating to ${key}...`;
-                    setTimeout(() => { window.location.href = routes[key]; }, 800);
-                    found = true; break;
-                }
-            }
-            if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
-        }
-        // 6. PERSONALITY / FALLBACK
-        else {
-            reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
-        }
+            appendChatMessage(text, 'user');
+            input.value = '';
 
-        appendChatMessage(reply, 'bot');
-    }, 600);
-}
+            setTimeout(() => {
+                const lower = text.toLowerCase();
+                let reply = '';
+
+                // 1. TICKET SEARCH (Regex)
+                const ticketMatch = text.match(/tkt-\d+/i);
+                if (ticketMatch) {
+                    const tktId = ticketMatch[0].toUpperCase();
+                    const ticket = localTickets.find(t => t.id === tktId);
+                    if (ticket) {
+                        reply = `Found <b>${ticket.id}</b>: "${ticket.title}".<br>Status: ${ticket.status}<br>Due: ${ticket.dueDate || 'None'}<br><a href="work.html">View Tracker</a>`;
+                    } else {
+                        reply = `I couldn't find <b>${tktId}</b> in the active vault. It may be archived.`;
+                    }
+                } 
+                // 2. DOCUMENT VAULT INTEGRATION
+                else if (lower.includes('file') || lower.includes('document') || lower.includes('pdf')) {
+                    reply = `The <b>Document Vault</b> is currently holding your encrypted assets. Use the <a href="docs.html">Library</a> to manage uploads or search by file extension.`;
+                }
+                // 3. ARCHIVE & RESTORATION
+                else if (lower.includes('archive') || lower.includes('deleted') || lower.includes('restore')) {
+                    reply = `Accessing the <b>Info Hub Archive</b>. I can take you there to restore pages, but remember that permanent deletion requires the Master Admin Code. <a href="info-archive.html">Open Archive</a>.`;
+                }
+                // 4. WORK & TASK SUMMARIES
+                else if (lower.includes('task') || lower.includes('todo') || lower.includes('work')) {
+                    const activeTasks = localTasks.filter(t => !t.completed).length;
+                    const openTickets = localTickets.filter(i => i.status !== 'Completed' && !i.deleted).length;
+                    reply = `Status Update: You have <b>${activeTasks} tasks</b> and <b>${openTickets} open tickets</b> remaining.`;
+                } 
+                // 5. NAVIGATION (Enhanced)
+                else if (lower.includes('go to') || lower.includes('open')) {
+                    const destination = lower.replace('go to', '').replace('open', '').trim();
+                    const routes = {
+                        'work': 'work.html', 'tracker': 'work.html',
+                        'hub': 'info-hub.html', 'info': 'info-hub.html',
+                        'docs': 'docs.html', 'library': 'docs.html',
+                        'archive': 'info-archive.html',
+                        'macro': 'macros.html', 'todo': 'todo.html'
+                    };
+                    
+                    let found = false;
+                    for (let key in routes) {
+                        if (destination.includes(key)) {
+                            reply = `Navigating to ${key}...`;
+                            setTimeout(() => { window.location.href = routes[key]; }, 800);
+                            found = true; break;
+                        }
+                    }
+                    if (!found) reply = `I'm not sure where "${destination}" is. Try "Work Tracker" or "Document Library".`;
+                }
+                // 6. PERSONALITY / FALLBACK
+                else {
+                    reply = `I'm standing by, ${profileName}. I can search <b>Tickets</b>, check <b>Tasks</b>, or navigate the <b>Document Vault</b>. What is your command?`;
+                }
+
+                appendChatMessage(reply, 'bot');
+            }, 600);
+        }
         
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchSecureIdentity();

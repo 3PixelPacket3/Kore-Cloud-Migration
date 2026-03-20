@@ -56,15 +56,40 @@
         .search-item { flex-grow: 1; min-width: 200px; }
         .actions-group { display: flex; gap: 12px; align-items: flex-end; }
 
+        /* Dynamic Views Setup */
+        .view-toggles { display: flex; background: var(--bg-app); border-radius: var(--radius-sm); padding: 4px; border: 1px solid var(--border-subtle); }
+        .view-btn { background: transparent; border: none; padding: 6px 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 4px; color: var(--text-secondary); transition: all 0.2s ease;}
+        .view-btn.active { background: var(--bg-surface); color: var(--accent-primary); box-shadow: var(--shadow-sm); }
+        
+        .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+        .progress-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
+        .meta-text { font-size: 0.8rem; color: var(--text-secondary); display: block; margin-top: 4px; }
+
+        /* Lines View */
         .table-container { background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { background: var(--bg-app); padding: 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-subtle); cursor: pointer; }
         td { padding: 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; vertical-align: middle; }
         tr:hover td { background-color: #f8fafc; cursor: pointer; }
-        .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
-        .progress-pill { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
-        .meta-text { font-size: 0.8rem; color: var(--text-secondary); display: block; margin-top: 4px; }
 
+        /* Boxes View */
+        .view-boxes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .box-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; gap: 14px; }
+        .box-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
+        .box-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;}
+        .box-title { font-weight: 700; color: var(--text-main); font-size: 1.05rem; margin-bottom: 6px; line-height: 1.4;}
+        .box-meta { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;}
+        .box-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+
+        /* Pills View */
+        .view-pills { display: flex; flex-direction: column; gap: 12px; }
+        .pill-row { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+        .pill-row:hover { border-color: var(--accent-primary); background: #f0f9ff; transform: translateX(4px);}
+        .pill-left { display: flex; align-items: center; gap: 24px; flex-grow: 1; overflow: hidden;}
+        .pill-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0;}
+        .pill-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+        /* Ticket Form UI */
         #view-form { display: none; }
         .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
@@ -183,25 +208,17 @@
                     </div>
                 </div>
                 <div class="actions-group">
+                    <div class="view-toggles">
+                        <button class="view-btn active" onclick="setTrackerView('lines')" id="btn-view-lines" title="List View">☰</button>
+                        <button class="view-btn" onclick="setTrackerView('boxes')" id="btn-view-boxes" title="Grid View">⊞</button>
+                        <button class="view-btn" onclick="setTrackerView('pills')" id="btn-view-pills" title="Compact View">⬭</button>
+                    </div>
                     <button class="btn btn-primary" onclick="openForm()">➕ Add Request</button>
                 </div>
             </div>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ticket</th>
-                            <th>Title & Details</th>
-                            <th>Priority</th>
-                            <th>Status</th>
-                            <th>Progress</th>
-                            <th>Due Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tracker-body"></tbody>
-                </table>
-            </div>
+            <div id="dynamic-tracker-container"></div>
+            
         </div>
 
         <div id="view-form">
@@ -300,6 +317,7 @@
         let cloudIdentity = { userId: "local-dev", userName: "Local Developer" };
         let activeChecklist = [];
         let masterWorkItems = [];
+        let currentTrackerView = 'lines'; // Default Layout
 
         async function fetchSecureIdentity() {
             try {
@@ -367,6 +385,12 @@
                 if (savedFilters.priority) document.getElementById('filterPriority').value = savedFilters.priority;
                 if (savedFilters.type) document.getElementById('filterType').value = savedFilters.type;
                 if (savedFilters.allocation) document.getElementById('filterAllocation').value = savedFilters.allocation;
+                if (savedFilters.view) {
+                    currentTrackerView = savedFilters.view;
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    const btn = document.getElementById('btn-view-' + currentTrackerView);
+                    if(btn) btn.classList.add('active');
+                }
             }
 
             renderTable();
@@ -383,20 +407,29 @@
 
         function generateUniqueTicketId() { return "TKT-" + Math.floor(10000 + Math.random() * 90000); }
 
+        function setTrackerView(view) {
+            currentTrackerView = view;
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-view-' + view).classList.add('active');
+            updateFilters();
+        }
+
         function updateFilters() {
             renderTable();
             const filters = {
                 status: document.getElementById('filterStatus').value,
                 priority: document.getElementById('filterPriority').value,
                 type: document.getElementById('filterType').value,
-                allocation: document.getElementById('filterAllocation').value
+                allocation: document.getElementById('filterAllocation').value,
+                view: currentTrackerView
             };
             saveCloudData('work_filters', filters);
         }
 
+        // --- DYNAMIC RENDERER FOR MULTIPLE VIEWS ---
         function renderTable() {
-            const tbody = document.getElementById('tracker-body');
-            tbody.innerHTML = '';
+            const container = document.getElementById('dynamic-tracker-container');
+            container.innerHTML = '';
 
             const fStatus = document.getElementById('filterStatus').value;
             const fPriority = document.getElementById('filterPriority').value;
@@ -425,33 +458,109 @@
 
             filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
 
-            filtered.forEach(item => {
-                let progressBadge = '--';
-                if (item.tasks && item.tasks.length > 0) {
-                    const completed = item.tasks.filter(t => t.done).length;
-                    progressBadge = `<span class="progress-pill">✅ ${completed} / ${item.tasks.length}</span>`;
-                }
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md);"><h3>No tickets match your filters.</h3></div>`;
+                return;
+            }
 
-                const typeDisplay = item.type || 'Unassigned';
-                const allocDisplay = item.allocation || 'Unassigned';
+            let finalHtml = "";
 
-                tbody.innerHTML += `
-                    <tr onclick="openForm('${item.id}')">
-                        <td style="font-family:monospace; color:#64748b; font-weight:600;">${item.id}</td>
-                        <td>
-                            <div style="font-weight:600; color:#0f172a;">${item.title}</div>
-                            <span class="meta-text">${typeDisplay} &bull; ${allocDisplay}</span>
-                        </td>
-                        <td style="font-weight:600;">${item.priority}</td>
-                        <td><span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span></td>
-                        <td>${progressBadge}</td>
-                        <td>${item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '--'}</td>
-                    </tr>
+            if (currentTrackerView === 'lines') {
+                finalHtml += `
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Ticket</th><th>Title & Details</th><th>Priority</th><th>Status</th><th>Progress</th><th>Due Date</th></tr></thead>
+                            <tbody>
                 `;
-            });
+                filtered.forEach(item => {
+                    let progressBadge = '--';
+                    if (item.tasks && item.tasks.length > 0) {
+                        const completed = item.tasks.filter(t => t.done).length;
+                        progressBadge = `<span class="progress-pill">✅ ${completed} / ${item.tasks.length}</span>`;
+                    }
+                    const typeDisplay = item.type || 'Unassigned';
+                    const allocDisplay = item.allocation || 'Unassigned';
+                    const dueDateStr = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '--';
+
+                    finalHtml += `
+                        <tr onclick="openForm('${item.id}')">
+                            <td style="font-family:monospace; color:#64748b; font-weight:600;">${item.id}</td>
+                            <td>
+                                <div style="font-weight:600; color:#0f172a;">${item.title}</div>
+                                <span class="meta-text">${typeDisplay} &bull; ${allocDisplay}</span>
+                            </td>
+                            <td style="font-weight:600;">${item.priority}</td>
+                            <td><span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span></td>
+                            <td>${progressBadge}</td>
+                            <td>${dueDateStr}</td>
+                        </tr>
+                    `;
+                });
+                finalHtml += `</tbody></table></div>`;
+            } 
+            else if (currentTrackerView === 'boxes') {
+                finalHtml += `<div class="view-boxes">`;
+                filtered.forEach(item => {
+                    let progressBadge = '';
+                    if (item.tasks && item.tasks.length > 0) {
+                        const completed = item.tasks.filter(t => t.done).length;
+                        progressBadge = `<span class="progress-pill">✅ ${completed} / ${item.tasks.length}</span>`;
+                    }
+                    const typeDisplay = item.type || 'Unassigned';
+                    const allocDisplay = item.allocation || 'Unassigned';
+                    const dueDateStr = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '--';
+
+                    finalHtml += `
+                        <div class="box-card" onclick="openForm('${item.id}')">
+                            <div class="box-header">
+                                <div>
+                                    <div class="box-title">${item.title}</div>
+                                    <div class="box-meta">${item.id} &bull; ${typeDisplay}</div>
+                                </div>
+                                <span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span>
+                            </div>
+                            <div class="box-meta"><strong>Allocation:</strong> ${allocDisplay}</div>
+                            <div class="box-footer">
+                                <div>${progressBadge}</div>
+                                <div class="box-meta" style="font-weight:600; color:var(--text-main);">Due: ${dueDateStr}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                finalHtml += `</div>`;
+            } 
+            else if (currentTrackerView === 'pills') {
+                finalHtml += `<div class="view-pills">`;
+                filtered.forEach(item => {
+                    let progressBadge = '';
+                    if (item.tasks && item.tasks.length > 0) {
+                        const completed = item.tasks.filter(t => t.done).length;
+                        progressBadge = `<span class="progress-pill">✅ ${completed} / ${item.tasks.length}</span>`;
+                    }
+                    const typeDisplay = item.type || 'Unassigned';
+                    const dueDateStr = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '--';
+
+                    finalHtml += `
+                        <div class="pill-row" onclick="openForm('${item.id}')">
+                            <div class="pill-left">
+                                <span style="font-family:monospace; color:#64748b; font-weight:700;">${item.id}</span>
+                                <div class="pill-title">${item.title}</div>
+                                <span class="meta-text" style="margin:0; font-weight:600;">${typeDisplay}</span>
+                            </div>
+                            <div class="pill-right">
+                                ${progressBadge}
+                                <span class="status-badge" style="${getStatusColor(item.status)}">${item.status}</span>
+                                <span style="font-weight:600; color:var(--text-secondary); font-size:0.85rem; min-width:80px; text-align:right;">${dueDateStr}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                finalHtml += `</div>`;
+            }
+
+            container.innerHTML = finalHtml;
         }
 
-        // --- UPDATED DRAG, DROP, AND EDIT CHECKLIST LOGIC ---
         function renderChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';

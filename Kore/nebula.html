@@ -140,7 +140,7 @@
             padding: 6px 12px;
             border-radius: 99px;
             border: 1px solid var(--border-subtle);
-            margin-left: auto; /* Ensures it stays on the far right */
+            margin-left: auto;
         }
 
         /* --- Main Content Layout --- */
@@ -641,6 +641,10 @@
                             <button class="rail-snippet" data-snippet="mock-chart">Mock Chart</button>
                             <button class="rail-snippet" data-snippet="timeline">Timeline</button>
                             <button class="rail-snippet" data-snippet="cta-strip">CTA Strip</button>
+                            <button class="rail-snippet" data-snippet="hero-banner">Hero Banner</button>
+                            <button class="rail-snippet" data-snippet="testimonial">Testimonial</button>
+                            <button class="rail-snippet" data-snippet="faq-section">FAQ List</button>
+                            <button class="rail-snippet" data-snippet="steps-list">Steps List</button>
                         </div>
                     </div>
                     <div class="rail-section">
@@ -664,6 +668,7 @@
                                 <option value="Georgia, serif">Georgia</option>
                                 <option value="'Courier New', monospace">Courier</option>
                                 <option value="Verdana, sans-serif">Verdana</option>
+                                <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
                             </select>
                             <select class="tool-select" id="fontSizeSelect" title="Font Size">
                                 <option value="1">Small</option>
@@ -679,6 +684,10 @@
                             <button class="tool-btn" data-cmd="italic" title="Italic"><i>I</i></button>
                             <button class="tool-btn" data-cmd="underline" title="Underline"><u>U</u></button>
                             <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+                            <div class="toolbar-divider"></div>
+                            <button class="tool-btn" data-cmd="subscript" title="Subscript">x₂</button>
+                            <button class="tool-btn" data-cmd="superscript" title="Superscript">x²</button>
+                            <button class="tool-btn" data-cmd="removeFormat" title="Clear Formatting">Tx</button>
                         </div>
 
                         <div class="toolbar-row">
@@ -686,6 +695,9 @@
                             <button class="tool-btn" data-cmd="justifyCenter" title="Align Center">≣</button>
                             <button class="tool-btn" data-cmd="justifyRight" title="Align Right">⫸</button>
                             <button class="tool-btn" data-cmd="justifyFull" title="Justify">≡</button>
+                            <div class="toolbar-divider"></div>
+                            <button class="tool-btn" data-cmd="outdent" title="Outdent">⇤</button>
+                            <button class="tool-btn" data-cmd="indent" title="Indent">⇥</button>
                             <div class="toolbar-divider"></div>
                             <button class="tool-btn" data-block="h1" title="Heading 1">H1</button>
                             <button class="tool-btn" data-block="h2" title="Heading 2">H2</button>
@@ -696,6 +708,9 @@
                             <div class="toolbar-divider"></div>
                             <button class="tool-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
                             <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+                            <div class="toolbar-divider"></div>
+                            <button class="tool-btn" data-action="link" title="Add Link">🔗</button>
+                            <button class="tool-btn" data-action="image" title="Add Image">🖼️</button>
                         </div>
 
                         <div class="toolbar-row">
@@ -1146,10 +1161,22 @@
                 "timeline": `<ul class="timeline-list"><li><strong>Step 1:</strong> Detail</li><li><strong>Step 2:</strong> Detail</li></ul><p><br></p>`,
                 "profile-card": `<div class="profile-card"><h3>Name</h3><p><em>Title</em></p><p>Bio or description here.</p></div><p><br></p>`,
                 "pricing-table": `<table class="pricing-table"><thead><tr><th>Tier</th><th>Price</th></tr></thead><tbody><tr><td>Standard</td><td>$100</td></tr></tbody></table><p><br></p>`,
-                "mock-chart": `<div class="mock-chart"><div class="bar" style="width: 80%; background: #0ea5e9;">Metric A: 80</div><div class="bar" style="width: 45%; background: #f59e0b;">Metric B: 45</div></div><p><br></p>`
+                "mock-chart": `<div class="mock-chart"><div class="bar" style="width: 80%; background: #0ea5e9;">Metric A: 80</div><div class="bar" style="width: 45%; background: #f59e0b;">Metric B: 45</div></div><p><br></p>`,
+                "hero-banner": `<div style="background:var(--accent-primary);color:white;padding:32px;text-align:center;border-radius:8px;margin-bottom:16px;"><h2>Hero Title</h2><p style="color:white;">Subtitle text here.</p></div><p><br></p>`,
+                "testimonial": `<blockquote style="border-left:4px solid #0ea5e9;padding:12px;background:#f0f9ff;font-style:italic;margin:16px 0;">"This is a fantastic product!"<br><strong>- Customer Name</strong></blockquote><p><br></p>`,
+                "faq-section": `<h3>Frequently Asked Questions</h3><ul><li><strong>Q: Question 1?</strong><br>A: Answer 1.</li><li><strong>Q: Question 2?</strong><br>A: Answer 2.</li></ul><p><br></p>`,
+                "steps-list": `<ol style="margin-left:20px;"><li><strong>Step 1:</strong> First action</li><li><strong>Step 2:</strong> Second action</li><li><strong>Step 3:</strong> Final action</li></ol><p><br></p>`
             };
             if (snippets[kind]) insertHtmlAtCursor(snippets[kind]);
         }
+
+        // --- Fixing the Snippet Left Rail Click Target ---
+        document.querySelectorAll('.rail-snippet').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const snippetType = e.target.dataset.snippet;
+                if (snippetType) insertSnippet(snippetType);
+            });
+        });
 
         // --- Toolbar Handlers ---
         document.getElementById('fontNameSelect').addEventListener('change', (e) => { execCommand('fontName', e.target.value); });
@@ -1165,6 +1192,15 @@
             if (btn.dataset.custom === 'inlineCode') { document.execCommand("insertHTML", false, `<code>${window.getSelection().toString()}</code>`); updatePreviewAndHtml(); }
             if (btn.dataset.snippet) insertSnippet(btn.dataset.snippet);
             if (btn.dataset.emoji) insertHtmlAtCursor(btn.dataset.emoji);
+            
+            if (btn.dataset.action === 'link') {
+                const url = prompt("Enter full URL (including https://):");
+                if (url) execCommand("createLink", url);
+            }
+            if (btn.dataset.action === 'image') {
+                const url = prompt("Enter direct image URL:");
+                if (url) execCommand("insertImage", url);
+            }
         });
 
         // --- Tabs ---
